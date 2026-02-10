@@ -10,6 +10,10 @@ Turn **Mermaid**, **Text**, and **Ideas** into beautiful, interactive flowcharts
 
 FlowMind bridges the gap between **Diagram-as-Code** and visual whiteboarding. It's built for developers who love the speed of typing code but need the flexibility of a drag-and-drop canvas.
 
+![FlowMind Banner](public/Flow_mind_1.png)
+
+![FlowMind Banner](public/Flow_mind_2.png)
+
 ---
 
 ## 🌟 Why FlowMind?
