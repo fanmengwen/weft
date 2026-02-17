@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, useNavigate, useParams, useLocation } from 'react-router-dom';
 import 'reactflow/dist/style.css';
 import { ReactFlowProvider } from 'reactflow';
+import { Monitor, ArrowLeft } from 'lucide-react';
+import { OpenFlowLogo } from './components/icons/OpenFlowLogo';
 
 import { useFlowStore } from './store';
 import { useBrandTheme } from './hooks/useBrandTheme';
@@ -77,6 +79,47 @@ function HomePageRoute(): React.JSX.Element {
   );
 }
 
+// Mobile gate — shows a friendly message on screens < md (768px)
+function MobileGate({ children }: { children: React.ReactNode }): React.JSX.Element {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      {/* Mobile: Friendly message */}
+      <div className="md:hidden fixed inset-0 bg-white z-[100] flex flex-col items-center justify-center px-8 text-center">
+        <div className="w-14 h-14 bg-brand-primary rounded-2xl flex items-center justify-center text-white shadow-xl shadow-brand-primary/20 mb-8 ring-1 ring-white/20">
+          <OpenFlowLogo className="w-8 h-8 text-white" />
+        </div>
+
+        <div className="w-12 h-12 rounded-full bg-brand-primary/5 flex items-center justify-center mb-6">
+          <Monitor className="w-6 h-6 text-brand-primary" />
+        </div>
+
+        <h2 className="text-2xl font-bold text-brand-dark mb-3 tracking-tight">
+          Designed for larger screens
+        </h2>
+
+        <p className="text-brand-secondary text-base leading-relaxed max-w-sm mb-10">
+          OpenFlowKit's diagram editor needs a desktop or tablet-sized screen for the best experience. Please open this on a larger device.
+        </p>
+
+        <button
+          onClick={() => navigate('/')}
+          className="inline-flex items-center gap-2 text-sm font-medium text-brand-primary hover:text-brand-primary/80 transition-colors px-5 py-2.5 rounded-full border border-brand-primary/20 hover:bg-brand-primary/5"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to Home
+        </button>
+      </div>
+
+      {/* Desktop: Normal content */}
+      <div className="hidden md:contents">
+        {children}
+      </div>
+    </>
+  );
+}
+
 function App(): React.JSX.Element {
   const { setShortcutsHelpOpen } = useFlowStore();
   useBrandTheme();
@@ -110,10 +153,10 @@ function App(): React.JSX.Element {
       <ReactFlowProvider>
         <Routes>
           <Route path="/" element={<LandingPageRoute />} />
-          <Route path="/home" element={<HomePageRoute />} />
-          <Route path="/settings" element={<HomePageRoute />} />
-          <Route path="/canvas" element={<FlowCanvasRoute />} />
-          <Route path="/flow/:flowId" element={<FlowCanvasRoute />} />
+          <Route path="/home" element={<MobileGate><HomePageRoute /></MobileGate>} />
+          <Route path="/settings" element={<MobileGate><HomePageRoute /></MobileGate>} />
+          <Route path="/canvas" element={<MobileGate><FlowCanvasRoute /></MobileGate>} />
+          <Route path="/flow/:flowId" element={<MobileGate><FlowCanvasRoute /></MobileGate>} />
           <Route path="/docs" element={<DocsLayout />}>
             <Route path=":slug" element={<DocsPage />} />
           </Route>

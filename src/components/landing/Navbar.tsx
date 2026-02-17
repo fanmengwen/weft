@@ -35,9 +35,13 @@ export function Navbar({ isScrolled, onLaunch }: NavbarProps): React.ReactElemen
     { name: 'Pricing', href: '#pricing' },
   ];
 
-  const navContainerClasses = isScrolled || isMobileMenuOpen
-    ? 'bg-white/85 backdrop-blur-xl shadow-lg shadow-black/[0.03] border-brand-border/80 ring-1 ring-black/5'
-    : 'bg-white/50 backdrop-blur-md border-brand-border/60 shadow-sm shadow-black/[0.02] ring-1 ring-white/50';
+  // Dynamic classes for the navbar container (The Pill)
+  // When mobile menu is open, we make it solid white and remove border/shadow to blend with the overlay
+  const navContainerClasses = isMobileMenuOpen
+    ? 'bg-white border-transparent shadow-none ring-0' // Seamless blend
+    : isScrolled
+      ? 'bg-white/85 backdrop-blur-xl shadow-lg shadow-black/[0.03] border-brand-border/80 ring-1 ring-black/5'
+      : 'bg-white/50 backdrop-blur-md border-brand-border/60 shadow-sm shadow-black/[0.02] ring-1 ring-white/50';
 
   const mobileMenuClasses = isMobileMenuOpen
     ? 'opacity-100 pointer-events-auto translate-y-0'
@@ -45,16 +49,17 @@ export function Navbar({ isScrolled, onLaunch }: NavbarProps): React.ReactElemen
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-4 md:pt-6 px-4 transition-all duration-300">
+      {/* Main Navbar Pill - High Z-index to stay above overlay and content */}
+      <div className="fixed top-0 left-0 right-0 z-[60] flex justify-center pt-4 md:pt-6 px-4 transition-all duration-300">
         <nav
-          className={`transition-all duration-500 w-full max-w-5xl rounded-full border ${navContainerClasses} py-2.5 px-4 md:px-5 relative z-50 flex items-center justify-between`}
+          className={`transition-all duration-500 w-full max-w-5xl rounded-full border ${navContainerClasses} py-2.5 px-4 md:px-5 relative flex items-center justify-between`}
         >
           {/* Logo */}
-          <div onClick={onLaunch} className="flex items-center gap-2.5 cursor-pointer group select-none">
-            <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-brand-primary/20 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-105 ring-1 ring-white/20">
+          <div onClick={onLaunch} className="flex items-center gap-2.5 cursor-pointer group select-none min-w-0">
+            <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-brand-primary/20 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-105 ring-1 ring-white/20 shrink-0">
               <OpenFlowLogo className="w-5 h-5 text-white" />
             </div>
-            <span className="text-lg font-bold tracking-tight text-brand-primary font-sans group-hover:opacity-80 transition-opacity">OpenFlowKit</span>
+            <span className="text-lg font-bold tracking-tight text-brand-primary font-sans group-hover:opacity-80 transition-opacity whitespace-nowrap">OpenFlowKit</span>
           </div>
 
           {/* Links - Desktop */}
@@ -73,24 +78,28 @@ export function Navbar({ isScrolled, onLaunch }: NavbarProps): React.ReactElemen
 
           {/* Actions */}
           <div className="flex items-center gap-3">
-            <Button
-              variant="secondary"
-              size="sm"
-              className="hidden sm:flex h-9 px-4"
-              onClick={() => window.open("https://github.com/Vrun-design/FlowMind", "_blank")}
-            >
-              <Github className="w-4 h-4 mr-2" />
-              <span>Github</span>
-            </Button>
+            <div className="hidden md:flex">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-9 px-4"
+                onClick={() => window.open("https://github.com/Vrun-design/FlowMind", "_blank")}
+              >
+                <Github className="w-4 h-4 mr-2" />
+                <span>Github</span>
+              </Button>
+            </div>
 
-            <Button
-              size="sm"
-              variant="primary"
-              className="hidden sm:flex px-5 text-[13px] h-9 transform hover:-translate-y-0.5 transition-all"
-              onClick={onLaunch}
-            >
-              <span className="mr-1">Get Started</span>
-            </Button>
+            <div className="hidden md:flex">
+              <Button
+                size="sm"
+                variant="primary"
+                className="px-5 text-[13px] h-9 transform hover:-translate-y-0.5 transition-all"
+                onClick={onLaunch}
+              >
+                <span className="mr-1">Get Started</span>
+              </Button>
+            </div>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -103,9 +112,9 @@ export function Navbar({ isScrolled, onLaunch }: NavbarProps): React.ReactElemen
         </nav>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay - z-[55] to sit below navbar but above page content */}
       <div
-        className={`fixed inset-0 bg-white z-40 transition-all duration-500 md:hidden flex flex-col pt-32 px-6 ${mobileMenuClasses}`}
+        className={`fixed inset-0 bg-white z-[55] transition-all duration-500 md:hidden flex flex-col pt-24 px-6 overflow-y-auto ${mobileMenuClasses}`}
       >
         <div className="flex flex-col gap-2">
           {navLinks.map((item, i) => (
