@@ -69,7 +69,7 @@ interface ViewSettings {
 }
 
 
-export type AIProvider = 'gemini' | 'openai' | 'claude' | 'groq' | 'nvidia' | 'cerebras' | 'custom';
+export type AIProvider = 'gemini' | 'openai' | 'claude' | 'groq' | 'nvidia' | 'cerebras' | 'mistral' | 'custom';
 
 export interface BrandConfig {
     appName: string;
