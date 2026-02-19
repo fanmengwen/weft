@@ -74,6 +74,7 @@ export interface BrandConfig {
     logoUrl: string | null;
     faviconUrl: string | null; // Added favicon
     apiKey?: string; // [NEW] Gemini API Key
+    aiModel?: string; // [NEW] Gemini Model ID
     logoStyle: 'icon' | 'text' | 'both' | 'wide';
     colors: {
         primary: string; // Base color for auto-generation
@@ -101,6 +102,7 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
     logoUrl: null,
     faviconUrl: '/favicon.svg',
     apiKey: undefined,
+    aiModel: undefined,
     logoStyle: 'both',
     colors: {
         primary: '#E95420',

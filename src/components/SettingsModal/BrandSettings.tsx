@@ -355,6 +355,14 @@ const UIEditor = ({ config, update }: { config: BrandKit, update: any }) => (
     </div>
 );
 
+const GEMINI_MODELS = [
+    { id: 'gemini-2.5-flash-lite', label: '2.5 Flash Lite', hint: 'Fastest · Cheapest · Default', badge: null },
+    { id: 'gemini-2.5-flash', label: '2.5 Flash', hint: 'Best price/performance balance', badge: null },
+    { id: 'gemini-2.5-pro', label: '2.5 Pro', hint: 'Best reasoning · Complex diagrams', badge: null },
+    { id: 'gemini-3-flash-preview', label: '3 Flash', hint: 'Frontier speed + intelligence', badge: 'Preview' },
+    { id: 'gemini-3-pro-preview', label: '3 Pro', hint: 'Most powerful · Multimodal', badge: 'Preview' },
+];
+
 const AIEditor = ({ config, update }: { config: BrandKit, update: any }) => (
     <div className="space-y-6">
         <div className="space-y-3">
@@ -384,6 +392,48 @@ const AIEditor = ({ config, update }: { config: BrandKit, update: any }) => (
             </div>
         </div>
 
+        <div className="space-y-3">
+            <Label>AI Model</Label>
+            <div className="space-y-2">
+                {GEMINI_MODELS.map(model => {
+                    const isSelected = (config.aiModel || 'gemini-2.5-flash-lite') === model.id;
+                    return (
+                        <button
+                            key={model.id}
+                            onClick={() => update({ aiModel: model.id })}
+                            className={`w-full flex items-center justify-between p-3 rounded-lg border text-left transition-all ${isSelected
+                                    ? 'bg-[var(--brand-primary)]/5 border-[var(--brand-primary)]/40 ring-1 ring-[var(--brand-primary)]/20'
+                                    : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
+                                }`}
+                        >
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <span className={`text-sm font-medium ${isSelected ? 'text-[var(--brand-primary)]' : 'text-slate-800'}`}>
+                                        {model.label}
+                                    </span>
+                                    {model.badge && (
+                                        <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+                                            {model.badge}
+                                        </span>
+                                    )}
+                                    {model.id === 'gemini-2.5-flash-lite' && (
+                                        <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
+                                            Default
+                                        </span>
+                                    )}
+                                </div>
+                                <p className="text-[11px] text-slate-400 mt-0.5">{model.hint}</p>
+                            </div>
+                            {isSelected && <Check className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />}
+                        </button>
+                    );
+                })}
+            </div>
+            <p className="text-[10px] text-slate-400 leading-relaxed">
+                Preview models are cutting-edge but may change. Stable models are recommended for consistent results.
+            </p>
+        </div>
+
         <div className="p-4 bg-[var(--brand-primary)]/5 border border-[var(--brand-primary)]/20 rounded-lg">
             <h4 className="flex items-center gap-2 text-xs font-semibold text-[var(--brand-primary)] mb-2">
                 <Sparkles className="w-3.5 h-3.5" />
@@ -406,6 +456,7 @@ const AIEditor = ({ config, update }: { config: BrandKit, update: any }) => (
         </div>
     </div>
 );
+
 
 // --- UI Helpers ---
 const TabButton = ({ active, onClick, icon, label }: any) => (

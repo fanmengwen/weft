@@ -51,7 +51,7 @@ export const useAIGeneration = (
       // const focusedContextJSON = selectedNodes.length > 0 ? JSON.stringify(selectedNodes) : undefined;
 
       // 2. Call AI (now using chat)
-      const dslText = await generateDiagramFromChat(chatMessages, prompt, currentGraph, imageBase64, brandConfig.apiKey);
+      const dslText = await generateDiagramFromChat(chatMessages, prompt, currentGraph, imageBase64, brandConfig.apiKey, brandConfig.aiModel);
 
       // 3. Update Chat History
       const finalUserMessage = { ...userMessage };
@@ -137,10 +137,11 @@ export const useAIGeneration = (
 
 
       // 6. Apply Auto-Layout (ELK) - CRITICAL for V2 which returns (0,0)
+      // mrtree is ELK's dedicated tree algorithm — cleaner hierarchy than 'layered' for AI-generated flows
       const layoutedNodes = await getElkLayout(finalNodes, finalEdges, {
         direction: 'TB',
-        algorithm: 'layered',
-        spacing: 'normal'
+        algorithm: 'mrtree',
+        spacing: 'loose'
       });
 
       setNodes(layoutedNodes);

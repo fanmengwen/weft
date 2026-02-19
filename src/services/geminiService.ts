@@ -75,7 +75,8 @@ export const generateDiagramFromChat = async (
   newMessage: string,
   currentDSL?: string,
   imageBase64?: string,
-  userApiKey?: string // [NEW] Optional user key
+  userApiKey?: string, // [NEW] Optional user key
+  modelId?: string // [NEW] Optional model override
 ): Promise<string> => {
   const apiKey = userApiKey || process.env.API_KEY;
 
@@ -121,7 +122,7 @@ export const generateDiagramFromChat = async (
   ];
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-lite',
+    model: modelId || 'gemini-2.5-flash-lite',
     contents: contents,
     config: {
       systemInstruction: getSystemInstruction(),
