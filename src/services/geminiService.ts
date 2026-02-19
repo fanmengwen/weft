@@ -5,7 +5,7 @@ export interface ChatMessage {
   parts: { text?: string; inlineData?: any }[];
 }
 
-const getSystemInstruction = () => `
+export const getSystemInstruction = () => `
 # FlowMind DSL Conversion Prompt
 
 You are an assistant that converts plain human language into **FlowMind DSL**.

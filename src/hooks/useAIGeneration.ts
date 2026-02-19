@@ -1,12 +1,10 @@
-
 import { useState, useCallback } from 'react';
 import { Node, Edge, useReactFlow } from 'reactflow';
-import { generateDiagramFromChat, ChatMessage } from '../services/geminiService';
+import { generateDiagramFromChat, ChatMessage } from '../services/aiService';
 import { parseOpenFlowDSL } from '@/lib/openFlowDSLParser';
 import { getElkLayout } from '../services/elkLayout';
 import { createDefaultEdge } from '../constants';
 import { useFlowStore } from '../store';
-
 import { useToast } from '../components/ui/ToastContext';
 
 export const useAIGeneration = (
@@ -48,15 +46,22 @@ export const useAIGeneration = (
       });
 
       const selectedNodes = simplifiedNodes.filter(n => nodes.find(orig => orig.id === n.id)?.selected);
-      // const focusedContextJSON = selectedNodes.length > 0 ? JSON.stringify(selectedNodes) : undefined;
 
-      // 2. Call AI (now using chat)
-      const dslText = await generateDiagramFromChat(chatMessages, prompt, currentGraph, imageBase64, brandConfig.apiKey, brandConfig.aiModel);
+      // 2. Call AI (now using unified service)
+      const dslText = await generateDiagramFromChat(
+        chatMessages,
+        prompt,
+        currentGraph,
+        imageBase64,
+        brandConfig.apiKey,
+        brandConfig.aiModel,
+        brandConfig.aiProvider || 'gemini',
+        brandConfig.customBaseUrl
+      );
 
       // 3. Update Chat History
-      const finalUserMessage = { ...userMessage };
       if (imageBase64) {
-        finalUserMessage.parts[0].text += " [Image Attached]";
+        userMessage.parts[0].text += " [Image Attached]";
       }
 
       const modelMessage: ChatMessage = {
@@ -64,7 +69,7 @@ export const useAIGeneration = (
         parts: [{ text: dslText }]
       };
 
-      setChatMessages(prev => [...prev, finalUserMessage, modelMessage]);
+      setChatMessages(prev => [...prev, userMessage, modelMessage]);
 
       // 4. Parse DSL
       // Strip markdown code blocks if present

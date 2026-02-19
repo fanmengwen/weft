@@ -5,11 +5,12 @@ import { applyBrandTheme } from '@/lib/brandService';
 export const useBrandTheme = () => {
     const brandConfig = useFlowStore((state) => state.brandConfig);
 
+    // Apply brand CSS variables
     useEffect(() => {
         applyBrandTheme(brandConfig);
+        document.documentElement.classList.remove('dark'); // Cleanup any stuck dark mode
     }, [brandConfig]);
 
-    // Update Favicon
     useEffect(() => {
         const updateFavicon = (url: string | null) => {
             const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');

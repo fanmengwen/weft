@@ -69,15 +69,19 @@ interface ViewSettings {
 }
 
 
+export type AIProvider = 'gemini' | 'openai' | 'claude' | 'groq' | 'nvidia' | 'cerebras' | 'custom';
+
 export interface BrandConfig {
     appName: string;
     logoUrl: string | null;
-    faviconUrl: string | null; // Added favicon
-    apiKey?: string; // [NEW] Gemini API Key
-    aiModel?: string; // [NEW] Gemini Model ID
+    faviconUrl: string | null;
+    apiKey?: string;        // API Key for the selected provider
+    aiModel?: string;       // Model ID override
+    aiProvider?: AIProvider; // AI Provider selection
+    customBaseUrl?: string; // For 'custom' provider
     logoStyle: 'icon' | 'text' | 'both' | 'wide';
     colors: {
-        primary: string; // Base color for auto-generation
+        primary: string;
         secondary: string;
         background: string;
         surface: string;
@@ -87,8 +91,8 @@ export interface BrandConfig {
         fontFamily: string;
     };
     shape: {
-        radius: number; // px
-        borderWidth: number; // px
+        radius: number;
+        borderWidth: number;
     };
     ui: {
         glassmorphism: boolean;
@@ -103,6 +107,8 @@ export const DEFAULT_BRAND_CONFIG: BrandConfig = {
     faviconUrl: '/favicon.svg',
     apiKey: undefined,
     aiModel: undefined,
+    aiProvider: 'gemini',
+    customBaseUrl: undefined,
     logoStyle: 'both',
     colors: {
         primary: '#E95420',
