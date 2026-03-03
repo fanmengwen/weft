@@ -233,61 +233,57 @@ Built for performance and extensibility:
 OpenFlowKit/
 ├── src/
 │   ├── components/
-│   │   ├── properties/          # Property panels for Nodes, Edges, Canvas
-│   │   ├── SettingsModal/       # Brand, Privacy, Shortcuts, General settings
-│   │   ├── custom-nodes/        # Browser, Mobile, Wireframe, Icon nodes
-│   │   ├── command-bar/         # Cmd+K command palette
-│   │   ├── ui/                  # Branded design system primitives
+│   │   ├── properties/          # Property panels (nodes/edges/canvas)
+│   │   ├── SettingsModal/       # Settings screens + AI provider sections
+│   │   ├── custom-nodes/        # Browser/Mobile/Wireframe/Icon nodes
+│   │   ├── command-bar/         # Cmd+K command palette views
+│   │   ├── docs/                # Built-in docs + docs chatbot
+│   │   ├── home/                # Dashboard/sidebar/settings home views
+│   │   ├── toolbar/             # Toolbar subcomponents
+│   │   ├── top-nav/             # Top nav subcomponents
 │   │   ├── landing/             # Landing page sections
-│   │   ├── docs/                # Built-in documentation pages
+│   │   ├── ui/                  # Branded UI primitives
 │   │   ├── FlowEditor.tsx       # Main diagram orchestrator
 │   │   ├── FlowCanvas.tsx       # React Flow canvas wrapper
-│   │   ├── CustomNode.tsx       # Universal node renderer
-│   │   ├── CustomEdge.tsx       # Styled edge renderer
-│   │   ├── TopNav.tsx           # Top navigation bar
-│   │   ├── Toolbar.tsx          # Left sidebar toolbar
-│   │   ├── ExportMenu.tsx       # Export format picker
 │   │   ├── CommandBar.tsx       # Spotlight-style command palette
-│   │   ├── PlaybackControls.tsx # Presentation mode controls
-│   │   ├── LanguageSelector.tsx # Live language switcher (EN/TR/…)
-│   │   ├── HomePage.tsx         # File management & Dashboard
-│   │   └── WelcomeModal.tsx     # User onboarding
+│   │   ├── CustomNode.tsx       # Universal node renderer
+│   │   └── CustomEdge.tsx       # Styled edge renderer
+│   ├── config/
+│   │   └── aiProviders.ts       # AI provider registry + model metadata
 │   ├── hooks/
-│   │   ├── useFlowOperations.ts   # Composed flow operations (i18n-aware)
-│   │   ├── useNodeOperations.ts   # Node add/delete/duplicate (i18n-aware)
-│   │   ├── useEdgeOperations.ts   # Edge connect/delete (i18n-aware)
-│   │   ├── useLayoutOperations.ts # Align/Distribute/Group (i18n-aware)
-│   │   ├── useAIGeneration.ts     # Flowpilot AI integration
-│   │   ├── useBrandTheme.ts       # Dynamic branding injection
-│   │   ├── useDesignSystem.ts     # Design system token access
-│   │   ├── useFlowHistory.ts      # Undo/Redo operations
-│   │   ├── useFlowExport.ts       # SVG/PNG/JPG export
-│   │   ├── usePlayback.ts         # Presentation mode logic
-│   │   ├── useKeyboardShortcuts.ts # Hotkey bindings
-│   │   ├── useAutoSave.ts         # Persistence & LocalStorage
-│   │   ├── useSnapshots.ts        # Version history management
-│   │   └── useClipboardOperations.ts # Copy/Paste with offset
+│   │   ├── useFlowOperations.ts    # Composed canvas operations
+│   │   ├── useAIGeneration.ts      # Flowpilot AI integration
+│   │   ├── useFlowEditorActions.ts # Layout/export/template actions
+│   │   ├── useFlowEditorUIState.ts # Editor panel/view state orchestration
+│   │   ├── useFlowHistory.ts       # Undo/Redo
+│   │   ├── useAutoSave.ts          # Active tab synchronization
+│   │   ├── useSnapshots.ts         # Snapshot version history
+│   │   └── useDesignSystem.ts      # Active design-system token access
 │   ├── i18n/
 │   │   ├── config.ts            # react-i18next setup (bundled imports)
 │   │   └── locales/
 │   │       ├── en/translation.json  # English (full coverage)
-│   │       └── tr/translation.json  # Turkish (full coverage)
+│   │       ├── tr/translation.json  # Turkish (full coverage)
+│   │       └── ...                  # de/fr/es/zh/ja
 │   ├── lib/
-│   │   ├── mermaidParser.ts     # Mermaid.js → nodes/edges
-│   │   ├── flowmindDSLParserV2.ts # OpenFlow DSL V2 parser
-│   │   ├── brandService.ts      # Palette generation
-│   │   ├── analytics.ts         # PostHog integration
-│   │   └── types.ts             # Type definitions
+│   │   ├── flowmindDSLParserV2.ts  # OpenFlow DSL V2 parser
+│   │   ├── mermaidParser.ts        # Mermaid.js → nodes/edges
+│   │   ├── observability.ts        # Global error/telemetry hooks
+│   │   ├── analytics.ts            # PostHog integration
+│   │   └── types.ts                # Shared type definitions
 │   ├── services/
-│   │   ├── elkLayout.ts         # ELK.js auto-layout engine
-│   │   ├── figmaExportService.ts # Vector SVG for Figma
-│   │   ├── exportService.ts     # Image export (PNG, JPG, SVG)
-│   │   ├── smartEdgeRouting.ts  # Automatic edge path optimization
-│   │   ├── AlignDistribute.ts   # Node alignment & spacing
-│   │   ├── openFlowDSLExporter.ts # Nodes/edges → DSL V2
-│   │   ├── geminiService.ts     # Multi-provider AI client (BYOK)
-│   │   └── templates.ts         # 5 starter templates
-│   ├── store.ts                 # Global Zustand state
+│   │   ├── aiService.ts            # Multi-provider AI client
+│   │   ├── geminiService.ts        # Gemini-specific implementation
+│   │   ├── elkLayout.ts            # ELK.js auto-layout engine
+│   │   ├── smartEdgeRouting.ts     # Edge path optimization
+│   │   ├── figmaExportService.ts   # Figma-compatible SVG export
+│   │   ├── openFlowDSLExporter.ts  # Nodes/edges → DSL V2
+│   │   └── templates.ts            # Starter templates
+│   ├── store/
+│   │   ├── actions/                # Zustand action slices
+│   │   ├── defaults.ts             # Default state contracts
+│   │   └── types.ts                # Store state types
+│   ├── store.ts                    # Store composition + persist wiring
 │   └── theme.ts                 # Color palettes & design tokens
 ├── docs/
 │   ├── en/                      # English documentation
@@ -303,8 +299,9 @@ OpenFlowKit/
 OpenFlowKit is **local-first** for maximum privacy. It's also architected to be easily extended with a backend.
 
 ### 1. Connecting a Database
-Storage logic is isolated in `src/hooks/useSnapshots.ts`.  
-To add Supabase, Firebase, or your own API: fork the repo and replace `localStorage` calls with `fetch` requests. Everything else works automatically.
+Snapshot/version storage is isolated in `src/hooks/useSnapshots.ts`.
+Main editor/session state persistence is handled in the Zustand store (`src/store.ts`) with store defaults/actions under `src/store/`.
+To add Supabase, Firebase, or your own API, replace the local persistence touchpoints with your API layer.
 
 ### 2. Adding Authentication
 - **Header:** `TopNav.tsx` has a dedicated slot for a Sign In button.
@@ -316,9 +313,9 @@ Privacy-friendly analytics via PostHog.
 - If you fork this repo, analytics will not fire until you add your own key.
 
 ### 4. AI Integration (BYOK)
-The AI layer (`useAIGeneration.ts`) and provider client (`geminiService.ts`) are isolated modules.
+The AI layer (`useAIGeneration.ts`) and provider clients (`services/aiService.ts`, `services/geminiService.ts`) are isolated modules.
 - **BYOK**: Users add their own API key in Settings → Flowpilot. Keys are stored in `localStorage` only.
-- **Multi-Provider**: Gemini, OpenAI, Claude, Groq, NVIDIA, Cerebras, Mistral, or any OpenAI-compatible custom endpoint.
+- **Multi-Provider**: Gemini, OpenAI, Claude, Groq, NVIDIA, Cerebras, Mistral, OpenRouter, or any OpenAI-compatible custom endpoint.
 - **Swap Providers**: Select a new provider in-app — no code changes required.
 
 ![Extensibility](public/readme/6.png)

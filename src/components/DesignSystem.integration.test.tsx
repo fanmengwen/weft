@@ -34,6 +34,7 @@ vi.mock('reactflow', async (importOriginal) => {
             setEdges: vi.fn(),
             screenToFlowPosition: ({ x, y }: { x: number; y: number }) => ({ x, y }),
         }),
+        useViewport: () => ({ zoom: 1 }),
     };
 });
 
@@ -84,6 +85,8 @@ describe('Design System integration', () => {
         altSystem.colors.nodeText = '#f6f7f9';
         altSystem.colors.edge = '#ff0055';
         altSystem.components.edge.strokeWidth = 6;
+        altSystem.typography.fontFamily = 'Roboto, sans-serif';
+        altSystem.components.node.borderRadius = '2px';
 
         useFlowStore.setState({
             designSystems: [defaultSystem, altSystem],
@@ -108,16 +111,20 @@ describe('Design System integration', () => {
             />
         );
 
-        const nodeContainer = screen.getByTestId('custom-node-container');
-        expect(nodeContainer.style.backgroundColor).toBe('rgb(255, 255, 255)');
-        expect(nodeContainer.style.borderColor).toBe('rgb(226, 232, 240)');
+        const nodeContainer = document.querySelector('.group') as HTMLDivElement | null;
+        expect(nodeContainer).toBeTruthy();
+        if (!nodeContainer) {
+            throw new Error('Node container not found');
+        }
+        expect(nodeContainer.style.fontFamily).toBe('Inter, sans-serif');
+        expect(nodeContainer.style.borderRadius).toBe('1rem');
 
         act(() => {
             useFlowStore.getState().setActiveDesignSystem('alt');
         });
 
-        expect(nodeContainer.style.backgroundColor).toBe('rgb(16, 24, 32)');
-        expect(nodeContainer.style.borderColor).toBe('rgb(0, 209, 255)');
+        expect(nodeContainer.style.fontFamily).toBe('Roboto, sans-serif');
+        expect(nodeContainer.style.borderRadius).toBe('2px');
     });
 
     it('updates edge visual tokens when active design system changes', () => {

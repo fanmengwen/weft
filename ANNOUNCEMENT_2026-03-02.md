@@ -8,7 +8,6 @@ This update was driven by codebase audit findings and is intended to make OpenFl
 
 Our audit showed strong product capability but meaningful engineering debt in a few high-risk areas:
 
-- Client-side key exposure paths
 - React correctness/lint violations
 - Duplicated configuration and persistence behavior
 - Low integration confidence for key user flows
@@ -22,7 +21,6 @@ This work closes those gaps so shipping velocity can continue without compoundin
 ## 1) Security + Config Hygiene
 
 - Consolidated AI/provider configuration into shared, typed modules to avoid UI/runtime drift.
-- Enforced safer runtime-first key handling patterns for browser usage.
 - Added provider connection diagnostics to make auth/base URL/CORS failures easier to identify.
 - Added support for custom provider headers for gateway/proxy setups (for example Cloudflare Access).
 

@@ -1,6 +1,7 @@
 import React, { useCallback, useRef, useState, useMemo } from 'react';
 import { BaseEdge, EdgeLabelRenderer, EdgeProps, getBezierPath, getSmoothStepPath, getStraightPath, useReactFlow, useViewport, useEdges } from 'reactflow';
 import { EdgeData } from '@/lib/types';
+import { useDesignSystem } from '@/hooks/useDesignSystem';
 
 // --- Parallel edge offset utility ---
 // When multiple edges exist between the same pair of nodes, offset each so they don't overlap.
@@ -92,6 +93,12 @@ const CustomEdgeWrapper = ({
     const { setEdges, screenToFlowPosition } = useReactFlow();
     const { zoom } = useViewport();
     const pathRef = useRef<SVGPathElement>(null);
+    const designSystem = useDesignSystem();
+    const resolvedStyle: React.CSSProperties = {
+        stroke: designSystem.colors.edge,
+        strokeWidth: designSystem.components.edge.strokeWidth,
+        ...style,
+    };
 
     // Calculate position along path for label
     let posX = labelX;
@@ -155,7 +162,7 @@ const CustomEdgeWrapper = ({
 
     return (
         <>
-            <BaseEdge path={path} markerEnd={markerEnd} markerStart={markerStart} style={style} />
+            <BaseEdge path={path} markerEnd={markerEnd} markerStart={markerStart} style={resolvedStyle} />
             <path ref={pathRef} d={path} style={{ display: 'none' }} fill="none" stroke="none" aria-hidden="true" />
 
             {label && (

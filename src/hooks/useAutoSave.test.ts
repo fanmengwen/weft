@@ -90,7 +90,14 @@ describe('useAutoSave', () => {
 
         vi.advanceTimersByTime(1000);
 
-        expect(setTabs).toHaveBeenCalledWith([
+        expect(setTabs).not.toHaveBeenCalled();
+
+        const stored = localStorage.getItem('flowmind_app_state');
+        expect(stored).toBeTruthy();
+
+        const parsed = JSON.parse(stored || '{}') as { tabs: FlowTab[]; activeTabId: string };
+        expect(parsed.activeTabId).toBe('tab-1');
+        expect(parsed.tabs).toEqual([
             {
                 ...tabs[0],
                 nodes: newNodes,
