@@ -168,6 +168,7 @@ Add one entry per execution attempt, in chronological order.
 | 2026-03-03 20:55 | Q2-HOTFIX-20 | Removed sparkle icons from Keyboard Shortcuts modal section headers | User requested sparkle symbols to be removed from all places inside Keyboard Shortcuts modal | Updated `KeyboardShortcutsModal` to remove `Sparkles` import and replaced fallback section icon with `Keyboard` icon so no sparkle glyphs appear in section headers | `npm run lint` passed | Completed | Visual-only cleanup; no behavior/state changes |
 | 2026-03-03 20:57 | Q2-HOTFIX-21 | Replaced Sparkles icons app-wide with WandSparkles | User requested all sparkle icons be replaced globally because current symbol looks visually unpleasant | Performed safe source-wide icon token migration (`Sparkles` -> `WandSparkles`) across toolbar, command bar, landing views, connect menu, empty state, and hero canvas while preserving icon sizing/colors/placement | `npm run lint` passed | Completed | Visual-only icon swap; no state, logic, or behavior changes |
 | 2026-03-03 22:42 | Q2-HOTFIX-22 | Updated README with latest Q1 closeout + Q2 hotfix details | README content lagged behind current shipped behavior and quality process changes | Added "What's New (March 2026)" section (Q1 signoff/docs, safety mode/LOD updates, deterministic export/schema improvements, layout/settings UX changes) and updated quality commands to include benchmark and bundle checks | Docs-only change (no runtime code); no test execution required | Completed | Documentation refresh only; commands and references aligned with current repo scripts/docs |
+| 2026-03-03 22:46 | Q2-OPS-01 | Created and pushed dedicated branch for Q1/Q2 workstream | User requested to push all current work to a new branch without losing in-progress changes on `main` | Created branch `q1-q2-rollup-2026-03-03`, committed full working tree snapshot (`9a8a363`), and pushed upstream with tracking to `origin/q1-q2-rollup-2026-03-03` | Git branch, commit, and push all succeeded | Completed | Operational delivery step only; no code/content behavior changes |
 
 Decision values: `Completed`, `Blocked`, `Rolled Back`.
 
@@ -175,4 +176,4 @@ Decision values: `Completed`, `Blocked`, `Rolled Back`.
 
 - Active phase: `Phase 5`
 - Next candidate change: `Q2-PLAN-01` (kick off Q2 roadmap execution sequence)
-- Last completed change: `Q2-HOTFIX-22` (updated README with latest Q1 closeout + Q2 hotfix details)
+- Last completed change: `Q2-OPS-01` (created and pushed dedicated branch for Q1/Q2 workstream)
