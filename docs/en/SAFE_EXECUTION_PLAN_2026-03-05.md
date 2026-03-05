@@ -118,3 +118,5 @@ Exit gate:
 6. Rollback steps:
 7. Status:
 
+Reference:
+- `docs/en/PAX_CHANGESET_CHECKLIST_2026-03-05.md`
