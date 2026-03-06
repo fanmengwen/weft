@@ -1,4 +1,5 @@
-import { Edge, Node } from 'reactflow';
+import { type LegacyEdge, type LegacyNode } from '@/lib/reactflowCompat';
+import type { ClassRelationToken, ERRelationToken } from '@/lib/relationSemantics';
 
 export const DIAGRAM_TYPES = [
   'flowchart',
@@ -36,6 +37,7 @@ export enum NodeType {
 }
 
 export interface NodeData {
+  [key: string]: unknown;
   label: string;
   subLabel?: string; // Supports Markdown
   icon?: string; // Key for the icon map
@@ -78,9 +80,10 @@ export interface AIRequestParams {
   apiKey: string;
 }
 
-export type FlowNode = Node<NodeData>;
+export type FlowNode = LegacyNode<NodeData>;
 
 export interface EdgeData {
+  [key: string]: unknown;
   condition?: EdgeCondition;
   labelOffsetX?: number;
   labelOffsetY?: number;
@@ -93,6 +96,14 @@ export interface EdgeData {
   archDirection?: '-->' | '<--' | '<-->';
   archSourceSide?: 'L' | 'R' | 'T' | 'B';
   archTargetSide?: 'L' | 'R' | 'T' | 'B';
+  classRelation?: ClassRelationToken;
+  classRelationLabel?: string;
+  erRelation?: ERRelationToken;
+  erRelationLabel?: string;
+  waypoint?: {
+    x: number;
+    y: number;
+  };
 }
 
 export interface GlobalEdgeOptions {
@@ -102,7 +113,7 @@ export interface GlobalEdgeOptions {
   color?: string; // Optional override
 }
 
-export type FlowEdge = Edge<EdgeData>;
+export type FlowEdge = LegacyEdge<EdgeData>;
 
 export interface GeneratedFlowData {
   nodes: {
@@ -144,6 +155,7 @@ export interface FlowSnapshot {
   id: string;
   name: string;
   timestamp: string;
+  kind?: 'manual' | 'auto';
   nodes: FlowNode[];
   edges: FlowEdge[];
 }

@@ -1,4 +1,4 @@
-import type { Node } from 'reactflow';
+import type { Node } from '@/lib/reactflowCompat';
 import type React from 'react';
 import type { DiagramType, NodeData } from '@/lib/types';
 

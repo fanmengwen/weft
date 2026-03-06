@@ -1,4 +1,4 @@
-import type { Edge } from 'reactflow';
+import type { Edge } from '@/lib/reactflowCompat';
 import type { ViewSettings } from '@/store/types';
 
 const PROFILE_THRESHOLDS: Record<ViewSettings['largeGraphSafetyProfile'], {

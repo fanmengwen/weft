@@ -1,5 +1,5 @@
-import { MarkerType } from 'reactflow';
-import type { Edge, EdgeMarkerType } from 'reactflow';
+import { MarkerType } from '@/lib/reactflowCompat';
+import type { Edge, EdgeMarkerType } from '@/lib/reactflowCompat';
 
 export type ArchitectureEdgeSide = 'L' | 'R' | 'T' | 'B';
 export type ArchitectureEdgeDirection = '-->' | '<--' | '<-->';

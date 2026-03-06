@@ -1,4 +1,4 @@
-import { addEdge, applyEdgeChanges, applyNodeChanges } from 'reactflow';
+import { addFlowEdge, applyFlowEdgeChanges, applyFlowNodeChanges } from '@/lib/reactflowCompat';
 import { createDefaultEdge } from '@/constants';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { FlowState } from '../types';
@@ -13,13 +13,13 @@ export function createCanvasActions(set: SetFlowState, get: GetFlowState): Pick<
     return {
         onNodesChange: (changes) => {
             set({
-                nodes: applyNodeChanges(changes, get().nodes),
+                nodes: applyFlowNodeChanges(changes, get().nodes),
             });
         },
 
         onEdgesChange: (changes) => {
             set({
-                edges: applyEdgeChanges(changes, get().edges),
+                edges: applyFlowEdgeChanges(changes, get().edges),
             });
         },
 
@@ -48,7 +48,7 @@ export function createCanvasActions(set: SetFlowState, get: GetFlowState): Pick<
             };
 
             set({
-                edges: addEdge(newEdge, get().edges),
+                edges: addFlowEdge(newEdge, get().edges),
             });
         },
     };

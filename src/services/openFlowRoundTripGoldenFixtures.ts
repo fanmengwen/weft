@@ -1,4 +1,4 @@
-import type { Edge, Node } from 'reactflow';
+import type { Edge, Node } from '@/lib/reactflowCompat';
 
 export interface OpenFlowRoundTripGoldenFixture {
   name: string;

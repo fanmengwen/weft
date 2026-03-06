@@ -1,15 +1,30 @@
 import React, { memo } from 'react';
-import { Handle, NodeProps, NodeResizer, Position } from 'reactflow';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
 import { useInlineNodeTextEdit } from '@/hooks/useInlineNodeTextEdit';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { useFlowStore } from '@/store';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from '@/components/handleInteraction';
+import { getTransformDiagnosticsAttrs } from '@/components/transformDiagnostics';
+import { NodeTransformControls } from '@/components/NodeTransformControls';
 
-function EntityNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElement {
+function EntityNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
+  const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+  const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+  const handleVisibilityClass = visualQualityV2Enabled
+    ? getV2HandleVisibilityClass(Boolean(selected))
+    : selected
+      ? 'opacity-100'
+      : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100';
   const fields = Array.isArray(data.erFields) ? data.erFields : [];
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '');
   const { setNodes } = useFlowStore();
   const [editingFieldIndex, setEditingFieldIndex] = React.useState<number | null>(null);
   const [fieldDraft, setFieldDraft] = React.useState('');
+  const entityBaseMinHeight = 130;
+  const estimatedFieldsHeight = fields.length > 0 ? Math.min(fields.length, 6) * 18 + 24 : 18;
+  const contentMinHeight = Math.max(entityBaseMinHeight, 56 + estimatedFieldsHeight);
 
   const updateField = React.useCallback((index: number, value: string) => {
     setNodes((nodes) =>
@@ -42,24 +57,32 @@ function EntityNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEle
 
   return (
     <>
-      <NodeResizer
-        color="#94a3b8"
-        isVisible={selected}
+      <NodeTransformControls
+        isVisible={Boolean(selected)}
         minWidth={220}
-        minHeight={130}
-        lineStyle={{ borderStyle: 'solid', borderWidth: 1 }}
-        handleStyle={{ width: 8, height: 8, borderRadius: 4 }}
+        minHeight={contentMinHeight}
       />
 
       <div
-        className={`bg-white border border-slate-300 rounded-lg shadow-sm min-w-[220px] ${
-          selected ? 'ring-2 ring-indigo-500 ring-offset-2' : ''
+        className={`${visualQualityV2Enabled ? 'bg-slate-50' : 'bg-white'} border border-slate-300 rounded-lg shadow-sm min-w-[220px] ${
+          selected && !visualQualityV2Enabled ? 'ring-2 ring-indigo-500 ring-offset-2' : ''
         }`}
+        style={{
+          minHeight: contentMinHeight,
+          boxShadow: selected && visualQualityV2Enabled ? '0 0 0 2px #6366f1, 0 0 12px rgba(99,102,241,0.2)' : undefined,
+        }}
+        {...getTransformDiagnosticsAttrs({
+          nodeFamily: 'entity',
+          selected: Boolean(selected),
+          minHeight: contentMinHeight,
+          hasSubLabel: fields.length > 0,
+        })}
       >
         <div className="border-b border-slate-300 px-3 py-2 bg-slate-50 rounded-t-lg">
           <div className="text-[11px] font-semibold text-slate-500">Entity</div>
           <div
-            className="text-sm font-semibold text-slate-800 break-words"
+            className={`${visualQualityV2Enabled ? 'text-[13px]' : 'text-sm'} font-semibold text-slate-800 break-words`}
+            title={data.label || 'Entity'}
             onClick={(event) => {
               event.stopPropagation();
               labelEdit.beginEdit();
@@ -143,7 +166,8 @@ function EntityNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEle
         id="top"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('top', Boolean(selected), handlePointerEvents)}
       />
       <Handle
         type="source"
@@ -151,7 +175,8 @@ function EntityNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEle
         id="bottom"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('bottom', Boolean(selected), handlePointerEvents)}
       />
       <Handle
         type="source"
@@ -159,7 +184,8 @@ function EntityNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEle
         id="left"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('left', Boolean(selected), handlePointerEvents)}
       />
       <Handle
         type="source"
@@ -167,7 +193,8 @@ function EntityNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEle
         id="right"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('right', Boolean(selected), handlePointerEvents)}
       />
     </>
   );

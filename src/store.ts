@@ -21,6 +21,7 @@ import {
     INITIAL_VIEW_SETTINGS,
 } from './store/defaults';
 import type { FlowState } from './store/types';
+import { createFlowPersistStorage } from '@/services/storage/flowPersistStorage';
 
 export {
     DEFAULT_AI_SETTINGS,
@@ -157,6 +158,7 @@ export const useFlowStore = create<FlowState>()(
             activeLayerId: 'default',
             selectedNodeId: null,
             selectedEdgeId: null,
+            mermaidDiagnostics: null,
             ...createCanvasActions(set, get),
             ...createHistoryActions(set, get),
             ...createTabActions(set, get),
@@ -168,6 +170,7 @@ export const useFlowStore = create<FlowState>()(
         }),
         {
             name: 'openflowkit-storage',
+            storage: createFlowPersistStorage(),
             version: 1,
             migrate: (persistedState) => migratePersistedState(persistedState),
             partialize: (state) => ({

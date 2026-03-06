@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import type { Edge, Node } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { assignSmartHandles, assignSmartHandlesWithOptions } from './smartEdgeRouting';
 
-function createNode(id: string, x: number, y: number): Node {
+function createNode(id: string, x: number, y: number): FlowNode {
   return {
     id,
     type: 'process',
     position: { x, y },
     data: { label: id },
-  } as Node;
+  } as FlowNode;
 }
 
-function createEdge(id: string, source: string, target: string): Edge {
-  return { id, source, target } as Edge;
+function createEdge(id: string, source: string, target: string): FlowEdge {
+  return { id, source, target } as FlowEdge;
 }
 
 describe('assignSmartHandles', () => {
@@ -93,7 +93,7 @@ describe('assignSmartHandles', () => {
         labelOffsetX: 6,
         labelOffsetY: -4,
       },
-    } as Edge;
+    } as FlowEdge;
 
     const routed = assignSmartHandles(nodes, [edge]);
 
@@ -154,7 +154,7 @@ describe('assignSmartHandles', () => {
         archSourceSide: 'T',
         archTargetSide: 'B',
       },
-    } as Edge;
+    } as FlowEdge;
 
     const routed = assignSmartHandlesWithOptions(nodes, [edge], {
       profile: 'infrastructure',

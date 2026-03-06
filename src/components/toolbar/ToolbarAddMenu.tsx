@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import {
     AppWindow,
-    Footprints,
     Group,
     Image as ImageIcon,
     Plus,
@@ -19,7 +18,6 @@ interface ToolbarAddMenuProps {
     onToggleMenu: () => void;
     onCloseMenu: () => void;
     onAddNode: (position: { x: number; y: number }) => void;
-    onAddJourneyNode: (position: { x: number; y: number }) => void;
     onAddAnnotation: (position: { x: number; y: number }) => void;
     onAddSection: (position: { x: number; y: number }) => void;
     onAddText: (position: { x: number; y: number }) => void;
@@ -34,7 +32,6 @@ export function ToolbarAddMenu({
     onToggleMenu,
     onCloseMenu,
     onAddNode,
-    onAddJourneyNode,
     onAddAnnotation,
     onAddSection,
     onAddText,
@@ -44,6 +41,11 @@ export function ToolbarAddMenu({
 }: ToolbarAddMenuProps): React.ReactElement {
     const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
+
+    function addNodeAtCenter(handler: (position: { x: number; y: number }) => void): void {
+        handler(getCenter());
+        onCloseMenu();
+    }
 
     function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>): void {
         const file = event.target.files?.[0];
@@ -89,8 +91,7 @@ export function ToolbarAddMenu({
 
                     <Button
                         onClick={() => {
-                            onAddNode(getCenter());
-                            onCloseMenu();
+                            addNodeAtCenter(onAddNode);
                         }}
                         data-testid="toolbar-add-node"
                         variant="ghost"
@@ -99,24 +100,14 @@ export function ToolbarAddMenu({
                     >
                         <span>{t('toolbar.node')}</span>
                     </Button>
-                    <Button
-                        onClick={() => {
-                            onAddJourneyNode(getCenter());
-                            onCloseMenu();
-                        }}
-                        variant="ghost"
-                        className="w-full justify-start h-9 px-3 text-sm rounded-[var(--radius-sm)] hover:bg-violet-50 hover:text-violet-700 transition-colors"
-                        icon={<Footprints className="w-4 h-4 mr-2" />}
-                    >
-                        {t('toolbar.userJourney', 'User Journey')}
-                    </Button>
-                    <Button onClick={() => { onAddAnnotation(getCenter()); onCloseMenu(); }} variant="ghost" className="w-full justify-start h-9 px-3 text-sm rounded-[var(--radius-sm)] hover:bg-yellow-50 hover:text-yellow-600 transition-colors" icon={<StickyNote className="w-4 h-4 mr-2" />}>
+
+                    <Button onClick={() => addNodeAtCenter(onAddAnnotation)} variant="ghost" className="w-full justify-start h-9 px-3 text-sm rounded-[var(--radius-sm)] hover:bg-yellow-50 hover:text-yellow-600 transition-colors" icon={<StickyNote className="w-4 h-4 mr-2" />}>
                         {t('toolbar.stickyNote')}
                     </Button>
-                    <Button onClick={() => { onAddSection(getCenter()); onCloseMenu(); }} variant="ghost" className="w-full justify-start h-9 px-3 text-sm rounded-[var(--radius-sm)] hover:bg-blue-50 hover:text-blue-600 transition-colors" icon={<Group className="w-4 h-4 mr-2" />}>
+                    <Button onClick={() => addNodeAtCenter(onAddSection)} variant="ghost" className="w-full justify-start h-9 px-3 text-sm rounded-[var(--radius-sm)] hover:bg-blue-50 hover:text-blue-600 transition-colors" icon={<Group className="w-4 h-4 mr-2" />}>
                         {t('toolbar.section')}
                     </Button>
-                    <Button onClick={() => { onAddText(getCenter()); onCloseMenu(); }} variant="ghost" className="w-full justify-start h-9 px-3 text-sm rounded-[var(--radius-sm)] hover:bg-slate-100 transition-colors" icon={<Type className="w-4 h-4 mr-2" />}>
+                    <Button onClick={() => addNodeAtCenter(onAddText)} variant="ghost" className="w-full justify-start h-9 px-3 text-sm rounded-[var(--radius-sm)] hover:bg-slate-100 transition-colors" icon={<Type className="w-4 h-4 mr-2" />}>
                         {t('toolbar.text')}
                     </Button>
                     <div className="h-px bg-slate-100 my-1 mx-2" />

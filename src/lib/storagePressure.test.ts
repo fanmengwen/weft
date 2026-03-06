@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   OPENFLOWKIT_STORAGE_KEY,
-  SNAPSHOTS_STORAGE_KEY,
   estimateTrackedLocalStorageUsageBytes,
   estimateTrackedLocalStorageUsageRatio,
 } from './storagePressure';
@@ -21,14 +20,11 @@ describe('storagePressure', () => {
   it('counts only tracked keys', () => {
     const storage = createStorage({
       [OPENFLOWKIT_STORAGE_KEY]: 'abc',
-      [SNAPSHOTS_STORAGE_KEY]: 'defg',
       unrelated: 'should-not-count',
     });
 
     const usage = estimateTrackedLocalStorageUsageBytes(storage);
-    const expected =
-      (OPENFLOWKIT_STORAGE_KEY.length + 3) * 2 +
-      (SNAPSHOTS_STORAGE_KEY.length + 4) * 2;
+    const expected = (OPENFLOWKIT_STORAGE_KEY.length + 3) * 2;
 
     expect(usage).toBe(expected);
   });

@@ -1,50 +1,19 @@
 import { useCallback, useState } from 'react';
-import type { Edge } from 'reactflow';
-import { useReactFlow } from 'reactflow';
-import type { FlowNode } from '@/lib/types';
+import { useReactFlow } from '@/lib/reactflowCompat';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { createId } from '@/lib/id';
 import { parseOpenFlowDSL } from '@/lib/openFlowDSLParser';
 import { createDefaultEdge } from '@/constants';
 import { getElkLayout } from '@/services/elkLayout';
+import { serializeCanvasContextForAI } from '@/services/ai/contextSerializer';
 import { generateDiagramFromChat, type ChatMessage } from '@/services/aiService';
 import { useFlowStore } from '@/store';
 import { useToast } from '@/components/ui/ToastContext';
 import { trackEvent } from '@/lib/analytics';
 
-interface SimplifiedNode {
-  id: string;
-  type?: string;
-  label?: string;
-  description?: string;
-  x: number;
-  y: number;
-}
-
 interface ParsedFlowResult {
   nodes: FlowNode[];
-  edges: Edge[];
-}
-
-function buildSimplifiedNodes(nodes: FlowNode[]): SimplifiedNode[] {
-  return nodes.map((node) => ({
-    id: node.id,
-    type: node.type,
-    label: node.data.label,
-    description: node.data.subLabel,
-    x: node.position.x,
-    y: node.position.y,
-  }));
-}
-
-function buildCurrentGraphPayload(nodes: SimplifiedNode[], edges: Edge[]): string {
-  return JSON.stringify({
-    nodes,
-    edges: edges.map((edge) => ({
-      source: edge.source,
-      target: edge.target,
-      label: edge.label,
-    })),
-  });
+  edges: FlowEdge[];
 }
 
 function parseDslOrThrow(dslText: string): ParsedFlowResult {
@@ -78,7 +47,11 @@ function toFinalNodes(parsedNodes: FlowNode[], idMap: Map<string, string>): Flow
   }));
 }
 
-function toFinalEdges(parsedEdges: Edge[], idMap: Map<string, string>, globalEdgeOptions: ReturnType<typeof useFlowStore.getState>['globalEdgeOptions']): Edge[] {
+function toFinalEdges(
+  parsedEdges: FlowEdge[],
+  idMap: Map<string, string>,
+  globalEdgeOptions: ReturnType<typeof useFlowStore.getState>['globalEdgeOptions']
+): FlowEdge[] {
   return parsedEdges
     .map((edge) => {
       const sourceId = idMap.get(edge.source);
@@ -112,9 +85,9 @@ function toFinalEdges(parsedEdges: Edge[], idMap: Map<string, string>, globalEdg
           strokeWidth: globalEdgeOptions.strokeWidth,
           ...(globalEdgeOptions.color ? { stroke: globalEdgeOptions.color } : {}),
         },
-      } as Edge;
+      } as FlowEdge;
     })
-    .filter((edge): edge is Edge => edge !== null);
+    .filter((edge): edge is FlowEdge => edge !== null);
 }
 
 function toErrorMessage(error: unknown): string {
@@ -145,8 +118,7 @@ export function useAIGeneration(recordHistory: () => void) {
     };
 
     try {
-      const simplifiedNodes = buildSimplifiedNodes(nodes);
-      const currentGraph = buildCurrentGraphPayload(simplifiedNodes, edges);
+      const currentGraph = serializeCanvasContextForAI(nodes, edges);
       const dslText = await generateDiagramFromChat(
         chatMessages,
         prompt,

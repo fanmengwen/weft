@@ -1,33 +1,39 @@
 import React, { memo } from 'react';
-import { NodeProps, NodeResizer } from 'reactflow';
-import { NodeData } from '@/lib/types';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
+import type { NodeData } from '@/lib/types';
 import { Group } from 'lucide-react';
 import { NamedIcon } from './IconMap';
 import { SECTION_COLOR_PALETTE } from '../theme';
 import { useInlineNodeTextEdit } from '@/hooks/useInlineNodeTextEdit';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from './handleInteraction';
+import { NodeTransformControls } from './NodeTransformControls';
 
-
-
-function SectionNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElement {
+function SectionNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
   const color = data.color || 'blue';
   const theme = SECTION_COLOR_PALETTE[color] || SECTION_COLOR_PALETTE.blue;
+  const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+  const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+  const handleVisibilityClass = visualQualityV2Enabled
+    ? getV2HandleVisibilityClass(Boolean(selected), { includeConnectingState: false })
+    : selected
+      ? 'opacity-100'
+      : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100';
   const iconName = data.icon || 'Group';
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '');
   const subLabelEdit = useInlineNodeTextEdit(id, 'subLabel', data.subLabel || '');
 
   return (
     <>
-      <NodeResizer
-        color={theme.border}
-        isVisible={selected}
+      <NodeTransformControls
+        isVisible={Boolean(selected)}
         minWidth={350}
         minHeight={250}
-        lineStyle={{ borderStyle: 'dashed', borderWidth: 2 }}
-        handleStyle={{ width: 12, height: 12, borderRadius: 6 }}
       />
       <div
         className={`
-          w-full h-full rounded-2xl border-2 border-dashed transition-all duration-200
+          group w-full h-full rounded-2xl border-2 border-dashed transition-all duration-200
           ${selected ? 'ring-2 ring-offset-2 z-10' : ''}
         `}
         style={{
@@ -94,6 +100,43 @@ function SectionNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
           )}
         </div>
       </div>
+
+      <Handle
+        type="source"
+        position={Position.Top}
+        id="top"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white transition-opacity ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('top', Boolean(selected), handlePointerEvents, { backgroundColor: theme.border })}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white transition-opacity ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('right', Boolean(selected), handlePointerEvents, { backgroundColor: theme.border })}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white transition-opacity ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('bottom', Boolean(selected), handlePointerEvents, { backgroundColor: theme.border })}
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="left"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white transition-opacity ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('left', Boolean(selected), handlePointerEvents, { backgroundColor: theme.border })}
+      />
     </>
   );
 };

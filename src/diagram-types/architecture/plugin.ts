@@ -1,6 +1,8 @@
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { DiagramPlugin } from '@/diagram-types/core';
-import { MarkerType } from 'reactflow';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { MarkerType } from '@/lib/reactflowCompat';
+import { setNodeParent } from '@/lib/nodeParent';
 
 interface ParsedArchNode {
   id: string;
@@ -230,23 +232,38 @@ function parseArchitecture(input: string): { nodes: FlowNode[]; edges: FlowEdge[
     }
   }
 
-  const nodes: FlowNode[] = parsedNodes.map((node, index) => ({
-    id: node.id,
-    type: 'architecture',
-    position: {
-      x: (index % 4) * 280,
-      y: Math.floor(index / 4) * 170,
-    },
-    data: {
-      label: node.label,
-      color: node.kind === 'group' ? 'violet' : node.kind === 'junction' ? 'amber' : 'slate',
-      shape: node.kind === 'group' ? 'rounded' : 'rectangle',
-      icon: node.kind === 'group' ? 'Layers' : node.kind === 'junction' ? 'GitMerge' : 'Server',
-      archProvider: node.icon || (node.kind === 'group' ? 'group' : 'custom'),
-      archResourceType: node.kind,
-      archBoundaryId: node.parentId,
-    },
-  }));
+  const nodeIds = new Set(parsedNodes.map((node) => node.id));
+  const nodes: FlowNode[] = parsedNodes.map((node, index) => {
+    let mappedNode: FlowNode = {
+      id: node.id,
+      type: 'architecture',
+      position: {
+        x: (index % 4) * 280,
+        y: Math.floor(index / 4) * 170,
+      },
+      data: {
+        label: node.label,
+        color: node.kind === 'group' ? 'violet' : node.kind === 'junction' ? 'amber' : 'slate',
+        shape: node.kind === 'group' ? 'rounded' : 'rectangle',
+        icon: node.kind === 'group' ? 'Layers' : node.kind === 'junction' ? 'GitMerge' : 'Server',
+        archProvider: node.icon || (node.kind === 'group' ? 'group' : 'custom'),
+        archResourceType: node.kind,
+        archBoundaryId: node.parentId,
+      },
+    };
+
+    if (
+      ROLLOUT_FLAGS.architectureParentingV12
+      && typeof node.parentId === 'string'
+      && node.parentId.length > 0
+      && node.parentId !== node.id
+      && nodeIds.has(node.parentId)
+    ) {
+      mappedNode = setNodeParent(mappedNode, node.parentId);
+    }
+
+    return mappedNode;
+  });
 
   const edges: FlowEdge[] = parsedEdges.map((edge, index) => {
     const parsedMeta = parseProtocolPort(edge.label);

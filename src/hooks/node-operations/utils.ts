@@ -1,5 +1,5 @@
-import type { Node } from 'reactflow';
-import type { NodeData } from '@/lib/types';
+import type { FlowNode, NodeData } from '@/lib/types';
+import { clearNodeParent, getNodeParentId, setNodeParent } from '@/lib/nodeParent';
 import { NODE_DEFAULTS } from '@/theme';
 
 export function getDefaultNodePosition(count: number, baseX: number, baseY: number): { x: number; y: number } {
@@ -13,7 +13,7 @@ export function createProcessNode(
     id: string,
     position: { x: number; y: number },
     labels: { label: string; subLabel: string }
-): Node {
+): FlowNode {
     const defaults = NODE_DEFAULTS.process;
     return {
         id,
@@ -26,6 +26,8 @@ export function createProcessNode(
             icon: defaults?.icon && defaults.icon !== 'none' ? defaults.icon : undefined,
         },
         type: 'process',
+        width: 200,
+        height: 80,
     };
 }
 
@@ -33,7 +35,7 @@ export function createAnnotationNode(
     id: string,
     position: { x: number; y: number },
     labels: { label: string; subLabel: string }
-): Node {
+): FlowNode {
     return {
         id,
         position,
@@ -46,7 +48,7 @@ export function createSectionNode(
     id: string,
     position: { x: number; y: number },
     label: string
-): Node {
+): FlowNode {
     return {
         id,
         position,
@@ -61,7 +63,7 @@ export function createTextNode(
     id: string,
     position: { x: number; y: number },
     label: string
-): Node {
+): FlowNode {
     return {
         id,
         position,
@@ -75,7 +77,7 @@ export function createImageNode(
     imageUrl: string,
     position: { x: number; y: number },
     label: string
-): Node {
+): FlowNode {
     return {
         id,
         position,
@@ -85,11 +87,12 @@ export function createImageNode(
     };
 }
 
-function getAbsoluteNodePosition(node: Node, allNodes: Node[]): { x: number; y: number } {
-    if (!node.parentNode) {
+function getAbsoluteNodePosition(node: FlowNode, allNodes: FlowNode[]): { x: number; y: number } {
+    const parentId = getNodeParentId(node);
+    if (!parentId) {
         return { ...node.position };
     }
-    const parent = allNodes.find((candidate) => candidate.id === node.parentNode);
+    const parent = allNodes.find((candidate) => candidate.id === parentId);
     if (!parent) {
         return { ...node.position };
     }
@@ -99,7 +102,11 @@ function getAbsoluteNodePosition(node: Node, allNodes: Node[]): { x: number; y: 
     };
 }
 
-function findContainingSection(position: { x: number; y: number }, draggedNodeId: string, allNodes: Node[]): Node | null {
+function findContainingSection(
+    position: { x: number; y: number },
+    draggedNodeId: string,
+    allNodes: FlowNode[]
+): FlowNode | null {
     const sectionNodes = allNodes.filter((node) => node.type === 'section' && node.id !== draggedNodeId);
 
     for (const section of sectionNodes) {
@@ -121,21 +128,18 @@ function findContainingSection(position: { x: number; y: number }, draggedNodeId
     return null;
 }
 
-function unparentNode(node: Node, absolutePosition: { x: number; y: number }): Node {
-    const clone = { ...node, position: absolutePosition } as Node & { parentNode?: string; extent?: 'parent' | undefined };
-    delete clone.parentNode;
-    delete clone.extent;
-    return clone;
+function unparentNode(node: FlowNode, absolutePosition: { x: number; y: number }): FlowNode {
+    return clearNodeParent({ ...node, position: absolutePosition });
 }
 
-export function applySectionParenting(currentNodes: Node[], draggedNode: Node): Node[] {
+export function applySectionParenting(currentNodes: FlowNode[], draggedNode: FlowNode): FlowNode[] {
     if (draggedNode.type === 'section') {
         return currentNodes;
     }
 
     const absolutePosition = getAbsoluteNodePosition(draggedNode, currentNodes);
     const newParent = findContainingSection(absolutePosition, draggedNode.id, currentNodes);
-    if (newParent?.id === draggedNode.parentNode) {
+    if (newParent?.id === getNodeParentId(draggedNode)) {
         return currentNodes;
     }
 
@@ -145,18 +149,16 @@ export function applySectionParenting(currentNodes: Node[], draggedNode: Node): 
         }
 
         if (newParent) {
-            return {
+            return setNodeParent({
                 ...node,
-                parentNode: newParent.id,
-                extent: 'parent' as const,
                 position: {
                     x: absolutePosition.x - newParent.position.x,
                     y: absolutePosition.y - newParent.position.y,
                 },
-            };
+            }, newParent.id);
         }
 
-        if (node.parentNode) {
+        if (getNodeParentId(node)) {
             return unparentNode(node, absolutePosition);
         }
 

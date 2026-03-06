@@ -1,29 +1,59 @@
-import React, { useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
 import { Monitor, Smartphone, Type, MousePointer2, Image as ImageIcon, Box } from 'lucide-react';
-import { CommandItem } from './types';
 import { useFlowStore } from '../../store';
-import { useFlowOperations } from '../../hooks/useFlowOperations';
+import type { FlowNode } from '@/lib/types';
 
 interface WireframesViewProps {
     onClose: () => void;
     handleBack: () => void;
 }
 
-export const WireframesView: React.FC<WireframesViewProps> = ({ onClose, handleBack }) => {
-    // Basic wireframe items configuration
-    const wireframeItems = [
-        { id: 'browser', label: 'Browser Window', icon: <Monitor size={20} />, type: 'browser' },
-        { id: 'mobile', label: 'Mobile Device', icon: <Smartphone size={20} />, type: 'mobile' },
-        { id: 'button', label: 'Button', icon: <MousePointer2 size={20} />, type: 'wireframe_button' },
-        { id: 'input', label: 'Input Field', icon: <Type size={20} />, type: 'wireframe_input' },
-        { id: 'image', label: 'Image Holder', icon: <ImageIcon size={20} />, type: 'wireframe_image' },
-        { id: 'icon', label: 'Icon', icon: <Box size={20} />, type: 'wireframe_icon' },
-    ];
+type WireframeNodeType =
+    | 'browser'
+    | 'mobile'
+    | 'wireframe_button'
+    | 'wireframe_input'
+    | 'wireframe_image'
+    | 'wireframe_icon';
 
+interface WireframeItem {
+    id: string;
+    label: string;
+    icon: ReactElement;
+    type: WireframeNodeType;
+}
+
+const WIREFRAME_ITEMS: WireframeItem[] = [
+    { id: 'browser', label: 'Browser Window', icon: <Monitor size={20} />, type: 'browser' },
+    { id: 'mobile', label: 'Mobile Device', icon: <Smartphone size={20} />, type: 'mobile' },
+    { id: 'button', label: 'Button', icon: <MousePointer2 size={20} />, type: 'wireframe_button' },
+    { id: 'input', label: 'Input Field', icon: <Type size={20} />, type: 'wireframe_input' },
+    { id: 'image', label: 'Image Holder', icon: <ImageIcon size={20} />, type: 'wireframe_image' },
+    { id: 'icon', label: 'Icon', icon: <Box size={20} />, type: 'wireframe_icon' },
+];
+
+function getWireframeLabel(type: WireframeNodeType): string {
+    switch (type) {
+        case 'browser':
+            return 'New Window';
+        case 'mobile':
+            return 'Mobile App';
+        case 'wireframe_button':
+            return 'Button';
+        case 'wireframe_input':
+            return 'Input';
+        case 'wireframe_image':
+            return 'Image';
+        case 'wireframe_icon':
+            return 'Box';
+    }
+}
+
+export function WireframesView({ onClose, handleBack }: WireframesViewProps): ReactElement {
     const { nodes, setNodes, brandConfig } = useFlowStore();
     const isBeveled = brandConfig.ui.buttonStyle === 'beveled';
 
-    const handleAdd = (type: string) => {
+    const handleAdd = (type: WireframeNodeType) => {
         const nextIndex = nodes.length + 1;
         const id = `wf-${type}-${nextIndex}`;
         const position = {
@@ -31,27 +61,19 @@ export const WireframesView: React.FC<WireframesViewProps> = ({ onClose, handleB
             y: 100 + (nextIndex % 8) * 10
         };
 
-        const label = type === 'browser' ? 'New Window' :
-            type === 'mobile' ? 'Mobile App' :
-                type === 'wireframe_button' ? 'Button' :
-                    type === 'wireframe_input' ? 'Input' :
-                        type === 'wireframe_image' ? 'Image' : 'Box';
+        const label = getWireframeLabel(type);
 
-        // Cast to any to avoid strict Node types check if needed, 
-        // though standard FlowNode should work if types are aligned.
-        const newNode: any = {
+        const newNode: FlowNode = {
             id,
             type,
             position,
             data: {
                 label,
                 color: 'slate',
-                // Optional: set initial size for some types if components don't default well
             }
         };
 
-        // Use functional update to ensure we have latest state
-        setNodes((prev: any[]) => [...prev, newNode]);
+        setNodes((prev) => [...prev, newNode]);
         onClose();
     };
 
@@ -65,7 +87,7 @@ export const WireframesView: React.FC<WireframesViewProps> = ({ onClose, handleB
             </div>
 
             <div className="p-4 grid grid-cols-2 gap-3 overflow-y-auto flex-1 custom-scrollbar">
-                {wireframeItems.map((item) => (
+                {WIREFRAME_ITEMS.map((item) => (
                     <button
                         key={item.id}
                         onClick={() => handleAdd(item.type)}
@@ -84,4 +106,4 @@ export const WireframesView: React.FC<WireframesViewProps> = ({ onClose, handleB
             </div>
         </div>
     );
-};
+}

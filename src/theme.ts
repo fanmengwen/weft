@@ -137,9 +137,37 @@ export const NODE_COLOR_PALETTE: Record<string, ThemeColors> = {
     },
 };
 
+export const NODE_COLOR_PALETTE_V2: Record<string, ThemeColors> = {
+    slate: { ...NODE_COLOR_PALETTE.slate, bg: 'bg-slate-50', fill: 'fill-slate-50' },
+    blue: { ...NODE_COLOR_PALETTE.blue, bg: 'bg-blue-50', fill: 'fill-blue-50' },
+    emerald: { ...NODE_COLOR_PALETTE.emerald, bg: 'bg-emerald-50', fill: 'fill-emerald-50' },
+    red: { ...NODE_COLOR_PALETTE.red, bg: 'bg-red-50', fill: 'fill-red-50' },
+    amber: { ...NODE_COLOR_PALETTE.amber, bg: 'bg-amber-50', fill: 'fill-amber-50' },
+    violet: { ...NODE_COLOR_PALETTE.violet, bg: 'bg-violet-50', fill: 'fill-violet-50' },
+    pink: { ...NODE_COLOR_PALETTE.pink, bg: 'bg-pink-50', fill: 'fill-pink-50' },
+    yellow: { ...NODE_COLOR_PALETTE.yellow },
+    cyan: { ...NODE_COLOR_PALETTE.cyan, bg: 'bg-cyan-50', fill: 'fill-cyan-50' },
+};
+
+export function getNodeColorPalette(visualQualityV2Enabled: boolean): Record<string, ThemeColors> {
+    if (visualQualityV2Enabled) {
+        return NODE_COLOR_PALETTE_V2;
+    }
+    return NODE_COLOR_PALETTE;
+}
+
+interface NodeExportColor {
+    bg: string;
+    border: string;
+    iconBg: string;
+    iconColor: string;
+    text: string;
+    subText: string;
+}
+
 // Hex values for Export Service (Figma/SVG)
 // We map the Tailwind classes to hex values for tools that can't use CSS classes
-export const NODE_EXPORT_COLORS: Record<string, any> = {
+export const NODE_EXPORT_COLORS: Record<string, NodeExportColor> = {
     slate: { bg: '#ffffff', border: '#cbd5e1', iconBg: '#f1f5f9', iconColor: '#475569', text: '#1e293b', subText: '#475569' },
     blue: { bg: '#eff6ff', border: '#93c5fd', iconBg: '#dbeafe', iconColor: '#2563eb', text: '#1e293b', subText: '#475569' },
     emerald: { bg: '#ecfdf5', border: '#6ee7b7', iconBg: '#d1fae5', iconColor: '#059669', text: '#064e3b', subText: '#065f46' },

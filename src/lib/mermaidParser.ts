@@ -1,6 +1,8 @@
-import { MarkerType } from 'reactflow';
+import { MarkerType } from '@/lib/reactflowCompat';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import type React from 'react';
 import { createId } from './id';
+import { setNodeParent } from './nodeParent';
 import {
     ARROW_PATTERNS,
     CLASS_DEF_RE,
@@ -16,14 +18,16 @@ import {
 } from './mermaidParserHelpers';
 import type { FlowEdge, FlowNode } from './types';
 
-const EDGE_STYLE: React.CSSProperties = { stroke: '#94a3b8', strokeWidth: 2 };
+const EDGE_STYLE: React.CSSProperties = ROLLOUT_FLAGS.visualQualityV2
+    ? { stroke: '#64748b', strokeWidth: 1.5 }
+    : { stroke: '#94a3b8', strokeWidth: 2 };
 const EDGE_LABEL_STYLE: React.CSSProperties = { fill: '#334155', fontWeight: 500, fontSize: 12 };
 const EDGE_LABEL_BG_STYLE: React.CSSProperties = { fill: '#ffffff', stroke: '#cbd5e1', strokeWidth: 1 };
 
 const DEFAULT_EDGE_OPTIONS = {
     type: 'smoothstep' as const,
     markerEnd: { type: MarkerType.ArrowClosed },
-    animated: true,
+    animated: !ROLLOUT_FLAGS.visualQualityV2,
     style: EDGE_STYLE,
     labelStyle: EDGE_LABEL_STYLE,
     labelBgStyle: EDGE_LABEL_BG_STYLE,
@@ -39,7 +43,7 @@ const NODE_TYPE_DEFAULTS: Record<string, string> = {
     process: 'slate',
 };
 
-function createDefaultEdge(source: string, target: string, label?: string, id?: string) {
+function createDefaultEdge(source: string, target: string, label?: string, id?: string): FlowEdge {
     return {
         id: id || createId(`e-${source}-${target}`),
         source,
@@ -130,7 +134,7 @@ export function parseMermaid(input: string): ParseResult {
             continue;
         }
 
-        if (line.match(/^end\s*$/i)) {
+        if (line.match(/^end\s*$/i) || line === '}') {
             parentStack.pop();
             continue;
         }
@@ -234,7 +238,7 @@ export function parseMermaid(input: string): ParseResult {
     }
 
     const flowNodes: FlowNode[] = Array.from(nodesMap.values()).map((node, index) => {
-        const flowNode: FlowNode = {
+        let flowNode: FlowNode = {
             id: node.id,
             type: node.type,
             position: { x: (index % 4) * 200, y: Math.floor(index / 4) * 150 },
@@ -246,10 +250,7 @@ export function parseMermaid(input: string): ParseResult {
             },
         };
 
-        if (node.parentId) {
-            flowNode.parentNode = node.parentId;
-            flowNode.extent = 'parent';
-        }
+        if (node.parentId) flowNode = setNodeParent(flowNode, node.parentId);
 
         if (node.type === 'section') {
             flowNode.className = 'bg-slate-50/50 border-2 border-dashed border-slate-300 rounded-lg';
@@ -293,6 +294,9 @@ export function parseMermaid(input: string): ParseResult {
         }
         if (edge.arrowType.includes('==')) {
             flowEdge.style = { ...flowEdge.style, strokeWidth: 4 };
+        }
+        if (edge.arrowType.startsWith('<')) {
+            flowEdge.markerStart = { type: MarkerType.ArrowClosed };
         }
         if (!edge.arrowType.includes('>')) {
             flowEdge.markerEnd = undefined;

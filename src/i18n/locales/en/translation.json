@@ -954,7 +954,7 @@
     "applyingLayout": "Applying layout…",
     "emptyState": {
       "title": "Start Building",
-      "description": "Your canvas is empty. Generate a flow with Flowpilot, use a template, or start from scratch.",
+      "description": "Your canvas is empty. Get started and create a flow. Saved locally on this device. Save named versions regularly for backup.",
       "generateWithFlowpilot": "Generate with Flowpilot",
       "browseTemplates": "Browse Templates",
       "addBlankNode": "Add Blank Node"
@@ -996,6 +996,10 @@
     "saveCurrentVersion": "Save Current Version",
     "versionName": "Version Name (e.g. 'Before Refactor')",
     "noSnapshots": "No snapshots saved yet.",
+    "namedVersions": "Named Versions",
+    "noNamedSnapshots": "No named versions yet.",
+    "autosavedVersions": "Autosaved Checkpoints",
+    "noAutoSnapshots": "No autosaved checkpoints yet.",
     "restoreVersion": "Restore version",
     "deleteVersion": "Delete version",
     "nodes": "{{count}} nodes",

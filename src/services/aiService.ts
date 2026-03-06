@@ -109,7 +109,7 @@ export async function generateDiagramFromChat(
 
     const modelId = modelIdSetting || (provider === 'custom' ? import.meta.env.VITE_CUSTOM_AI_MODEL : undefined);
 
-    const userPrompt = `User Request: ${newMessage}${currentDSL ? `\n\nCURRENT CONTENT (The user wants to update this):\n${currentDSL}` : ''}\n\nGenerate or update the FlowMind DSL based on this request.`;
+    const userPrompt = `User Request: ${newMessage}${currentDSL ? `\n\nCURRENT CANVAS CONTEXT (JSON):\n${currentDSL}` : ''}\n\nGenerate or update the FlowMind DSL based on this request. If context exists, extend/modify that structure instead of resetting from scratch unless user explicitly asks for replacement.`;
 
     // Gemini uses its own SDK with different prompt structure — delegate directly
     if (provider === 'gemini') {

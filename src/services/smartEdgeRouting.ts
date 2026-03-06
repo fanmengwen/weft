@@ -1,6 +1,7 @@
-import { Node, Edge } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { NODE_WIDTH, NODE_HEIGHT } from '../constants';
 import type { ViewSettings } from '@/store/types';
+import { getNodeParentId } from '@/lib/nodeParent';
 
 /**
  * Assign intelligent `sourceHandle` and `targetHandle` to each edge
@@ -13,7 +14,7 @@ import type { ViewSettings } from '@/store/types';
  * - Multiple edges between same pair distribute across handles
  */
 // Helper to get absolute position
-function getAbsolutePosition(node: Node, nodeMap: Map<string, Node>): { x: number, y: number } {
+function getAbsolutePosition(node: FlowNode, nodeMap: Map<string, FlowNode>): { x: number, y: number } {
     // We intentionally ignore node.positionAbsolute here because during drag operations
     // in React Flow, the positionAbsolute might be stale or not yet updated in the store
     // while node.position (relative) is updated.
@@ -22,14 +23,14 @@ function getAbsolutePosition(node: Node, nodeMap: Map<string, Node>): { x: numbe
 
     let x = node.position.x;
     let y = node.position.y;
-    let currentParentId = node.parentNode;
+    let currentParentId = getNodeParentId(node);
 
     while (currentParentId) {
         const parent = nodeMap.get(currentParentId);
         if (parent) {
             x += parent.position.x;
             y += parent.position.y;
-            currentParentId = parent.parentNode;
+            currentParentId = getNodeParentId(parent);
         } else {
             break;
         }
@@ -38,8 +39,13 @@ function getAbsolutePosition(node: Node, nodeMap: Map<string, Node>): { x: numbe
 }
 
 // Helper to get node dimensions robustly
-function getNodeDimensions(node: Node): { width: number, height: number } {
-    const measured = (node as any).measured;
+function getNodeDimensions(node: FlowNode): { width: number, height: number } {
+    const measured = (node as FlowNode & {
+        measured?: {
+            width?: number;
+            height?: number;
+        };
+    }).measured;
     if (measured && measured.width && measured.height) {
         return { width: measured.width, height: measured.height };
     }
@@ -63,12 +69,12 @@ function getNodeDimensions(node: Node): { width: number, height: number } {
 
 type PairMeta = {
     hasReverseDirection: boolean;
-    siblingIndexByEdge: Map<Edge, number>;
+    siblingIndexByEdge: Map<FlowEdge, number>;
     directionCount: Map<string, number>;
 };
 
 type RoutingContext = {
-    nodeMap: Map<string, Node>;
+    nodeMap: Map<string, FlowNode>;
     nodeCenterMap: Map<string, { x: number; y: number }>;
     pairMetaByKey: Map<string, PairMeta>;
 };
@@ -78,9 +84,9 @@ export interface SmartRoutingOptions {
     bundlingEnabled?: boolean;
 }
 
-const routingContextCache = new WeakMap<Node[], WeakMap<Edge[], RoutingContext>>();
+const routingContextCache = new WeakMap<FlowNode[], WeakMap<FlowEdge[], RoutingContext>>();
 
-function preserveEdgeLabelPlacement(originalEdge: Edge, nextEdge: Edge): Edge {
+function preserveEdgeLabelPlacement(originalEdge: FlowEdge, nextEdge: FlowEdge): FlowEdge {
     const originalData = originalEdge.data as {
         labelPosition?: number;
         labelOffsetX?: number;
@@ -106,8 +112,8 @@ function preserveEdgeLabelPlacement(originalEdge: Edge, nextEdge: Edge): Edge {
     };
 }
 
-function buildRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
-    const nodeMap = new Map<string, Node>();
+function buildRoutingContext(nodes: FlowNode[], edges: FlowEdge[]): RoutingContext {
+    const nodeMap = new Map<string, FlowNode>();
     for (const node of nodes) {
         nodeMap.set(node.id, node);
     }
@@ -129,7 +135,7 @@ function buildRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
         if (!pairMeta) {
             pairMeta = {
                 hasReverseDirection: false,
-                siblingIndexByEdge: new Map<Edge, number>(),
+                siblingIndexByEdge: new Map<FlowEdge, number>(),
                 directionCount: new Map<string, number>(),
             };
             pairMetaByKey.set(key, pairMeta);
@@ -151,10 +157,10 @@ function buildRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
     return { nodeMap, nodeCenterMap, pairMetaByKey };
 }
 
-function getRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
+function getRoutingContext(nodes: FlowNode[], edges: FlowEdge[]): RoutingContext {
     let edgeCache = routingContextCache.get(nodes);
     if (!edgeCache) {
-        edgeCache = new WeakMap<Edge[], RoutingContext>();
+        edgeCache = new WeakMap<FlowEdge[], RoutingContext>();
         routingContextCache.set(nodes, edgeCache);
     }
 
@@ -168,7 +174,7 @@ function getRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
     return fresh;
 }
 
-export function assignSmartHandles(nodes: Node[], edges: Edge[]): Edge[] {
+export function assignSmartHandles(nodes: FlowNode[], edges: FlowEdge[]): FlowEdge[] {
     return assignSmartHandlesWithOptions(nodes, edges, {
         profile: 'standard',
         bundlingEnabled: false,
@@ -183,10 +189,10 @@ export function getSmartRoutingOptionsFromViewSettings(viewSettings: ViewSetting
 }
 
 export function assignSmartHandlesWithOptions(
-    nodes: Node[],
-    edges: Edge[],
+    nodes: FlowNode[],
+    edges: FlowEdge[],
     options: SmartRoutingOptions
-): Edge[] {
+): FlowEdge[] {
     const { nodeMap, nodeCenterMap, pairMetaByKey } = getRoutingContext(nodes, edges);
     const profile = options.profile ?? 'standard';
     const bundlingEnabled = options.bundlingEnabled ?? false;

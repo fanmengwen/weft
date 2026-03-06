@@ -1,9 +1,20 @@
 import React, { memo } from 'react';
-import { Handle, NodeProps, Position } from 'reactflow';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
 import { useInlineNodeTextEdit } from '@/hooks/useInlineNodeTextEdit';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from '@/components/handleInteraction';
+import { NodeTransformControls } from '@/components/NodeTransformControls';
 
-function MindmapNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElement {
+function MindmapNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
+  const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+  const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+  const handleVisibilityClass = visualQualityV2Enabled
+    ? getV2HandleVisibilityClass(Boolean(selected))
+    : selected
+      ? 'opacity-100'
+      : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100';
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '');
   const depth = typeof (data as NodeData & { mindmapDepth?: number }).mindmapDepth === 'number'
     ? (data as NodeData & { mindmapDepth?: number }).mindmapDepth!
@@ -16,13 +27,29 @@ function MindmapNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
 
   return (
     <>
+      <NodeTransformControls
+        isVisible={Boolean(selected)}
+        minWidth={120}
+        minHeight={44}
+      />
       <Handle
-        type="target"
+        type="source"
+        position={Position.Top}
+        id="top"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('top', Boolean(selected), handlePointerEvents)}
+      />
+
+      <Handle
+        type="source"
         position={Position.Left}
         id="left-target"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('left', Boolean(selected), handlePointerEvents)}
       />
 
       <div
@@ -59,7 +86,18 @@ function MindmapNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
         id="right-source"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('right', Boolean(selected), handlePointerEvents)}
+      />
+
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('bottom', Boolean(selected), handlePointerEvents)}
       />
     </>
   );

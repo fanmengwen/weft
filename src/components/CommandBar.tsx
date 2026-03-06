@@ -61,7 +61,12 @@ function OpenCommandBarContent({
 
     return (
         <div className="fixed inset-0 z-50 flex items-end justify-center pb-24 pointer-events-none">
-            <div className="absolute inset-0 bg-black/5 pointer-events-auto transition-opacity" onClick={onClose} />
+            <button
+                type="button"
+                className="absolute inset-0 bg-black/5 pointer-events-auto transition-opacity"
+                onClick={onClose}
+                aria-label="Close command bar"
+            />
 
             <div
                 ref={containerRef}

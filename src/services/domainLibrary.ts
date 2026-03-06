@@ -1,4 +1,4 @@
-import type { Node } from 'reactflow';
+import type { Node } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
 
 export type DomainLibraryCategory = 'aws' | 'azure' | 'gcp' | 'kubernetes' | 'network' | 'security';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Edge } from 'reactflow';
+import type { FlowEdge } from '@/lib/types';
 import {
   applyArchitectureDirection,
   architectureSideToHandleId,
@@ -11,8 +11,8 @@ import {
 } from './architectureSemantics';
 
 interface ArchitectureEdgeSemanticsSectionProps {
-  selectedEdge: Edge;
-  onChange: (id: string, updates: Partial<Edge>) => void;
+  selectedEdge: FlowEdge;
+  onChange: (id: string, updates: Partial<FlowEdge>) => void;
 }
 
 export function ArchitectureEdgeSemanticsSection({
@@ -31,7 +31,7 @@ export function ArchitectureEdgeSemanticsSection({
     selectedEdge.data?.archDirection || getDirectionFromMarkers(selectedEdge)
   );
 
-  const updateSemantics = (updates: Partial<Edge['data']>): void => {
+  const updateSemantics = (updates: Partial<NonNullable<FlowEdge['data']>>): void => {
     const nextData = {
       ...selectedEdge.data,
       ...updates,

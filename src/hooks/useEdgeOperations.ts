@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { Edge, Connection, addEdge, useReactFlow } from 'reactflow';
+import { Edge, Connection, addEdge, useReactFlow } from '@/lib/reactflowCompat';
 import { useFlowStore } from '../store';
 import { NodeData } from '@/lib/types';
 import { DEFAULT_EDGE_OPTIONS, NODE_WIDTH, NODE_HEIGHT } from '../constants';
@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../lib/analytics';
 import { createId } from '../lib/id';
 import { assignSmartHandlesWithOptions, getSmartRoutingOptionsFromViewSettings } from '../services/smartEdgeRouting';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { getPointerClientPosition, isPaneTarget, normalizeConnectionFromDragStart } from './edgeConnectInteractions';
 
 export const useEdgeOperations = (
     recordHistory: () => void,
@@ -28,7 +30,7 @@ export const useEdgeOperations = (
         trackEvent('update_edge');
     }, [setEdges, recordHistory]);
 
-    const onEdgeUpdate = useCallback((oldEdge: Edge, newConnection: Connection) => {
+    const onReconnect = useCallback((oldEdge: Edge, newConnection: Connection) => {
         recordHistory();
         setEdges((eds) => {
             return eds.map((edge) => {
@@ -56,11 +58,16 @@ export const useEdgeOperations = (
     // --- Connections ---
     const onConnect = useCallback((params: Connection) => {
         isConnectionValid.current = true;
+        const normalizedConnection = normalizeConnectionFromDragStart(
+            params,
+            connectingNodeId.current,
+            connectingHandleId.current
+        );
         const isDuplicate = edges.some(e =>
-            e.source === params.source &&
-            e.target === params.target &&
-            e.sourceHandle === params.sourceHandle &&
-            e.targetHandle === params.targetHandle
+            e.source === normalizedConnection.source &&
+            e.target === normalizedConnection.target &&
+            e.sourceHandle === normalizedConnection.sourceHandle &&
+            e.targetHandle === normalizedConnection.targetHandle
         );
 
         if (isDuplicate) return;
@@ -69,7 +76,7 @@ export const useEdgeOperations = (
         recordHistory();
         setEdges((eds) => {
             const inserted = addEdge({
-                ...params,
+                ...normalizedConnection,
                 ...DEFAULT_EDGE_OPTIONS,
             }, eds);
             if (!viewSettings.smartRoutingEnabled) {
@@ -88,70 +95,6 @@ export const useEdgeOperations = (
         connectingHandleId.current = handleId;
         isConnectionValid.current = false;
     }, []);
-
-    const onConnectEnd = useCallback(
-        (event: any) => {
-            if (!connectingNodeId.current) return;
-            if (isConnectionValid.current) return;
-
-            const { clientX, clientY } = event;
-            const position = screenToFlowPosition({ x: clientX, y: clientY });
-
-            // PHASE 1: Auto-Snap
-            let closestHandle: { nodeId: string, handleId: string, dist: number } | null = null;
-
-            // Use current nodes from store to ensure fresh state if needed
-            // but `nodes` from hook dependency should be fine
-            nodes.forEach(node => {
-                const hPoints = [
-                    { id: 'top', x: node.position.x + NODE_WIDTH / 2, y: node.position.y },
-                    { id: 'bottom', x: node.position.x + NODE_WIDTH / 2, y: node.position.y + NODE_HEIGHT },
-                    { id: 'left', x: node.position.x, y: node.position.y + NODE_HEIGHT / 2 },
-                    { id: 'right', x: node.position.x + NODE_WIDTH, y: node.position.y + NODE_HEIGHT / 2 },
-                ];
-
-                hPoints.forEach(hp => {
-                    const dist = Math.sqrt((hp.x - position.x) ** 2 + (hp.y - position.y) ** 2);
-                    if (dist < 50 && (!closestHandle || dist < closestHandle.dist)) {
-                        closestHandle = { nodeId: node.id, handleId: hp.id, dist };
-                    }
-                });
-            });
-
-            if (closestHandle) {
-                const connection = {
-                    source: connectingNodeId.current,
-                    sourceHandle: connectingHandleId.current,
-                    target: (closestHandle as any).nodeId,
-                    targetHandle: (closestHandle as any).handleId,
-                } as Connection;
-
-                const isDuplicate = edges.some(e =>
-                    e.source === connection.source &&
-                    e.target === connection.target &&
-                    e.sourceHandle === connection.sourceHandle &&
-                    e.targetHandle === connection.targetHandle
-                );
-
-                if (isDuplicate) return;
-
-                onConnect(connection);
-                return;
-            }
-
-            // PHASE 2: Context Menu
-            const targetIsPane = event.target.classList.contains('react-flow__pane');
-
-            if (targetIsPane && onShowConnectMenu) {
-                onShowConnectMenu(
-                    { x: clientX, y: clientY },
-                    connectingNodeId.current,
-                    connectingHandleId.current
-                );
-            }
-        },
-        [nodes, edges, screenToFlowPosition, onConnect, onShowConnectMenu]
-    );
 
     const handleAddAndConnect = useCallback((type: string, position: { x: number; y: number }, sourceId: string, sourceHandle: string | null, shape?: NodeData['shape']) => {
         recordHistory();
@@ -207,13 +150,85 @@ export const useEdgeOperations = (
         setSelectedNodeId(id);
     }, [setNodes, setEdges, recordHistory, setSelectedNodeId, t]);
 
+    const onConnectEnd = useCallback(
+        (event: unknown) => {
+            if (!connectingNodeId.current) return;
+            if (isConnectionValid.current) return;
+
+            const clientPosition = getPointerClientPosition(event);
+            if (!clientPosition) return;
+            const position = screenToFlowPosition(clientPosition);
+
+            // PHASE 1: Auto-Snap
+            let closestHandle: { nodeId: string, handleId: string, dist: number } | null = null;
+
+            // Use current nodes from store to ensure fresh state if needed
+            // but `nodes` from hook dependency should be fine
+            nodes.forEach(node => {
+                const hPoints = [
+                    { id: 'top', x: node.position.x + NODE_WIDTH / 2, y: node.position.y },
+                    { id: 'bottom', x: node.position.x + NODE_WIDTH / 2, y: node.position.y + NODE_HEIGHT },
+                    { id: 'left', x: node.position.x, y: node.position.y + NODE_HEIGHT / 2 },
+                    { id: 'right', x: node.position.x + NODE_WIDTH, y: node.position.y + NODE_HEIGHT / 2 },
+                ];
+
+                hPoints.forEach(hp => {
+                    const dist = Math.sqrt((hp.x - position.x) ** 2 + (hp.y - position.y) ** 2);
+                    if (dist < 50 && (!closestHandle || dist < closestHandle.dist)) {
+                        closestHandle = { nodeId: node.id, handleId: hp.id, dist };
+                    }
+                });
+            });
+
+            if (closestHandle) {
+                const targetHandle = closestHandle;
+                const connection = {
+                    source: connectingNodeId.current,
+                    sourceHandle: connectingHandleId.current,
+                    target: targetHandle.nodeId,
+                    targetHandle: targetHandle.handleId,
+                } as Connection;
+
+                const isDuplicate = edges.some(e =>
+                    e.source === connection.source &&
+                    e.target === connection.target &&
+                    e.sourceHandle === connection.sourceHandle &&
+                    e.targetHandle === connection.targetHandle
+                );
+
+                if (isDuplicate) return;
+
+                onConnect(connection);
+                return;
+            }
+
+            // PHASE 2: Context Menu
+            const target = (event as { target?: EventTarget | null }).target ?? null;
+            const targetIsPane = isPaneTarget(target);
+
+            if (targetIsPane && ROLLOUT_FLAGS.canvasInteractionsV1) {
+                handleAddAndConnect('process', position, connectingNodeId.current, connectingHandleId.current, 'rounded');
+                return;
+            }
+
+            if (targetIsPane && onShowConnectMenu) {
+                onShowConnectMenu(
+                    { x: clientPosition.x, y: clientPosition.y },
+                    connectingNodeId.current,
+                    connectingHandleId.current
+                );
+            }
+        },
+        [nodes, edges, screenToFlowPosition, onConnect, onShowConnectMenu, handleAddAndConnect]
+    );
+
     return {
         updateEdge,
         deleteEdge,
         onConnect,
         onConnectStart,
         onConnectEnd,
-        onEdgeUpdate,
+        onReconnect,
         handleAddAndConnect
     };
 };

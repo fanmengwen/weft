@@ -1,7 +1,9 @@
 import React, { useMemo } from 'react';
-import { ConnectionLineComponentProps, getBezierPath, useNodes } from 'reactflow';
+import { ConnectionLineComponentProps, getBezierPath, useNodes } from '@/lib/reactflowCompat';
 import { Settings } from 'lucide-react';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { NODE_WIDTH, NODE_HEIGHT } from '../constants';
+import type { FlowNode } from '@/lib/types';
 
 const CustomConnectionLine = ({
     fromX,
@@ -11,7 +13,8 @@ const CustomConnectionLine = ({
     toY,
     toPosition,
 }: ConnectionLineComponentProps) => {
-    const nodes = useNodes<any>();
+    const nodes = useNodes<FlowNode>();
+    const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
 
     const isNearNode = useMemo(() => {
         return nodes.some(node => {
@@ -48,9 +51,10 @@ const CustomConnectionLine = ({
             <path
                 fill="none"
                 stroke="#6366f1"
-                strokeWidth={2}
-                strokeDasharray="5,5"
-                className="animate-pulse"
+                strokeWidth={visualQualityV2Enabled ? 2.25 : 2}
+                strokeDasharray={visualQualityV2Enabled ? undefined : '5,5'}
+                className={visualQualityV2Enabled ? '' : 'animate-pulse'}
+                style={visualQualityV2Enabled ? { filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.15))' } : undefined}
                 d={edgePath}
             />
 
@@ -82,7 +86,7 @@ const CustomConnectionLine = ({
                 cx={toX}
                 cy={toY}
                 fill="#fff"
-                r={4}
+                r={visualQualityV2Enabled ? 5 : 4}
                 stroke="#6366f1"
                 strokeWidth={2}
             />

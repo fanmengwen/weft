@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { Node, useReactFlow } from 'reactflow';
-import { NodeData } from '@/lib/types';
+import { useReactFlow } from '@/lib/reactflowCompat';
+import type { FlowNode, NodeData } from '@/lib/types';
+import { clearNodeParent, getNodeParentId, setNodeParent } from '@/lib/nodeParent';
 import { useFlowStore } from '../store';
 import { assignSmartHandlesWithOptions, getSmartRoutingOptionsFromViewSettings } from '../services/smartEdgeRouting';
 import { useTranslation } from 'react-i18next';
@@ -9,14 +10,11 @@ import { createId } from '../lib/id';
 import { createDefaultEdge } from '@/constants';
 import {
     applySectionParenting,
-    createAnnotationNode,
-    createImageNode,
-    createProcessNode,
     createSectionNode,
-    createTextNode,
     getDefaultNodePosition,
 } from './node-operations/utils';
 import { getDragStopReconcileDelayMs } from './node-operations/dragStopReconcilePolicy';
+import { useNodeOperationAdders } from './node-operations/useNodeOperationAdders';
 
 export const useNodeOperations = (recordHistory: () => void) => {
     const { t } = useTranslation();
@@ -32,10 +30,10 @@ export const useNodeOperations = (recordHistory: () => void) => {
         };
     }, []);
 
-    const getAbsolutePosition = useCallback((node: Node, allNodes: Node[]): { x: number; y: number } => {
+    const getAbsolutePosition = useCallback((node: FlowNode, allNodes: FlowNode[]): { x: number; y: number } => {
         let absoluteX = node.position.x;
         let absoluteY = node.position.y;
-        let currentParentId = (node as Node & { parentNode?: string }).parentNode;
+        let currentParentId = getNodeParentId(node);
 
         while (currentParentId) {
             const parentNode = allNodes.find((candidate) => candidate.id === currentParentId);
@@ -44,7 +42,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
             }
             absoluteX += parentNode.position.x;
             absoluteY += parentNode.position.y;
-            currentParentId = (parentNode as Node & { parentNode?: string }).parentNode;
+            currentParentId = getNodeParentId(parentNode);
         }
 
         return { x: absoluteX, y: absoluteY };
@@ -84,10 +82,8 @@ export const useNodeOperations = (recordHistory: () => void) => {
                             ...data,
                             archBoundaryId: '',
                         },
-                    } as Node & { parentNode?: string; extent?: 'parent' | undefined };
-                    delete nextNode.parentNode;
-                    delete nextNode.extent;
-                    return nextNode;
+                    } as FlowNode;
+                    return clearNodeParent(nextNode);
                 });
             }
 
@@ -113,10 +109,8 @@ export const useNodeOperations = (recordHistory: () => void) => {
                     return node;
                 }
 
-                return {
+                return setNodeParent({
                     ...node,
-                    parentNode: boundaryNode.id,
-                    extent: 'parent' as const,
                     position: {
                         x: absolutePosition.x - boundaryNode.position.x,
                         y: absolutePosition.y - boundaryNode.position.y,
@@ -126,7 +120,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
                         ...data,
                         archBoundaryId: boundaryNode.id,
                     },
-                };
+                }, boundaryNode.id);
             });
         });
     }, [getAbsolutePosition, setNodes]);
@@ -200,7 +194,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
         if (!nodeToDuplicate) return;
         recordHistory();
         const newNodeId = createId();
-        const newNode: Node = {
+        const newNode: FlowNode = {
             ...nodeToDuplicate,
             id: newNodeId,
             position: { x: nodeToDuplicate.position.x + 50, y: nodeToDuplicate.position.y + 50 },
@@ -212,121 +206,19 @@ export const useNodeOperations = (recordHistory: () => void) => {
     }, [nodes, recordHistory, setNodes, setSelectedNodeId]);
 
     // --- Add Nodes ---
-    const handleAddNode = useCallback((position?: { x: number; y: number }) => {
-        recordHistory();
-        const id = createId();
-        const { activeLayerId } = useFlowStore.getState();
-        const newNode = createProcessNode(
-            id,
-            position || getDefaultNodePosition(nodes.length, 100, 100),
-            { label: t('nodes.newNode'), subLabel: t('nodes.processStep') }
-        );
-        newNode.data = {
-            ...newNode.data,
-            layerId: activeLayerId,
-        };
-        setNodes((nds) => nds.concat(newNode));
-        setSelectedNodeId(id);
-        trackEvent('add_node', { node_type: 'process' });
-    }, [setNodes, recordHistory, setSelectedNodeId, t, nodes.length]);
-
-    const handleAddAnnotation = useCallback((position?: { x: number; y: number }) => {
-        recordHistory();
-        const id = createId();
-        const { activeLayerId } = useFlowStore.getState();
-        const newNode = createAnnotationNode(
-            id,
-            position || getDefaultNodePosition(nodes.length, 100, 100),
-            { label: t('nodes.note'), subLabel: t('nodes.addCommentsHere') }
-        );
-        newNode.data = {
-            ...newNode.data,
-            layerId: activeLayerId,
-        };
-        setNodes((nds) => nds.concat(newNode));
-        setSelectedNodeId(id);
-        trackEvent('add_node', { node_type: 'annotation' });
-    }, [setNodes, recordHistory, setSelectedNodeId, t, nodes.length]);
-
-    const handleAddJourneyNode = useCallback((position?: { x: number; y: number }) => {
-        recordHistory();
-        const id = createId('journey');
-        const { activeLayerId } = useFlowStore.getState();
-        const newNode: Node = {
-            id,
-            type: 'journey',
-            position: position || getDefaultNodePosition(nodes.length, 120, 120),
-            data: {
-                label: 'User Journey',
-                subLabel: 'User',
-                color: 'violet',
-                shape: 'rounded',
-                journeySection: 'General',
-                journeyTask: 'User Journey',
-                journeyActor: 'User',
-                journeyScore: 3,
-                layerId: activeLayerId,
-            },
-        };
-        setNodes((nds) => nds.concat(newNode));
-        setSelectedNodeId(id);
-        trackEvent('add_node', { node_type: 'journey' });
-    }, [setNodes, recordHistory, setSelectedNodeId, nodes.length]);
-
-    const handleAddSection = useCallback((position?: { x: number; y: number }) => {
-        recordHistory();
-        const id = createId('section');
-        const { activeLayerId } = useFlowStore.getState();
-        const newNode = createSectionNode(
-            id,
-            position || getDefaultNodePosition(nodes.length, 50, 50),
-            t('nodes.newSection')
-        );
-        newNode.data = {
-            ...newNode.data,
-            layerId: activeLayerId,
-        };
-        setNodes((nds) => nds.concat(newNode));
-        setSelectedNodeId(id);
-        trackEvent('add_node', { node_type: 'section' });
-    }, [setNodes, recordHistory, setSelectedNodeId, t, nodes.length]);
-
-    const handleAddTextNode = useCallback((position?: { x: number; y: number }) => {
-        recordHistory();
-        const id = createId('text');
-        const { activeLayerId } = useFlowStore.getState();
-        const newNode = createTextNode(
-            id,
-            position || getDefaultNodePosition(nodes.length, 100, 100),
-            t('nodes.text')
-        );
-        newNode.data = {
-            ...newNode.data,
-            layerId: activeLayerId,
-        };
-        setNodes((nds) => nds.concat(newNode));
-        setSelectedNodeId(id);
-        trackEvent('add_node', { node_type: 'text' });
-    }, [setNodes, recordHistory, setSelectedNodeId, t, nodes.length]);
-
-    const handleAddImage = useCallback((imageUrl: string, position?: { x: number; y: number }) => {
-        recordHistory();
-        const id = createId('image');
-        const { activeLayerId } = useFlowStore.getState();
-        const newNode = createImageNode(
-            id,
-            imageUrl,
-            position || getDefaultNodePosition(nodes.length, 100, 100),
-            t('nodes.image')
-        );
-        newNode.data = {
-            ...newNode.data,
-            layerId: activeLayerId,
-        };
-        setNodes((nds) => nds.concat(newNode));
-        setSelectedNodeId(id);
-        trackEvent('add_node', { node_type: 'image' });
-    }, [setNodes, recordHistory, setSelectedNodeId, t, nodes.length]);
+    const {
+        handleAddNode,
+        handleAddAnnotation,
+        handleAddJourneyNode,
+        handleAddSection,
+        handleAddTextNode,
+        handleAddImage,
+    } = useNodeOperationAdders({
+        recordHistory,
+        nodesLength: nodes.length,
+        setNodes,
+        setSelectedNodeId,
+    });
 
     const handleAddMindmapChild = useCallback((parentId: string): boolean => {
         const state = useFlowStore.getState();
@@ -342,7 +234,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
         const yOffset = siblingEdges.length === 0 ? 0 : siblingEdges.length * 110;
         const { activeLayerId, viewSettings } = state;
 
-        const newNode: Node = {
+        const newNode: FlowNode = {
             id,
             type: 'mindmap',
             position: {
@@ -394,7 +286,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
         );
         const yOffset = sameBoundaryNodes.length * 90;
 
-        const newNode: Node = {
+        const newNode: FlowNode = {
             id,
             type: 'architecture',
             position: {
@@ -463,12 +355,10 @@ export const useNodeOperations = (recordHistory: () => void) => {
 
         recordHistory();
         setNodes((existingNodes) => {
-            const nextNodes: Node[] = existingNodes.map((node) => {
+            const nextNodes: FlowNode[] = existingNodes.map((node) => {
                 if (node.id === sourceId) {
-                    return {
+                    return setNodeParent({
                         ...node,
-                        parentNode: boundaryId,
-                        extent: 'parent' as const,
                         position: {
                             x: sourceAbsolutePosition.x - boundaryNode.position.x,
                             y: sourceAbsolutePosition.y - boundaryNode.position.y,
@@ -478,7 +368,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
                             archBoundaryId: boundaryId,
                         },
                         selected: true,
-                    };
+                    }, boundaryId);
                 }
                 return { ...node, selected: false };
             });
@@ -491,13 +381,13 @@ export const useNodeOperations = (recordHistory: () => void) => {
     }, [getAbsolutePosition, recordHistory, setNodes, setSelectedNodeId]);
 
     // --- Drag Operations ---
-    const onNodeDragStart = useCallback((event: React.MouseEvent, node: Node) => {
+    const onNodeDragStart = useCallback((event: React.MouseEvent, node: FlowNode) => {
         recordHistory();
 
         // Alt + Drag Duplication
         if (event.altKey) {
             const newNodeId = createId();
-            const newNode: Node = {
+            const newNode: FlowNode = {
                 ...node,
                 id: newNodeId,
                 selected: false, // The static clone should not be selected
@@ -513,12 +403,12 @@ export const useNodeOperations = (recordHistory: () => void) => {
         }
     }, [recordHistory, setNodes]);
 
-    const onNodeDrag = useCallback((_event: React.MouseEvent, _node: Node, _draggedNodes: Node[]) => {
+    const onNodeDrag = useCallback((_event: React.MouseEvent, _node: FlowNode, _draggedNodes: FlowNode[]) => {
         // Intentionally no smart-routing work during active drag to protect frame budget.
         // Full reconciliation still runs on drag stop via `onNodeDragStop`.
     }, []);
 
-    const onNodeDragStop = useCallback((_event: React.MouseEvent, draggedNode: Node) => {
+    const onNodeDragStop = useCallback((_event: React.MouseEvent, draggedNode: FlowNode) => {
         const { nodes: currentNodes } = useFlowStore.getState();
         const parentedNodes = applySectionParenting(currentNodes, draggedNode);
         if (parentedNodes !== currentNodes) {
@@ -557,7 +447,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
 
     }, [setNodes]);
 
-    const onNodeDoubleClick = useCallback((_event: React.MouseEvent, node: Node) => {
+    const onNodeDoubleClick = useCallback((_event: React.MouseEvent, node: FlowNode) => {
         setSelectedNodeId(node.id);
     }, [setSelectedNodeId]);
 

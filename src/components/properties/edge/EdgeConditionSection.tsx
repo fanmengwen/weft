@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Edge } from 'reactflow';
+import type { Edge } from '@/lib/reactflowCompat';
 import { GitBranch } from 'lucide-react';
 import type { EdgeCondition } from '@/lib/types';
 import { EDGE_CONDITION_LABELS, EDGE_CONDITION_STYLES } from '@/constants';

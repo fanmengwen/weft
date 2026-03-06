@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { Node, Edge, getRectOfNodes, useReactFlow } from 'reactflow';
+import { getCompatibleNodesBounds, useReactFlow } from '@/lib/reactflowCompat';
 import { toPng, toJpeg } from 'html-to-image';
 import { useFlowStore } from '../store';
 import { orderGraphForSerialization } from '@/services/canonicalSerialization';
@@ -28,7 +28,7 @@ export const useFlowExport = (
     reactFlowWrapper.current.classList.add('exporting');
 
     setTimeout(() => {
-      const bounds = getRectOfNodes(nodes);
+      const bounds = getCompatibleNodesBounds(nodes);
       const padding = 80;
       const width = (bounds.width || 800) + padding * 2;
       const height = (bounds.height || 600) + padding * 2;
@@ -49,8 +49,8 @@ export const useFlowExport = (
           height: `${height}px`,
         },
         pixelRatio: 3, // Default to High-Res (4K)
-        filter: (node: any) => {
-          if (node?.classList) {
+        filter: (node: HTMLElement) => {
+          if (node.classList) {
             if (
               node.classList.contains('react-flow__controls') ||
               node.classList.contains('react-flow__minimap') ||

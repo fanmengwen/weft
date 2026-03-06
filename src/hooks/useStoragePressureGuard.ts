@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { estimateTrackedLocalStorageUsageRatio } from '@/lib/storagePressure';
 import { useToast } from '@/components/ui/ToastContext';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 
 const WARN_RATIO = 0.7;
 const RESET_RATIO = 0.6;
@@ -18,6 +19,8 @@ export function useStoragePressureGuard({ trigger, onExportJSON }: UseStoragePre
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (typeof localStorage === 'undefined') return;
+    const indexedDbBackedPersistenceActive = ROLLOUT_FLAGS.indexedDbStorageV1 && typeof indexedDB !== 'undefined';
+    if (indexedDbBackedPersistenceActive) return;
 
     const ratio = estimateTrackedLocalStorageUsageRatio(localStorage);
 

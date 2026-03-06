@@ -53,7 +53,12 @@ function LanguageDropdown({
 
   return (
     <>
-      <div className="fixed inset-0 z-40" onClick={onClose} />
+      <button
+        type="button"
+        className="fixed inset-0 z-40"
+        onClick={onClose}
+        aria-label="Close language selector"
+      />
       <div
         className={`absolute right-0 ${positionClass} ${width} bg-white/95 backdrop-blur-xl rounded-lg shadow-xl border border-slate-200 ring-1 ring-black/5 p-1 z-50 animate-in fade-in zoom-in-95 duration-200 ${originClass}`}
       >

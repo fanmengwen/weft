@@ -1,7 +1,11 @@
 import React, { memo, useCallback, useState } from 'react';
-import { Handle, NodeProps, NodeResizer, Position } from 'reactflow';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { useFlowStore } from '@/store';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from '@/components/handleInteraction';
+import { NodeTransformControls } from '@/components/NodeTransformControls';
 
 function getScoreTone(score: number | undefined): string {
   if (typeof score !== 'number') return 'bg-slate-100 text-slate-600';
@@ -71,7 +75,14 @@ function useInlineJourneyEdit(
   return { isEditing, draft, beginEdit, setDraft, commit, cancel, handleKeyDown };
 }
 
-function JourneyNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElement {
+function JourneyNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
+  const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+  const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+  const handleVisibilityClass = visualQualityV2Enabled
+    ? getV2HandleVisibilityClass(Boolean(selected))
+    : selected
+      ? 'opacity-100'
+      : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100';
   const titleEdit = useInlineJourneyEdit(id, data.label || '', (nextValue) => ({
     label: nextValue,
     journeyTask: nextValue,
@@ -88,13 +99,10 @@ function JourneyNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
 
   return (
     <>
-      <NodeResizer
-        color="#8b5cf6"
-        isVisible={selected}
+      <NodeTransformControls
+        isVisible={Boolean(selected)}
         minWidth={220}
         minHeight={120}
-        lineStyle={{ borderStyle: 'solid', borderWidth: 1 }}
-        handleStyle={{ width: 8, height: 8, borderRadius: 4 }}
       />
 
       <div
@@ -180,8 +188,8 @@ function JourneyNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
         id="top"
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-        style={{ left: '50%', top: 0, transform: 'translate(-50%, -50%)', pointerEvents: 'all' }}
+        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('top', Boolean(selected), handlePointerEvents)}
       />
 
       <Handle
@@ -190,8 +198,8 @@ function JourneyNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
         id="right"
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-        style={{ top: '50%', left: '100%', transform: 'translate(-50%, -50%)', pointerEvents: 'all' }}
+        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('right', Boolean(selected), handlePointerEvents)}
       />
 
       <Handle
@@ -200,8 +208,8 @@ function JourneyNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
         id="bottom"
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-        style={{ left: '50%', top: '100%', transform: 'translate(-50%, -50%)', pointerEvents: 'all' }}
+        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('bottom', Boolean(selected), handlePointerEvents)}
       />
 
       <Handle
@@ -210,8 +218,8 @@ function JourneyNode({ id, data, selected }: NodeProps<NodeData>): React.ReactEl
         id="left"
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-        style={{ top: '50%', left: 0, transform: 'translate(-50%, -50%)', pointerEvents: 'all' }}
+        className={`!w-3 !h-3 !bg-violet-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('left', Boolean(selected), handlePointerEvents)}
       />
 
     </>

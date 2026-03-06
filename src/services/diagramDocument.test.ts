@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { Edge, Node } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import {
   createDiagramDocument,
   DEFAULT_DIAGRAM_TYPE,
@@ -8,17 +8,17 @@ import {
 } from './diagramDocument';
 import { buildImportFidelityReport, mapWarningToIssue } from './importFidelity';
 
-function createNode(id: string): Node {
+function createNode(id: string): FlowNode {
   return {
     id,
     type: 'process',
     position: { x: 0, y: 0 },
     data: { label: id },
-  } as Node;
+  } as FlowNode;
 }
 
-function createEdge(id: string, source: string, target: string): Edge {
-  return { id, source, target } as Edge;
+function createEdge(id: string, source: string, target: string): FlowEdge {
+  return { id, source, target } as FlowEdge;
 }
 
 describe('diagramDocument', () => {

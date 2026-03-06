@@ -1,12 +1,12 @@
 import type { ElementType } from 'react';
-import { Node } from 'reactflow';
+import type { FlowNode, NodeData } from '@/lib/types';
 import { NODE_DEFAULTS } from '@/theme';
 import { getIconSVGContent } from './iconHelpers';
 import { escapeXml, getNodeTheme, getSectionTheme } from './themeHelpers';
 
 type IconMap = Record<string, ElementType>;
 
-export function renderSectionsLayer(out: string[], nodes: Node[], iconMap: IconMap): void {
+export function renderSectionsLayer(out: string[], nodes: FlowNode[], iconMap: IconMap): void {
     out.push('<g id="sections">');
 
     nodes
@@ -16,7 +16,7 @@ export function renderSectionsLayer(out: string[], nodes: Node[], iconMap: IconM
             const y = node.position.y;
             const width = node.width || (node.style?.width as number) || 500;
             const height = node.height || (node.style?.height as number) || 300;
-            const data = node.data || {};
+            const data = node.data ?? ({} as NodeData);
             const color = data.color || 'blue';
             const theme = getSectionTheme(color);
 
@@ -50,7 +50,7 @@ export function renderSectionsLayer(out: string[], nodes: Node[], iconMap: IconM
     out.push('</g>');
 }
 
-export function renderAnnotationsLayer(out: string[], nodes: Node[]): void {
+export function renderAnnotationsLayer(out: string[], nodes: FlowNode[]): void {
     out.push('<g id="annotations">');
 
     nodes
@@ -60,7 +60,7 @@ export function renderAnnotationsLayer(out: string[], nodes: Node[]): void {
             const y = node.position.y;
             const width = node.width || 200;
             const height = node.height || 120;
-            const data = node.data || {};
+            const data = node.data ?? ({} as NodeData);
 
             out.push(`  <g id="annotation-${node.id}" filter="url(#shadow)">`);
 
@@ -94,7 +94,7 @@ export function renderAnnotationsLayer(out: string[], nodes: Node[]): void {
     out.push('</g>');
 }
 
-export function renderStandardNodesLayer(out: string[], nodes: Node[], iconMap: IconMap): void {
+export function renderStandardNodesLayer(out: string[], nodes: FlowNode[], iconMap: IconMap): void {
     out.push('<g id="nodes">');
 
     nodes
@@ -104,7 +104,7 @@ export function renderStandardNodesLayer(out: string[], nodes: Node[], iconMap: 
             const y = node.position.y;
             const width = node.width || 200;
             const height = node.height || 100;
-            const data = node.data || {};
+            const data = node.data ?? ({} as NodeData);
             const nodeType = node.type || 'process';
             const defaults = NODE_DEFAULTS[nodeType] || NODE_DEFAULTS.process;
             const activeColor = data.color || defaults.color;
@@ -232,7 +232,7 @@ export function renderStandardNodesLayer(out: string[], nodes: Node[], iconMap: 
     out.push('</g>');
 }
 
-export function renderTextNodesLayer(out: string[], nodes: Node[]): void {
+export function renderTextNodesLayer(out: string[], nodes: FlowNode[]): void {
     out.push('<g id="text-nodes">');
 
     nodes
@@ -242,7 +242,7 @@ export function renderTextNodesLayer(out: string[], nodes: Node[]): void {
             const y = node.position.y;
             const width = node.width || 50;
             const height = node.height || 30;
-            const data = node.data || {};
+            const data = node.data ?? ({} as NodeData);
             const color = data.color || 'slate';
             const theme = getNodeTheme(color);
             const label = escapeXml(data.label || 'Text');

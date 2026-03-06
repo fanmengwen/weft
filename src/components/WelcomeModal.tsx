@@ -3,16 +3,19 @@ import { X, Layout, Shield } from 'lucide-react';
 import { OpenFlowLogo } from './icons/OpenFlowLogo';
 import { useFlowStore } from '../store';
 import { useTranslation } from 'react-i18next';
+import { readLocalStorageString, writeLocalStorageString } from '@/services/storage/uiLocalStorage';
+
+const WELCOME_SEEN_STORAGE_KEY = 'hasSeenWelcome_v1';
 
 export function WelcomeModal(): React.JSX.Element | null {
     const { t } = useTranslation();
     const buttonStyle = useFlowStore(state => state.brandConfig.ui.buttonStyle);
     const isBeveled = buttonStyle === 'beveled';
-    const [isOpen, setIsOpen] = useState(() => !localStorage.getItem('hasSeenWelcome_v1'));
+    const [isOpen, setIsOpen] = useState(() => !readLocalStorageString(WELCOME_SEEN_STORAGE_KEY));
 
     const handleClose = () => {
         setIsOpen(false);
-        localStorage.setItem('hasSeenWelcome_v1', 'true');
+        writeLocalStorageString(WELCOME_SEEN_STORAGE_KEY, 'true');
     };
 
     if (!isOpen) return null;

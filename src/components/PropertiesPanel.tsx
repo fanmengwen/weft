@@ -1,7 +1,7 @@
 import React from 'react';
-import { Node, Edge } from 'reactflow';
+import { Node, Edge } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
-import { Layout, ArrowRight, X, Settings2 } from 'lucide-react';
+import { ArrowRight, X, Settings2 } from 'lucide-react';
 import { EdgeProperties } from './properties/EdgeProperties';
 import { BulkNodeProperties } from './properties/BulkNodeProperties';
 import { useTranslation } from 'react-i18next';
@@ -31,12 +31,10 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
     selectedEdge,
     onChangeNode,
     onBulkChangeNodes,
-    onChangeNodeType,
     onChangeEdge,
     onDeleteNode,
     onDuplicateNode,
     onDeleteEdge,
-    onUpdateZIndex,
     onAddMindmapChild,
     onAddArchitectureService,
     onCreateArchitectureBoundary,
@@ -78,7 +76,11 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
     };
 
     return (
-        <div className="absolute top-20 right-6 w-80 bg-[var(--brand-surface)]/95 backdrop-blur-md rounded-[var(--radius-lg)] shadow-2xl border border-white/20 ring-1 ring-black/5 flex flex-col overflow-hidden max-h-[calc(100vh-140px)] z-40 animate-in slide-in-from-right-10 duration-200">
+        <div
+            className="absolute top-20 right-6 w-80 bg-[var(--brand-surface)]/95 backdrop-blur-md rounded-[var(--radius-lg)] shadow-2xl border border-white/20 ring-1 ring-black/5 flex flex-col overflow-hidden max-h-[calc(100vh-140px)] z-40 animate-in slide-in-from-right-10 duration-200"
+            onMouseDown={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+        >
             <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-[var(--brand-surface)]">
                 <h3 className="font-semibold text-[var(--brand-text)] flex items-center gap-2">
                     {selectedNode ? (

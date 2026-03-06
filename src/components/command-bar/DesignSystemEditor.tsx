@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState, type ReactElement, type ReactNode } from 'react';
 import { useFlowStore } from '../../store';
-import { ArrowLeft, Check, ChevronRight, Palette, Type, Box, Activity, Save } from 'lucide-react';
+import { ArrowLeft, Palette, Type, Box, Activity } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { DesignSystem } from '@/lib/types';
 
@@ -10,8 +10,9 @@ interface DesignSystemEditorProps {
 }
 
 type EditorTab = 'colors' | 'typography' | 'nodes' | 'edges';
+type UpdateDesignSystem = (id: string, updates: Partial<DesignSystem>) => void;
 
-export const DesignSystemEditor: React.FC<DesignSystemEditorProps> = ({ systemId, onBack }) => {
+export function DesignSystemEditor({ systemId, onBack }: DesignSystemEditorProps): ReactElement {
     const { designSystems, updateDesignSystem } = useFlowStore();
     const system = designSystems.find(ds => ds.id === systemId);
 
@@ -81,10 +82,17 @@ export const DesignSystemEditor: React.FC<DesignSystemEditorProps> = ({ systemId
             </div>
         </div>
     );
-};
+}
 
 // UI Helpers
-const TabButton = ({ active, onClick, icon, label }: any) => {
+interface TabButtonProps {
+    active: boolean;
+    onClick: () => void;
+    icon: ReactNode;
+    label: string;
+}
+
+const TabButton = ({ active, onClick, icon, label }: TabButtonProps) => {
     const isBeveled = useFlowStore(state => state.brandConfig.ui.buttonStyle === 'beveled');
     return (
         <button
@@ -102,7 +110,7 @@ const TabButton = ({ active, onClick, icon, label }: any) => {
 };
 
 // Sub-Editors (Basic Stub)
-const ColorEditor = ({ system, update }: { system: DesignSystem, update: any }) => (
+const ColorEditor = ({ system, update }: { system: DesignSystem; update: UpdateDesignSystem }) => (
     <div className="space-y-4">
         <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Semantic Colors</h3>
         <div className="grid grid-cols-1 gap-3">
@@ -113,7 +121,7 @@ const ColorEditor = ({ system, update }: { system: DesignSystem, update: any }) 
     </div>
 );
 
-const TypographyEditor = ({ system, update }: { system: DesignSystem, update: any }) => (
+const TypographyEditor = ({ system, update }: { system: DesignSystem; update: UpdateDesignSystem }) => (
     <div className="space-y-4">
         <h3 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Typography</h3>
         {/* Font List will go here */}
@@ -133,7 +141,13 @@ const TypographyEditor = ({ system, update }: { system: DesignSystem, update: an
     </div>
 );
 
-const ColorInput = ({ label, value, onChange }: any) => (
+interface ColorInputProps {
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+}
+
+const ColorInput = ({ label, value, onChange }: ColorInputProps) => (
     <div className="flex items-center justify-between bg-white p-2 rounded-lg border border-slate-100">
         <span className="text-sm text-slate-700 font-medium">{label}</span>
         <div className="flex items-center gap-2">

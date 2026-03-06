@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, WandSparkles, StickyNote, X, Database, ArrowRightLeft, Footprints } from 'lucide-react';
+import { Settings, WandSparkles, StickyNote, X, Database, ArrowRightLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface ConnectMenuProps {
@@ -8,11 +8,22 @@ interface ConnectMenuProps {
     onClose: () => void;
 }
 
-export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps) => {
+export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps): React.ReactElement => {
     const { t } = useTranslation();
+
+    function handleSelect(type: string, shape?: string): void {
+        onSelect(type, shape);
+        onClose();
+    }
+
     return (
         <>
-            <div className="fixed inset-0 z-[60]" onClick={onClose} />
+            <button
+                type="button"
+                className="fixed inset-0 z-[60]"
+                onClick={onClose}
+                aria-label="Close connect menu"
+            />
             <div
                 className="fixed z-[70] bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-slate-200/50 overflow-hidden min-w-[180px] animate-in zoom-in-95 fade-in duration-150 ring-1 ring-black/5"
                 style={{ top: position.y, left: position.x }}
@@ -23,7 +34,7 @@ export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps) =
                     </div>
 
                     <button
-                        onClick={() => { onSelect('process'); onClose(); }}
+                        onClick={() => handleSelect('process')}
                         className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 active:bg-slate-100 rounded-xl transition-all group"
                     >
                         <div className="w-9 h-9 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center border border-blue-100 group-hover:scale-110 transition-transform">
@@ -36,7 +47,7 @@ export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps) =
                     </button>
 
                     <button
-                        onClick={() => { onSelect('decision'); onClose(); }}
+                        onClick={() => handleSelect('decision')}
                         className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 active:bg-slate-100 rounded-xl transition-all group"
                     >
                         <div className="w-9 h-9 bg-amber-50 text-amber-600 rounded-lg flex items-center justify-center border border-amber-100 group-hover:scale-110 transition-transform">
@@ -49,7 +60,7 @@ export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps) =
                     </button>
 
                     <button
-                        onClick={() => { onSelect('process', 'cylinder'); onClose(); }}
+                        onClick={() => handleSelect('process', 'cylinder')}
                         className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 active:bg-slate-100 rounded-xl transition-all group"
                     >
                         <div className="w-9 h-9 bg-emerald-50 text-emerald-600 rounded-lg flex items-center justify-center border border-emerald-100 group-hover:scale-110 transition-transform">
@@ -62,7 +73,7 @@ export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps) =
                     </button>
 
                     <button
-                        onClick={() => { onSelect('process', 'parallelogram'); onClose(); }}
+                        onClick={() => handleSelect('process', 'parallelogram')}
                         className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 active:bg-slate-100 rounded-xl transition-all group"
                     >
                         <div className="w-9 h-9 bg-violet-50 text-violet-600 rounded-lg flex items-center justify-center border border-violet-100 group-hover:scale-110 transition-transform">
@@ -75,7 +86,7 @@ export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps) =
                     </button>
 
                     <button
-                        onClick={() => { onSelect('annotation'); onClose(); }}
+                        onClick={() => handleSelect('annotation')}
                         className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 active:bg-slate-100 rounded-xl transition-all group"
                     >
                         <div className="w-9 h-9 bg-yellow-50 text-yellow-600 rounded-lg flex items-center justify-center border border-yellow-100 group-hover:scale-110 transition-transform">
@@ -87,18 +98,6 @@ export const ConnectMenu = ({ position, onSelect, onClose }: ConnectMenuProps) =
                         </div>
                     </button>
 
-                    <button
-                        onClick={() => { onSelect('journey'); onClose(); }}
-                        className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 active:bg-slate-100 rounded-xl transition-all group"
-                    >
-                        <div className="w-9 h-9 bg-violet-50 text-violet-600 rounded-lg flex items-center justify-center border border-violet-100 group-hover:scale-110 transition-transform">
-                            <Footprints className="w-4.5 h-4.5" />
-                        </div>
-                        <div className="flex flex-col items-start translate-y-[1px]">
-                            <span className="font-bold text-slate-700 leading-none mb-1">{t('connectMenu.userJourney', 'User Journey')}</span>
-                            <span className="text-[10px] text-slate-400 font-medium">{t('connectMenu.userJourneyDesc', 'Experience step')}</span>
-                        </div>
-                    </button>
                 </div>
 
                 <div className="bg-slate-50/80 px-4 py-2 flex items-center justify-between border-t border-slate-100">

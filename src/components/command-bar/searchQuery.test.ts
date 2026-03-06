@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import type { Node } from 'reactflow';
+import type { FlowNode } from '@/lib/types';
 import { EMPTY_QUERY, matchesNodeQuery, type QueryState } from './searchQuery';
 
-function createNode(overrides?: Partial<Node>): Node {
+function createNode(overrides?: Partial<FlowNode>): FlowNode {
     return {
         id: 'n-1',
         type: 'process',
@@ -15,7 +15,7 @@ function createNode(overrides?: Partial<Node>): Node {
             env: 'prod',
         },
         ...overrides,
-    } as Node;
+    } as FlowNode;
 }
 
 describe('matchesNodeQuery', () => {

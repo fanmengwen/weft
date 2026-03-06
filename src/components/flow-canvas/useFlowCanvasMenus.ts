@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import type { MouseEvent } from 'react';
-import type { Edge, Node } from 'reactflow';
+import type { Edge, Node } from '@/lib/reactflowCompat';
 import type { ContextMenuProps } from '@/components/ContextMenu';
 
 interface ConnectMenuState {
@@ -11,6 +11,7 @@ interface ConnectMenuState {
 
 interface UseFlowCanvasMenusParams {
     initialContextType?: ContextMenuProps['type'];
+    onPaneSelectionClear?: () => void;
 }
 
 interface UseFlowCanvasMenusResult {
@@ -26,6 +27,7 @@ interface UseFlowCanvasMenusResult {
 
 export function useFlowCanvasMenus({
     initialContextType = 'pane',
+    onPaneSelectionClear,
 }: UseFlowCanvasMenusParams = {}): UseFlowCanvasMenusResult {
     const [connectMenu, setConnectMenu] = useState<ConnectMenuState | null>(null);
     const [contextMenu, setContextMenu] = useState<ContextMenuProps & { isOpen: boolean }>({
@@ -75,7 +77,8 @@ export function useFlowCanvasMenus({
 
     const onPaneClick = useCallback(() => {
         onCloseContextMenu();
-    }, [onCloseContextMenu]);
+        onPaneSelectionClear?.();
+    }, [onCloseContextMenu, onPaneSelectionClear]);
 
     return {
         connectMenu,

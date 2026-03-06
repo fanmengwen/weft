@@ -5,7 +5,7 @@ const GEMINI_DEFAULT_MODEL = 'gemini-2.5-flash-lite';
 
 export interface ChatMessage {
   role: 'user' | 'model';
-  parts: { text?: string; inlineData?: any }[];
+  parts: { text?: string; inlineData?: { mimeType: string; data: string } }[];
 }
 
 export function getSystemInstruction(): string {
@@ -243,7 +243,7 @@ export async function generateDiagramFromChat(
       {
         text: `User Request: ${newMessage}${currentDSL ? `\nCURRENT CONTENT (The user wants to update this):\n${currentDSL}` : ''}\n\nGenerate or update the FlowMind DSL based on this request.`
       }
-    ] as { text?: string; inlineData?: any }[]
+    ] as { text?: string; inlineData?: { mimeType: string; data: string } }[]
   };
 
   if (imageBase64) {

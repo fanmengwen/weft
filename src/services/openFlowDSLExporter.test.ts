@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import type { Edge, Node } from 'reactflow';
+import type { Edge, Node } from '@/lib/reactflowCompat';
 import { getOpenFlowDSLExportDiagnostics, toOpenFlowDSL } from './openFlowDSLExporter';
 
-function createNode(id: string, label: string, parentNode?: string): Node {
+function createNode(id: string, label: string, parentId?: string): Node {
   return {
     id,
     type: 'process',
     position: { x: 0, y: 0 },
     data: { label },
-    parentNode,
+    parentId,
   } as Node;
 }
 

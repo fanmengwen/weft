@@ -4,8 +4,9 @@ import type {
     NodeChange,
     OnEdgesChange,
     OnNodesChange,
-} from 'reactflow';
-import type { DesignSystem, FlowEdge, FlowNode, FlowTab, GlobalEdgeOptions } from '@/lib/types';
+} from '@/lib/reactflowCompat';
+import type { ParseDiagnostic } from '@/lib/openFlowDSLParser';
+import type { DesignSystem, DiagramType, FlowEdge, FlowNode, FlowTab, GlobalEdgeOptions } from '@/lib/types';
 import type { ExportSerializationMode } from '@/services/canonicalSerialization';
 
 export interface ViewSettings {
@@ -90,6 +91,14 @@ export interface Layer {
     locked: boolean;
 }
 
+export interface MermaidDiagnosticsSnapshot {
+    source: 'paste' | 'import' | 'code';
+    diagramType?: DiagramType;
+    diagnostics: ParseDiagnostic[];
+    error?: string;
+    updatedAt: number;
+}
+
 export interface FlowState {
     nodes: FlowNode[];
     edges: FlowEdge[];
@@ -107,6 +116,7 @@ export interface FlowState {
     activeLayerId: string;
     selectedNodeId: string | null;
     selectedEdgeId: string | null;
+    mermaidDiagnostics: MermaidDiagnosticsSnapshot | null;
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     setNodes: (nodes: FlowNode[] | ((nodes: FlowNode[]) => FlowNode[])) => void;
@@ -156,6 +166,8 @@ export interface FlowState {
     selectNodesInLayer: (layerId: string) => void;
     setSelectedNodeId: (id: string | null) => void;
     setSelectedEdgeId: (id: string | null) => void;
+    setMermaidDiagnostics: (snapshot: MermaidDiagnosticsSnapshot | null) => void;
+    clearMermaidDiagnostics: () => void;
     recordHistoryV2: () => void;
     undoV2: () => void;
     redoV2: () => void;

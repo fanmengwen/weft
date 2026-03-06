@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Node } from 'reactflow';
+import type { FlowNode } from '@/lib/types';
 import { useFlowStore } from '../store';
 import { alignNodes, distributeNodes } from '../services/AlignDistribute';
 import { useTranslation } from 'react-i18next';
@@ -50,7 +50,7 @@ export const useLayoutOperations = (recordHistory: () => void) => {
         });
 
         const padding = 40;
-        const groupNode: Node = {
+        const groupNode: FlowNode = {
             id: createId('group'),
             type: 'group',
             position: { x: minX - padding, y: minY - padding },

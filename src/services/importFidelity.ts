@@ -1,4 +1,5 @@
 import type { ParseDiagnostic } from '@/lib/openFlowDSLParser';
+import { writeLocalStorageJson } from '@/services/storage/uiLocalStorage';
 
 export type ImportSource = 'json' | 'mermaid' | 'openflowdsl' | 'drawio' | 'visio';
 export type ImportSeverity = 'info' | 'warning' | 'error';
@@ -99,11 +100,7 @@ export function buildImportFidelityReport(params: {
 }
 
 export function persistLatestImportReport(report: ImportFidelityReport): void {
-    try {
-        localStorage.setItem(IMPORT_REPORT_STORAGE_KEY, JSON.stringify(report));
-    } catch {
-        // Ignore storage failures.
-    }
+    writeLocalStorageJson(IMPORT_REPORT_STORAGE_KEY, report);
 }
 
 export function summarizeImportReport(report: ImportFidelityReport): string {

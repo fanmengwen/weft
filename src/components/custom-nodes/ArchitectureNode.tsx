@@ -1,13 +1,26 @@
 import React, { memo } from 'react';
-import { Handle, NodeProps, Position } from 'reactflow';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { useInlineNodeTextEdit } from '@/hooks/useInlineNodeTextEdit';
+import { getHandlePointerEvents, getV2HandleVisibilityClass } from '@/components/handleInteraction';
+import { getTransformDiagnosticsAttrs } from '@/components/transformDiagnostics';
+import { NodeTransformControls } from '@/components/NodeTransformControls';
 
-function ArchitectureNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElement {
+function ArchitectureNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
+  const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+  const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+  const handleVisibilityClass = visualQualityV2Enabled
+    ? getV2HandleVisibilityClass(Boolean(selected))
+    : selected
+      ? 'opacity-100'
+      : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100';
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '');
   const provider = data.archProvider || 'custom';
   const resourceType = data.archResourceType || 'service';
   const environment = data.archEnvironment || 'default';
+  const architectureMinHeight = environment ? 96 : 88;
   const styleByResource: Record<string, { shell: string; providerBadge: string; icon: string }> = {
     group: {
       shell: 'border-violet-300 bg-violet-50/60',
@@ -29,13 +42,19 @@ function ArchitectureNode({ id, data, selected }: NodeProps<NodeData>): React.Re
 
   return (
     <>
+      <NodeTransformControls
+        isVisible={Boolean(selected)}
+        minWidth={180}
+        minHeight={architectureMinHeight}
+      />
       <Handle
         type="source"
         id="top"
         position={Position.Top}
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={{ pointerEvents: handlePointerEvents }}
       />
       <Handle
         type="source"
@@ -43,13 +62,21 @@ function ArchitectureNode({ id, data, selected }: NodeProps<NodeData>): React.Re
         position={Position.Left}
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={{ pointerEvents: handlePointerEvents }}
       />
 
       <div
         className={`group min-w-[180px] rounded-xl border px-3 py-2 shadow-sm ${currentStyle.shell} ${
           selected ? 'ring-2 ring-indigo-500 ring-offset-2' : ''
         }`}
+        style={{ minHeight: architectureMinHeight }}
+        {...getTransformDiagnosticsAttrs({
+          nodeFamily: 'architecture',
+          selected: Boolean(selected),
+          minHeight: architectureMinHeight,
+          hasSubLabel: Boolean(environment),
+        })}
       >
         <div className="flex items-center justify-between gap-2 text-[10px] uppercase tracking-wide text-slate-500">
           <span className={`inline-flex items-center gap-1 rounded-full border px-1.5 py-0.5 font-semibold ${currentStyle.providerBadge}`}>
@@ -90,7 +117,8 @@ function ArchitectureNode({ id, data, selected }: NodeProps<NodeData>): React.Re
         position={Position.Right}
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={{ pointerEvents: handlePointerEvents }}
       />
       <Handle
         type="source"
@@ -98,7 +126,8 @@ function ArchitectureNode({ id, data, selected }: NodeProps<NodeData>): React.Re
         position={Position.Bottom}
         isConnectableStart
         isConnectableEnd
-        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={{ pointerEvents: handlePointerEvents }}
       />
     </>
   );

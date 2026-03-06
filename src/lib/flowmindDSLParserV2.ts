@@ -1,5 +1,6 @@
-import { Node, Edge } from 'reactflow';
+import { setNodeParent } from './nodeParent';
 import { NODE_DEFAULTS } from '../theme';
+import type { FlowEdge, FlowNode, NodeData } from './types';
 
 // --- Types ---
 
@@ -8,23 +9,25 @@ export interface DSLNode {
     type: string;
     label: string;
     parentId?: string;
-    attributes: Record<string, any>;
+    attributes: Record<string, DSLAttributeValue>;
 }
 
 export interface DSLEdge {
     sourceId: string;
     targetId: string;
     label?: string;
-    attributes: Record<string, any>;
+    attributes: Record<string, DSLAttributeValue>;
     type?: 'default' | 'step' | 'smoothstep' | 'straight';
 }
 
 export interface DSLResult {
-    nodes: Node[];
-    edges: Edge[];
-    metadata: Record<string, any>;
+    nodes: FlowNode[];
+    edges: FlowEdge[];
+    metadata: Record<string, string>;
     errors: string[];
 }
+
+type DSLAttributeValue = string | number | boolean;
 
 // --- Constants ---
 
@@ -47,8 +50,8 @@ const NODE_TYPE_MAP: Record<string, string> = {
 
 // --- Helpers ---
 
-function parseAttributes(text: string): Record<string, any> {
-    const attributes: Record<string, any> = {};
+function parseAttributes(text: string): Record<string, DSLAttributeValue> {
+    const attributes: Record<string, DSLAttributeValue> = {};
     if (!text) return attributes;
 
     // Simple parser for { key: "value", key2: 123 }
@@ -63,7 +66,7 @@ function parseAttributes(text: string): Record<string, any> {
         const [key, rawValue] = pair.split(':').map(s => s.trim());
         if (!key || !rawValue) return;
 
-        let value: any = rawValue;
+        let value: DSLAttributeValue = rawValue;
         // String
         if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
             value = value.slice(1, -1);
@@ -87,7 +90,7 @@ function parseAttributes(text: string): Record<string, any> {
 export function parseFlowMindDSL(input: string): DSLResult {
     const dslNodes: DSLNode[] = [];
     const dslEdges: DSLEdge[] = [];
-    const metadata: Record<string, any> = { direction: 'TB' };
+    const metadata: Record<string, string> = { direction: 'TB' };
     const errors: string[] = [];
 
     const lines = input.split('\n');
@@ -221,8 +224,8 @@ export function parseFlowMindDSL(input: string): DSLResult {
     }
 
     // Post-processing: Resolve implicit nodes and edge IDs
-    const finalNodes: Node[] = [];
-    const finalEdges: Edge[] = [];
+    const finalNodes: FlowNode[] = [];
+    const finalEdges: FlowEdge[] = [];
     const createdNodeIds = new Set<string>();
 
     // 1. Process explicit nodes
@@ -230,21 +233,21 @@ export function parseFlowMindDSL(input: string): DSLResult {
         const defaultStyle = NODE_DEFAULTS[n.type] || NODE_DEFAULTS['process'];
 
         // Layout placeholder (will be handled by ELK layout)
-        const node: Node & { parentId?: string } = {
+        let node: FlowNode = {
             id: n.id,
             type: n.type,
             position: { x: 0, y: 0 },
             data: {
                 label: n.label,
-                shape: defaultStyle?.shape,
+                shape: defaultStyle?.shape as NodeData['shape'],
                 color: defaultStyle?.color,
                 icon: defaultStyle?.icon && defaultStyle.icon !== 'none' ? defaultStyle.icon : undefined,
                 ...n.attributes
             },
-            parentNode: n.parentId,
-            extent: n.parentId ? 'parent' : undefined,
         };
-        if (n.parentId) node.parentId = n.parentId;
+        if (n.parentId) {
+            node = setNodeParent(node, n.parentId);
+        }
         finalNodes.push(node);
         createdNodeIds.add(n.id);
     });
@@ -264,7 +267,7 @@ export function parseFlowMindDSL(input: string): DSLResult {
                 position: { x: 0, y: 0 },
                 data: {
                     label: sourceId,
-                    shape: defaultProcessStyle?.shape,
+                    shape: defaultProcessStyle?.shape as NodeData['shape'],
                     color: defaultProcessStyle?.color,
                     icon: defaultProcessStyle?.icon && defaultProcessStyle.icon !== 'none' ? defaultProcessStyle.icon : undefined,
                 }
@@ -279,7 +282,7 @@ export function parseFlowMindDSL(input: string): DSLResult {
                 position: { x: 0, y: 0 },
                 data: {
                     label: targetId,
-                    shape: defaultProcessStyle?.shape,
+                    shape: defaultProcessStyle?.shape as NodeData['shape'],
                     color: defaultProcessStyle?.color,
                     icon: defaultProcessStyle?.icon && defaultProcessStyle.icon !== 'none' ? defaultProcessStyle.icon : undefined,
                 }
@@ -288,7 +291,7 @@ export function parseFlowMindDSL(input: string): DSLResult {
             labelToIdMap.set(targetId, targetId);
         }
 
-        const finalEdge: Edge = {
+        const finalEdge: FlowEdge = {
             id: `edge-${i}`, // Unique ID for the edge
             source: sourceId,
             target: targetId,

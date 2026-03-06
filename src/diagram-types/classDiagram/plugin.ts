@@ -1,4 +1,8 @@
 import { createId } from '@/lib/id';
+import {
+  buildClassRelationTokenRegexPattern,
+  type ClassRelationToken,
+} from '@/lib/relationSemantics';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { DiagramPlugin } from '@/diagram-types/core';
 
@@ -13,26 +17,11 @@ interface ClassRecord {
 interface RelationRecord {
   source: string;
   target: string;
-  relation: string;
+  relation: ClassRelationToken;
   label?: string;
 }
 
 const CLASS_ID_PATTERN = '[A-Za-z_][\\w.]*';
-const CLASS_RELATION_TOKENS = [
-  '<|--',
-  '--|>',
-  '*--',
-  '--*',
-  'o--',
-  '--o',
-  '..>',
-  '<..',
-  '<--',
-  '-->',
-  '<-->',
-  '..',
-  '--',
-];
 
 function createEmptyClass(id: string): ClassRecord {
   return {
@@ -61,11 +50,7 @@ function parseClassBodyLine(line: string, record: ClassRecord): void {
 }
 
 function parseRelation(line: string): RelationRecord | null {
-  const relationTokenPattern = CLASS_RELATION_TOKENS
-    .slice()
-    .sort((left, right) => right.length - left.length)
-    .map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    .join('|');
+  const relationTokenPattern = buildClassRelationTokenRegexPattern();
   const relationMatch = line.match(
     new RegExp(`^(${CLASS_ID_PATTERN})\\s+(${relationTokenPattern})\\s+(${CLASS_ID_PATTERN})(?:\\s*:\\s*(.+))?$`)
   );
@@ -73,7 +58,7 @@ function parseRelation(line: string): RelationRecord | null {
 
   return {
     source: relationMatch[1],
-    relation: relationMatch[2],
+    relation: relationMatch[2] as ClassRelationToken,
     target: relationMatch[3],
     label: relationMatch[4]?.trim(),
   };
@@ -232,6 +217,10 @@ function parseClassDiagram(input: string): { nodes: FlowNode[]; edges: FlowEdge[
     target: relation.target,
     label: relation.label || relation.relation,
     type: 'smoothstep',
+    data: {
+      classRelation: relation.relation,
+      classRelationLabel: relation.label,
+    },
   }));
 
   return diagnostics.length > 0 ? { nodes, edges, diagnostics } : { nodes, edges };

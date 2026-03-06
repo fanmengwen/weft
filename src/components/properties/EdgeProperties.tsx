@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Edge } from 'reactflow';
+import type { Edge } from '@/lib/reactflowCompat';
 import { useFlowStore } from '@/store';
 import { EdgeConditionSection } from './edge/EdgeConditionSection';
 import { EdgeDeleteSection } from './edge/EdgeDeleteSection';

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Edge } from 'reactflow';
+import type { Edge } from '@/lib/reactflowCompat';
 import { Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 

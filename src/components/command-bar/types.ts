@@ -1,4 +1,4 @@
-import { Node, Edge } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { FlowTemplate } from '../../services/templates';
 import { LayoutAlgorithm } from '../../services/elkLayout';
 
@@ -20,12 +20,12 @@ export interface CommandItem {
 export interface CommandBarProps {
     isOpen: boolean;
     onClose: () => void;
-    nodes: Node[];
-    edges: Edge[];
-    onApply: (nodes: Node[], edges: Edge[]) => void;
+    nodes: FlowNode[];
+    edges: FlowEdge[];
+    onApply: (nodes: FlowNode[], edges: FlowEdge[]) => void;
     onAIGenerate: (prompt: string, imageBase64?: string) => Promise<void>;
     isGenerating: boolean;
-    chatMessages?: { role: 'user' | 'model'; parts: { text?: string; inlineData?: any }[] }[];
+    chatMessages?: { role: 'user' | 'model'; parts: { text?: string; inlineData?: { mimeType: string; data: string } }[] }[];
     onClearChat?: () => void;
     onUndo?: () => void;
     onRedo?: () => void;

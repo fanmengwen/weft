@@ -1,5 +1,4 @@
-import type { Edge, Node } from 'reactflow';
-import { isDiagramType, type DiagramType } from '@/lib/types';
+import { isDiagramType, type DiagramType, type FlowEdge, type FlowNode } from '@/lib/types';
 
 export const DIAGRAM_DOCUMENT_VERSION = '1.0';
 const DIAGRAM_DOCUMENT_NAME = 'FlowMind Diagram';
@@ -10,14 +9,14 @@ export interface DiagramDocumentV1 {
   name: string;
   createdAt: string;
   diagramType: DiagramType;
-  nodes: Node[];
-  edges: Edge[];
+  nodes: FlowNode[];
+  edges: FlowEdge[];
 }
 
 export interface ImportCompatibilityResult {
   diagramType: DiagramType;
-  nodes: Node[];
-  edges: Edge[];
+  nodes: FlowNode[];
+  edges: FlowEdge[];
   warnings: string[];
 }
 
@@ -38,8 +37,8 @@ function getVersionParts(version: string): { major: number | null; minor: number
 }
 
 export function createDiagramDocument(
-  nodes: Node[],
-  edges: Edge[],
+  nodes: FlowNode[],
+  edges: FlowEdge[],
   diagramType: DiagramType = DEFAULT_DIAGRAM_TYPE
 ): DiagramDocumentV1 {
   return {
@@ -73,8 +72,8 @@ export function parseDiagramDocumentImport(raw: unknown): ImportCompatibilityRes
 
   return {
     diagramType,
-    nodes: candidate.nodes as Node[],
-    edges: candidate.edges as Edge[],
+    nodes: candidate.nodes as FlowNode[],
+    edges: candidate.edges as FlowEdge[],
     warnings,
   };
 }

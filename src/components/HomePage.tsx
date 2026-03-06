@@ -25,7 +25,7 @@ export const HomePage: React.FC<HomePageProps> = ({
     onSwitchTab
 }) => {
     const { brandConfig } = useFlowStore();
-    const { snapshots, deleteSnapshot } = useSnapshots();
+    const { manualSnapshots, deleteSnapshot } = useSnapshots();
     const [internalActiveTab, setInternalActiveTab] = useState<'home' | 'settings'>('home');
     const [activeSettingsTab, setActiveSettingsTab] = useState<'brand' | 'general' | 'shortcuts' | 'privacy' | 'ai'>('brand');
 
@@ -58,7 +58,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
                 {activeTab === 'home' && (
                     <HomeDashboard
-                        snapshots={snapshots}
+                        snapshots={manualSnapshots}
                         onCreateNew={() => {
                             trackEvent('create_new_flow');
                             onLaunch();

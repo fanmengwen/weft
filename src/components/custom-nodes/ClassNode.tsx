@@ -1,10 +1,22 @@
 import React, { memo } from 'react';
-import { Handle, NodeProps, NodeResizer, Position } from 'reactflow';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
 import { useInlineNodeTextEdit } from '@/hooks/useInlineNodeTextEdit';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { useFlowStore } from '@/store';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from '@/components/handleInteraction';
+import { getTransformDiagnosticsAttrs } from '@/components/transformDiagnostics';
+import { NodeTransformControls } from '@/components/NodeTransformControls';
 
-function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElement {
+function ClassNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
+  const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+  const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+  const handleVisibilityClass = visualQualityV2Enabled
+    ? getV2HandleVisibilityClass(Boolean(selected))
+    : selected
+      ? 'opacity-100'
+      : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100';
   const attributes = Array.isArray(data.classAttributes) ? data.classAttributes : [];
   const methods = Array.isArray(data.classMethods) ? data.classMethods : [];
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '');
@@ -13,6 +25,10 @@ function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElem
   const [editingAttributeIndex, setEditingAttributeIndex] = React.useState<number | null>(null);
   const [editingMethodIndex, setEditingMethodIndex] = React.useState<number | null>(null);
   const [listDraft, setListDraft] = React.useState('');
+  const classBaseMinHeight = 140;
+  const estimatedAttributesHeight = attributes.length > 0 ? Math.min(attributes.length, 4) * 18 + 16 : 16;
+  const estimatedMethodsHeight = methods.length > 0 ? Math.min(methods.length, 4) * 18 + 16 : 16;
+  const contentMinHeight = Math.max(classBaseMinHeight, 76 + estimatedAttributesHeight + estimatedMethodsHeight);
 
   const updateClassList = React.useCallback((key: 'classAttributes' | 'classMethods', index: number, nextValue: string) => {
     setNodes((nodes) =>
@@ -61,19 +77,26 @@ function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElem
 
   return (
     <>
-      <NodeResizer
-        color="#94a3b8"
-        isVisible={selected}
+      <NodeTransformControls
+        isVisible={Boolean(selected)}
         minWidth={220}
-        minHeight={140}
-        lineStyle={{ borderStyle: 'solid', borderWidth: 1 }}
-        handleStyle={{ width: 8, height: 8, borderRadius: 4 }}
+        minHeight={contentMinHeight}
       />
 
       <div
-        className={`bg-white border border-slate-300 rounded-lg shadow-sm min-w-[220px] ${
-          selected ? 'ring-2 ring-indigo-500 ring-offset-2' : ''
+        className={`${visualQualityV2Enabled ? 'bg-slate-50' : 'bg-white'} border border-slate-300 rounded-lg shadow-sm min-w-[220px] ${
+          selected && !visualQualityV2Enabled ? 'ring-2 ring-indigo-500 ring-offset-2' : ''
         }`}
+        style={{
+          minHeight: contentMinHeight,
+          boxShadow: selected && visualQualityV2Enabled ? '0 0 0 2px #6366f1, 0 0 12px rgba(99,102,241,0.2)' : undefined,
+        }}
+        {...getTransformDiagnosticsAttrs({
+          nodeFamily: 'class',
+          selected: Boolean(selected),
+          minHeight: contentMinHeight,
+          hasSubLabel: Boolean(data.classStereotype),
+        })}
       >
         <div className="border-b border-slate-300 px-3 py-2 text-center">
           {data.classStereotype && (
@@ -100,7 +123,8 @@ function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElem
             </div>
           )}
           <div
-            className="text-sm font-semibold text-slate-800 break-words"
+            className={`${visualQualityV2Enabled ? 'text-[13px]' : 'text-sm'} font-semibold text-slate-800 break-words`}
+            title={data.label || 'Class'}
             onClick={(event) => {
               event.stopPropagation();
               labelEdit.beginEdit();
@@ -239,7 +263,8 @@ function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElem
         id="top"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('top', Boolean(selected), handlePointerEvents)}
       />
       <Handle
         type="source"
@@ -247,7 +272,8 @@ function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElem
         id="bottom"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('bottom', Boolean(selected), handlePointerEvents)}
       />
       <Handle
         type="source"
@@ -255,7 +281,8 @@ function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElem
         id="left"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('left', Boolean(selected), handlePointerEvents)}
       />
       <Handle
         type="source"
@@ -263,7 +290,8 @@ function ClassNode({ id, data, selected }: NodeProps<NodeData>): React.ReactElem
         id="right"
         isConnectableStart
         isConnectableEnd
-        className="!w-3 !h-3 !bg-slate-400 !border-2 !border-white"
+        className={`!w-3 !h-3 !bg-slate-400 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('right', Boolean(selected), handlePointerEvents)}
       />
     </>
   );

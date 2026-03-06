@@ -1,4 +1,4 @@
-import { Node } from 'reactflow';
+import type { FlowNode } from '@/lib/types';
 
 /**
  * Alignment and distribution utilities for multi-selected nodes.
@@ -8,7 +8,7 @@ type AlignDirection = 'left' | 'center' | 'right' | 'top' | 'middle' | 'bottom';
 type DistributeDirection = 'horizontal' | 'vertical';
 
 /** Align selected nodes along a given axis. */
-export function alignNodes(nodes: Node[], direction: AlignDirection): Node[] {
+export function alignNodes(nodes: FlowNode[], direction: AlignDirection): FlowNode[] {
     if (nodes.length < 2) return nodes;
 
     const ids = new Set(nodes.map((n) => n.id));
@@ -51,7 +51,7 @@ export function alignNodes(nodes: Node[], direction: AlignDirection): Node[] {
 }
 
 /** Distribute selected nodes evenly along horizontal or vertical axis. */
-export function distributeNodes(nodes: Node[], direction: DistributeDirection): Node[] {
+export function distributeNodes(nodes: FlowNode[], direction: DistributeDirection): FlowNode[] {
     if (nodes.length < 3) return nodes;
 
     const sorted = [...nodes].sort((a, b) =>
@@ -99,7 +99,7 @@ export function distributeNodes(nodes: Node[], direction: DistributeDirection): 
 }
 
 /** Match all selected nodes to the same width/height. */
-export function matchSize(nodes: Node[], dimension: 'width' | 'height' | 'both'): Node[] {
+export function matchSize(nodes: FlowNode[], dimension: 'width' | 'height' | 'both'): FlowNode[] {
     if (nodes.length < 2) return nodes;
 
     const maxW = Math.max(...nodes.map((n) => n.width || 200));

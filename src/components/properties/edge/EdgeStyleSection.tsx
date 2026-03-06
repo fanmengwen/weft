@@ -1,9 +1,9 @@
 import React from 'react';
-import type { Edge } from 'reactflow';
-import { MarkerType } from 'reactflow';
+import { MarkerType } from '@/lib/reactflowCompat';
 import { Activity, ArrowRightLeft, Ban } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Switch } from '@/components/ui/Switch';
+import type { FlowEdge } from '@/lib/types';
 import {
     applyArchitectureDirection,
     getDirectionFromMarkers,
@@ -13,8 +13,8 @@ import {
 const EDGE_COLORS = ['#94a3b8', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
 
 interface EdgeStyleSectionProps {
-    selectedEdge: Edge;
-    onChange: (id: string, updates: Partial<Edge>) => void;
+    selectedEdge: FlowEdge;
+    onChange: (id: string, updates: Partial<FlowEdge>) => void;
 }
 
 export function EdgeStyleSection({ selectedEdge, onChange }: EdgeStyleSectionProps): React.ReactElement {

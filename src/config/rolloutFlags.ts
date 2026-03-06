@@ -3,7 +3,16 @@ export type RolloutFlagKey =
     | 'visualQualityV2'
     | 'mermaidSyncV1'
     | 'familyPluginV1'
-    | 'reactFlowV12Migration';
+    | 'relationSemanticsV1'
+    | 'stateDiagramV1'
+    | 'indexedDbStorageV1'
+    | 'canvasInteractionsV1'
+    | 'shapeLibraryV1'
+    | 'templateLibraryV1'
+    | 'collaborationV1'
+    | 'reactFlowV12Migration'
+    | 'architectureParentingV12'
+    | 'reactFlowV12Cleanup';
 
 interface RolloutFlagDefinition {
     key: RolloutFlagKey;
@@ -37,11 +46,65 @@ const ROLLOUT_FLAG_DEFINITIONS: Record<RolloutFlagKey, RolloutFlagDefinition> = 
         defaultEnabled: false,
         description: 'Diagram family plugin routing rollout',
     },
+    relationSemanticsV1: {
+        key: 'relationSemanticsV1',
+        envVar: 'VITE_RELATION_SEMANTICS_V1',
+        defaultEnabled: false,
+        description: 'Class/ER relation marker and routing semantics rollout',
+    },
+    stateDiagramV1: {
+        key: 'stateDiagramV1',
+        envVar: 'VITE_STATE_DIAGRAM_V1',
+        defaultEnabled: true,
+        description: 'Dedicated state diagram plugin dispatch rollout',
+    },
+    indexedDbStorageV1: {
+        key: 'indexedDbStorageV1',
+        envVar: 'VITE_INDEXEDDB_STORAGE_V1',
+        defaultEnabled: true,
+        description: 'IndexedDB storage abstraction scaffold rollout',
+    },
+    canvasInteractionsV1: {
+        key: 'canvasInteractionsV1',
+        envVar: 'VITE_CANVAS_INTERACTIONS_V1',
+        defaultEnabled: false,
+        description: 'Canvas micro-interactions rollout (double-click create, drag-create/connect)',
+    },
+    shapeLibraryV1: {
+        key: 'shapeLibraryV1',
+        envVar: 'VITE_SHAPE_LIBRARY_V1',
+        defaultEnabled: false,
+        description: 'Shape library registry scaffold rollout',
+    },
+    templateLibraryV1: {
+        key: 'templateLibraryV1',
+        envVar: 'VITE_TEMPLATE_LIBRARY_V1',
+        defaultEnabled: false,
+        description: 'Template registry scaffold rollout',
+    },
+    collaborationV1: {
+        key: 'collaborationV1',
+        envVar: 'VITE_COLLABORATION_V1',
+        defaultEnabled: true,
+        description: 'Real-time collaboration scaffold rollout',
+    },
     reactFlowV12Migration: {
         key: 'reactFlowV12Migration',
         envVar: 'VITE_REACTFLOW_V12_MIGRATION',
         defaultEnabled: false,
         description: 'React Flow v12 migration path',
+    },
+    architectureParentingV12: {
+        key: 'architectureParentingV12',
+        envVar: 'VITE_ARCHITECTURE_PARENTING_V12',
+        defaultEnabled: false,
+        description: 'React Flow v12 parent/extent rollout for architecture boundaries',
+    },
+    reactFlowV12Cleanup: {
+        key: 'reactFlowV12Cleanup',
+        envVar: 'VITE_REACTFLOW_V12_CLEANUP',
+        defaultEnabled: false,
+        description: 'Post-migration cleanup rollout for temporary compatibility shims',
     },
 };
 
@@ -66,10 +129,18 @@ export const ROLLOUT_FLAGS: Record<RolloutFlagKey, boolean> = {
     visualQualityV2: isRolloutFlagEnabled('visualQualityV2'),
     mermaidSyncV1: isRolloutFlagEnabled('mermaidSyncV1'),
     familyPluginV1: isRolloutFlagEnabled('familyPluginV1'),
+    relationSemanticsV1: isRolloutFlagEnabled('relationSemanticsV1'),
+    stateDiagramV1: isRolloutFlagEnabled('stateDiagramV1'),
+    indexedDbStorageV1: isRolloutFlagEnabled('indexedDbStorageV1'),
+    canvasInteractionsV1: isRolloutFlagEnabled('canvasInteractionsV1'),
+    shapeLibraryV1: isRolloutFlagEnabled('shapeLibraryV1'),
+    templateLibraryV1: isRolloutFlagEnabled('templateLibraryV1'),
+    collaborationV1: isRolloutFlagEnabled('collaborationV1'),
     reactFlowV12Migration: isRolloutFlagEnabled('reactFlowV12Migration'),
+    architectureParentingV12: isRolloutFlagEnabled('architectureParentingV12'),
+    reactFlowV12Cleanup: isRolloutFlagEnabled('reactFlowV12Cleanup'),
 };
 
 export function getRolloutFlagDefinitions(): RolloutFlagDefinition[] {
     return Object.values(ROLLOUT_FLAG_DEFINITIONS);
 }
-

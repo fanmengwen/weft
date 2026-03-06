@@ -307,6 +307,28 @@ describe('mermaidParser', () => {
         expect(result.edges[0].label).toBe('Yes');
     });
 
+    it('should handle reverse arrow <-- with markerStart', () => {
+        const input = `
+            flowchart TD
+            A <-- B
+        `;
+        const result = parseMermaid(input);
+        expect(result.edges).toHaveLength(1);
+        expect(result.edges[0].markerStart).toBeDefined();
+        expect(result.edges[0].markerEnd).toBeUndefined();
+    });
+
+    it('should handle bidirectional arrow <--> with both markers', () => {
+        const input = `
+            flowchart TD
+            A <--> B
+        `;
+        const result = parseMermaid(input);
+        expect(result.edges).toHaveLength(1);
+        expect(result.edges[0].markerStart).toBeDefined();
+        expect(result.edges[0].markerEnd).toBeDefined();
+    });
+
     it('should handle multiline quoted strings', () => {
         const input = `
             graph TD

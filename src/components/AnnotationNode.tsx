@@ -1,26 +1,36 @@
 import React, { memo } from 'react';
-import { NodeProps, NodeResizer } from 'reactflow';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { NodeData } from '@/lib/types';
+import type { NodeData } from '@/lib/types';
 import { useTranslation } from 'react-i18next';
 import { useInlineNodeTextEdit } from '@/hooks/useInlineNodeTextEdit';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from './handleInteraction';
+import { NodeTransformControls } from './NodeTransformControls';
 
-const AnnotationNode = ({ id, data, selected }: NodeProps<NodeData>) => {
+function AnnotationNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
   const { t } = useTranslation();
+  const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+  const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+  const handleVisibilityClass = visualQualityV2Enabled
+    ? getV2HandleVisibilityClass(Boolean(selected), { includeConnectingState: false })
+    : selected
+      ? 'opacity-100'
+      : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100';
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '');
   const subLabelEdit = useInlineNodeTextEdit(id, 'subLabel', data.subLabel || '');
   return (
     <>
-      <NodeResizer 
-        color="#ca8a04" 
-        isVisible={selected} 
-        minWidth={150} 
-        minHeight={100} 
+      <NodeTransformControls
+        isVisible={Boolean(selected)}
+        minWidth={150}
+        minHeight={100}
       />
       <div
         className={`
-          relative flex flex-col h-full shadow-md flow-lod-shadow rounded-br-3xl rounded-tl-sm rounded-tr-sm rounded-bl-sm border border-yellow-300 transition-all duration-200
+          relative group flex flex-col h-full shadow-md flow-lod-shadow rounded-br-3xl rounded-tl-sm rounded-tr-sm rounded-bl-sm border border-yellow-300 transition-all duration-200
           bg-yellow-100/90
           ${selected ? `ring-2 ring-yellow-400 ring-offset-2 z-10` : 'hover:shadow-lg'}
         `}
@@ -74,12 +84,49 @@ const AnnotationNode = ({ id, data, selected }: NodeProps<NodeData>) => {
                 )}
             </div>
         </div>
-        
+
         {/* Decorative corner fold */}
         <div className="absolute bottom-0 right-0 w-8 h-8 bg-yellow-200/50 rounded-tl-xl border-t border-l border-yellow-300/30"></div>
       </div>
+
+      <Handle
+        type="source"
+        position={Position.Top}
+        id="top"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white !bg-yellow-500 transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('top', Boolean(selected), handlePointerEvents)}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        id="right"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white !bg-yellow-500 transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('right', Boolean(selected), handlePointerEvents)}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        id="bottom"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white !bg-yellow-500 transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('bottom', Boolean(selected), handlePointerEvents)}
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        id="left"
+        isConnectableStart
+        isConnectableEnd
+        className={`!w-3 !h-3 !border-2 !border-white !bg-yellow-500 transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+        style={getConnectorHandleStyle('left', Boolean(selected), handlePointerEvents)}
+      />
     </>
   );
-};
+}
 
 export default memo(AnnotationNode);

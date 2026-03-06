@@ -1,4 +1,4 @@
-import type { EdgeTypes, NodeTypes } from 'reactflow';
+import type { EdgeTypes, NodeTypes } from '@/lib/reactflowCompat';
 import AnnotationNode from '@/components/AnnotationNode';
 import CustomNode from '@/components/CustomNode';
 import { CustomBezierEdge, CustomSmoothStepEdge, CustomStepEdge } from '@/components/CustomEdge';

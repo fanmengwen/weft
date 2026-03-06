@@ -1,6 +1,6 @@
 
-import { Node, Edge } from 'reactflow';
 import { parseFlowMindDSL } from './flowmindDSLParserV2';
+import type { FlowEdge, FlowNode } from './types';
 
 export interface ParseDiagnostic {
     message: string;
@@ -10,8 +10,8 @@ export interface ParseDiagnostic {
 }
 
 export interface ParseResult {
-    nodes: Node[];
-    edges: Edge[];
+    nodes: FlowNode[];
+    edges: FlowEdge[];
     title?: string;
     error?: string;
     diagnostics?: ParseDiagnostic[];

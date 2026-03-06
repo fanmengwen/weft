@@ -31,7 +31,7 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
     const [isHistoryOpen, setIsHistoryOpen] = useState(false);
     const [isCommandBarOpen, setIsCommandBarOpen] = useState(false);
     const [commandBarView, setCommandBarView] = useState<CommandBarView>('root');
-    const [isSelectMode, setIsSelectMode] = useState(false);
+    const [isSelectMode, setIsSelectMode] = useState(true);
 
     function openHistory(): void {
         setIsHistoryOpen(true);

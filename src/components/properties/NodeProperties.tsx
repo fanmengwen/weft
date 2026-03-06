@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Node } from 'reactflow';
+import { Node } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
 import { Box, Palette, Star, Image as ImageStart } from 'lucide-react';
 import { ShapeSelector } from './ShapeSelector';

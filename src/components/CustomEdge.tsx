@@ -1,13 +1,25 @@
 import React from 'react';
-import { useEdges } from 'reactflow';
-import type { EdgeProps } from 'reactflow';
+import { useEdges, useNodes } from '@/lib/reactflowCompat';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import type { LegacyEdgeProps } from '@/lib/reactflowCompat';
 import type { EdgeData } from '@/lib/types';
 import { CustomEdgeWrapper } from './custom-edge/CustomEdgeWrapper';
 import { buildEdgePath } from './custom-edge/pathUtils';
+import { shouldUseOrthogonalRelationRouting } from './custom-edge/relationRoutingSemantics';
 
 function createEdgeRenderer(variant: 'bezier' | 'smoothstep' | 'step') {
-    return function RenderEdge(props: EdgeProps<EdgeData>): React.ReactElement {
+    return function RenderEdge(props: LegacyEdgeProps<EdgeData>): React.ReactElement {
         const allEdges = useEdges();
+        const allNodes = useNodes();
+        const relationSemanticsV1Enabled = ROLLOUT_FLAGS.relationSemanticsV1;
+        const sourceNode = allNodes.find((node) => node.id === props.source);
+        const targetNode = allNodes.find((node) => node.id === props.target);
+        const forceOrthogonal = shouldUseOrthogonalRelationRouting(
+            relationSemanticsV1Enabled,
+            props.data,
+            sourceNode,
+            targetNode
+        );
         const { edgePath, labelX, labelY } = buildEdgePath(
             {
                 id: props.id,
@@ -19,9 +31,15 @@ function createEdgeRenderer(variant: 'bezier' | 'smoothstep' | 'step') {
                 targetY: props.targetY,
                 sourcePosition: props.sourcePosition,
                 targetPosition: props.targetPosition,
+                sourceHandleId: props.sourceHandleId,
+                targetHandleId: props.targetHandleId,
             },
             allEdges,
-            variant
+            variant,
+            {
+                forceOrthogonal,
+                waypoint: props.data?.waypoint as { x: number; y: number } | undefined,
+            }
         );
 
         return (

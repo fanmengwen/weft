@@ -1,19 +1,20 @@
 import { act, render, screen } from '@testing-library/react';
 import type { CSSProperties } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { Position } from 'reactflow';
+import { Position } from '@/lib/reactflowCompat';
 import type { DesignSystem } from '@/lib/types';
 import { DEFAULT_DESIGN_SYSTEM, useFlowStore } from '@/store';
 import CustomNode from './CustomNode';
 import { CustomSmoothStepEdge } from './CustomEdge';
 
-vi.mock('reactflow', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('reactflow')>();
+vi.mock('@/lib/reactflowCompat', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/lib/reactflowCompat')>();
 
     return {
         ...actual,
         Handle: () => null,
         NodeResizer: () => null,
+        NodeResizeControl: () => null,
         EdgeLabelRenderer: ({ children }: { children: React.ReactNode }) => <>{children}</>,
         Position: {
             Top: 'top',
@@ -30,6 +31,7 @@ vi.mock('reactflow', async (importOriginal) => {
         getBezierPath: () => ['M 0 0 C 0 0 0 0 0 0', 10, 20],
         getSmoothStepPath: () => ['M 0 0 L 10 10', 15, 25],
         useEdges: () => [],
+        useNodes: () => [],
         useReactFlow: () => ({
             setEdges: vi.fn(),
             screenToFlowPosition: ({ x, y }: { x: number; y: number }) => ({ x, y }),
@@ -171,5 +173,31 @@ describe('Design System integration', () => {
         const afterStyle = JSON.parse(screen.getByTestId('custom-edge-base').getAttribute('data-style') || '{}');
         expect(afterStyle.stroke).toBe('#ff0055');
         expect(afterStyle.strokeWidth).toBe(6);
+    });
+
+    it('enforces content-safe minimum height for icon + subtitle nodes', () => {
+        render(
+            <CustomNode
+                id="n2"
+                type="process"
+                selected={false}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Pro Tier', subLabel: 'Payment Process', icon: 'CreditCard' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+                {...({ width: 180, height: 90 } as Record<string, number>)}
+            />
+        );
+
+        const nodeContainer = document.querySelector('.group') as HTMLDivElement | null;
+        expect(nodeContainer).toBeTruthy();
+        if (!nodeContainer) {
+            throw new Error('Node container not found');
+        }
+        expect(nodeContainer.style.minHeight).toBe('128px');
     });
 });

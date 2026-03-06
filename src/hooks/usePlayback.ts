@@ -1,29 +1,19 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useReactFlow, Node, Edge } from 'reactflow';
+import { useReactFlow } from '@/lib/reactflowCompat';
 import { useFlowStore } from '../store';
-
-export interface PlaybackState {
-    isPlaying: boolean;
-    currentStepIndex: number; // -1 if not started
-    totalSteps: number;
-    steps: string[]; // Array of Node IDs
-    playbackSpeed: number; // ms
-}
+import type { CSSProperties } from 'react';
 
 export function usePlayback() {
-    const { nodes, edges, setNodes } = useFlowStore();
+    const { nodes, setNodes } = useFlowStore();
     const { fitView } = useReactFlow();
 
-    // State
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentStepIndex, setCurrentStepIndex] = useState(-1);
     const [playbackSpeed, setPlaybackSpeed] = useState(2000);
     const [steps, setSteps] = useState<string[]>([]);
 
-    const playbackInterval = useRef<NodeJS.Timeout | null>(null);
-    const initialStyles = useRef<Record<string, any>>({});
+    const initialStyles = useRef<Record<string, CSSProperties | undefined>>({});
 
-    // 1. Generate Sequence (Top-Left to Bottom-Right)
     const generateSequence = useCallback(() => {
         return [...nodes]
             .sort((a, b) => {
@@ -36,7 +26,6 @@ export function usePlayback() {
             .map(n => n.id);
     }, [nodes]);
 
-    // Restore styles when stopping
     const restoreStyles = useCallback(() => {
         if (Object.keys(initialStyles.current).length > 0) {
             setNodes(nds => nds.map(n => {
@@ -47,11 +36,9 @@ export function usePlayback() {
         }
     }, [setNodes]);
 
-    // Playback Controls
     const startPlayback = useCallback(() => {
-        // Capture initial styles
         if (Object.keys(initialStyles.current).length === 0) {
-            const styles: Record<string, any> = {};
+            const styles: Record<string, CSSProperties | undefined> = {};
             nodes.forEach(n => { styles[n.id] = n.style || {}; });
             initialStyles.current = styles;
         }
@@ -59,14 +46,13 @@ export function usePlayback() {
         const newSteps = generateSequence();
         setSteps(newSteps);
         setCurrentStepIndex(0);
-        setIsPlaying(false); // Start manually as requested
+        setIsPlaying(false);
     }, [generateSequence, nodes]);
 
     const stopPlayback = useCallback(() => {
         setIsPlaying(false);
         setCurrentStepIndex(-1);
         restoreStyles();
-        if (playbackInterval.current) clearInterval(playbackInterval.current);
     }, [restoreStyles]);
 
     const togglePlay = useCallback(() => setIsPlaying(p => !p), []);
@@ -74,7 +60,7 @@ export function usePlayback() {
     const nextStep = useCallback(() => {
         setCurrentStepIndex(prev => {
             if (prev < steps.length - 1) return prev + 1;
-            setIsPlaying(false); // Pause at end
+            setIsPlaying(false);
             return prev;
         });
     }, [steps.length]);
@@ -83,7 +69,6 @@ export function usePlayback() {
         setCurrentStepIndex(prev => Math.max(0, prev - 1));
     }, []);
 
-    // Auto-Advance Effect
     useEffect(() => {
         let interval: NodeJS.Timeout;
         const isFinished = currentStepIndex >= steps.length - 1;
@@ -95,13 +80,11 @@ export function usePlayback() {
         return () => { if (interval) clearInterval(interval); };
     }, [isPlaying, currentStepIndex, playbackSpeed, steps.length, nextStep]);
 
-    // Viewport & Focus Effect
     useEffect(() => {
         if (currentStepIndex < 0 || !steps[currentStepIndex]) return;
 
         const nodeId = steps[currentStepIndex];
 
-        // Apply Focus Styles
         setNodes(nds => nds.map(n => {
             const isActive = n.id === nodeId;
             return {
@@ -117,7 +100,6 @@ export function usePlayback() {
             };
         }));
 
-        // Focus Viewport
         fitView({
             nodes: [{ id: nodeId }],
             duration: 800,

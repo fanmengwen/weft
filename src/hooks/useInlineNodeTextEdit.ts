@@ -2,6 +2,9 @@ import { useCallback, useState } from 'react';
 import type { KeyboardEvent } from 'react';
 import { useFlowStore } from '@/store';
 import type { NodeData } from '@/lib/types';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { createConnectedSibling } from './node-operations/createConnectedSibling';
+import { useNodeLabelEditRequest } from './nodeLabelEditRequest';
 
 type EditableField = 'label' | 'subLabel' | 'classStereotype';
 
@@ -22,6 +25,8 @@ export function useInlineNodeTextEdit(nodeId: string, field: EditableField, init
     setDraftState(initialValue ?? '');
     setIsEditing(true);
   }, [initialValue]);
+
+  useNodeLabelEditRequest(nodeId, beginEdit);
 
   const setDraft = useCallback((value: string) => {
     setDraftState(value);
@@ -61,9 +66,17 @@ export function useInlineNodeTextEdit(nodeId: string, field: EditableField, init
       if (event.key === 'Enter') {
         event.preventDefault();
         commit();
+        return;
+      }
+      if (event.key === 'Tab' && !event.shiftKey) {
+        event.preventDefault();
+        commit();
+        if (ROLLOUT_FLAGS.canvasInteractionsV1) {
+          createConnectedSibling(nodeId);
+        }
       }
     },
-    [cancel, commit]
+    [cancel, commit, nodeId]
   );
 
   return { isEditing, draft, beginEdit, setDraft, commit, cancel, handleKeyDown };

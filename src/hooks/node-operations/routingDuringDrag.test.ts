@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import type { Edge, Node } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { rerouteConnectedEdgesDuringDrag } from './routingDuringDrag';
 
-function createNode(id: string, x: number, y: number): Node {
+function createNode(id: string, x: number, y: number): FlowNode {
   return {
     id,
     type: 'process',
     position: { x, y },
     data: { label: id },
-  } as Node;
+  } as FlowNode;
 }
 
 function createEdge(
@@ -17,14 +17,14 @@ function createEdge(
   target: string,
   sourceHandle?: string,
   targetHandle?: string
-): Edge {
+): FlowEdge {
   return {
     id,
     source,
     target,
     sourceHandle,
     targetHandle,
-  } as Edge;
+  } as FlowEdge;
 }
 
 describe('rerouteConnectedEdgesDuringDrag', () => {

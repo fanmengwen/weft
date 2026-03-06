@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { HomePage } from './HomePage';
@@ -52,35 +52,37 @@ describe('HomePage integration flows', () => {
         });
     });
 
-    function renderHomePage(props?: Partial<React.ComponentProps<typeof HomePage>>): void {
-        render(
-            <MemoryRouter>
-                <HomePage
-                    onLaunch={vi.fn()}
-                    onImportJSON={vi.fn()}
-                    onRestoreSnapshot={vi.fn()}
-                    {...props}
-                />
-            </MemoryRouter>
-        );
+    async function renderHomePage(props?: Partial<React.ComponentProps<typeof HomePage>>): Promise<void> {
+        await act(async () => {
+            render(
+                <MemoryRouter>
+                    <HomePage
+                        onLaunch={vi.fn()}
+                        onImportJSON={vi.fn()}
+                        onRestoreSnapshot={vi.fn()}
+                        {...props}
+                    />
+                </MemoryRouter>
+            );
+        });
     }
 
-    it('switches from home to settings view via sidebar', () => {
-        renderHomePage();
+    it('switches from home to settings view via sidebar', async () => {
+        await renderHomePage();
 
         fireEvent.click(screen.getByText('Settings'));
         expect(screen.getByRole('heading', { name: 'Settings' })).toBeTruthy();
         expect(screen.getByText('Flowpilot AI')).toBeTruthy();
     });
 
-    it('restores a snapshot and launches editor when a snapshot card is clicked', () => {
+    it('restores a snapshot and launches editor when a snapshot card is clicked', async () => {
         const onLaunch = vi.fn();
         const onRestoreSnapshot = vi.fn();
         localStorage.setItem('flowmind_snapshots', JSON.stringify([createSnapshot('snap-1', 'My Snapshot')]));
 
-        renderHomePage({ onLaunch, onRestoreSnapshot });
+        await renderHomePage({ onLaunch, onRestoreSnapshot });
 
-        fireEvent.click(screen.getByText('My Snapshot'));
+        fireEvent.click(await screen.findByText('My Snapshot'));
         expect(onRestoreSnapshot).toHaveBeenCalledTimes(1);
         expect(onLaunch).toHaveBeenCalledTimes(1);
     });

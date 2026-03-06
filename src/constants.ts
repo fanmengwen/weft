@@ -1,5 +1,5 @@
-import { Edge, Node, MarkerType } from 'reactflow';
-import { NodeType } from '@/lib/types';
+import { MarkerType } from '@/lib/reactflowCompat';
+import { type FlowEdge, type FlowNode, NodeType } from '@/lib/types';
 import { createId } from '@/lib/id';
 
 // --- Edge Styles (inline for reliable SVG rendering) ---
@@ -25,7 +25,7 @@ export const createDefaultEdge = (
   target: string,
   label?: string,
   id?: string
-): Edge => ({
+): FlowEdge => ({
   id: id || createId(`e-${source}-${target}`),
   source,
   target,
@@ -69,9 +69,9 @@ export const MINIMAP_NODE_COLORS: Record<string, string> = {
 };
 
 // --- Initial Data ---
-export const INITIAL_NODES: Node[] = [];
+export const INITIAL_NODES: FlowNode[] = [];
 
-export const INITIAL_EDGES: Edge[] = [];
+export const INITIAL_EDGES: FlowEdge[] = [];
 
 // Dash pattern definitions for edge styling
 export const EDGE_DASH_PATTERNS: Record<string, { label: string; strokeDasharray: string }> = {

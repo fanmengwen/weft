@@ -1,38 +1,29 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Node, Edge } from 'reactflow';
 import { Link } from 'react-router-dom';
 import { Code2, FileCode, AlertCircle, BookOpen, Loader2, Play } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { ViewHeader } from './ViewHeader';
 import { toMermaid } from '../../services/exportService';
 import { toOpenFlowDSL } from '../../services/openFlowDSLExporter';
-import { parseMermaidByType } from '@/services/mermaid/parseMermaidByType';
-import { normalizeParseDiagnostics } from '@/services/mermaid/diagnosticFormatting';
 import {
     getLineSelectionRange,
     groupArchitectureStrictModeDiagnostics,
 } from '@/services/mermaid/strictModeDiagnosticsPresentation';
 import { buildArchitectureStrictModeGuidance } from '@/services/mermaid/strictModeGuidance';
-import { parseOpenFlowDSL, type ParseDiagnostic } from '@/lib/openFlowDSLParser';
-import {
-    buildImportFidelityReport,
-    mapErrorToIssue,
-    mapParserDiagnosticToIssue,
-    persistLatestImportReport,
-    summarizeImportReport,
-} from '@/services/importFidelity';
-import { getElkLayout } from '../../services/elkLayout';
-import { assignSmartHandles } from '../../services/smartEdgeRouting';
+import { type ParseDiagnostic } from '@/lib/openFlowDSLParser';
 import { Button } from '../ui/Button';
 import { Textarea } from '../ui/Textarea';
 import { useFlowStore } from '../../store';
 import { useToast } from '../ui/ToastContext';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import type { FlowEdge, FlowNode } from '@/lib/types';
+import { applyCodeChanges } from './applyCodeChanges';
 
 interface CodeViewProps {
     mode: 'mermaid' | 'flowmind';
-    nodes: Node[];
-    edges: Edge[];
-    onApply: (nodes: Node[], edges: Edge[]) => void;
+    nodes: FlowNode[];
+    edges: FlowEdge[];
+    onApply: (nodes: FlowNode[], edges: FlowEdge[]) => void;
     onClose: () => void;
     handleBack: () => void;
 }
@@ -46,18 +37,35 @@ export const CodeView = ({
     handleBack
 }: CodeViewProps) => {
     const { t } = useTranslation();
-    const { brandConfig, activeTabId, updateTab, viewSettings } = useFlowStore();
+    const {
+        brandConfig,
+        activeTabId,
+        updateTab,
+        viewSettings,
+        setMermaidDiagnostics,
+        clearMermaidDiagnostics,
+    } = useFlowStore();
     const { addToast } = useToast();
-    const [code, setCode] = useState('');
+    const [code, setCode] = useState(() => {
+        const liveModeEnabled = mode === 'mermaid' && ROLLOUT_FLAGS.mermaidSyncV1;
+        return liveModeEnabled ? toMermaid(nodes, edges) : '';
+    });
     const [error, setError] = useState<string | null>(null);
     const [diagnostics, setDiagnostics] = useState<ParseDiagnostic[]>([]);
     const [isApplying, setIsApplying] = useState(false);
+    const [liveStatus, setLiveStatus] = useState<'idle' | 'typing' | 'applying' | 'synced' | 'error'>('idle');
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+    const liveApplyTimerRef = useRef<number | undefined>(undefined);
+    const liveApplyRequestRef = useRef(0);
+    const isLiveMermaidEnabled = mode === 'mermaid' && ROLLOUT_FLAGS.mermaidSyncV1;
 
-    // No initial sync - start empty for import
     useEffect(() => {
-        setCode('');
-    }, [mode]);
+        return () => {
+            if (liveApplyTimerRef.current !== undefined) {
+                window.clearTimeout(liveApplyTimerRef.current);
+            }
+        };
+    }, []);
 
     const handleChange = (val: string) => {
         setCode(val);
@@ -65,104 +73,66 @@ export const CodeView = ({
             setError(null);
             setDiagnostics([]);
         }
+        if (isLiveMermaidEnabled) {
+            setLiveStatus(val.trim().length === 0 ? 'idle' : 'typing');
+        }
     };
 
-    const handleApply = async () => {
-        const importStart = performance.now();
-        const res = mode === 'mermaid'
-            ? parseMermaidByType(code, { architectureStrictMode: viewSettings.architectureStrictMode })
-            : parseOpenFlowDSL(code);
-        if (res.error) {
-            const parserDiagnostics = 'diagnostics' in res
-                ? normalizeParseDiagnostics(res.diagnostics)
-                : [];
-            const issues = parserDiagnostics.map((diagnostic) => mapParserDiagnosticToIssue(diagnostic));
-            if (issues.length === 0) {
-                issues.push(mapErrorToIssue(res.error));
-            }
-            const report = buildImportFidelityReport({
-                source: mode === 'mermaid' ? 'mermaid' : 'openflowdsl',
-                nodeCount: 0,
-                edgeCount: 0,
-                elapsedMs: Math.round(performance.now() - importStart),
-                issues,
-            });
-            persistLatestImportReport(report);
-            addToast(summarizeImportReport(report), 'error');
-            setError(res.error);
-            if ('diagnostics' in res) {
-                setDiagnostics(normalizeParseDiagnostics(res.diagnostics));
-            } else {
-                setDiagnostics([]);
-            }
+    const handleApply = useCallback(async (
+        options: {
+            closeOnSuccess: boolean;
+            source: 'manual' | 'live';
+            liveRequestId?: number;
+        } = { closeOnSuccess: true, source: 'manual' }
+    ) => {
+        await applyCodeChanges({
+            mode,
+            code,
+            architectureStrictMode: viewSettings.architectureStrictMode,
+            onApply,
+            onClose,
+            activeTabId,
+            updateTab,
+            setMermaidDiagnostics,
+            clearMermaidDiagnostics,
+            addToast,
+            setError,
+            setDiagnostics,
+            setIsApplying,
+            setLiveStatus,
+            isLiveRequestStale: (requestId, source) => {
+                if (source !== 'live' || typeof requestId !== 'number') return false;
+                return requestId !== liveApplyRequestRef.current;
+            },
+            options,
+        });
+    }, [
+        mode,
+        code,
+        viewSettings.architectureStrictMode,
+        clearMermaidDiagnostics,
+        setMermaidDiagnostics,
+        onApply,
+        updateTab,
+        activeTabId,
+        addToast,
+        onClose,
+    ]);
+
+    useEffect(() => {
+        if (!isLiveMermaidEnabled) return;
+        if (code.trim().length === 0) {
             return;
         }
-
-
-        // Apply ELK layout for both Mermaid and FlowMind DSL
-        if (res.nodes.length > 0) {
-            setIsApplying(true);
-            try {
-                // Direction from metadata or default to TB
-                const direction = (res as any).metadata?.direction || (res as any).direction || 'TB';
-
-                const layoutedNodes = await getElkLayout(res.nodes, res.edges, {
-                    direction,
-                    algorithm: 'layered',
-                    spacing: 'normal',
-                });
-
-                // Smart Edge Routing (optional but good)
-                const smartEdges = assignSmartHandles(layoutedNodes, res.edges);
-
-                onApply(layoutedNodes, smartEdges);
-                if (mode === 'mermaid' && 'diagramType' in res && res.diagramType) {
-                    updateTab(activeTabId, { diagramType: res.diagramType });
-                }
-                const report = buildImportFidelityReport({
-                    source: mode === 'mermaid' ? 'mermaid' : 'openflowdsl',
-                    nodeCount: layoutedNodes.length,
-                    edgeCount: smartEdges.length,
-                    elapsedMs: Math.round(performance.now() - importStart),
-                    issues: [],
-                });
-                persistLatestImportReport(report);
-                addToast(summarizeImportReport(report), 'success');
-            } catch (err) {
-                console.error('Layout failed, applying raw positions:', err);
-                onApply(res.nodes, res.edges);
-                if (mode === 'mermaid' && 'diagramType' in res && res.diagramType) {
-                    updateTab(activeTabId, { diagramType: res.diagramType });
-                }
-                const report = buildImportFidelityReport({
-                    source: mode === 'mermaid' ? 'mermaid' : 'openflowdsl',
-                    nodeCount: res.nodes.length,
-                    edgeCount: res.edges.length,
-                    elapsedMs: Math.round(performance.now() - importStart),
-                    issues: [mapErrorToIssue('Layout fallback applied after import.')],
-                });
-                persistLatestImportReport(report);
-                addToast(summarizeImportReport(report), 'warning');
-            } finally {
-                setIsApplying(false);
-            }
-        } else {
-            onApply(res.nodes, res.edges);
-            if (mode === 'mermaid' && 'diagramType' in res && res.diagramType) {
-                updateTab(activeTabId, { diagramType: res.diagramType });
-            }
-            const report = buildImportFidelityReport({
-                source: mode === 'mermaid' ? 'mermaid' : 'openflowdsl',
-                nodeCount: res.nodes.length,
-                edgeCount: res.edges.length,
-                elapsedMs: Math.round(performance.now() - importStart),
-                issues: [],
-            });
-            persistLatestImportReport(report);
-            addToast(summarizeImportReport(report), 'success');
+        if (liveApplyTimerRef.current !== undefined) {
+            window.clearTimeout(liveApplyTimerRef.current);
         }
-        onClose();
-    };
+        const requestId = liveApplyRequestRef.current + 1;
+        liveApplyRequestRef.current = requestId;
+        liveApplyTimerRef.current = window.setTimeout(() => {
+            void handleApply({ closeOnSuccess: false, source: 'live', liveRequestId: requestId });
+        }, 700);
+    }, [code, isLiveMermaidEnabled, handleApply]);
 
     // prevent propagation for critical keys
     const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -177,7 +147,7 @@ export const CodeView = ({
 
         // Apply
         if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
-            handleApply();
+            void handleApply({ closeOnSuccess: true, source: 'manual' });
         }
     };
 
@@ -199,6 +169,23 @@ export const CodeView = ({
         textarea.focus();
         textarea.setSelectionRange(range.start, range.end);
     }, [code]);
+
+    const liveStatusLabel = useMemo(() => {
+        if (!isLiveMermaidEnabled) return null;
+        if (liveStatus === 'typing') {
+            return t('commandBar.code.liveStatus.typing', { defaultValue: 'Typing...' });
+        }
+        if (liveStatus === 'applying') {
+            return t('commandBar.code.liveStatus.applying', { defaultValue: 'Applying...' });
+        }
+        if (liveStatus === 'synced') {
+            return t('commandBar.code.liveStatus.synced', { defaultValue: 'Synced' });
+        }
+        if (liveStatus === 'error') {
+            return t('commandBar.code.liveStatus.error', { defaultValue: 'Needs fixes' });
+        }
+        return t('commandBar.code.liveStatus.idle', { defaultValue: 'Idle' });
+    }, [isLiveMermaidEnabled, liveStatus, t]);
 
     return (
         <div className="flex flex-col h-full">
@@ -299,6 +286,11 @@ export const CodeView = ({
                 <div className="flex justify-between items-center">
                     <div className="flex items-center gap-4">
                         <span className="text-xs text-slate-400">{t('commandBar.code.applyShortcut')}</span>
+                        {isLiveMermaidEnabled && (
+                            <span className={`text-xs ${liveStatus === 'error' ? 'text-amber-600' : 'text-slate-500'}`}>
+                                {liveStatusLabel}
+                            </span>
+                        )}
                         {mode === 'flowmind' && (
                             <a
                                 href="#/docs/openflow-dsl"
@@ -312,7 +304,7 @@ export const CodeView = ({
                         )}
                     </div>
                     <Button
-                        onClick={handleApply}
+                        onClick={() => void handleApply({ closeOnSuccess: true, source: 'manual' })}
                         disabled={isApplying}
                         variant="primary"
                         className="bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-600)] border-transparent text-white"

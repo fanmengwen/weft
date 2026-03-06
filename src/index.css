@@ -217,6 +217,73 @@ body {
   background-color: var(--brand-background);
 }
 
+.flow-handle-hitarea.react-flow__handle::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+/* Hide connection handles during active node drag to reduce visual noise. */
+.react-flow__node.dragging .react-flow__handle {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* ===== Node Resizer Bounding Box (Miro/Figma style) ===== */
+.flow-node-resizer-line {
+  border-color: var(--brand-primary) !important;
+  border-width: 1.5px !important;
+}
+
+/* Ensure the top, right, bottom, left borders neatly hug the node without arbitrary offsets */
+.react-flow__resize-control.line.top {
+  border-top-width: 1.5px !important;
+  border-bottom: none !important;
+}
+
+.react-flow__resize-control.line.bottom {
+  border-bottom-width: 1.5px !important;
+  border-top: none !important;
+}
+
+.react-flow__resize-control.line.left {
+  border-left-width: 1.5px !important;
+  border-right: none !important;
+}
+
+.react-flow__resize-control.line.right {
+  border-right-width: 1.5px !important;
+  border-left: none !important;
+}
+
+.flow-node-resizer-handle {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 1px !important;
+  background-color: #ffffff !important;
+  border: 1.5px solid var(--brand-primary) !important;
+  transform: translate(-50%, -50%) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.flow-node-resizer-handle.top.left {
+  transform: translate(-50%, -50%) !important;
+}
+
+.flow-node-resizer-handle.top.right {
+  transform: translate(50%, -50%) !important;
+}
+
+.flow-node-resizer-handle.bottom.left {
+  transform: translate(-50%, 50%) !important;
+}
+
+.flow-node-resizer-handle.bottom.right {
+  transform: translate(50%, 50%) !important;
+}
+
 /* Low-detail mode for large-graph + far-zoom rendering safety */
 .flow-lod-low .flow-lod-secondary {
   opacity: 0.9;
@@ -361,6 +428,25 @@ body {
   fill: #334155;
   font-size: 12px;
   font-weight: 500;
+}
+
+.flow-edge-waypoint,
+.flow-edge-waypoint * {
+  cursor: grab !important;
+}
+
+.flow-edge-waypoint:active,
+.flow-edge-waypoint:active * {
+  cursor: grabbing !important;
+}
+
+/* React Flow defaults to pointer in selection mode; keep arrow cursor for select mode panes. */
+.flow-canvas-select-mode .react-flow__pane {
+  cursor: default;
+}
+
+.flow-canvas-select-mode .react-flow__pane.selection {
+  cursor: default;
 }
 
 /* ===== Export-specific overrides ===== */

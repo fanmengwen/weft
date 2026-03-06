@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Node, useReactFlow } from 'reactflow';
+import { useReactFlow } from '@/lib/reactflowCompat';
+import type { FlowNode } from '@/lib/types';
 import { Search, Filter } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -7,6 +8,7 @@ import { Input } from '../ui/Input';
 import { ViewHeader } from './ViewHeader';
 import { useFlowStore } from '../../store';
 import { EMPTY_QUERY, matchesNodeQuery, type QueryState } from './searchQuery';
+import { readLocalStorageJson, writeLocalStorageJson } from '@/services/storage/uiLocalStorage';
 
 interface QueryPreset {
     id: string;
@@ -16,7 +18,7 @@ interface QueryPreset {
 
 
 interface SearchViewProps {
-    nodes: Node[];
+    nodes: FlowNode[];
     onClose: () => void;
     handleBack: () => void;
 }
@@ -33,23 +35,15 @@ export const SearchView = ({
     const [scope, setScope] = useState<'current' | 'all'>('current');
     const [presetName, setPresetName] = useState('');
     const [queryPresets, setQueryPresets] = useState<QueryPreset[]>(() => {
-        try {
-            const raw = localStorage.getItem(QUERY_PRESETS_STORAGE_KEY);
-            if (!raw) {
-                return [];
-            }
-            const parsed = JSON.parse(raw) as QueryPreset[];
-            return Array.isArray(parsed) ? parsed : [];
-        } catch {
-            return [];
-        }
+        const parsed = readLocalStorageJson<QueryPreset[]>(QUERY_PRESETS_STORAGE_KEY, []);
+        return Array.isArray(parsed) ? parsed : [];
     });
     const [selectedPresetId, setSelectedPresetId] = useState('');
     const { fitView } = useReactFlow();
     const { tabs, activeTabId, setActiveTabId, setSelectedNodeId, setNodes, setEdges } = useFlowStore();
 
     useEffect(() => {
-        localStorage.setItem(QUERY_PRESETS_STORAGE_KEY, JSON.stringify(queryPresets));
+        writeLocalStorageJson(QUERY_PRESETS_STORAGE_KEY, queryPresets);
     }, [queryPresets]);
 
     const scopeNodes = useMemo(() => {
@@ -90,7 +84,7 @@ export const SearchView = ({
         [nodes]
     );
 
-    const handleSelectNode = (node: Node, tabId: string) => {
+    const handleSelectNode = (node: FlowNode, tabId: string) => {
         if (tabId !== activeTabId) {
             setActiveTabId(tabId);
             navigate(`/flow/${tabId}`);

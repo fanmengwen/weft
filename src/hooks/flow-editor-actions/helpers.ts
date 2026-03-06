@@ -1,4 +1,4 @@
-import { getRectOfNodes } from 'reactflow';
+import { getCompatibleNodesBounds } from '@/lib/reactflowCompat';
 import { createId } from '@/lib/id';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { FlowTemplate } from '@/services/templates';
@@ -12,7 +12,7 @@ export function buildInsertedTemplateData(
     template: FlowTemplate,
     existingNodes: FlowNode[]
 ): TemplateInsertionResult {
-    const bounds = getRectOfNodes(existingNodes);
+    const bounds = getCompatibleNodesBounds(existingNodes);
     const startX = (bounds.width || 0) + (bounds.x || 0) + 100;
     const startY = bounds.y || 0;
 

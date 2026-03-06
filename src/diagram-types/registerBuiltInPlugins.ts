@@ -5,6 +5,7 @@ import { ER_DIAGRAM_PLUGIN } from '@/diagram-types/erDiagram/plugin';
 import { MINDMAP_PLUGIN } from '@/diagram-types/mindmap/plugin';
 import { JOURNEY_PLUGIN } from '@/diagram-types/journey/plugin';
 import { ARCHITECTURE_PLUGIN } from '@/diagram-types/architecture/plugin';
+import { STATE_DIAGRAM_PLUGIN } from '@/diagram-types/stateDiagram/plugin';
 
 let didRegisterBuiltIns = false;
 
@@ -14,6 +15,7 @@ export function registerBuiltInDiagramPlugins(): void {
   }
 
   registerDiagramPlugin(FLOWCHART_PLUGIN);
+  registerDiagramPlugin(STATE_DIAGRAM_PLUGIN);
   registerDiagramPlugin(CLASS_DIAGRAM_PLUGIN);
   registerDiagramPlugin(ER_DIAGRAM_PLUGIN);
   registerDiagramPlugin(MINDMAP_PLUGIN);

@@ -1,4 +1,4 @@
-import type { Node } from 'reactflow';
+import type { FlowNode } from '@/lib/types';
 
 export interface QueryState {
     text: string;
@@ -20,7 +20,7 @@ export const EMPTY_QUERY: QueryState = {
     metadataValue: '',
 };
 
-export function matchesNodeQuery(node: Node, query: QueryState): boolean {
+export function matchesNodeQuery(node: FlowNode, query: QueryState): boolean {
     const text = query.text.trim().toLowerCase();
     const labelContains = query.labelContains.trim().toLowerCase();
     const metadataKey = query.metadataKey.trim();

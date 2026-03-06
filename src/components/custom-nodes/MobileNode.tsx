@@ -1,13 +1,25 @@
 import React, { memo } from 'react';
-import { NodeProps, NodeResizer, Handle, Position } from 'reactflow';
+import { Handle, Position } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
 import { useTranslation } from 'react-i18next';
 import { NodeData } from '@/lib/types';
 import { User, Lock, Mail, ChevronLeft, Menu, Bell, Search } from 'lucide-react';
-import { NODE_COLOR_PALETTE } from '../../theme';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from '@/components/handleInteraction';
+import { NodeTransformControls } from '@/components/NodeTransformControls';
+import { getNodeColorPalette } from '../../theme';
 
-function MobileNode({ data, selected }: NodeProps<NodeData>): React.ReactElement {
+function MobileNode({ data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
     const { t } = useTranslation();
-    const style = NODE_COLOR_PALETTE[data.color || 'slate'];
+    const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+    const nodeColorPalette = getNodeColorPalette(visualQualityV2Enabled);
+    const style = nodeColorPalette[data.color || 'slate'] || nodeColorPalette.slate;
+    const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, Boolean(selected));
+    const handleVisibilityClass = visualQualityV2Enabled
+        ? getV2HandleVisibilityClass(Boolean(selected), { includeConnectingState: false })
+        : selected
+            ? 'opacity-100'
+            : 'opacity-0 group-hover:opacity-100';
 
     // Render content based on variant
     const renderContent = () => {
@@ -188,13 +200,10 @@ function MobileNode({ data, selected }: NodeProps<NodeData>): React.ReactElement
 
     return (
         <div className="group relative w-full h-full">
-            <NodeResizer
-                color="#94a3b8"
-                isVisible={selected}
+            <NodeTransformControls
+                isVisible={Boolean(selected)}
                 minWidth={300}
                 minHeight={600}
-                lineStyle={{ borderStyle: 'solid', borderWidth: 1 }}
-                handleStyle={{ width: 8, height: 8, borderRadius: 4 }}
             />
 
             <div
@@ -244,8 +253,8 @@ function MobileNode({ data, selected }: NodeProps<NodeData>): React.ReactElement
                 id="top"
                 isConnectableStart={true}
                 isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-                style={{ left: '50%', top: 0, transform: 'translate(-50%, -50%)', pointerEvents: 'all', zIndex: 100 }}
+                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+                style={getConnectorHandleStyle('top', Boolean(selected), handlePointerEvents, { zIndex: 100 })}
             />
             <Handle
                 type="source"
@@ -253,8 +262,8 @@ function MobileNode({ data, selected }: NodeProps<NodeData>): React.ReactElement
                 id="bottom"
                 isConnectableStart={true}
                 isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-                style={{ left: '50%', top: '100%', transform: 'translate(-50%, -50%)', pointerEvents: 'all', zIndex: 100 }}
+                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+                style={getConnectorHandleStyle('bottom', Boolean(selected), handlePointerEvents, { zIndex: 100 })}
             />
             <Handle
                 type="source"
@@ -262,8 +271,8 @@ function MobileNode({ data, selected }: NodeProps<NodeData>): React.ReactElement
                 id="left"
                 isConnectableStart={true}
                 isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-                style={{ top: '50%', left: 0, transform: 'translate(-50%, -50%)', pointerEvents: 'all', zIndex: 100 }}
+                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+                style={getConnectorHandleStyle('left', Boolean(selected), handlePointerEvents, { zIndex: 100 })}
             />
             <Handle
                 type="source"
@@ -271,8 +280,8 @@ function MobileNode({ data, selected }: NodeProps<NodeData>): React.ReactElement
                 id="right"
                 isConnectableStart={true}
                 isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
-                style={{ top: '50%', left: '100%', transform: 'translate(-50%, -50%)', pointerEvents: 'all', zIndex: 100 }}
+                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+                style={getConnectorHandleStyle('right', Boolean(selected), handlePointerEvents, { zIndex: 100 })}
             />
         </div>
     );

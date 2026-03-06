@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react';
-import { useReactFlow, MarkerType } from 'reactflow';
+import { useReactFlow, MarkerType } from '@/lib/reactflowCompat';
+import type { EdgeData } from '@/lib/types';
 import {
     applyArchitectureDirection,
     getDirectionFromMarkers,
@@ -34,16 +35,17 @@ export function useEdgeInteractions() {
                 setEdges((eds) =>
                     eds.map((e) => {
                         if (!e.selected) return e;
-                        const currentDirection = e.data?.archDirection || getDirectionFromMarkers(e);
+                        const edgeData = (e.data ?? {}) as EdgeData;
+                        const currentDirection = edgeData.archDirection || getDirectionFromMarkers(e);
                         const reversedDirection = reverseArchitectureDirection(currentDirection);
-                        const swappedArchitectureEdge = e.data?.archDirection
+                        const swappedArchitectureEdge = edgeData.archDirection
                             ? {
                                 ...e,
                                 data: {
-                                    ...e.data,
+                                    ...edgeData,
                                     archDirection: reversedDirection,
-                                    archSourceSide: e.data?.archTargetSide,
-                                    archTargetSide: e.data?.archSourceSide,
+                                    archSourceSide: edgeData.archTargetSide,
+                                    archTargetSide: edgeData.archSourceSide,
                                 },
                             }
                             : e;

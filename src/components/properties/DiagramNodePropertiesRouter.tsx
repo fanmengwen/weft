@@ -1,10 +1,12 @@
-import React from 'react';
+import { createElement, useMemo, type ReactElement } from 'react';
 import { useFlowStore } from '@/store';
-import type { Node } from 'reactflow';
+import type { Node } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
 import { getDiagramNodeProperties } from '@/diagram-types/core';
 import { registerBuiltInPropertyPanels } from '@/diagram-types/registerBuiltInPropertyPanels';
 import { NodeProperties } from './NodeProperties';
+
+registerBuiltInPropertyPanels();
 
 interface DiagramNodePropertiesRouterProps {
   selectedNode: Node<NodeData>;
@@ -24,14 +26,13 @@ export function DiagramNodePropertiesRouter({
   onAddMindmapChild,
   onAddArchitectureService,
   onCreateArchitectureBoundary,
-}: DiagramNodePropertiesRouterProps): React.ReactElement {
+}: DiagramNodePropertiesRouterProps): ReactElement {
   const { tabs, activeTabId } = useFlowStore();
-  registerBuiltInPropertyPanels();
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
   const diagramType = activeTab?.diagramType ?? 'flowchart';
-  const RegisteredComponent = getDiagramNodeProperties(diagramType);
+  const registeredComponent = useMemo(() => getDiagramNodeProperties(diagramType), [diagramType]);
 
-  if (!RegisteredComponent) {
+  if (!registeredComponent) {
     return (
       <NodeProperties
         selectedNode={selectedNode}
@@ -42,16 +43,13 @@ export function DiagramNodePropertiesRouter({
     );
   }
 
-  return (
-    // eslint-disable-next-line react-hooks/static-components
-    <RegisteredComponent
-      selectedNode={selectedNode}
-      onChange={onChange}
-      onDuplicate={onDuplicate}
-      onDelete={onDelete}
-      onAddMindmapChild={onAddMindmapChild}
-      onAddArchitectureService={onAddArchitectureService}
-      onCreateArchitectureBoundary={onCreateArchitectureBoundary}
-    />
-  );
+  return createElement(registeredComponent, {
+    selectedNode,
+    onChange,
+    onDuplicate,
+    onDelete,
+    onAddMindmapChild,
+    onAddArchitectureService,
+    onCreateArchitectureBoundary,
+  });
 }

@@ -1,7 +1,7 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route, Navigate, useNavigate, useParams, useLocation } from 'react-router-dom';
-import 'reactflow/dist/style.css';
-import { ReactFlowProvider } from 'reactflow';
+import '@xyflow/react/dist/style.css';
+import { ReactFlowProvider } from '@/lib/reactflowCompat';
 import { Monitor, ArrowLeft } from 'lucide-react';
 import { OpenFlowLogo } from './components/icons/OpenFlowLogo';
 

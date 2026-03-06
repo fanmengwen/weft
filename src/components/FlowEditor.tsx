@@ -1,7 +1,8 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useReactFlow } from 'reactflow';
+import { useReactFlow } from '@/lib/reactflowCompat';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { useFlowStore } from '../store';
 import { Toolbar } from './Toolbar';
 import { FlowCanvas } from './FlowCanvas';
@@ -23,8 +24,10 @@ import { useFlowEditorCallbacks } from '@/hooks/useFlowEditorCallbacks';
 import { FlowEditorPanels } from './FlowEditorPanels';
 import { FlowEditorLayoutOverlay } from './FlowEditorLayoutOverlay';
 import { FlowEditorEmptyState } from './FlowEditorEmptyState';
+import { CollaborationPresenceOverlay } from './flow-editor/CollaborationPresenceOverlay';
 import { useStoragePressureGuard } from '@/hooks/useStoragePressureGuard';
 import { useAnimatedEdgePerformanceWarning } from '@/hooks/useAnimatedEdgePerformanceWarning';
+import { useFlowEditorCollaboration } from '@/hooks/useFlowEditorCollaboration';
 
 interface FlowEditorProps {
     onGoHome: () => void;
@@ -34,6 +37,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
     const { t } = useTranslation();
     const { addToast } = useToast();
     const navigate = useNavigate();
+    const collaborationV1Enabled = ROLLOUT_FLAGS.collaborationV1;
 
     // --- Global Store ---
     const {
@@ -46,7 +50,15 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
 
     const { showGrid, snapToGrid, showMiniMap } = viewSettings;
 
-    const { snapshots, saveSnapshot, deleteSnapshot, restoreSnapshot } = useSnapshots();
+    const {
+        snapshots,
+        manualSnapshots,
+        autoSnapshots,
+        saveSnapshot,
+        deleteSnapshot,
+        queueAutoSnapshot,
+        restoreSnapshot,
+    } = useSnapshots();
     const {
         isHistoryOpen,
         isCommandBarOpen,
@@ -117,7 +129,9 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
         },
         onCommandBar: () => openCommandBar('root'),
         onSearch: () => openCommandBar('search'),
-        onShortcutsHelp: () => setShortcutsHelpOpen(true)
+        onShortcutsHelp: () => setShortcutsHelpOpen(true),
+        onSelectMode: enableSelectMode,
+        onPanMode: enablePanMode,
     });
 
     // --- AI ---
@@ -140,6 +154,23 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
     useAnimatedEdgePerformanceWarning({
         nodeCount: nodes.length,
         edges,
+    });
+
+    useEffect(() => {
+        queueAutoSnapshot(nodes, edges);
+    }, [edges, nodes, queueAutoSnapshot]);
+
+    const {
+        collaborationTopNavState,
+        remotePresence,
+    } = useFlowEditorCollaboration({
+        collaborationEnabled: collaborationV1Enabled,
+        activeTabId,
+        nodes,
+        edges,
+        setNodes,
+        setEdges,
+        addToast,
     });
 
     // --- Playback ---
@@ -178,7 +209,6 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
     const selectedNode = useMemo(() => nodes.find((n) => n.id === selectedNodeId) || null, [nodes, selectedNodeId]);
     const selectedNodes = useMemo(() => nodes.filter((node) => node.selected), [nodes]);
     const selectedEdge = useMemo(() => edges.find((e) => e.id === selectedEdgeId) || null, [edges, selectedEdgeId]);
-
     return (
         <div className="w-full h-screen bg-[var(--brand-background)] flex flex-col relative" ref={reactFlowWrapper}>
             {/* Header */}
@@ -199,6 +229,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
                 onHistory={openHistory}
                 onGoHome={onGoHome}
                 onPlay={startPlayback}
+                collaboration={collaborationTopNavState}
             />
 
             <ErrorBoundary className="h-full">
@@ -207,6 +238,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
                     isSelectMode={isSelectMode}
                 />
             </ErrorBoundary>
+            {collaborationV1Enabled && <CollaborationPresenceOverlay remotePresence={remotePresence} />}
 
             {/* Layout loading overlay */}
             {isLayouting && <FlowEditorLayoutOverlay message={t('flowEditor.applyingLayout')} />}
@@ -222,7 +254,6 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
                     onClear={handleClear}
 
                     onAddNode={handleAddNode}
-                    onAddJourneyNode={handleAddJourneyNode}
                     onAddAnnotation={handleAddAnnotation}
                     onAddSection={handleAddSection}
                     onAddText={handleAddTextNode}
@@ -280,6 +311,8 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
                 isHistoryOpen={isHistoryOpen}
                 onCloseHistory={closeHistory}
                 snapshots={snapshots}
+                manualSnapshots={manualSnapshots}
+                autoSnapshots={autoSnapshots}
                 onSaveSnapshot={(name) => saveSnapshot(name, nodes, edges)}
                 onRestoreSnapshot={handleRestoreSnapshot}
                 onDeleteSnapshot={deleteSnapshot}

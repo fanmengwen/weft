@@ -105,8 +105,8 @@ export const INITIAL_VIEW_SETTINGS: ViewSettings = {
 
 export const INITIAL_GLOBAL_EDGE_OPTIONS: GlobalEdgeOptions = {
     type: 'smoothstep',
-    animated: true,
-    strokeWidth: 2,
+    animated: !ROLLOUT_FLAGS.visualQualityV2,
+    strokeWidth: ROLLOUT_FLAGS.visualQualityV2 ? 1.5 : 2,
 };
 
 export const INITIAL_LAYERS: Layer[] = [

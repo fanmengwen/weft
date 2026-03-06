@@ -1,5 +1,6 @@
 import type { DiagramType } from '@/lib/types';
 import { parseMermaid, type ParseResult } from '@/lib/mermaidParser';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { getDiagramPlugin } from '@/diagram-types/core';
 import { registerBuiltInDiagramPlugins } from '@/diagram-types/registerBuiltInPlugins';
 import { detectMermaidDiagramType } from './detectDiagramType';
@@ -39,6 +40,25 @@ function applyArchitectureStrictMode(result: MermaidDispatchParseResult): Mermai
   };
 }
 
+function normalizeLegacyStateTransitionLabels(input: string): string {
+  const lines = input.replace(/\r\n/g, '\n').split('\n');
+  const normalized = lines.map((rawLine) => {
+    const line = rawLine.trim();
+    if (line.includes('|')) return rawLine;
+    const transitionMatch = line.match(/^(.+?)\s+(<-->|<--|-->|==>|-.->)\s+(.+?)\s*:\s*(.+)$/);
+    if (!transitionMatch) return rawLine;
+
+    const source = transitionMatch[1].trim();
+    const arrow = transitionMatch[2];
+    const target = transitionMatch[3].trim();
+    const label = transitionMatch[4].trim();
+    if (!source || !target || !label) return rawLine;
+    return `  ${source} ${arrow}|${label}| ${target}`;
+  });
+
+  return normalized.join('\n');
+}
+
 export function parseMermaidByType(
   input: string,
   options: ParseMermaidByTypeOptions = {}
@@ -64,7 +84,8 @@ export function parseMermaidByType(
     };
   }
 
-  if (detectedType !== 'stateDiagram') {
+  const canUsePluginDispatch = detectedType !== 'stateDiagram' || ROLLOUT_FLAGS.stateDiagramV1;
+  if (canUsePluginDispatch) {
     const plugin = getDiagramPlugin(detectedType);
     if (plugin) {
       const parsed = {
@@ -86,8 +107,9 @@ export function parseMermaidByType(
   }
 
   // Compatibility adapter for legacy state-diagram parsing until state plugin lands.
+  const normalizedStateInput = normalizeLegacyStateTransitionLabels(input);
   return {
-    ...parseMermaid(input),
+    ...parseMermaid(normalizedStateInput),
     diagramType: detectedType,
   };
 }

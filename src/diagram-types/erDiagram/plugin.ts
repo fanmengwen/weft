@@ -1,4 +1,8 @@
 import { createId } from '@/lib/id';
+import {
+  buildERRelationTokenRegexPattern,
+  type ERRelationToken,
+} from '@/lib/relationSemantics';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { DiagramPlugin } from '@/diagram-types/core';
 
@@ -10,27 +14,12 @@ interface EntityRecord {
 
 interface RelationRecord {
   left: string;
-  relation: string;
+  relation: ERRelationToken;
   right: string;
   label?: string;
 }
 
 const ENTITY_ID_PATTERN = '[A-Za-z_][\\w.]*';
-const ER_RELATION_TOKENS = [
-  '||--||',
-  '||--o{',
-  '||--|{',
-  '}o--||',
-  '}|--||',
-  '}o..o{',
-  '}|..|{',
-  '}o--o{',
-  '}|--|{',
-  '}o..||',
-  '}|..||',
-  '||..o{',
-  '||..|{',
-];
 
 function createEmptyEntity(id: string): EntityRecord {
   return {
@@ -41,11 +30,7 @@ function createEmptyEntity(id: string): EntityRecord {
 }
 
 function parseRelation(line: string): RelationRecord | null {
-  const relationTokenPattern = ER_RELATION_TOKENS
-    .slice()
-    .sort((left, right) => right.length - left.length)
-    .map((token) => token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
-    .join('|');
+  const relationTokenPattern = buildERRelationTokenRegexPattern();
   const match = line.match(
     new RegExp(`^(${ENTITY_ID_PATTERN})\\s+(${relationTokenPattern})\\s+(${ENTITY_ID_PATTERN})(?:\\s*:\\s*(.+))?$`)
   );
@@ -53,7 +38,7 @@ function parseRelation(line: string): RelationRecord | null {
 
   return {
     left: match[1],
-    relation: match[2],
+    relation: match[2] as ERRelationToken,
     right: match[3],
     label: match[4]?.trim(),
   };
@@ -169,6 +154,10 @@ function parseERDiagram(input: string): { nodes: FlowNode[]; edges: FlowEdge[]; 
     target: relation.right,
     label: relation.label || relation.relation,
     type: 'smoothstep',
+    data: {
+      erRelation: relation.relation,
+      erRelationLabel: relation.label,
+    },
   }));
 
   return diagnostics.length > 0 ? { nodes, edges, diagnostics } : { nodes, edges };

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import type { Node } from 'reactflow';
+import type { Node } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
 import { Box, Palette, Star, Type } from 'lucide-react';
 import { CollapsibleSection } from '../ui/CollapsibleSection';

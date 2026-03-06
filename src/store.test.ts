@@ -323,6 +323,35 @@ describe('flow store tab actions', () => {
     });
 });
 
+describe('flow store Mermaid diagnostics contract', () => {
+    it('sets and clears diagnostics snapshot', () => {
+        useFlowStore.setState({ mermaidDiagnostics: null });
+
+        useFlowStore.getState().setMermaidDiagnostics({
+            source: 'paste',
+            diagramType: 'flowchart',
+            diagnostics: [
+                {
+                    message: 'Sample diagnostic',
+                    line: 2,
+                },
+            ],
+            error: 'Sample error',
+            updatedAt: 123,
+        });
+
+        let state = useFlowStore.getState();
+        expect(state.mermaidDiagnostics).toBeTruthy();
+        expect(state.mermaidDiagnostics?.source).toBe('paste');
+        expect(state.mermaidDiagnostics?.diagnostics).toHaveLength(1);
+        expect(state.mermaidDiagnostics?.error).toBe('Sample error');
+
+        state.clearMermaidDiagnostics();
+        state = useFlowStore.getState();
+        expect(state.mermaidDiagnostics).toBeNull();
+    });
+});
+
 describe('flow store layer actions', () => {
     beforeEach(() => {
         const nodes = [

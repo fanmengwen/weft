@@ -37,6 +37,8 @@ interface FlowEditorPanelsProps {
     isHistoryOpen: boolean;
     onCloseHistory: () => void;
     snapshots: FlowSnapshot[];
+    manualSnapshots: FlowSnapshot[];
+    autoSnapshots: FlowSnapshot[];
     onSaveSnapshot: (name: string) => void;
     onRestoreSnapshot: (snapshot: FlowSnapshot) => void;
     onDeleteSnapshot: (id: string) => void;
@@ -82,6 +84,8 @@ export function FlowEditorPanels({
     isHistoryOpen,
     onCloseHistory,
     snapshots,
+    manualSnapshots,
+    autoSnapshots,
     onSaveSnapshot,
     onRestoreSnapshot,
     onDeleteSnapshot,
@@ -135,6 +139,8 @@ export function FlowEditorPanels({
                 isOpen={isHistoryOpen}
                 onClose={onCloseHistory}
                 snapshots={snapshots}
+                manualSnapshots={manualSnapshots}
+                autoSnapshots={autoSnapshots}
                 onSaveSnapshot={onSaveSnapshot}
                 onRestoreSnapshot={onRestoreSnapshot}
                 onDeleteSnapshot={onDeleteSnapshot}

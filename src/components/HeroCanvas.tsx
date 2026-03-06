@@ -1,24 +1,26 @@
-import React, { useCallback, useMemo, useEffect, useRef } from 'react';
+import React, { useCallback, useMemo, useEffect, useRef, useState } from 'react';
 import ReactFlow, {
-    useNodesState,
-    useEdgesState,
-    addEdge,
     Background,
-    Connection,
     Handle,
     Position,
-    NodeProps,
     ReactFlowProvider,
-    MarkerType,
-} from 'reactflow';
-import 'reactflow/dist/style.css';
+} from '@/lib/reactflowCompat';
+import '@xyflow/react/dist/style.css';
 import {
     MousePointer2, Hand, WandSparkles, Layout, Plus, Link, Trash2, Undo, Redo,
     Activity, Terminal, Code2, Database, Box
 } from 'lucide-react';
+import type { Connection } from '@/lib/reactflowCompat';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 
 // --- Custom "Terminal" Start Node ---
-const StartNode = ({ data }: NodeProps) => {
+interface StartNodeProps {
+    data: {
+        onAddNode?: () => void;
+    };
+}
+
+const StartNode = ({ data }: StartNodeProps) => {
     return (
         <div className="bg-slate-900 rounded-xl shadow-2xl shadow-indigo-500/20 border border-slate-700 p-0 overflow-hidden w-[340px] font-mono text-left">
             {/* Terminal Header */}
@@ -78,14 +80,24 @@ const initialNodes = [
         position: { x: 250, y: 50 },
         data: { label: 'Start' },
     },
-];
+] as FlowNode[];
 
 export const HeroCanvas = () => {
-    const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+    const [nodes, setNodes] = useState<FlowNode[]>(initialNodes);
+    const [edges, setEdges] = useState<FlowEdge[]>([]);
     const hasBuiltRef = useRef(false);
 
-    const onConnect = useCallback((params: Connection) => setEdges((eds) => addEdge(params, eds)), [setEdges]);
+    const onConnect = useCallback((params: Connection) => {
+        if (!params.source || !params.target) return;
+        setEdges((existingEdges) => ([
+            ...existingEdges,
+            {
+                id: `e-${params.source}-${params.target}-${existingEdges.length + 1}`,
+                source: params.source,
+                target: params.target,
+            },
+        ]));
+    }, []);
 
     const nodeTypes = useMemo(() => ({ startNode: StartNode }), []);
 
@@ -99,6 +111,7 @@ export const HeroCanvas = () => {
 
             const newNode = {
                 id,
+                type: 'process',
                 position: {
                     x: 250 + (nds.length % 2 === 0 ? -150 : 150),
                     y: 150 + (nds.length * 100)
@@ -121,18 +134,21 @@ export const HeroCanvas = () => {
             // Auto connect to the last node
             if (nds.length > 0) {
                 const lastNode = nds[nds.length - 1];
-                setEdges((eds) => addEdge({
-                    id: `e-${lastNode.id}-${id}`,
-                    source: lastNode.id,
-                    target: id,
-                    animated: true,
-                    style: { stroke: '#6366f1' },
-                }, eds));
+                setEdges((existingEdges) => ([
+                    ...existingEdges,
+                    {
+                        id: `e-${lastNode.id}-${id}`,
+                        source: lastNode.id,
+                        target: id,
+                        animated: true,
+                        style: { stroke: '#6366f1' },
+                    },
+                ]));
             }
 
-            return nds.concat(newNode);
+            return [...nds, newNode];
         });
-    }, [setEdges, setNodes]);
+    }, []);
 
     // Pass the addNode function to the StartNode
     const nodesWithHandler = useMemo(() => {
@@ -162,8 +178,6 @@ export const HeroCanvas = () => {
                 <ReactFlow
                     nodes={nodesWithHandler}
                     edges={edges}
-                    onNodesChange={onNodesChange}
-                    onEdgesChange={onEdgesChange}
                     onConnect={onConnect}
                     nodeTypes={nodeTypes}
                     fitView

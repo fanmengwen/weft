@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MarkerType, type Edge } from 'reactflow';
+import { MarkerType, type Edge } from '@/lib/reactflowCompat';
 import {
   applyArchitectureDirection,
   architectureSideToHandleId,

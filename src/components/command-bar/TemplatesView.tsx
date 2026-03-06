@@ -3,7 +3,7 @@ import { Layout, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '../ui/Input';
 import { ViewHeader } from './ViewHeader';
-import { FLOW_TEMPLATES, FlowTemplate } from '../../services/templates';
+import { getFlowTemplates, type FlowTemplate } from '../../services/templates';
 import { trackEvent } from '../../lib/analytics';
 
 interface TemplatesViewProps {
@@ -19,6 +19,7 @@ export const TemplatesView = ({
 }: TemplatesViewProps) => {
     const { t } = useTranslation();
     const [tSearch, setTSearch] = useState('');
+    const templates = useMemo(() => getFlowTemplates(), []);
 
     const handleSelect = (template: FlowTemplate) => {
         trackEvent('use_template', { template_id: template.id, template_name: template.name });
@@ -27,11 +28,11 @@ export const TemplatesView = ({
     };
 
     const filteredTemplates = useMemo(() => {
-        return FLOW_TEMPLATES.filter(t =>
+        return templates.filter(t =>
             t.name.toLowerCase().includes(tSearch.toLowerCase()) ||
             t.description.toLowerCase().includes(tSearch.toLowerCase())
         );
-    }, [tSearch]);
+    }, [tSearch, templates]);
 
     return (
         <div className="flex flex-col h-full">
