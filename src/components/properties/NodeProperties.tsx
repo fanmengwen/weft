@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Node } from 'reactflow';
+import { Node } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
 import { Box, Palette, Star, Image as ImageStart } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { ShapeSelector } from './ShapeSelector';
 import { ColorPicker } from './ColorPicker';
 import { IconPicker } from './IconPicker';
@@ -13,6 +14,7 @@ import { NodeContentSection } from './NodeContentSection';
 import { NodeImageSettingsSection } from './NodeImageSettingsSection';
 import { NodeTextStyleSection } from './NodeTextStyleSection';
 import { NodeWireframeVariantSection } from './NodeWireframeVariantSection';
+import { InspectorSectionDivider } from './InspectorPrimitives';
 
 interface NodePropertiesProps {
     selectedNode: Node<NodeData>;
@@ -27,21 +29,19 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
     onDuplicate,
     onDelete
 }) => {
+    const { t } = useTranslation();
     const isAnnotation = selectedNode.type === 'annotation';
     const isText = selectedNode.type === 'text';
     const isImage = selectedNode.type === 'image';
+    const isSection = selectedNode.type === 'section';
     const isWireframeApp = selectedNode.type === 'browser' || selectedNode.type === 'mobile';
-    const isWireframeIcon = selectedNode.type === 'wireframe_icon';
-    const isWireframeImage = selectedNode.type === 'wireframe_image';
-    const isWireframeButton = selectedNode.type === 'wireframe_button';
-    const isWireframeInput = selectedNode.type === 'wireframe_input';
-    const isWireframeMisc = isWireframeIcon || isWireframeImage || isWireframeButton || isWireframeInput;
+    const supportsAdvancedColorTheme = ['process', 'start', 'end', 'decision', 'custom'].includes(selectedNode.type || '');
 
     function getDefaultSection(): string {
         if (isWireframeApp) return 'variant';
-        if (isWireframeIcon) return 'icon';
+        if (isSection) return 'content';
         if (isText || isAnnotation) return 'content';
-        return 'appearance';
+        return 'shape';
     }
 
     // Persist accordion state per node to avoid effect-driven synchronous setState.
@@ -88,7 +88,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
 
     return (
         <>
-            <hr className="border-slate-100 mb-2" />
+            <InspectorSectionDivider />
 
             {/* Wireframe Variant Section */}
             {isWireframeApp && (
@@ -100,13 +100,13 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
                 />
             )}
 
-            {/* Appearance Section */}
-            {!isWireframeApp && !isWireframeMisc && !isAnnotation && !isText && !isImage && (
+            {/* Shape Section */}
+            {!isWireframeApp && !isAnnotation && !isText && !isImage && !isSection && (
                 <CollapsibleSection
-                    title="Appearance"
+                    title={t('properties.shape', 'Shape')}
                     icon={<Box className="w-3.5 h-3.5" />}
-                    isOpen={activeSection === 'appearance'}
-                    onToggle={() => toggleSection('appearance')}
+                    isOpen={activeSection === 'shape'}
+                    onToggle={() => toggleSection('shape')}
                 >
                     <ShapeSelector
                         selectedShape={selectedNode.data?.shape}
@@ -126,28 +126,26 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
             )}
 
             {/* Content Section: Refined Design */}
-            {!isWireframeIcon && (
-                <NodeContentSection
-                    selectedNode={selectedNode}
-                    onChange={onChange}
-                    isOpen={activeSection === 'content'}
-                    onToggle={() => toggleSection('content')}
-                    isText={isText}
-                    isImage={isImage}
-                    isWireframeApp={isWireframeApp}
-                    isWireframeMisc={isWireframeMisc}
-                    onBold={() => handleStyleAction('bold')}
-                    onItalic={() => handleStyleAction('italic')}
-                    labelInputRef={labelInputRef}
-                    descInputRef={descInputRef}
-                    onLabelFocus={() => setActiveField('label')}
-                    onLabelBlur={() => setTimeout(() => setActiveField(null), 200)}
-                    onDescFocus={() => setActiveField('subLabel')}
-                    onDescBlur={() => setTimeout(() => setActiveField(null), 200)}
-                    onLabelKeyDown={labelEditor.handleKeyDown}
-                    onDescKeyDown={descEditor.handleKeyDown}
-                />
-            )}
+            <NodeContentSection
+                selectedNode={selectedNode}
+                onChange={onChange}
+                isOpen={activeSection === 'content'}
+                onToggle={() => toggleSection('content')}
+                isText={isText}
+                isImage={isImage}
+                isWireframeApp={isWireframeApp}
+                isWireframeMisc={false}
+                onBold={() => handleStyleAction('bold')}
+                onItalic={() => handleStyleAction('italic')}
+                labelInputRef={labelInputRef}
+                descInputRef={descInputRef}
+                onLabelFocus={() => setActiveField('label')}
+                onLabelBlur={() => setTimeout(() => setActiveField(null), 200)}
+                onDescFocus={() => setActiveField('subLabel')}
+                onDescBlur={() => setTimeout(() => setActiveField(null), 200)}
+                onLabelKeyDown={labelEditor.handleKeyDown}
+                onDescKeyDown={descEditor.handleKeyDown}
+            />
 
             {/* Text Styling for Text Node */}
             {isText && (
@@ -159,23 +157,36 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
                 />
             )}
 
-            {!isImage && !isWireframeApp && !isWireframeImage && !isWireframeButton && !isWireframeInput && (
+            {!isImage && !isWireframeApp && (
                 <CollapsibleSection
-                    title="Color Theme"
+                    title={t('properties.color', 'Color')}
                     icon={<Palette className="w-3.5 h-3.5" />}
                     isOpen={activeSection === 'color'}
                     onToggle={() => toggleSection('color')}
                 >
                     <ColorPicker
                         selectedColor={selectedNode.data?.color}
-                        onChange={(color) => onChange(selectedNode.id, { color })}
+                        selectedColorMode={selectedNode.data?.colorMode}
+                        selectedCustomColor={selectedNode.data?.customColor}
+                        onChange={(color) => onChange(selectedNode.id, {
+                            color,
+                            ...(color === 'custom' ? {} : { customColor: undefined }),
+                        })}
+                        onColorModeChange={supportsAdvancedColorTheme
+                            ? (colorMode) => onChange(selectedNode.id, { colorMode })
+                            : undefined}
+                        onCustomColorChange={supportsAdvancedColorTheme
+                            ? (customColor) => onChange(selectedNode.id, { color: 'custom', customColor })
+                            : undefined}
+                        allowModes={supportsAdvancedColorTheme}
+                        allowCustom={supportsAdvancedColorTheme}
                     />
                 </CollapsibleSection>
             )}
 
-            {!isAnnotation && !isText && !isImage && !isWireframeApp && !isWireframeImage && !isWireframeButton && !isWireframeInput && (
+            {!isAnnotation && !isText && !isImage && !isWireframeApp && (
                 <CollapsibleSection
-                    title="Icon Theme"
+                    title={t('properties.icon', 'Icon')}
                     icon={<Star className="w-3.5 h-3.5" />}
                     isOpen={activeSection === 'icon'}
                     onToggle={() => toggleSection('icon')}
@@ -189,7 +200,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
                 </CollapsibleSection>
             )}
 
-            {!isText && !isWireframeApp && !isWireframeIcon && !isWireframeButton && !isWireframeInput && !isWireframeImage && (
+            {!isText && !isWireframeApp && (
                 <CollapsibleSection
                     title="Custom Image"
                     icon={<ImageStart className="w-3.5 h-3.5" />}

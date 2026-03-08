@@ -7,21 +7,89 @@ interface SnapshotsPanelProps {
     isOpen: boolean;
     onClose: () => void;
     snapshots: FlowSnapshot[];
+    manualSnapshots: FlowSnapshot[];
+    autoSnapshots: FlowSnapshot[];
     onSaveSnapshot: (name: string) => void;
     onRestoreSnapshot: (snapshot: FlowSnapshot) => void;
     onDeleteSnapshot: (id: string) => void;
+}
+
+interface SnapshotCardListProps {
+    snapshots: FlowSnapshot[];
+    onRestoreSnapshot: (snapshot: FlowSnapshot) => void;
+    onDeleteSnapshot: (id: string) => void;
+    restoreVersionTitle: string;
+    deleteVersionTitle: string;
+    nodesLabel: (count: number) => string;
+    edgesLabel: (count: number) => string;
+    cardClassName?: string;
+    titleClassName?: string;
+}
+
+function SnapshotCardList({
+    snapshots,
+    onRestoreSnapshot,
+    onDeleteSnapshot,
+    restoreVersionTitle,
+    deleteVersionTitle,
+    nodesLabel,
+    edgesLabel,
+    cardClassName = 'group p-3 rounded-[var(--radius-md)] border border-slate-200 bg-slate-50 hover:bg-white hover:border-[var(--brand-primary-200)] transition-all',
+    titleClassName = 'text-sm font-semibold text-slate-800',
+}: SnapshotCardListProps): React.ReactElement {
+    return (
+        <>
+            {snapshots.map((snapshot) => (
+                <div key={snapshot.id} className={cardClassName}>
+                    <div className="flex items-start justify-between mb-2">
+                        <div>
+                            <h4 className={titleClassName}>{snapshot.name}</h4>
+                            <p className="text-xs text-slate-500">{new Date(snapshot.timestamp).toLocaleString()}</p>
+                        </div>
+                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                                onClick={() => onRestoreSnapshot(snapshot)}
+                                data-testid={`snapshot-restore-${snapshot.id}`}
+                                title={restoreVersionTitle}
+                                className="p-1.5 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-50)] rounded-[var(--radius-sm)] transition-colors"
+                            >
+                                <RotateCcw className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                                onClick={() => onDeleteSnapshot(snapshot.id)}
+                                title={deleteVersionTitle}
+                                className="p-1.5 text-red-600 hover:bg-red-50 rounded-[var(--radius-sm)] transition-colors"
+                            >
+                                <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+                    </div>
+                    <div className="flex gap-2 text-xs text-slate-400">
+                        <span className="bg-slate-200 px-1.5 py-0.5 rounded-[var(--radius-sm)] text-slate-600">{nodesLabel(snapshot.nodes.length)}</span>
+                        <span className="bg-slate-200 px-1.5 py-0.5 rounded-[var(--radius-sm)] text-slate-600">{edgesLabel(snapshot.edges.length)}</span>
+                    </div>
+                </div>
+            ))}
+        </>
+    );
 }
 
 export const SnapshotsPanel: React.FC<SnapshotsPanelProps> = ({
     isOpen,
     onClose,
     snapshots,
+    manualSnapshots,
+    autoSnapshots,
     onSaveSnapshot,
     onRestoreSnapshot,
     onDeleteSnapshot,
 }) => {
     const { t } = useTranslation();
     const [newSnapshotName, setNewSnapshotName] = useState('');
+    const restoreVersionTitle = t('snapshotsPanel.restoreVersion');
+    const deleteVersionTitle = t('snapshotsPanel.deleteVersion');
+    const nodesLabel = (count: number): string => t('snapshotsPanel.nodes', { count });
+    const edgesLabel = (count: number): string => t('snapshotsPanel.edges', { count });
 
     if (!isOpen) return null;
 
@@ -66,43 +134,55 @@ export const SnapshotsPanel: React.FC<SnapshotsPanelProps> = ({
                 </div>
             </div>
 
-            <div className="p-4 overflow-y-auto custom-scrollbar space-y-3 flex-1">
+            <div className="p-4 overflow-y-auto custom-scrollbar space-y-5 flex-1">
                 {snapshots.length === 0 ? (
                     <div className="text-center py-8 text-slate-400">
                         <p className="text-sm">{t('snapshotsPanel.noSnapshots')}</p>
                     </div>
                 ) : (
-                    snapshots.map((snapshot) => (
-                        <div key={snapshot.id} className="group p-3 rounded-[var(--radius-md)] border border-slate-200 bg-slate-50 hover:bg-white hover:border-[var(--brand-primary-200)] hover:shadow-md transition-all">
-                            <div className="flex items-start justify-between mb-2">
-                                <div>
-                                    <h4 className="text-sm font-semibold text-slate-800">{snapshot.name}</h4>
-                                    <p className="text-xs text-slate-500">{new Date(snapshot.timestamp).toLocaleString()}</p>
-                                </div>
-                                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <button
-                                        onClick={() => onRestoreSnapshot(snapshot)}
-                                        data-testid={`snapshot-restore-${snapshot.id}`}
-                                        title={t('snapshotsPanel.restoreVersion')}
-                                        className="p-1.5 text-[var(--brand-primary)] hover:bg-[var(--brand-primary-50)] rounded-[var(--radius-sm)] transition-colors"
-                                    >
-                                        <RotateCcw className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        onClick={() => onDeleteSnapshot(snapshot.id)}
-                                        title={t('snapshotsPanel.deleteVersion')}
-                                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-[var(--radius-sm)] transition-colors"
-                                    >
-                                        <Trash2 className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="flex gap-2 text-xs text-slate-400">
-                                <span className="bg-slate-200 px-1.5 py-0.5 rounded-[var(--radius-sm)] text-slate-600">{t('snapshotsPanel.nodes', { count: snapshot.nodes.length })}</span>
-                                <span className="bg-slate-200 px-1.5 py-0.5 rounded-[var(--radius-sm)] text-slate-600">{t('snapshotsPanel.edges', { count: snapshot.edges.length })}</span>
-                            </div>
-                        </div>
-                    ))
+                    <>
+                        <section className="space-y-3">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                {t('snapshotsPanel.namedVersions', 'Named Versions')}
+                            </h4>
+                            {manualSnapshots.length === 0 ? (
+                                <p className="text-xs text-slate-400">{t('snapshotsPanel.noNamedSnapshots', 'No named versions yet.')}</p>
+                            ) : (
+                                <SnapshotCardList
+                                    snapshots={manualSnapshots}
+                                    onRestoreSnapshot={onRestoreSnapshot}
+                                    onDeleteSnapshot={onDeleteSnapshot}
+                                    restoreVersionTitle={restoreVersionTitle}
+                                    deleteVersionTitle={deleteVersionTitle}
+                                    nodesLabel={nodesLabel}
+                                    edgesLabel={edgesLabel}
+                                    cardClassName="group p-3 rounded-[var(--radius-md)] border border-slate-200 bg-slate-50 hover:bg-white hover:border-[var(--brand-primary-200)] hover:shadow-md transition-all"
+                                    titleClassName="text-sm font-semibold text-slate-800"
+                                />
+                            )}
+                        </section>
+
+                        <section className="space-y-3">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                                {t('snapshotsPanel.autosavedVersions', 'Autosaved Checkpoints')}
+                            </h4>
+                            {autoSnapshots.length === 0 ? (
+                                <p className="text-xs text-slate-400">{t('snapshotsPanel.noAutoSnapshots', 'No autosaved checkpoints yet.')}</p>
+                            ) : (
+                                <SnapshotCardList
+                                    snapshots={autoSnapshots}
+                                    onRestoreSnapshot={onRestoreSnapshot}
+                                    onDeleteSnapshot={onDeleteSnapshot}
+                                    restoreVersionTitle={restoreVersionTitle}
+                                    deleteVersionTitle={deleteVersionTitle}
+                                    nodesLabel={nodesLabel}
+                                    edgesLabel={edgesLabel}
+                                    cardClassName="group p-3 rounded-[var(--radius-md)] border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-[var(--brand-primary-200)] transition-all"
+                                    titleClassName="text-sm font-semibold text-slate-700"
+                                />
+                            )}
+                        </section>
+                    </>
                 )}
             </div>
         </div>

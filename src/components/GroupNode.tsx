@@ -1,20 +1,39 @@
 import React, { memo, useState, useCallback, useMemo } from 'react';
-import { NodeProps, NodeResizer, Handle, Position, useReactFlow, useNodes } from 'reactflow';
-import { NodeData } from '@/lib/types';
+import { Handle, Position, useReactFlow, useNodes } from '@/lib/reactflowCompat';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
+import type { NodeData } from '@/lib/types';
+import { getNodeParentId } from '@/lib/nodeParent';
 import { ChevronDown, ChevronRight, FolderOpen, FolderClosed } from 'lucide-react';
-import { NODE_COLOR_PALETTE } from '../theme';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import { getConnectorHandleStyle, getHandlePointerEvents, getV2HandleVisibilityClass } from './handleInteraction';
+import { NodeTransformControls } from './NodeTransformControls';
+import { useActiveNodeSelection } from './useActiveNodeSelection';
 
-const GroupNode = ({ id, data, selected }: NodeProps<NodeData>) => {
+const GROUP_HANDLE_CONFIG: Array<{
+    id: string;
+    position: Position;
+    side: 'top' | 'right' | 'bottom' | 'left';
+}> = [
+    { id: 'top-target', position: Position.Top, side: 'top' },
+    { id: 'right-source', position: Position.Right, side: 'right' },
+    { id: 'bottom-source', position: Position.Bottom, side: 'bottom' },
+    { id: 'left-target', position: Position.Left, side: 'left' },
+];
+
+function GroupNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
     const [collapsed, setCollapsed] = useState(false);
     const { setNodes } = useReactFlow();
     const allNodes = useNodes();
-
-    const color = data.color || 'indigo';
-    const style = NODE_COLOR_PALETTE[color] || NODE_COLOR_PALETTE.indigo || NODE_COLOR_PALETTE.slate;
+    const visualQualityV2Enabled = ROLLOUT_FLAGS.visualQualityV2;
+    const isActiveSelected = useActiveNodeSelection(Boolean(selected));
+    const handlePointerEvents = getHandlePointerEvents(visualQualityV2Enabled, isActiveSelected);
+    const handleVisibilityClass = visualQualityV2Enabled
+        ? getV2HandleVisibilityClass(isActiveSelected, { includeConnectingState: false, includeScale: false })
+        : 'opacity-0 hover:opacity-100';
 
     // Count children
     const childCount = useMemo(
-        () => allNodes.filter((n) => n.parentNode === id).length,
+        () => allNodes.filter((n) => getNodeParentId(n) === id).length,
         [allNodes, id]
     );
 
@@ -24,7 +43,7 @@ const GroupNode = ({ id, data, selected }: NodeProps<NodeData>) => {
         // Toggle visibility of child nodes
         setNodes((nds) =>
             nds.map((n) => {
-                if (n.parentNode === id) {
+                if (getNodeParentId(n) === id) {
                     return { ...n, hidden: next };
                 }
                 return n;
@@ -34,19 +53,15 @@ const GroupNode = ({ id, data, selected }: NodeProps<NodeData>) => {
 
     return (
         <>
-            <NodeResizer
-                color="#6366f1"
-                isVisible={selected}
+            <NodeTransformControls
+                isVisible={Boolean(selected)}
                 minWidth={300}
                 minHeight={collapsed ? 60 : 200}
-                lineStyle={{ borderStyle: 'dashed', borderWidth: 2 }}
-                handleStyle={{ width: 10, height: 10, borderRadius: 5 }}
             />
             <div
                 className={`
           w-full rounded-2xl border-2 transition-all duration-300 overflow-hidden
           ${collapsed ? 'border-solid' : 'border-dashed'}
-          ${selected ? 'ring-2 ring-indigo-500 ring-offset-2' : ''}
         `}
                 style={{
                     minWidth: 300,
@@ -64,15 +79,15 @@ const GroupNode = ({ id, data, selected }: NodeProps<NodeData>) => {
                 >
                     <button className="p-0.5 rounded hover:bg-indigo-100 transition-colors">
                         {collapsed ? (
-                            <ChevronRight className="w-4 h-4 text-indigo-500 flow-lod-far-target" />
+                            <ChevronRight className="w-4 h-4 text-[var(--brand-primary)] flow-lod-far-target" />
                         ) : (
-                            <ChevronDown className="w-4 h-4 text-indigo-500 flow-lod-far-target" />
+                            <ChevronDown className="w-4 h-4 text-[var(--brand-primary)] flow-lod-far-target" />
                         )}
                     </button>
                     {collapsed ? (
-                        <FolderClosed className="w-4 h-4 text-indigo-500 flow-lod-far-target" />
+                        <FolderClosed className="w-4 h-4 text-[var(--brand-primary)] flow-lod-far-target" />
                     ) : (
-                        <FolderOpen className="w-4 h-4 text-indigo-500 flow-lod-far-target" />
+                        <FolderOpen className="w-4 h-4 text-[var(--brand-primary)] flow-lod-far-target" />
                     )}
                     <span className="font-bold text-sm text-indigo-700 tracking-tight">
                         {data.label || 'Group'}
@@ -96,12 +111,20 @@ const GroupNode = ({ id, data, selected }: NodeProps<NodeData>) => {
             </div>
 
             {/* Handles for group connections */}
-            <Handle type="target" position={Position.Top} id="top-target" className="!w-3 !h-3 !border-2 !border-white !bg-indigo-400 opacity-0 hover:opacity-100 transition-opacity" />
-            <Handle type="source" position={Position.Bottom} id="bottom-source" className="!w-3 !h-3 !border-2 !border-white !bg-indigo-400 opacity-0 hover:opacity-100 transition-opacity" />
-            <Handle type="target" position={Position.Left} id="left-target" className="!w-3 !h-3 !border-2 !border-white !bg-indigo-400 opacity-0 hover:opacity-100 transition-opacity" />
-            <Handle type="source" position={Position.Right} id="right-source" className="!w-3 !h-3 !border-2 !border-white !bg-indigo-400 opacity-0 hover:opacity-100 transition-opacity" />
+            {GROUP_HANDLE_CONFIG.map(({ id: handleId, position, side }) => (
+                <Handle
+                    key={handleId}
+                    type="source"
+                    position={position}
+                    id={handleId}
+                    isConnectableStart
+                    isConnectableEnd
+                    className={`!w-3 !h-3 !border-2 !border-white transition-opacity ${handleVisibilityClass}`}
+                    style={getConnectorHandleStyle(side, isActiveSelected, handlePointerEvents)}
+                />
+            ))}
         </>
     );
-};
+}
 
 export default memo(GroupNode);

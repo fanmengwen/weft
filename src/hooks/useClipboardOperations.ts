@@ -1,10 +1,17 @@
 import { useCallback } from 'react';
-import { Node, Edge } from 'reactflow';
-import { useFlowStore } from '../store';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { createId } from '../lib/id';
+import { clearNodeParent } from '@/lib/nodeParent';
+import { readLocalStorageString, writeLocalStorageJson } from '@/services/storage/uiLocalStorage';
+import { useCanvasActions, useCanvasState } from '@/store/canvasHooks';
+import { useSelectionActions } from '@/store/selectionHooks';
+
+const CLIPBOARD_STORAGE_KEY = 'flowmind-clipboard';
 
 export const useClipboardOperations = (recordHistory: () => void) => {
-    const { nodes, edges, setNodes, setEdges, setSelectedNodeId } = useFlowStore();
+    const { nodes, edges } = useCanvasState();
+    const { setNodes, setEdges } = useCanvasActions();
+    const { setSelectedNodeId } = useSelectionActions();
 
     const copySelection = useCallback(() => {
         const selectedNodes = nodes.filter((n) => n.selected);
@@ -15,12 +22,12 @@ export const useClipboardOperations = (recordHistory: () => void) => {
                 nodes: selectedNodes,
                 edges: selectedEdges,
             };
-            localStorage.setItem('flowmind-clipboard', JSON.stringify(clipboardData));
+            writeLocalStorageJson(CLIPBOARD_STORAGE_KEY, clipboardData);
         }
     }, [nodes, edges]);
 
     const pasteSelection = useCallback((position?: { x: number; y: number }) => {
-        const clipboardDataStr = localStorage.getItem('flowmind-clipboard');
+        const clipboardDataStr = readLocalStorageString(CLIPBOARD_STORAGE_KEY);
         if (!clipboardDataStr) return;
 
         try {
@@ -34,34 +41,33 @@ export const useClipboardOperations = (recordHistory: () => void) => {
             let offsetY = 50;
 
             if (position && copiedNodes.length > 0) {
-                const minX = Math.min(...copiedNodes.map((n: Node) => n.position.x));
-                const minY = Math.min(...copiedNodes.map((n: Node) => n.position.y));
+                const minX = Math.min(...copiedNodes.map((n: FlowNode) => n.position.x));
+                const minY = Math.min(...copiedNodes.map((n: FlowNode) => n.position.y));
                 offsetX = position.x - minX;
                 offsetY = position.y - minY;
             }
 
             const idMap = new Map<string, string>();
 
-            const newNodes = copiedNodes.map((node: Node) => {
+            const newNodes = copiedNodes.map((node: FlowNode) => {
                 const newId = createId();
                 idMap.set(node.id, newId);
 
                 return {
                     ...node,
+                    ...clearNodeParent(node),
                     id: newId,
                     position: {
                         x: position ? node.position.x + offsetX : node.position.x + 50,
                         y: position ? node.position.y + offsetY : node.position.y + 50
                     },
-                    selected: true,
-                    parentNode: undefined,
-                    extent: undefined
+                    selected: true
                 };
             });
 
             const newEdges = copiedEdges
-                .filter((edge: Edge) => idMap.has(edge.source) && idMap.has(edge.target))
-                .map((edge: Edge) => ({
+                .filter((edge: FlowEdge) => idMap.has(edge.source) && idMap.has(edge.target))
+                .map((edge: FlowEdge) => ({
                     ...edge,
                     id: createId('e'),
                     source: idMap.get(edge.source)!,

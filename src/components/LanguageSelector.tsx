@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Globe, Check, ChevronDown } from 'lucide-react';
-import { useFlowStore } from '../store';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useVisualSettingsActions } from '@/store/viewHooks';
 
 interface Language {
   code: string;
@@ -53,7 +53,12 @@ function LanguageDropdown({
 
   return (
     <>
-      <div className="fixed inset-0 z-40" onClick={onClose} />
+      <button
+        type="button"
+        className="fixed inset-0 z-40"
+        onClick={onClose}
+        aria-label="Close language selector"
+      />
       <div
         className={`absolute right-0 ${positionClass} ${width} bg-white/95 backdrop-blur-xl rounded-lg shadow-xl border border-slate-200 ring-1 ring-black/5 p-1 z-50 animate-in fade-in zoom-in-95 duration-200 ${originClass}`}
       >
@@ -92,7 +97,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
 }) => {
   const { i18n } = useTranslation();
   const [isOpen, setIsOpen] = React.useState(false);
-  const { setViewSettings } = useFlowStore();
+  const { setViewSettings } = useVisualSettingsActions();
   const navigate = useNavigate();
   const location = useLocation();
   const { slug } = useParams();

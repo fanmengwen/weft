@@ -1,19 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import type { Edge, Node } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
+import { getNodeParentId, setNodeParent } from '@/lib/nodeParent';
 import { orderGraphForSerialization, sortEdgesCanonical, sortNodesCanonical } from './canonicalSerialization';
 
-function createNode(id: string, parentNode?: string): Node {
-  return {
+function createNode(id: string, parentId?: string): FlowNode {
+  const node: FlowNode = {
     id,
     type: 'process',
     position: { x: 0, y: 0 },
     data: { label: id },
-    parentNode,
-  } as Node;
+  };
+  if (!parentId) return node;
+  return setNodeParent(node, parentId);
 }
 
-function createEdge(id: string, source: string, target: string): Edge {
-  return { id, source, target } as Edge;
+function createEdge(id: string, source: string, target: string): FlowEdge {
+  return { id, source, target } as FlowEdge;
 }
 
 describe('canonicalSerialization', () => {
@@ -25,7 +27,7 @@ describe('canonicalSerialization', () => {
       createNode('n0'),
     ];
     const sorted = sortNodesCanonical(nodes);
-    expect(sorted.map((node) => `${node.parentNode ?? ''}/${node.id}`)).toEqual([
+    expect(sorted.map((node) => `${getNodeParentId(node) ?? ''}/${node.id}`)).toEqual([
       '/n0',
       '/n2',
       'g1/n1',

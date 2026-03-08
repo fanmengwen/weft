@@ -19,6 +19,8 @@
     "selectAll": "Seleccionar todo",
     "duplicate": "Duplicar",
     "duplicateDrag": "Duplicar y arrastrar",
+    "multiSelect": "Selección múltiple",
+    "selectionBox": "Caja de selección",
     "copy": "Copiar",
     "paste": "Pegar",
     "zoomIn": "Acercar",
@@ -35,6 +37,8 @@
     "error": "Error",
     "success": "Éxito",
     "help": "Ayuda",
+    "selectTool": "Herramienta de selección",
+    "handTool": "Herramienta mano",
     "getStarted": "Comenzar",
     "bringToFront": "Traer al frente",
     "sendToBack": "Enviar atrás",
@@ -122,7 +126,7 @@
     "newTab": "Nueva pestaña",
     "renameTab": "Renombrar pestaña",
     "closeTab": "Cerrar pestaña",
-    "addNode": "Agregar nodo",
+    "addNode": "Agregar forma",
     "deleteNode": "Eliminar nodo",
     "duplicateNode": "Duplicar nodo"
   },
@@ -226,7 +230,18 @@
     "description": "Descripción",
     "color": "Color",
     "icon": "Ícono",
-    "size": "Tamaño"
+    "size": "Tamaño",
+    "shape": "Forma",
+    "bulkShape": "Forma múltiple",
+    "bulkColor": "Color múltiple",
+    "bulkIcon": "Ícono múltiple",
+    "labelTransform": "Transformación de etiqueta",
+    "prefixOptional": "Prefijo (opcional)",
+    "suffixOptional": "Sufijo (opcional)",
+    "previewSummary": "Resumen previo",
+    "bulkApplySummary": "Se actualizarán {{count}} elementos seleccionados",
+    "selectFieldToApply": "Seleccione al menos un campo para aplicar.",
+    "applyToSelectedNodes": "Aplicar a los elementos seleccionados"
   },
   "ai": {
     "generate": "Generar con IA",
@@ -429,7 +444,7 @@
       },
       "dslSyntax": {
         "title": "Sintaxis DSL",
-        "description": "Muéstrame un ejemplo del DSL FlowMind.",
+        "description": "Muéstrame un ejemplo del DSL OpenFlowKit.",
         "icon": "{}"
       }
     }
@@ -473,7 +488,17 @@
       "dslPlaceholder": "Pega código DSL aquí...",
       "applyShortcut": "⌘+Enter para aplicar",
       "syntaxGuide": "Guía de sintaxis",
-      "apply": "Aplicar"
+      "apply": "Aplicar",
+      "quickFixes": "Correcciones rápidas",
+      "linePrefix": "Línea {{line}}: ",
+      "hintPrefix": "Pista:",
+      "strictModeGuidance": {
+        "defineEndpoints": "Define cada extremo de conexión como un nodo de arquitectura explícito antes de conectar aristas.",
+        "uniqueIds": "Usa IDs únicos para cada nodo de servicio/grupo/junción (sin IDs de arquitectura duplicados).",
+        "edgeSyntax": "Usa flechas de arista de arquitectura `-->`, `<--` o `<-->` y calificadores de lado como `api:R --> L:db`.",
+        "nodeSyntax": "Usa declaraciones de nodo válidas: `service id(icon)[Label]`, `group id[Label]`, `junction id[Label]`.",
+        "fallback": "Desactiva el modo estricto de arquitectura para permitir la recuperación automática, o corrige los diagnósticos y vuelve a intentarlo."
+      }
     },
     "layout": {
       "title": "Estudio de diseño",
@@ -539,7 +564,9 @@
       "snapToGrid": "Ajustar a cuadrícula",
       "snapToGridDesc": "Alinear nodos al mover",
       "miniMap": "Mini mapa",
-      "miniMapDesc": "Mostrar mini mapa abajo a la derecha"
+      "miniMapDesc": "Mostrar mini mapa abajo a la derecha",
+      "architectureStrictMode": "Modo estricto de arquitectura",
+      "architectureStrictModeDesc": "Bloquea la importación Mermaid cuando los diagnósticos de arquitectura incluyen problemas de recuperación/validación"
     },
     "ai": {
       "provider": "Proveedor",
@@ -653,7 +680,7 @@
     "title": "Atajos de teclado",
     "subtitle": "Domine su flujo de trabajo con velocidad.",
     "closeAriaLabel": "Cerrar ventana de atajos",
-    "proTip": "Consejo pro: Mantenga <key>?</key> para activar el cuadro de selección al arrastrar."
+    "proTip": "Consejo pro: Mantenga <key>Shift</key> para agregar a la selección o dibujar un cuadro de selección."
   },
   "toolbar": {
     "selectMode": "Modo selección (V)",
@@ -662,7 +689,9 @@
     "templates": "Plantillas",
     "addItem": "Agregar elemento",
     "addToCanvas": "Agregar al lienzo",
-    "node": "Nodo",
+    "shapes": "Formas",
+    "assets": "Recursos",
+    "node": "Forma",
     "stickyNote": "Nota adhesiva",
     "section": "Sección",
     "text": "Texto",
@@ -687,23 +716,23 @@
       "description": "Su lienzo está vacío. Genere un flujo con Flowpilot o comience desde cero.",
       "generateWithFlowpilot": "Generar con Flowpilot",
       "browseTemplates": "Explorar plantillas",
-      "addBlankNode": "Agregar nodo en blanco"
+      "addBlankNode": "Agregar forma en blanco"
     }
   },
   "annotationNode": {
     "placeholder": "*Doble clic para editar la nota*"
   },
   "connectMenu": {
-    "createNewNode": "Crear nuevo nodo",
-    "process": "Proceso",
-    "processDesc": "Acción estándar",
-    "decision": "Decisión",
-    "decisionDesc": "Lógica de bifurcación",
+    "createNewNode": "Crear nueva forma",
+    "process": "Forma redondeada",
+    "processDesc": "Bloque de uso general",
+    "decision": "Forma de diamante",
+    "decisionDesc": "Bloque de bifurcación",
     "database": "Base de datos",
-    "databaseDesc": "Almacenamiento de datos",
+    "databaseDesc": "Forma de cilindro",
     "inputOutput": "Entrada / Salida",
-    "inputOutputDesc": "Flujo de datos",
-    "note": "Nota",
+    "inputOutputDesc": "Forma de paralelogramo",
+    "note": "Nota adhesiva",
     "noteDesc": "Documentación",
     "releaseToConnect": "Soltar para conectar"
   },
@@ -738,8 +767,11 @@
   },
   "propertiesPanel": {
     "stickyNote": "Nota adhesiva",
-    "nodeSettings": "Configuración del nodo",
+    "nodeSettings": "Configuración de forma",
     "connection": "Conexión"
+  },
+  "flowCanvas": {
+    "strictModePasteBlocked": "El modo estricto de arquitectura bloqueó el pegado de Mermaid. Abre la vista de código, corrige los diagnósticos y vuelve a intentarlo."
   },
   "flowTabs": {
     "closeTab": "Cerrar pestaña",
@@ -752,6 +784,7 @@
     "newNode": "New Node",
     "branch": "Branch",
     "processStep": "Process Step",
+    "addText": "Agregar texto",
     "group": "Group",
     "items": "items",
     "addCommentsHere": "Add your comments here.",

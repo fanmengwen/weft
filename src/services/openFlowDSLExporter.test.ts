@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest';
-import type { Edge, Node } from 'reactflow';
+import type { Edge, Node } from '@/lib/reactflowCompat';
 import { getOpenFlowDSLExportDiagnostics, toOpenFlowDSL } from './openFlowDSLExporter';
 
-function createNode(id: string, label: string, parentNode?: string): Node {
+function createNode(id: string, label: string, parentId?: string): Node {
   return {
     id,
     type: 'process',
     position: { x: 0, y: 0 },
     data: { label },
-    parentNode,
+    parentId,
   } as Node;
 }
 
@@ -59,5 +59,42 @@ describe('toOpenFlowDSL', () => {
     );
     expect(diagnostics).toHaveLength(1);
     expect(diagnostics[0].message).toContain('missing target');
+  });
+
+  it('exports richer scalar node attributes deterministically', () => {
+    const node = {
+      ...createNode('n1', 'API'),
+      type: 'process',
+      data: {
+        label: 'API',
+        color: 'custom',
+        colorMode: 'filled',
+        customColor: '#22c55e',
+        shape: 'capsule',
+        subLabel: 'Handles auth, billing',
+        align: 'left',
+        fontSize: '18',
+      },
+    } as Node;
+
+    expect(toOpenFlowDSL([node], [])).toContain(
+      '[process] n1: API { color: "custom", subLabel: "Handles auth, billing", shape: "capsule", colorMode: "filled", customColor: "#22c55e", align: "left", fontSize: "18" }'
+    );
+  });
+
+  it('exports scalar edge attributes and style hints', () => {
+    const edge = {
+      ...createEdge('e1', 'n1', 'n2', 'async'),
+      type: 'smoothstep',
+      data: {
+        condition: 'success',
+        strokeWidth: 3,
+        archProtocol: 'https',
+      },
+    } as Edge;
+
+    expect(toOpenFlowDSL([createNode('n1', 'A'), createNode('n2', 'B')], [edge])).toContain(
+      'n1 ->|async| n2 { style: "curved", condition: "success", strokeWidth: 3, archProtocol: "https" }'
+    );
   });
 });

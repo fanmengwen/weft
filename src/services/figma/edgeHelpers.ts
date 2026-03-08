@@ -1,4 +1,4 @@
-import { Edge, Node, Position, getSmoothStepPath } from 'reactflow';
+import { Edge, Node, Position, getSmoothStepPath } from '@/lib/reactflowCompat';
 import { escapeXml } from './themeHelpers';
 
 interface HandleResolution {

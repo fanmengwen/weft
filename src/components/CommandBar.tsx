@@ -1,45 +1,103 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { Suspense, lazy, useState, useEffect, useRef, useCallback } from 'react';
 import { CommandBarProps, CommandView } from './command-bar/types';
 
-// Import newly refactored views
 import { RootView } from './command-bar/RootView';
-import { AIView } from './command-bar/AIView';
-import { CodeView } from './command-bar/CodeView';
-import { TemplatesView } from './command-bar/TemplatesView';
-import { SearchView } from './command-bar/SearchView';
-import { LayoutView } from './command-bar/LayoutView';
-
-import { DesignSystemView } from './command-bar/DesignSystemView';
-import { WireframesView } from './command-bar/WireframesView';
 import { useCommandBarCommands } from './command-bar/useCommandBarCommands';
+
+const LazyTemplatesView = lazy(async () => {
+    const module = await import('./command-bar/TemplatesView');
+    return { default: module.TemplatesView };
+});
+
+const LazySearchView = lazy(async () => {
+    const module = await import('./command-bar/SearchView');
+    return { default: module.SearchView };
+});
+
+const LazyLayoutView = lazy(async () => {
+    const module = await import('./command-bar/LayoutView');
+    return { default: module.LayoutView };
+});
+
+const LazyLayersView = lazy(async () => {
+    const module = await import('./command-bar/LayersView');
+    return { default: module.LayersView };
+});
+
+const LazyPagesView = lazy(async () => {
+    const module = await import('./command-bar/PagesView');
+    return { default: module.PagesView };
+});
+
+const LazyAssetsView = lazy(async () => {
+    const module = await import('./command-bar/AssetsView');
+    return { default: module.AssetsView };
+});
+
+const LazyDesignSystemView = lazy(async () => {
+    const module = await import('./command-bar/DesignSystemView');
+    return { default: module.DesignSystemView };
+});
 
 type OpenCommandBarContentProps = Omit<CommandBarProps, 'isOpen'>;
 
 function OpenCommandBarContent({
     onClose,
     nodes,
-    edges,
-    onApply,
-    onAIGenerate,
-    isGenerating,
     onUndo,
     onRedo,
     onLayout,
     onSelectTemplate,
+    onOpenStudioAI,
+    onOpenStudioFlowMind,
+    onOpenStudioMermaid,
     initialView = 'root',
+    onAddAnnotation,
+    onAddSection,
+    onAddText,
+    onAddJourney,
+    onAddMindmap,
+    onAddArchitecture,
+    onAddImage,
+    onAddBrowserWireframe,
+    onAddMobileWireframe,
+    onAddDomainLibraryItem,
     settings,
-    chatMessages,
-    onClearChat
 }: OpenCommandBarContentProps): React.ReactElement {
     const [view, setView] = useState<CommandView>(initialView);
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedIndex, setSelectedIndex] = useState(-1);
     const inputRef = useRef<HTMLInputElement>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const previouslyFocusedElementRef = useRef<HTMLElement | null>(
+        document.activeElement instanceof HTMLElement ? document.activeElement : null
+    );
 
     useEffect(() => {
-        setTimeout(() => inputRef.current?.focus(), 50);
+        const previousElement = previouslyFocusedElementRef.current;
+        inputRef.current?.focus();
+
+        return () => {
+            if (!previousElement) {
+                return;
+            }
+
+            window.setTimeout(() => previousElement.focus(), 0);
+        };
     }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent): void => {
+            if (event.key !== 'Escape') {
+                return;
+            }
+
+            event.preventDefault();
+            onClose();
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onClose]);
 
     const handleBack = useCallback(() => {
         if (view === 'root') {
@@ -54,15 +112,25 @@ function OpenCommandBarContent({
         settings,
         onUndo,
         onRedo,
+        onOpenStudioAI,
+        onOpenStudioFlowMind,
+        onOpenStudioMermaid,
     });
 
     return (
         <div className="fixed inset-0 z-50 flex items-end justify-center pb-24 pointer-events-none">
-            <div className="absolute inset-0 bg-black/5 pointer-events-auto transition-opacity" onClick={onClose} />
+            <button
+                type="button"
+                className="absolute inset-0 bg-black/5 pointer-events-auto transition-opacity"
+                onClick={onClose}
+                aria-label="Close command bar"
+            />
 
             <div
-                ref={containerRef}
-                className="pointer-events-auto w-[600px] h-[480px] bg-white/95 backdrop-blur-xl rounded-[var(--radius-lg)] shadow-2xl border border-white/40 ring-1 ring-black/5 overflow-hidden animate-in slide-in-from-bottom-4 duration-200 flex flex-col"
+                role="dialog"
+                aria-modal="true"
+                aria-label="Command bar"
+                className="pointer-events-auto flex h-[500px] w-[640px] flex-col overflow-hidden rounded-[var(--radius-lg)] border border-white/50 bg-white/96 shadow-[0_28px_80px_rgba(15,23,42,0.16)] ring-1 ring-black/5 backdrop-blur-2xl animate-in slide-in-from-bottom-4 duration-200"
                 onClick={(e) => e.stopPropagation()}
             >
                 {view === 'root' && (
@@ -78,86 +146,90 @@ function OpenCommandBarContent({
                     />
                 )}
                 {view === 'design-system' && (
-                    <DesignSystemView
-                        onClose={onClose}
-                        handleBack={handleBack}
-                    />
-                )}
-                {view === 'ai' && (
-                    <AIView
-                        searchQuery={searchQuery}
-                        onAIGenerate={onAIGenerate}
-                        onClose={onClose}
-                        handleBack={handleBack}
-                        isGenerating={isGenerating}
-                        chatMessages={chatMessages}
-                        onClearChat={onClearChat}
-                    />
-                )}
-                {view === 'mermaid' && (
-                    <CodeView
-                        mode="mermaid"
-                        nodes={nodes}
-                        edges={edges}
-                        onApply={onApply}
-                        onClose={onClose}
-                        handleBack={handleBack}
-                    />
-                )}
-                {view === 'flowmind' && (
-                    <CodeView
-                        mode="flowmind"
-                        nodes={nodes}
-                        edges={edges}
-                        onApply={onApply}
-                        onClose={onClose}
-                        handleBack={handleBack}
-                    />
+                    <Suspense fallback={null}>
+                        <LazyDesignSystemView
+                            onClose={onClose}
+                            handleBack={handleBack}
+                        />
+                    </Suspense>
                 )}
                 {view === 'templates' && (
-                    <TemplatesView
-                        onSelectTemplate={onSelectTemplate}
-                        onClose={onClose}
-                        handleBack={handleBack}
-                    />
+                    <Suspense fallback={null}>
+                        <LazyTemplatesView
+                            onSelectTemplate={onSelectTemplate}
+                            onClose={onClose}
+                            handleBack={handleBack}
+                        />
+                    </Suspense>
                 )}
                 {view === 'layout' && (
-                    <LayoutView
-                        onLayout={onLayout}
-                        onClose={onClose}
-                        handleBack={handleBack}
-                    />
+                    <Suspense fallback={null}>
+                        <LazyLayoutView
+                            onLayout={onLayout}
+                            onClose={onClose}
+                            handleBack={handleBack}
+                        />
+                    </Suspense>
                 )}
                 {view === 'search' && (
-                    <SearchView
-                        nodes={nodes}
-                        onClose={onClose}
-                        handleBack={handleBack}
-                    />
+                    <Suspense fallback={null}>
+                        <LazySearchView
+                            nodes={nodes}
+                            onClose={onClose}
+                            handleBack={handleBack}
+                        />
+                    </Suspense>
                 )}
-                {view === 'wireframes' && (
-                    <WireframesView
-                        onClose={onClose}
-                        handleBack={handleBack}
-                    />
+                {view === 'assets' && (
+                    <Suspense fallback={null}>
+                        <LazyAssetsView
+                            onClose={onClose}
+                            handleBack={handleBack}
+                            onAddAnnotation={() => onAddAnnotation?.()}
+                            onAddSection={() => onAddSection?.()}
+                            onAddText={() => onAddText?.()}
+                            onAddJourney={() => onAddJourney?.()}
+                            onAddMindmap={() => onAddMindmap?.()}
+                            onAddArchitecture={() => onAddArchitecture?.()}
+                            onAddImage={(imageUrl) => onAddImage?.(imageUrl)}
+                            onAddBrowserWireframe={() => onAddBrowserWireframe?.()}
+                            onAddMobileWireframe={() => onAddMobileWireframe?.()}
+                            onAddDomainLibraryItem={(item) => onAddDomainLibraryItem?.(item)}
+                        />
+                    </Suspense>
                 )}
-
+                {view === 'layers' && (
+                    <Suspense fallback={null}>
+                        <LazyLayersView
+                            onClose={onClose}
+                            handleBack={handleBack}
+                        />
+                    </Suspense>
+                )}
+                {view === 'pages' && (
+                    <Suspense fallback={null}>
+                        <LazyPagesView
+                            onClose={onClose}
+                            handleBack={handleBack}
+                        />
+                    </Suspense>
+                )}
                 {/* Footer (only show on root?) */}
                 {view === 'root' && (
-                    <div className="bg-slate-50/50 border-t border-slate-200/50 px-4 py-2 flex items-center justify-between text-[10px] text-slate-400 font-medium">
-                        <div className="flex items-center gap-3">
-                            <span className="flex items-center gap-1">
-                                <span className="w-4 h-4 flex items-center justify-center bg-white border border-slate-200 rounded shadow-sm text-[9px]">↵</span>
-                                <span>to select</span>
+                    <div className="flex items-center justify-between border-t border-slate-200/60 bg-slate-50/70 px-4 py-2.5 text-[11px] font-medium text-slate-500">
+                        <div className="flex items-center gap-4">
+                            <span className="flex items-center gap-1.5">
+                                <span className="flex h-5 min-w-5 items-center justify-center rounded-md border border-slate-200 bg-white px-1 text-[10px] text-slate-500 shadow-sm">↵</span>
+                                <span>Select</span>
                             </span>
-                            <span className="flex items-center gap-1">
-                                <span className="w-4 h-4 flex items-center justify-center bg-white border border-slate-200 rounded shadow-sm text-[9px]">↑↓</span>
-                                <span>to navigate</span>
+                            <span className="flex items-center gap-1.5">
+                                <span className="flex h-5 min-w-5 items-center justify-center rounded-md border border-slate-200 bg-white px-1 text-[10px] text-slate-500 shadow-sm">↑↓</span>
+                                <span>Navigate</span>
                             </span>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <span className="px-1.5 py-0.5 bg-slate-200 rounded text-slate-500">Esc</span>
-                            <span>to close</span>
+                        <div className="flex items-center gap-1.5">
+                            <span className="flex h-5 min-w-5 items-center justify-center rounded-md border border-slate-200 bg-white px-1.5 text-[10px] text-slate-500 shadow-sm">Esc</span>
+                            <span>Close</span>
                         </div>
                     </div>
                 )}

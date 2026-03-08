@@ -1,18 +1,12 @@
-import type { Edge, Node } from 'reactflow';
+import type { Edge, Node } from '@/lib/reactflowCompat';
+import { getNodeParentId } from '@/lib/nodeParent';
 
-type NodeWithParent = Node & { parentId?: string };
 export type ExportSerializationMode = 'deterministic' | 'legacy';
-
-function getParentRef(node: NodeWithParent): string {
-  if (typeof node.parentNode === 'string' && node.parentNode.length > 0) return node.parentNode;
-  if (typeof node.parentId === 'string' && node.parentId.length > 0) return node.parentId;
-  return '';
-}
 
 export function sortNodesCanonical<T extends Node>(nodes: T[]): T[] {
   return [...nodes].sort((a, b) => {
-    const parentA = getParentRef(a as NodeWithParent);
-    const parentB = getParentRef(b as NodeWithParent);
+    const parentA = getNodeParentId(a);
+    const parentB = getNodeParentId(b);
     if (parentA !== parentB) return parentA.localeCompare(parentB);
     return a.id.localeCompare(b.id);
   });

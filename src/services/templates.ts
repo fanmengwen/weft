@@ -1,22 +1,27 @@
-import { Node, Edge } from 'reactflow';
-import { NodeType } from '@/lib/types';
+import { NodeType, type FlowEdge, type FlowNode, type NodeData } from '@/lib/types';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import type { TemplateManifest } from './templateLibrary/types';
+import { createStarterTemplateRegistry } from './templateLibrary/starterTemplates';
 import { createDefaultEdge } from '../constants';
 import { NODE_DEFAULTS } from '../theme';
 import {
-  Layout, Database, Shield, Server, Mail, AlertTriangle, Play, FileText, CheckCircle,
-  CreditCard, Globe, Cpu, Truck, Package, GitBranch, GitMerge, Terminal, Code,
-  MessageSquare, LifeBuoy, ShoppingCart, User, Image as ImageIcon, ThumbsUp, ThumbsDown,
-  Layers, Lock, Zap, Box, Activity, GitCommit, Search, Rocket
+  Layout,
+  CreditCard,
+  Cpu,
+  LifeBuoy,
+  Rocket,
+  ShoppingCart
 } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 export interface FlowTemplate {
   id: string;
   name: string;
   description: string;
-  icon: any; // Lucide icon
+  icon: LucideIcon;
   msg: string;
-  nodes: Node[];
-  edges: Edge[];
+  nodes: FlowNode[];
+  edges: FlowEdge[];
 }
 
 
@@ -158,7 +163,7 @@ export const FLOW_TEMPLATES: FlowTemplate[] = RAW_TEMPLATES.map(template => ({
     return {
       ...node,
       data: {
-        shape: defaultStyle?.shape,
+        shape: defaultStyle?.shape as NodeData['shape'],
         color: defaultStyle?.color,
         ...(defaultStyle?.icon && defaultStyle.icon !== 'none' ? { icon: defaultStyle.icon } : {}),
         ...node.data // Let specific node configuration override the defaults
@@ -166,3 +171,33 @@ export const FLOW_TEMPLATES: FlowTemplate[] = RAW_TEMPLATES.map(template => ({
     };
   })
 }));
+
+function mapTemplateManifestToFlowTemplate(template: TemplateManifest): FlowTemplate {
+  return {
+    id: template.id,
+    name: template.name,
+    description: template.description,
+    icon: Layout,
+    msg: template.category,
+    nodes: template.graph.nodes,
+    edges: template.graph.edges,
+  };
+}
+
+function getRegistryBackedTemplates(): FlowTemplate[] {
+  const registry = createStarterTemplateRegistry();
+  return registry.listTemplates().map(mapTemplateManifestToFlowTemplate);
+}
+
+export function getFlowTemplates(templateLibraryEnabled: boolean = ROLLOUT_FLAGS.templateLibraryV1): FlowTemplate[] {
+  if (!templateLibraryEnabled) {
+    return FLOW_TEMPLATES;
+  }
+
+  const registryBackedTemplates = getRegistryBackedTemplates();
+  if (registryBackedTemplates.length === 0) {
+    return FLOW_TEMPLATES;
+  }
+
+  return registryBackedTemplates;
+}

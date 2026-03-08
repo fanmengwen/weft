@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Layout,
+  Plus,
   WandSparkles,
-  Trash2,
   Workflow,
 } from 'lucide-react';
 import { Button } from './ui/Button';
@@ -11,6 +10,8 @@ import { Tooltip } from './Tooltip';
 import { ToolbarAddMenu } from './toolbar/ToolbarAddMenu';
 import { ToolbarHistoryControls } from './toolbar/ToolbarHistoryControls';
 import { ToolbarModeControls } from './toolbar/ToolbarModeControls';
+import { getToolbarIconButtonClass, TOOLBAR_DIVIDER_CLASS } from './toolbar/toolbarButtonStyles';
+import { AssetsIcon } from './icons/AssetsIcon';
 
 interface ToolbarProps {
   onUndo: () => void;
@@ -22,18 +23,11 @@ interface ToolbarProps {
   onTogglePanMode: () => void;
   onCommandBar: () => void;
   isCommandBarOpen: boolean;
-  onDesignSystemPanel: () => void;
-  isDesignSystemPanelOpen: boolean;
-  onAddNode: (position: { x: number, y: number }) => void;
-  onAddAnnotation: (position: { x: number, y: number }) => void;
-  onAddSection: (position: { x: number, y: number }) => void;
-  onAddText: (position: { x: number, y: number }) => void;
-  onAddImage: (imageUrl: string, position: { x: number, y: number }) => void;
-  onAddWireframes: () => void;
-  onTemplates: () => void;
+  onToggleStudio: () => void;
+  isStudioOpen: boolean;
+  onOpenAssets: () => void;
+  onAddShape: (shape: import('@/lib/types').NodeData['shape'], position: { x: number, y: number }) => void;
   onLayout: () => void;
-
-  onClear: () => void;
   getCenter: () => { x: number, y: number };
 }
 
@@ -47,23 +41,18 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onTogglePanMode,
   onCommandBar,
   isCommandBarOpen,
-  onDesignSystemPanel,
-  isDesignSystemPanelOpen,
-  onAddNode,
-  onAddAnnotation,
-  onAddSection,
-  onAddText,
-  onAddImage,
-  onAddWireframes,
-  onTemplates,
+  onToggleStudio,
+  isStudioOpen,
+  onOpenAssets,
+  onAddShape,
   onLayout,
-
-  onClear,
   getCenter
 }) => {
   const { t } = useTranslation();
   const [showAddMenu, setShowAddMenu] = useState(false);
   const addMenuRef = useRef<HTMLDivElement>(null);
+  const flowPilotIconClass = `w-4 h-4 transition-transform ${isStudioOpen ? 'scale-110 text-[var(--brand-primary)]' : 'group-hover:scale-110'}`;
+  const shouldShowAddMenu = showAddMenu && !isCommandBarOpen && !isStudioOpen;
 
   // Close add menu when clicking outside
   useEffect(() => {
@@ -91,48 +80,42 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         onTogglePanMode={onTogglePanMode}
       />
 
-      <div className="w-px h-6 bg-slate-200/50 mx-2" />
+      <div className={`mx-2 ${TOOLBAR_DIVIDER_CLASS}`} />
 
       {/* Group 2: Actions */}
       <div className="flex items-center gap-1">
-        <Tooltip text={t('toolbar.flowpilot')}>
-          <Button
-            onClick={onCommandBar}
-            disabled={!isInteractive}
-            variant="ghost"
-            size="icon"
-            className={`h-9 w-9 transition-all group relative overflow-hidden ${isCommandBarOpen ? 'bg-[var(--brand-primary-50)] text-[var(--brand-primary)] ring-1 ring-[var(--brand-primary-200)]' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'}`}
-          >
-            <WandSparkles className={`w-4 h-4 transition-transform ${isCommandBarOpen ? 'scale-110' : 'group-hover:scale-110'}`} />
-          </Button>
-        </Tooltip>
-
-        <Tooltip text={t('toolbar.templates')}>
-          <Button
-            onClick={onTemplates}
-            disabled={!isInteractive}
-            variant="ghost"
-            size="icon"
-            className="rounded-[var(--radius-sm)] h-9 w-9 text-slate-500 hover:text-slate-900"
-            icon={<Layout className="w-4 h-4" />}
-          />
-        </Tooltip>
-
         <div ref={addMenuRef}>
           <ToolbarAddMenu
             isInteractive={isInteractive}
-            showAddMenu={showAddMenu}
-            onToggleMenu={() => setShowAddMenu(!showAddMenu)}
+            showAddMenu={shouldShowAddMenu}
+            onToggleMenu={() => setShowAddMenu((previouslyShown) => !previouslyShown)}
             onCloseMenu={() => setShowAddMenu(false)}
-            onAddNode={onAddNode}
-            onAddAnnotation={onAddAnnotation}
-            onAddSection={onAddSection}
-            onAddText={onAddText}
-            onAddImage={onAddImage}
-            onAddWireframes={onAddWireframes}
+            onAddShape={onAddShape}
             getCenter={getCenter}
           />
         </div>
+
+        <Tooltip text={t('toolbar.assets', 'Assets')}>
+          <Button
+            onClick={onOpenAssets}
+            disabled={!isInteractive}
+            variant="ghost"
+            size="icon"
+            className={getToolbarIconButtonClass()}
+            icon={<AssetsIcon className="w-4 h-4 transition-transform group-hover:scale-110" />}
+          />
+        </Tooltip>
+
+        <Tooltip text={t('toolbar.commandBar', 'Open command bar')}>
+          <Button
+            onClick={onCommandBar}
+            disabled={!isInteractive}
+            variant="primary"
+            size="icon"
+            className={`group h-10 w-10 rounded-[var(--radius-md)] shadow-lg shadow-[var(--brand-primary)]/20 transition-all hover:scale-105 active:scale-95 ${isCommandBarOpen ? 'bg-slate-800 hover:bg-slate-900' : 'bg-[var(--brand-primary)] hover:brightness-110'}`}
+            icon={<Plus className={`w-5 h-5 text-white transition-transform duration-200 ${isCommandBarOpen ? 'rotate-45' : 'group-hover:rotate-90'}`} />}
+          />
+        </Tooltip>
 
         <Tooltip text={t('toolbar.autoLayout')}>
           <Button
@@ -140,24 +123,25 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             disabled={!isInteractive}
             variant="ghost"
             size="icon"
-            className="rounded-[var(--radius-sm)] h-9 w-9 text-slate-500 hover:text-amber-600 hover:bg-amber-50"
-            icon={<Workflow className="w-4 h-4" />}
+            className={getToolbarIconButtonClass()}
+            icon={<Workflow className="w-4 h-4 transition-transform group-hover:scale-110" />}
           />
         </Tooltip>
 
-        <Tooltip text={t('toolbar.clearCanvas')}>
+        <Tooltip text={t('toolbar.flowpilotAI', 'Open FlowPilot')}>
           <Button
-            onClick={onClear}
+            onClick={onToggleStudio}
             disabled={!isInteractive}
             variant="ghost"
             size="icon"
-            className="rounded-[var(--radius-sm)] h-9 w-9 text-slate-400 hover:text-red-600 hover:bg-red-50"
-            icon={<Trash2 className="w-4 h-4" />}
-          />
+            className={`${getToolbarIconButtonClass({ active: isStudioOpen })} group relative overflow-hidden`}
+          >
+            <WandSparkles className={flowPilotIconClass} />
+          </Button>
         </Tooltip>
       </div>
 
-      <div className="w-px h-6 bg-slate-200/50 mx-2" />
+      <div className={`mx-2 ${TOOLBAR_DIVIDER_CLASS}`} />
 
       {/* Group 3: History */}
       <ToolbarHistoryControls
@@ -167,7 +151,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
         onUndo={onUndo}
         onRedo={onRedo}
       />
-
     </div>
   );
 };

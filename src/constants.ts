@@ -1,5 +1,5 @@
-import { Edge, Node, MarkerType } from 'reactflow';
-import { NodeType } from '@/lib/types';
+import { MarkerType } from '@/lib/reactflowCompat';
+import { type FlowEdge, type FlowNode, NodeType } from '@/lib/types';
 import { createId } from '@/lib/id';
 
 // --- Edge Styles (inline for reliable SVG rendering) ---
@@ -11,7 +11,7 @@ export const EDGE_LABEL_BG_STYLE = { fill: '#ffffff', stroke: '#cbd5e1', strokeW
 export const DEFAULT_EDGE_OPTIONS = {
   type: 'smoothstep' as const,
   markerEnd: { type: MarkerType.ArrowClosed },
-  animated: true,
+  animated: false,
   style: EDGE_STYLE,
   labelStyle: EDGE_LABEL_STYLE,
   labelBgStyle: EDGE_LABEL_BG_STYLE,
@@ -25,13 +25,42 @@ export const createDefaultEdge = (
   target: string,
   label?: string,
   id?: string
-): Edge => ({
+): FlowEdge => ({
   id: id || createId(`e-${source}-${target}`),
   source,
   target,
   label,
   ...DEFAULT_EDGE_OPTIONS,
 });
+
+function getMindmapEdgeHandles(sourceNode: FlowNode, targetNode: FlowNode): Pick<FlowEdge, 'sourceHandle' | 'targetHandle'> {
+  const targetIsLeftOfSource = targetNode.position.x < sourceNode.position.x;
+  return targetIsLeftOfSource
+    ? { sourceHandle: 'left', targetHandle: 'right' }
+    : { sourceHandle: 'right', targetHandle: 'left' };
+}
+
+export function createMindmapEdge(
+  sourceNode: FlowNode,
+  targetNode: FlowNode,
+  label?: string,
+  id?: string,
+  branchStyle: 'curved' | 'straight' = 'curved'
+): FlowEdge {
+  return {
+    id: id || createId(`e-${sourceNode.id}-${targetNode.id}`),
+    source: sourceNode.id,
+    target: targetNode.id,
+    label,
+    ...DEFAULT_EDGE_OPTIONS,
+    type: branchStyle === 'straight' ? 'straight' : 'bezier',
+    markerEnd: undefined,
+    data: {
+      mindmapBranchKind: sourceNode.data.mindmapDepth === 0 ? 'root' : 'branch',
+    },
+    ...getMindmapEdgeHandles(sourceNode, targetNode),
+  };
+}
 
 export const EDGE_CONDITION_STYLES = {
   default: { stroke: '#94a3b8', strokeWidth: 2 },
@@ -54,22 +83,10 @@ export const EDGE_CONDITION_LABELS = {
 export const NODE_WIDTH = 250;
 export const NODE_HEIGHT = 150;
 
-// --- Node Colors for MiniMap ---
-export const MINIMAP_NODE_COLORS: Record<string, string> = {
-  start: '#10b981', // emerald-500
-  process: '#3b82f6', // blue-500
-  decision: '#f59e0b', // amber-500
-  end: '#ef4444', // red-500
-  custom: '#6366f1', // indigo-500
-  annotation: '#e2e8f0', // slate-200
-  section: 'rgba(241, 245, 249, 0.5)', // slate-100/50
-  text: 'transparent'
-};
-
 // --- Initial Data ---
-export const INITIAL_NODES: Node[] = [];
+export const INITIAL_NODES: FlowNode[] = [];
 
-export const INITIAL_EDGES: Edge[] = [];
+export const INITIAL_EDGES: FlowEdge[] = [];
 
 // Dash pattern definitions for edge styling
 export const EDGE_DASH_PATTERNS: Record<string, { label: string; strokeDasharray: string }> = {
@@ -80,40 +97,86 @@ export const EDGE_DASH_PATTERNS: Record<string, { label: string; strokeDasharray
 };
 
 // --- Keyboard Shortcuts ---
-export const KEYBOARD_SHORTCUTS = [
-  {
-    title: 'shortcuts.essentials',
-    items: [
-      { label: 'common.undo', keys: ['Cmd', 'Z'] },
-      { label: 'common.redo', keys: ['Cmd', 'Shift', 'Z'] },
-      { label: 'common.selectAll', keys: ['Cmd', 'A'] },
-      { label: 'common.delete', keys: ['Backspace'] },
-    ]
-  },
-  {
-    title: 'shortcuts.manipulation',
-    items: [
-      { label: 'common.duplicate', keys: ['Cmd', 'D'] },
-      { label: 'common.duplicateDrag', keys: ['Alt', 'Drag'] },
-      { label: 'common.copy', keys: ['Cmd', 'C'] },
-      { label: 'common.paste', keys: ['Cmd', 'V'] },
-      { label: 'common.groupSelection', keys: ['Cmd', 'G'] },
-    ]
-  },
-  {
-    title: 'shortcuts.navigation',
-    items: [
-      { label: 'common.panCanvas', keys: ['Space', 'Drag'] },
-      { label: 'common.zoomInOut', keys: ['Cmd', '+/-'] },
-      { label: 'common.fitView', keys: ['Shift', '1'] },
-      { label: 'common.nudgeNode', keys: ['Arrows'] },
-    ]
-  },
-  {
-    title: 'shortcuts.help',
-    items: [
-      { label: 'common.keyboardShortcuts', keys: ['?'] },
-      { label: 'common.commandBar', keys: ['Cmd', 'K'] },
-    ]
-  },
-];
+interface ShortcutDefinition {
+  label: string;
+  keys: string[];
+}
+
+interface ShortcutSection {
+  title: string;
+  items: ShortcutDefinition[];
+}
+
+interface KeyboardShortcutKeyLabels {
+  primary: string;
+  alternate: string;
+  delete: string;
+}
+
+export function isMacLikePlatform(platform: string): boolean {
+  return /Mac|iPhone|iPad|iPod/i.test(platform);
+}
+
+function getShortcutKeyLabels(isMacLike: boolean): KeyboardShortcutKeyLabels {
+  return {
+    primary: isMacLike ? 'Cmd' : 'Ctrl',
+    alternate: isMacLike ? 'Opt' : 'Alt',
+    delete: isMacLike ? 'Delete' : 'Backspace',
+  };
+}
+
+export function getKeyboardShortcuts(isMacLike: boolean): ShortcutSection[] {
+  const keyLabels = getShortcutKeyLabels(isMacLike);
+
+  return [
+    {
+      title: 'shortcuts.essentials',
+      items: [
+        { label: 'common.undo', keys: [keyLabels.primary, 'Z'] },
+        { label: 'common.redo', keys: [keyLabels.primary, 'Shift', 'Z'] },
+        { label: 'common.selectAll', keys: [keyLabels.primary, 'A'] },
+        { label: 'common.delete', keys: [keyLabels.delete] },
+      ]
+    },
+    {
+      title: 'shortcuts.manipulation',
+      items: [
+        { label: 'common.multiSelect', keys: ['Shift', 'Click'] },
+        { label: 'common.selectionBox', keys: ['Shift', 'Drag'] },
+        { label: 'common.duplicate', keys: [keyLabels.primary, 'D'] },
+        { label: 'common.duplicateDrag', keys: [keyLabels.alternate, 'Drag'] },
+        { label: 'common.copy', keys: [keyLabels.primary, 'C'] },
+        { label: 'common.paste', keys: [keyLabels.primary, 'V'] },
+        { label: 'common.groupSelection', keys: [keyLabels.primary, 'G'] },
+      ]
+    },
+    {
+      title: 'shortcuts.nodes',
+      items: [
+        { label: 'common.mindmapAddChild', keys: ['Tab'] },
+        { label: 'common.mindmapAddSibling', keys: ['Enter'] },
+        { label: 'common.renameSelection', keys: ['F2'] },
+      ]
+    },
+    {
+      title: 'shortcuts.navigation',
+      items: [
+        { label: 'common.selectTool', keys: ['V'] },
+        { label: 'common.handTool', keys: ['H'] },
+        { label: 'common.panCanvas', keys: ['Space', 'Drag'] },
+        { label: 'common.zoomInOut', keys: [keyLabels.primary, '+/-'] },
+        { label: 'common.fitView', keys: ['Shift', '1'] },
+        { label: 'common.nudgeNode', keys: ['Arrows'] },
+      ]
+    },
+    {
+      title: 'shortcuts.help',
+      items: [
+        { label: 'common.keyboardShortcuts', keys: ['?'] },
+        { label: 'common.commandBar', keys: [keyLabels.primary, 'K'] },
+      ]
+    },
+  ];
+}
+
+export const KEYBOARD_SHORTCUTS = getKeyboardShortcuts(true);

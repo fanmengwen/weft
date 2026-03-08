@@ -1,26 +1,57 @@
-import React from 'react';
+import type { ReactElement } from 'react';
 import { Activity, Grid, Network, Zap } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { useFlowStore } from '../../store';
+import { useBrandButtonStyle } from '@/store/brandHooks';
+import { useViewSettings, useVisualSettingsActions } from '@/store/viewHooks';
 import { ViewHeader } from './ViewHeader';
+import type { GlobalEdgeOptions } from '@/lib/types';
 
 interface VisualsViewProps {
     onBack: () => void;
 }
 
-export const VisualsView = ({ onBack }: VisualsViewProps) => {
+interface SafetyModeOption {
+    mode: 'auto' | 'on' | 'off';
+    label: string;
+}
+
+interface ExportModeOption {
+    mode: 'deterministic' | 'legacy';
+    label: string;
+}
+
+export function VisualsView({ onBack }: VisualsViewProps): ReactElement {
     const { t } = useTranslation();
+    const globalEdgeOptions = useFlowStore((state) => state.globalEdgeOptions);
+    const viewSettings = useViewSettings();
     const {
-        globalEdgeOptions,
         setGlobalEdgeOptions,
-        viewSettings,
         setViewSettings,
         setDefaultIconsEnabled,
         setSmartRoutingEnabled,
         setLargeGraphSafetyMode,
-        brandConfig
-    } = useFlowStore();
-    const isBeveled = brandConfig.ui.buttonStyle === 'beveled';
+    } = useVisualSettingsActions();
+    const isBeveled = useBrandButtonStyle() === 'beveled';
+    const edgeStyleOptions: Array<{
+        type: GlobalEdgeOptions['type'];
+        label: string;
+        desc: string;
+    }> = [
+        { type: 'default', label: t('commandBar.visuals.bezier'), desc: t('commandBar.visuals.bezierDesc') },
+        { type: 'straight', label: t('commandBar.visuals.straight'), desc: t('commandBar.visuals.straightDesc') },
+        { type: 'smoothstep', label: t('commandBar.visuals.smoothStep'), desc: t('commandBar.visuals.smoothStepDesc') },
+        { type: 'step', label: t('commandBar.visuals.step'), desc: t('commandBar.visuals.stepDesc') },
+    ];
+    const safetyModeOptions: SafetyModeOption[] = [
+        { mode: 'auto', label: t('commandBar.visuals.largeGraphSafetyAuto', 'Auto') },
+        { mode: 'on', label: t('commandBar.visuals.largeGraphSafetyOn', 'On') },
+        { mode: 'off', label: t('commandBar.visuals.largeGraphSafetyOff', 'Off') },
+    ];
+    const exportModeOptions: ExportModeOption[] = [
+        { mode: 'deterministic', label: t('commandBar.visuals.exportModeDeterministic', 'Deterministic') },
+        { mode: 'legacy', label: t('commandBar.visuals.exportModeLegacy', 'Legacy') },
+    ];
 
     return (
         <div className="flex flex-col h-full">
@@ -32,16 +63,11 @@ export const VisualsView = ({ onBack }: VisualsViewProps) => {
                 <div className="space-y-3">
                     <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t('commandBar.visuals.edgeStyle')}</label>
                     <div className="grid grid-cols-2 gap-3">
-                        {[
-                            { type: 'default', label: t('commandBar.visuals.bezier'), desc: t('commandBar.visuals.bezierDesc') },
-                            { type: 'straight', label: t('commandBar.visuals.straight'), desc: t('commandBar.visuals.straightDesc') },
-                            { type: 'smoothstep', label: t('commandBar.visuals.smoothStep'), desc: t('commandBar.visuals.smoothStepDesc') },
-                            { type: 'step', label: t('commandBar.visuals.step'), desc: t('commandBar.visuals.stepDesc') }
-                        ].map((style) => (
+                        {edgeStyleOptions.map((style) => (
                             <div
                                 key={style.type}
-                                onClick={() => setGlobalEdgeOptions({ type: style.type as any })}
-                                className={`p-3 rounded-[var(--radius-md)] bordercursor-pointer transition-all duration-200 active:scale-[0.98]
+                                onClick={() => setGlobalEdgeOptions({ type: style.type })}
+                                className={`p-3 rounded-[var(--radius-md)] border cursor-pointer transition-all duration-200 active:scale-[0.98]
                                     ${(globalEdgeOptions.type === style.type || (style.type === 'default' && globalEdgeOptions.type === 'bezier'))
                                         ? `border-[var(--brand-primary)] bg-[var(--brand-primary-50)]/50 ${isBeveled ? 'btn-beveled border-2' : 'border-2 ring-1 ring-[var(--brand-primary)]/10'}`
                                         : `border-slate-100 bg-white hover:border-[var(--brand-primary-200)] ${isBeveled ? 'btn-beveled hover:bg-slate-50' : 'hover:bg-slate-50 border-2'}`
@@ -110,14 +136,10 @@ export const VisualsView = ({ onBack }: VisualsViewProps) => {
                         {t('commandBar.visuals.largeGraphSafety', 'Large Graph Safety')}
                     </label>
                     <div className="grid grid-cols-3 gap-2">
-                        {[
-                            { mode: 'auto', label: t('commandBar.visuals.largeGraphSafetyAuto', 'Auto') },
-                            { mode: 'on', label: t('commandBar.visuals.largeGraphSafetyOn', 'On') },
-                            { mode: 'off', label: t('commandBar.visuals.largeGraphSafetyOff', 'Off') },
-                        ].map((option) => (
+                        {safetyModeOptions.map((option) => (
                             <button
                                 key={option.mode}
-                                onClick={() => setLargeGraphSafetyMode(option.mode as 'auto' | 'on' | 'off')}
+                                onClick={() => setLargeGraphSafetyMode(option.mode)}
                                 className={`h-9 rounded-[var(--radius-sm)] border text-xs font-semibold transition-all active:scale-95
                                     ${viewSettings.largeGraphSafetyMode === option.mode
                                         ? `border-[var(--brand-primary)] bg-[var(--brand-primary-50)] text-[var(--brand-primary-700)] ${isBeveled ? 'btn-beveled' : ''}`
@@ -135,21 +157,12 @@ export const VisualsView = ({ onBack }: VisualsViewProps) => {
                         {t('commandBar.visuals.exportMode', 'Export Mode')}
                     </label>
                     <div className="grid grid-cols-2 gap-2">
-                        {[
-                            {
-                                mode: 'deterministic',
-                                label: t('commandBar.visuals.exportModeDeterministic', 'Deterministic'),
-                            },
-                            {
-                                mode: 'legacy',
-                                label: t('commandBar.visuals.exportModeLegacy', 'Legacy'),
-                            },
-                        ].map((option) => (
+                        {exportModeOptions.map((option) => (
                             <button
                                 key={option.mode}
                                 onClick={() => {
                                     setViewSettings({
-                                        exportSerializationMode: option.mode as 'deterministic' | 'legacy',
+                                        exportSerializationMode: option.mode,
                                     });
                                 }}
                                 className={`h-9 rounded-[var(--radius-sm)] border text-xs font-semibold transition-all active:scale-95
@@ -186,4 +199,4 @@ export const VisualsView = ({ onBack }: VisualsViewProps) => {
             </div>
         </div>
     );
-};
+}

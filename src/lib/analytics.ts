@@ -28,7 +28,7 @@ export const initAnalytics = () => {
     }
 };
 
-export const trackEvent = (eventName: string, properties?: Record<string, any>) => {
+export const trackEvent = (eventName: string, properties?: Record<string, unknown>) => {
     const { analyticsEnabled } = useFlowStore.getState().viewSettings;
     if (!analyticsEnabled) return;
 

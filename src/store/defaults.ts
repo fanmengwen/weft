@@ -1,5 +1,6 @@
 import type { DesignSystem, GlobalEdgeOptions } from '@/lib/types';
-import type { AISettings, BrandConfig, BrandKit, ViewSettings } from './types';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
+import type { AISettings, BrandConfig, BrandKit, Layer, ViewSettings } from './types';
 
 export const DEFAULT_DESIGN_SYSTEM: DesignSystem = {
     id: 'default',
@@ -87,19 +88,32 @@ export const DEFAULT_BRAND_KIT: BrandKit = {
 export const INITIAL_VIEW_SETTINGS: ViewSettings = {
     showGrid: true,
     snapToGrid: true,
-    showMiniMap: true,
+    alignmentGuidesEnabled: true,
     isShortcutsHelpOpen: false,
     defaultIconsEnabled: true,
     smartRoutingEnabled: true,
+    smartRoutingProfile: 'standard',
+    smartRoutingBundlingEnabled: false,
+    architectureStrictMode: false,
     largeGraphSafetyMode: 'auto',
+    largeGraphSafetyProfile: 'balanced',
     exportSerializationMode: 'deterministic',
-    historyModelV2Enabled: import.meta.env.VITE_HISTORY_MODEL_V2 !== '0',
+    historyModelV2Enabled: ROLLOUT_FLAGS.historyModelV2,
     analyticsEnabled: true,
     language: 'en',
 };
 
 export const INITIAL_GLOBAL_EDGE_OPTIONS: GlobalEdgeOptions = {
     type: 'smoothstep',
-    animated: true,
-    strokeWidth: 2,
+    animated: !ROLLOUT_FLAGS.visualQualityV2,
+    strokeWidth: ROLLOUT_FLAGS.visualQualityV2 ? 1.5 : 2,
 };
+
+export const INITIAL_LAYERS: Layer[] = [
+    {
+        id: 'default',
+        name: 'Default',
+        visible: true,
+        locked: false,
+    },
+];

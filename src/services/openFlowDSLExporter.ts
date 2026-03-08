@@ -1,4 +1,6 @@
-import { Node, Edge } from 'reactflow';
+import type { Edge, Node } from '@/lib/reactflowCompat';
+import { getNodeParentId } from '@/lib/nodeParent';
+import { NODE_DEFAULTS } from '@/theme';
 import { orderGraphForSerialization, type ExportSerializationMode } from './canonicalSerialization';
 
 const TYPE_TO_DSL: Record<string, string> = {
@@ -11,12 +13,55 @@ const TYPE_TO_DSL: Record<string, string> = {
     section: 'section',
     browser: 'browser',
     mobile: 'mobile',
-    wireframe_button: 'button',
-    wireframe_input: 'input',
-    icon: 'icon',
-    wireframe_image: 'placeholder',
     container: 'container',
 };
+
+const NODE_ATTRIBUTE_KEYS = [
+    'subLabel',
+    'shape',
+    'colorMode',
+    'customColor',
+    'align',
+    'width',
+    'height',
+    'rotation',
+    'fontSize',
+    'fontFamily',
+    'fontWeight',
+    'fontStyle',
+    'backgroundColor',
+    'transparency',
+    'variant',
+    'layerId',
+    'journeySection',
+    'journeyActor',
+    'journeyTask',
+    'journeyScore',
+    'mindmapSide',
+    'mindmapBranchStyle',
+    'archProvider',
+    'archResourceType',
+    'archEnvironment',
+    'archBoundaryId',
+    'archZone',
+    'archTrustDomain',
+] as const;
+
+const EDGE_ATTRIBUTE_KEYS = [
+    'condition',
+    'strokeWidth',
+    'dashPattern',
+    'opacity',
+    'archProtocol',
+    'archPort',
+    'archDirection',
+    'archSourceSide',
+    'archTargetSide',
+    'classRelation',
+    'classRelationLabel',
+    'erRelation',
+    'erRelationLabel',
+] as const;
 
 /**
  * Export FlowMind nodes/edges to our custom DSL V2 text format.
@@ -30,6 +75,34 @@ export interface OpenFlowDSLExportDiagnostic {
     source: string;
     target: string;
     message: string;
+}
+
+function getStringField(data: Record<string, unknown> | undefined, key: string): string | undefined {
+    const value = data?.[key];
+    if (typeof value !== 'string') return undefined;
+    return value;
+}
+
+function escapeDslString(value: string): string {
+    return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
+
+function formatDslScalar(value: string | number | boolean): string {
+    if (typeof value === 'string') {
+        return `"${escapeDslString(value)}"`;
+    }
+    return String(value);
+}
+
+function getScalarField(
+    data: Record<string, unknown> | undefined,
+    key: string
+): string | number | boolean | undefined {
+    const value = data?.[key];
+    if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+        return value;
+    }
+    return undefined;
 }
 
 export function getOpenFlowDSLExportDiagnostics(nodes: Node[], edges: Edge[]): OpenFlowDSLExportDiagnostic[] {
@@ -56,7 +129,7 @@ export function getOpenFlowDSLExportDiagnostics(nodes: Node[], edges: Edge[]): O
     return diagnostics;
 }
 
-export const toOpenFlowDSL = (nodes: Node[], edges: Edge[], options: OpenFlowDSLExportOptions = {}): string => {
+export function toOpenFlowDSL(nodes: Node[], edges: Edge[], options: OpenFlowDSLExportOptions = {}): string {
     const lines: string[] = [];
     const mode = options.mode ?? 'deterministic';
     const { nodes: orderedNodes, edges: orderedEdges } = orderGraphForSerialization(nodes, edges, mode);
@@ -67,69 +140,82 @@ export const toOpenFlowDSL = (nodes: Node[], edges: Edge[], options: OpenFlowDSL
     lines.push('direction: TB');
     lines.push('');
 
-    // Declarations
-    // We want to export clearer syntax: [type] id: Label { attributes }
-
-    // Helper to format attributes
-    const formatAttributes = (data: any): string => {
+    const formatAttributes = (entries: Array<[string, string | number | boolean]>): string => {
         const attrs: string[] = [];
-        // Extract relevant visual attributes from data
-        // For now, let's just support a few common ones if they exist
-        if (data.color && data.color !== 'slate') attrs.push(`color: "${data.color}"`);
-        if (data.icon) attrs.push(`icon: "${data.icon}"`);
+
+        entries.forEach(([key, value]) => {
+            attrs.push(`${key}: ${formatDslScalar(value)}`);
+        });
 
         if (attrs.length === 0) return '';
         return ` { ${attrs.join(', ')} }`;
     };
 
-    // 1. Groups first? Or just flat list?
-    // If we support hierarchy, we should print groups.
-    // For now, let's stick to flat export until we implement full hierarchy management in the store/UI
-    // But V2 parser supports groups.
+    const collectNodeAttributeEntries = (node: Node): Array<[string, string | number | boolean]> => {
+        const data = node.data as Record<string, unknown> | undefined;
+        if (!data) return [];
 
-    // Let's filter out sections/groups and handle them if they are parent nodes?
-    // ReactFlow uses `parentId`.
+        const entries: Array<[string, string | number | boolean]> = [];
+        const defaults = NODE_DEFAULTS[node.type || 'process'] || NODE_DEFAULTS.process;
 
-    const getParentRef = (node: Node & { parentId?: string }) => node.parentNode ?? node.parentId;
-    const parentNodes = orderedNodes.filter(n => !getParentRef(n as Node & { parentId?: string }));
-    const childNodes = orderedNodes.filter(n => Boolean(getParentRef(n as Node & { parentId?: string })));
-
-    // We need to recursively print nodes? Or just one level deep for groups?
-
-    const printNode = (node: Node, indent: string = '') => {
-        const dslType = TYPE_TO_DSL[node.type || 'process'] || 'process';
-        const label = node.data?.label || 'Node';
-        const id = node.id;
-
-        // If label is simple alphanumeric and distinct, maybe we don't need explicit ID?
-        // But V2 prefers explicit IDs to be safe.
-        // Format: [type] id: Label { attrs }
-
-        // Clean label for display?
-        // If label == id, we can omit "id:" part if we want, but "id: Label" is consistently parsable.
-        // Actually, V2 parser: [type] id: Label
-        // If we output: [process] myNode: My Node Label
-
-        lines.push(`${indent}[${dslType}] ${id}: ${label}${formatAttributes(node.data)}`);
-
-        // Print children
-        const children = childNodes.filter(c => getParentRef(c as Node & { parentId?: string }) === node.id);
-        if (children.length > 0) {
-            // It's a group?
-            // Wait, dsl parser handles "group" keyword.
-            // If the node itself is a group type?
-            // "group" syntax in DSL is: group "Label" { ... }
-            // But here we are printing it as a node first.
-            // Adjust logic: if it has children, print as group block?
+        const color = getStringField(data, 'color');
+        if (color && color !== defaults.color) {
+            entries.push(['color', color]);
         }
+
+        const icon = getStringField(data, 'icon');
+        if (icon && icon !== defaults.icon && icon !== 'none') {
+            entries.push(['icon', icon]);
+        }
+
+        NODE_ATTRIBUTE_KEYS.forEach((key) => {
+            const value = getScalarField(data, key);
+            if (value === undefined) return;
+            if (key === 'shape' && value === defaults.shape) return;
+            entries.push([key, value]);
+        });
+
+        return entries;
     };
 
-    // Better approach:
-    // Iterate over top-level nodes.
-    // If a node has children, print it as a group block.
-    // If not, print as node.
+    const collectEdgeAttributeEntries = (edge: Edge): Array<[string, string | number | boolean]> => {
+        const entries: Array<[string, string | number | boolean]> = [];
+        const data = (edge.data ?? {}) as Record<string, unknown>;
 
-    // Note: 'section' type might be used as group.
+        if (edge.type === 'smoothstep') {
+            entries.push(['style', 'curved']);
+        }
+
+        const strokeDasharray = edge.style?.strokeDasharray;
+        if (
+            typeof strokeDasharray === 'string'
+            && strokeDasharray.trim().length > 0
+            && getScalarField(data, 'dashPattern') === undefined
+        ) {
+            entries.push(['style', 'dashed']);
+        }
+
+        EDGE_ATTRIBUTE_KEYS.forEach((key) => {
+            const value = getScalarField(data, key);
+            if (value === undefined) return;
+            entries.push([key, value]);
+        });
+
+        return entries;
+    };
+
+    const parentNodes = orderedNodes.filter((n) => !getNodeParentId(n));
+    const childrenByParent = new Map<string, Node[]>();
+    for (const node of orderedNodes) {
+        const parentId = getNodeParentId(node);
+        if (!parentId) continue;
+        const children = childrenByParent.get(parentId);
+        if (children) {
+            children.push(node);
+        } else {
+            childrenByParent.set(parentId, [node]);
+        }
+    }
 
     const renderedIds = new Set<string>();
 
@@ -137,22 +223,17 @@ export const toOpenFlowDSL = (nodes: Node[], edges: Edge[], options: OpenFlowDSL
         if (renderedIds.has(node.id)) return;
         renderedIds.add(node.id);
 
-        const children = childNodes.filter(c => c.parentId === node.id);
+        const children = childrenByParent.get(node.id) || [];
 
         if (children.length > 0) {
-            // Render as group
-            const label = node.data?.label || 'Group';
+            const label = getStringField(node.data, 'label') || 'Group';
             lines.push(`${indent}group "${label}" {`);
-            children.forEach(child => renderNode(child, indent + '  '));
+            children.forEach((childNode) => renderNode(childNode, indent + '  '));
             lines.push(`${indent}}`);
         } else {
-            // Render as normal node
             const dslType = TYPE_TO_DSL[node.type || 'process'] || 'process';
-            const label = node.data?.label || 'Node';
-            // sanitizing label?
-
-            // Only output attributes if necessary
-            const attrs = formatAttributes(node.data);
+            const label = getStringField(node.data, 'label') || 'Node';
+            const attrs = formatAttributes(collectNodeAttributeEntries(node));
 
             lines.push(`${indent}[${dslType}] ${node.id}: ${label}${attrs}`);
         }
@@ -166,27 +247,11 @@ export const toOpenFlowDSL = (nodes: Node[], edges: Edge[], options: OpenFlowDSL
         for (const edge of orderedEdges) {
             if (diagnosticsByEdgeId.has(edge.id)) continue;
 
-            // We use IDs for connections in V2
-            const arrow = '->';
-            // Check edge style?
-            // if (edge.data?.styleType === 'dashed') arrow = '..>';
-            // if (edge.data?.styleType === 'thick') arrow = '==>';
-            // We can infer from edge.type or edge.animated?
-
-            // For now default arrow
-
             const labelPart = edge.label ? `|${edge.label}|` : '';
-            // edge.label might contain pipes? escape?
-
-            // Output: SourceID -> TargetID { attrs }
-            if (edge.label) {
-                // Inline label syntax: A ->|Label| B
-                lines.push(`${edge.source} ->${labelPart} ${edge.target}`);
-            } else {
-                lines.push(`${edge.source} -> ${edge.target}`);
-            }
+            const attrs = formatAttributes(collectEdgeAttributeEntries(edge));
+            lines.push(`${edge.source} ->${labelPart ? `${labelPart} ` : ' '}${edge.target}${attrs}`);
         }
     }
 
     return lines.join('\n');
-};
+}

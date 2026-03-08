@@ -1,19 +1,22 @@
-import type { Edge, Node } from 'reactflow';
+import { isDiagramType, type DiagramType, type FlowEdge, type FlowNode } from '@/lib/types';
 
 export const DIAGRAM_DOCUMENT_VERSION = '1.0';
 const DIAGRAM_DOCUMENT_NAME = 'FlowMind Diagram';
+export const DEFAULT_DIAGRAM_TYPE: DiagramType = 'flowchart';
 
 export interface DiagramDocumentV1 {
   version: string;
   name: string;
   createdAt: string;
-  nodes: Node[];
-  edges: Edge[];
+  diagramType: DiagramType;
+  nodes: FlowNode[];
+  edges: FlowEdge[];
 }
 
 export interface ImportCompatibilityResult {
-  nodes: Node[];
-  edges: Edge[];
+  diagramType: DiagramType;
+  nodes: FlowNode[];
+  edges: FlowEdge[];
   warnings: string[];
 }
 
@@ -33,11 +36,16 @@ function getVersionParts(version: string): { major: number | null; minor: number
   };
 }
 
-export function createDiagramDocument(nodes: Node[], edges: Edge[]): DiagramDocumentV1 {
+export function createDiagramDocument(
+  nodes: FlowNode[],
+  edges: FlowEdge[],
+  diagramType: DiagramType = DEFAULT_DIAGRAM_TYPE
+): DiagramDocumentV1 {
   return {
     version: DIAGRAM_DOCUMENT_VERSION,
     name: DIAGRAM_DOCUMENT_NAME,
     createdAt: new Date().toISOString(),
+    diagramType,
     nodes,
     edges,
   };
@@ -51,6 +59,7 @@ export function parseDiagramDocumentImport(raw: unknown): ImportCompatibilityRes
   const candidate = raw as Record<string, unknown>;
   const warnings: string[] = [];
   const versionRaw = typeof candidate.version === 'string' ? candidate.version : null;
+  const diagramType = isDiagramType(candidate.diagramType) ? candidate.diagramType : DEFAULT_DIAGRAM_TYPE;
   const { major } = getVersionParts(versionRaw ?? DIAGRAM_DOCUMENT_VERSION);
 
   if (versionRaw === null) {
@@ -62,8 +71,9 @@ export function parseDiagramDocumentImport(raw: unknown): ImportCompatibilityRes
   }
 
   return {
-    nodes: candidate.nodes as Node[],
-    edges: candidate.edges as Edge[],
+    diagramType,
+    nodes: candidate.nodes as FlowNode[],
+    edges: candidate.edges as FlowEdge[],
     warnings,
   };
 }

@@ -157,7 +157,23 @@ export function parseNodeDeclaration(raw: string): RawNode | null {
     return null;
 }
 
-export const ARROW_PATTERNS = ['===>', '-.->', '--->', '-->', '===', '---', '==>', '-.-', '--'];
+export const ARROW_PATTERNS = [
+    '<==>',
+    '<-.->',
+    '<-->',
+    '<==',
+    '<-.',
+    '<--',
+    '===>',
+    '-.->',
+    '--->',
+    '-->',
+    '===',
+    '---',
+    '==>',
+    '-.-',
+    '--',
+];
 
 function findArrowInLine(line: string): { arrow: string; before: string; after: string } | null {
     for (const arrow of ARROW_PATTERNS) {

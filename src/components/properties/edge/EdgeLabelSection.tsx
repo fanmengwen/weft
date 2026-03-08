@@ -1,11 +1,11 @@
 import React from 'react';
-import type { Edge } from 'reactflow';
+import type { FlowEdge } from '@/lib/types';
 import { Input } from '@/components/ui/Input';
 import { Slider } from '@/components/ui/Slider';
 
 interface EdgeLabelSectionProps {
-    selectedEdge: Edge;
-    onChange: (id: string, updates: Partial<Edge>) => void;
+    selectedEdge: FlowEdge;
+    onChange: (id: string, updates: Partial<FlowEdge>) => void;
 }
 
 export function EdgeLabelSection({ selectedEdge, onChange }: EdgeLabelSectionProps): React.ReactElement {

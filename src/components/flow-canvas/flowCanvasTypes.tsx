@@ -1,21 +1,20 @@
-import type { EdgeTypes, NodeTypes } from 'reactflow';
+import type { EdgeTypes, NodeTypes } from '@/lib/reactflowCompat';
+import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import AnnotationNode from '@/components/AnnotationNode';
 import CustomNode from '@/components/CustomNode';
-import { CustomBezierEdge, CustomSmoothStepEdge, CustomStepEdge } from '@/components/CustomEdge';
+import { CustomBezierEdge, CustomSmoothStepEdge, CustomStepEdge, CustomStraightEdge } from '@/components/CustomEdge';
 import GroupNode from '@/components/GroupNode';
 import ImageNode from '@/components/ImageNode';
 import SectionNode from '@/components/SectionNode';
 import SwimlaneNode from '@/components/SwimlaneNode';
 import TextNode from '@/components/TextNode';
 import BrowserNode from '@/components/custom-nodes/BrowserNode';
-import IconNode from '@/components/custom-nodes/IconNode';
 import MobileNode from '@/components/custom-nodes/MobileNode';
-import {
-    WireframeButtonNode,
-    WireframeIconNode,
-    WireframeImageNode,
-    WireframeInputNode,
-} from '@/components/custom-nodes/WireframeNodes';
+import ClassNode from '@/components/custom-nodes/ClassNode';
+import EntityNode from '@/components/custom-nodes/EntityNode';
+import MindmapNode from '@/components/custom-nodes/MindmapNode';
+import JourneyNode from '@/components/custom-nodes/JourneyNode';
+import ArchitectureNode from '@/components/custom-nodes/ArchitectureNode';
 
 export const flowCanvasNodeTypes: NodeTypes = {
     start: CustomNode,
@@ -23,6 +22,11 @@ export const flowCanvasNodeTypes: NodeTypes = {
     decision: CustomNode,
     end: CustomNode,
     custom: CustomNode,
+    class: ClassNode,
+    er_entity: EntityNode,
+    mindmap: MindmapNode,
+    journey: JourneyNode,
+    architecture: ArchitectureNode,
     annotation: AnnotationNode,
     section: SectionNode,
     text: TextNode,
@@ -31,17 +35,18 @@ export const flowCanvasNodeTypes: NodeTypes = {
     image: ImageNode,
     browser: BrowserNode,
     mobile: MobileNode,
-    wireframe_button: WireframeButtonNode,
-    wireframe_input: WireframeInputNode,
-    wireframe_image: WireframeImageNode,
-    wireframe_icon: WireframeIconNode,
-    icon: IconNode,
 };
 
 export const flowCanvasEdgeTypes: EdgeTypes = {
     default: CustomBezierEdge,
     smoothstep: CustomSmoothStepEdge,
     step: CustomStepEdge,
+    ...(ROLLOUT_FLAGS.connectorModelV1
+        ? {
+            bezier: CustomBezierEdge,
+            straight: CustomStraightEdge,
+        }
+        : {}),
 };
 
 interface ConnectionLike {

@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState, type ReactElement, type ReactNode } from 'react';
 import { Zap, GitGraph, Check, MoveHorizontal, Waypoints, Workflow } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import { ViewHeader } from './ViewHeader';
 import type { LayoutAlgorithm } from '../../services/elkLayout';
-import { useFlowStore } from '../../store';
 import { trackEvent } from '../../lib/analytics';
+import { useBrandButtonStyle } from '@/store/brandHooks';
 
 interface LayoutViewProps {
     onLayout?: (direction?: 'TB' | 'LR' | 'RL' | 'BT', algorithm?: LayoutAlgorithm, spacing?: 'compact' | 'normal' | 'loose') => void;
@@ -21,7 +21,7 @@ const LAYOUT_PRESETS: Array<{
     defaultLabel: string;
     descKey: string;
     defaultDesc: string;
-    icon: React.ReactNode;
+    icon: ReactNode;
     algorithm: LayoutAlgorithm;
     direction: 'TB' | 'LR' | 'RL' | 'BT';
     spacing: 'compact' | 'normal' | 'loose';
@@ -72,8 +72,16 @@ const LAYOUT_PRESETS: Array<{
     },
 ];
 
-const AlgorithmCard = ({ label, desc, icon, selected, onClick }: any) => {
-    const isBeveled = useFlowStore(state => state.brandConfig.ui.buttonStyle === 'beveled');
+interface AlgorithmCardProps {
+    label: string;
+    desc: string;
+    icon: ReactNode;
+    selected: boolean;
+    onClick: () => void;
+}
+
+function AlgorithmCard({ label, desc, icon, selected, onClick }: AlgorithmCardProps): ReactElement {
+    const isBeveled = useBrandButtonStyle() === 'beveled';
 
     return (
         <div
@@ -100,13 +108,13 @@ const AlgorithmCard = ({ label, desc, icon, selected, onClick }: any) => {
             )}
         </div>
     );
-};
+}
 
-export const LayoutView = ({
+export function LayoutView({
     onLayout,
     onClose,
     handleBack
-}: LayoutViewProps) => {
+}: LayoutViewProps): ReactElement {
     const { t } = useTranslation();
     const [preset, setPreset] = useState<LayoutPreset>('tree');
 
@@ -159,4 +167,4 @@ export const LayoutView = ({
             </div>
         </div>
     );
-};
+}

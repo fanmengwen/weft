@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import type { OnSelectionChangeParams } from 'reactflow';
+import type { OnSelectionChangeParams } from '@/lib/reactflowCompat';
 import { trackEvent } from '@/lib/analytics';
 import type { FlowStoreState } from '@/store';
 
@@ -26,8 +26,17 @@ export function useFlowCoreActions({
     clearCanvasConfirmText,
 }: UseFlowCoreActionsParams): UseFlowCoreActionsResult {
     const onSelectionChange = useCallback(({ nodes: selectedNodes, edges: selectedEdges }: OnSelectionChangeParams) => {
-        setSelectedNodeId(selectedNodes.length > 0 ? selectedNodes[0].id : null);
-        setSelectedEdgeId(selectedNodes.length === 0 && selectedEdges.length > 0 ? selectedEdges[0].id : null);
+        // Only update what IS selected — never clear to null here.
+        // Clearing is handled exclusively by onPaneClick so the PropertiesPanel
+        // stays open when the user clicks inside it (which resets RF's selection state).
+        if (selectedNodes.length > 0) {
+            setSelectedNodeId(selectedNodes[0].id);
+            setSelectedEdgeId(null);
+        } else if (selectedEdges.length > 0) {
+            setSelectedEdgeId(selectedEdges[0].id);
+            setSelectedNodeId(null);
+        }
+        // If both are empty (click on pane), do nothing — let onPaneClick handle it.
     }, [setSelectedEdgeId, setSelectedNodeId]);
 
     const handleClear = useCallback(() => {

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { X, Layout, Plus } from 'lucide-react';
-import { FLOW_TEMPLATES, FlowTemplate } from '../services/templates';
+import { getFlowTemplates, type FlowTemplate } from '../services/templates';
 import { useTranslation } from 'react-i18next';
 
 interface TemplatesPanelProps {
@@ -16,13 +16,14 @@ export const TemplatesPanel: React.FC<TemplatesPanelProps> = ({
 }) => {
   const { t } = useTranslation();
   const [search, setSearch] = useState('');
+  const templates = useMemo(() => getFlowTemplates(), []);
 
   const filteredTemplates = useMemo(() => {
-    return FLOW_TEMPLATES.filter(t => 
+    return templates.filter(t =>
       t.name.toLowerCase().includes(search.toLowerCase()) || 
       t.description.toLowerCase().includes(search.toLowerCase())
     );
-  }, [search]);
+  }, [search, templates]);
 
   if (!isOpen) return null;
 

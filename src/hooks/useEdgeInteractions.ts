@@ -1,5 +1,11 @@
 import { useEffect, useCallback } from 'react';
-import { useReactFlow, MarkerType } from 'reactflow';
+import { useReactFlow, MarkerType } from '@/lib/reactflowCompat';
+import type { EdgeData } from '@/lib/types';
+import {
+    applyArchitectureDirection,
+    getDirectionFromMarkers,
+    reverseArchitectureDirection,
+} from '@/components/properties/edge/architectureSemantics';
 
 /**
  * Edge-specific keyboard shortcuts.
@@ -29,12 +35,31 @@ export function useEdgeInteractions() {
                 setEdges((eds) =>
                     eds.map((e) => {
                         if (!e.selected) return e;
+                        const edgeData = (e.data ?? {}) as EdgeData;
+                        const currentDirection = edgeData.archDirection || getDirectionFromMarkers(e);
+                        const reversedDirection = reverseArchitectureDirection(currentDirection);
+                        const swappedArchitectureEdge = edgeData.archDirection
+                            ? {
+                                ...e,
+                                data: {
+                                    ...edgeData,
+                                    archDirection: reversedDirection,
+                                    archSourceSide: edgeData.archTargetSide,
+                                    archTargetSide: edgeData.archSourceSide,
+                                },
+                            }
+                            : e;
+                        const architectureDirectionUpdates = applyArchitectureDirection(
+                            swappedArchitectureEdge,
+                            reversedDirection
+                        );
                         return {
                             ...e,
                             source: e.target,
                             target: e.source,
                             sourceHandle: e.targetHandle,
                             targetHandle: e.sourceHandle,
+                            ...architectureDirectionUpdates,
                         };
                     })
                 );
@@ -47,11 +72,14 @@ export function useEdgeInteractions() {
                     eds.map((e) => {
                         if (!e.selected) return e;
                         const isBidirectional = !!e.markerStart;
+                        const nextDirection = isBidirectional ? '-->' : '<-->';
+                        const architectureUpdates = applyArchitectureDirection(e, nextDirection);
                         return {
                             ...e,
                             markerStart: isBidirectional
                                 ? undefined
                                 : { type: MarkerType.ArrowClosed, color: (e.style?.stroke as string) || '#94a3b8' },
+                            ...architectureUpdates,
                         };
                     })
                 );

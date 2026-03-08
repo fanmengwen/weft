@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Node } from 'reactflow';
+import type { Node } from '@/lib/reactflowCompat';
 import type { ContextMenuProps } from '@/components/ContextMenu';
 
 interface UseFlowCanvasContextActionsParams {
@@ -18,7 +18,7 @@ interface UseFlowCanvasContextActionsParams {
     nodes: Node[];
 }
 
-interface UseFlowCanvasContextActionsResult {
+export interface UseFlowCanvasContextActionsResult {
     selectedCount: number;
     onPaste: () => void;
     onDuplicate: () => void;

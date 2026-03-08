@@ -1,4 +1,4 @@
-import { Edge, Node } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { renderEdgesLayer } from './figma/edgeHelpers';
 import { getIconMap } from './figma/iconHelpers';
 import {
@@ -8,7 +8,7 @@ import {
     renderTextNodesLayer,
 } from './figma/nodeLayers';
 
-function getCanvasBounds(nodes: Node[]): { minX: number; minY: number; width: number; height: number } {
+function getCanvasBounds(nodes: FlowNode[]): { minX: number; minY: number; width: number; height: number } {
     const padding = 60;
     const minX = Math.min(...nodes.map((node) => node.position.x)) - padding;
     const minY = Math.min(...nodes.map((node) => node.position.y)) - padding;
@@ -23,7 +23,7 @@ function getCanvasBounds(nodes: Node[]): { minX: number; minY: number; width: nu
     };
 }
 
-export const toFigmaSVG = async (nodes: Node[], edges: Edge[]): Promise<string> => {
+export const toFigmaSVG = async (nodes: FlowNode[], edges: FlowEdge[]): Promise<string> => {
     if (nodes.length === 0) {
         return '<svg xmlns="http://www.w3.org/2000/svg"></svg>';
     }

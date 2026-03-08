@@ -13,14 +13,19 @@ export function Footer({ onLaunch }: FooterProps): React.ReactElement {
     <footer className="bg-white border-t border-brand-border py-12 select-none">
       <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
 
-        <div onClick={onLaunch} className="flex items-center gap-2.5 cursor-pointer group">
+        <button
+          type="button"
+          onClick={onLaunch}
+          className="flex items-center gap-2.5 cursor-pointer group"
+          aria-label="Open OpenFlowKit"
+        >
           <div className="w-6 h-6 bg-brand-primary rounded flex items-center justify-center text-white shadow-sm transition-transform group-hover:rotate-6">
             <OpenFlowLogo className="w-4 h-4 text-white" />
           </div>
           <span className="font-bold text-brand-primary text-sm tracking-tight">OpenFlowKit</span>
           <span className="text-brand-border mx-2">/</span>
           <span className="text-brand-secondary text-xs font-medium">{t('footer.mitLicensed')}</span>
-        </div>
+        </button>
 
         <div className="flex items-center gap-6">
           <a

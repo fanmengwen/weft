@@ -1,5 +1,8 @@
-import { Node, Edge } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { NODE_WIDTH, NODE_HEIGHT } from '../constants';
+import type { ViewSettings } from '@/store/types';
+import { getNodeParentId } from '@/lib/nodeParent';
+import { getNodeHandleIdForSide, type HandleSide } from '@/lib/nodeHandles';
 
 /**
  * Assign intelligent `sourceHandle` and `targetHandle` to each edge
@@ -12,7 +15,7 @@ import { NODE_WIDTH, NODE_HEIGHT } from '../constants';
  * - Multiple edges between same pair distribute across handles
  */
 // Helper to get absolute position
-function getAbsolutePosition(node: Node, nodeMap: Map<string, Node>): { x: number, y: number } {
+function getAbsolutePosition(node: FlowNode, nodeMap: Map<string, FlowNode>): { x: number, y: number } {
     // We intentionally ignore node.positionAbsolute here because during drag operations
     // in React Flow, the positionAbsolute might be stale or not yet updated in the store
     // while node.position (relative) is updated.
@@ -21,14 +24,14 @@ function getAbsolutePosition(node: Node, nodeMap: Map<string, Node>): { x: numbe
 
     let x = node.position.x;
     let y = node.position.y;
-    let currentParentId = node.parentNode;
+    let currentParentId = getNodeParentId(node);
 
     while (currentParentId) {
         const parent = nodeMap.get(currentParentId);
         if (parent) {
             x += parent.position.x;
             y += parent.position.y;
-            currentParentId = parent.parentNode;
+            currentParentId = getNodeParentId(parent);
         } else {
             break;
         }
@@ -37,8 +40,13 @@ function getAbsolutePosition(node: Node, nodeMap: Map<string, Node>): { x: numbe
 }
 
 // Helper to get node dimensions robustly
-function getNodeDimensions(node: Node): { width: number, height: number } {
-    const measured = (node as any).measured;
+function getNodeDimensions(node: FlowNode): { width: number, height: number } {
+    const measured = (node as FlowNode & {
+        measured?: {
+            width?: number;
+            height?: number;
+        };
+    }).measured;
     if (measured && measured.width && measured.height) {
         return { width: measured.width, height: measured.height };
     }
@@ -60,21 +68,33 @@ function getNodeDimensions(node: Node): { width: number, height: number } {
     };
 }
 
-type PairMeta = {
-    hasReverseDirection: boolean;
-    siblingIndexByEdge: Map<Edge, number>;
-    directionCount: Map<string, number>;
-};
-
 type RoutingContext = {
-    nodeMap: Map<string, Node>;
+    nodeMap: Map<string, FlowNode>;
     nodeCenterMap: Map<string, { x: number; y: number }>;
-    pairMetaByKey: Map<string, PairMeta>;
 };
 
-const routingContextCache = new WeakMap<Node[], WeakMap<Edge[], RoutingContext>>();
+export interface SmartRoutingOptions {
+    profile?: 'standard' | 'infrastructure';
+    bundlingEnabled?: boolean;
+}
 
-function preserveEdgeLabelPlacement(originalEdge: Edge, nextEdge: Edge): Edge {
+const routingContextCache = new WeakMap<FlowNode[], WeakMap<FlowEdge[], RoutingContext>>();
+const ARCH_SIDE_TO_HANDLE_SIDE: Record<string, HandleSide> = {
+    L: 'left',
+    R: 'right',
+    T: 'top',
+    B: 'bottom',
+};
+
+function getSemanticHandleSide(side: unknown): HandleSide | undefined {
+    if (typeof side !== 'string') {
+        return undefined;
+    }
+
+    return ARCH_SIDE_TO_HANDLE_SIDE[side.toUpperCase()];
+}
+
+function preserveEdgeLabelPlacement(originalEdge: FlowEdge, nextEdge: FlowEdge): FlowEdge {
     const originalData = originalEdge.data as {
         labelPosition?: number;
         labelOffsetX?: number;
@@ -100,8 +120,31 @@ function preserveEdgeLabelPlacement(originalEdge: Edge, nextEdge: Edge): Edge {
     };
 }
 
-function buildRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
-    const nodeMap = new Map<string, Node>();
+function resolveAutoHandleSides(
+    dx: number,
+    dy: number,
+    profile: SmartRoutingOptions['profile']
+): { sourceHandleSide: HandleSide; targetHandleSide: HandleSide } {
+    const verticalDominance = profile === 'infrastructure'
+        ? Math.abs(dy) > Math.abs(dx) * 1.25
+        : Math.abs(dy) >= Math.abs(dx);
+
+    if (verticalDominance) {
+        if (dy >= 0) {
+            return { sourceHandleSide: 'bottom', targetHandleSide: 'top' };
+        }
+        return { sourceHandleSide: 'top', targetHandleSide: 'bottom' };
+    }
+
+    if (dx >= 0) {
+        return { sourceHandleSide: 'right', targetHandleSide: 'left' };
+    }
+
+    return { sourceHandleSide: 'left', targetHandleSide: 'right' };
+}
+
+function buildRoutingContext(nodes: FlowNode[], edges: FlowEdge[]): RoutingContext {
+    const nodeMap = new Map<string, FlowNode>();
     for (const node of nodes) {
         nodeMap.set(node.id, node);
     }
@@ -116,39 +159,13 @@ function buildRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
         });
     }
 
-    const pairMetaByKey = new Map<string, PairMeta>();
-    for (const edge of edges) {
-        const key = [edge.source, edge.target].sort().join('::');
-        let pairMeta = pairMetaByKey.get(key);
-        if (!pairMeta) {
-            pairMeta = {
-                hasReverseDirection: false,
-                siblingIndexByEdge: new Map<Edge, number>(),
-                directionCount: new Map<string, number>(),
-            };
-            pairMetaByKey.set(key, pairMeta);
-        }
-
-        const directionKey = `${edge.source}->${edge.target}`;
-        const siblingIndex = pairMeta.directionCount.get(directionKey) || 0;
-        pairMeta.siblingIndexByEdge.set(edge, siblingIndex);
-        pairMeta.directionCount.set(directionKey, siblingIndex + 1);
-
-        if (!pairMeta.hasReverseDirection) {
-            const reverseKey = `${edge.target}->${edge.source}`;
-            if (pairMeta.directionCount.has(reverseKey)) {
-                pairMeta.hasReverseDirection = true;
-            }
-        }
-    }
-
-    return { nodeMap, nodeCenterMap, pairMetaByKey };
+    return { nodeMap, nodeCenterMap };
 }
 
-function getRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
+function getRoutingContext(nodes: FlowNode[], edges: FlowEdge[]): RoutingContext {
     let edgeCache = routingContextCache.get(nodes);
     if (!edgeCache) {
-        edgeCache = new WeakMap<Edge[], RoutingContext>();
+        edgeCache = new WeakMap<FlowEdge[], RoutingContext>();
         routingContextCache.set(nodes, edgeCache);
     }
 
@@ -162,8 +179,27 @@ function getRoutingContext(nodes: Node[], edges: Edge[]): RoutingContext {
     return fresh;
 }
 
-export function assignSmartHandles(nodes: Node[], edges: Edge[]): Edge[] {
-    const { nodeMap, nodeCenterMap, pairMetaByKey } = getRoutingContext(nodes, edges);
+export function assignSmartHandles(nodes: FlowNode[], edges: FlowEdge[]): FlowEdge[] {
+    return assignSmartHandlesWithOptions(nodes, edges, {
+        profile: 'standard',
+        bundlingEnabled: false,
+    });
+}
+
+export function getSmartRoutingOptionsFromViewSettings(viewSettings: ViewSettings): SmartRoutingOptions {
+    return {
+        profile: viewSettings.smartRoutingProfile,
+        bundlingEnabled: viewSettings.smartRoutingBundlingEnabled,
+    };
+}
+
+export function assignSmartHandlesWithOptions(
+    nodes: FlowNode[],
+    edges: FlowEdge[],
+    options: SmartRoutingOptions
+): FlowEdge[] {
+    const { nodeMap, nodeCenterMap } = getRoutingContext(nodes, edges);
+    const profile = options.profile ?? 'standard';
 
     return edges.map((edge) => {
         const sourceNode = nodeMap.get(edge.source);
@@ -186,71 +222,27 @@ export function assignSmartHandles(nodes: Node[], edges: Edge[]): Edge[] {
         const dx = tx - sx;
         const dy = ty - sy;
 
-        let sourceHandle: string;
-        let targetHandle: string;
+        const sourceFromSemanticSide = getSemanticHandleSide(edge.data?.archSourceSide);
+        const targetFromSemanticSide = getSemanticHandleSide(edge.data?.archTargetSide);
 
-        const pairKey = [edge.source, edge.target].sort().join('::');
-        const pairMeta = pairMetaByKey.get(pairKey);
-        const isReverse = pairMeta?.hasReverseDirection ?? false;
-        const siblingIndex = pairMeta?.siblingIndexByEdge.get(edge) ?? 0;
-
-        if (Math.abs(dy) >= Math.abs(dx)) {
-            // Vertical dominance
-            if (dy >= 0) {
-                // Target is below - primary: bottom→top
-                if (isReverse && edge.source > edge.target) {
-                    // Reverse direction of bidirectional pair
-                    sourceHandle = 'left';
-                    targetHandle = 'left';
-                } else if (siblingIndex > 0) {
-                    // Multiple same-direction edges: alternate sides
-                    sourceHandle = siblingIndex % 2 === 1 ? 'right' : 'bottom';
-                    targetHandle = siblingIndex % 2 === 1 ? 'right' : 'top';
-                } else {
-                    sourceHandle = 'bottom';
-                    targetHandle = 'top';
-                }
-            } else {
-                // Target is above
-                if (isReverse && edge.source > edge.target) {
-                    sourceHandle = 'right';
-                    targetHandle = 'right';
-                } else if (siblingIndex > 0) {
-                    sourceHandle = siblingIndex % 2 === 1 ? 'left' : 'top';
-                    targetHandle = siblingIndex % 2 === 1 ? 'left' : 'bottom';
-                } else {
-                    sourceHandle = 'top';
-                    targetHandle = 'bottom';
-                }
+        if (sourceFromSemanticSide && targetFromSemanticSide) {
+            const semanticSourceHandle = getNodeHandleIdForSide(sourceNode, sourceFromSemanticSide);
+            const semanticTargetHandle = getNodeHandleIdForSide(targetNode, targetFromSemanticSide);
+            if (edge.sourceHandle === semanticSourceHandle && edge.targetHandle === semanticTargetHandle) {
+                return edge;
             }
-        } else {
-            // Horizontal dominance
-            if (dx >= 0) {
-                // Target is to the right
-                if (isReverse && edge.source > edge.target) {
-                    sourceHandle = 'bottom';
-                    targetHandle = 'bottom';
-                } else if (siblingIndex > 0) {
-                    sourceHandle = siblingIndex % 2 === 1 ? 'bottom' : 'right';
-                    targetHandle = siblingIndex % 2 === 1 ? 'bottom' : 'left';
-                } else {
-                    sourceHandle = 'right';
-                    targetHandle = 'left';
-                }
-            } else {
-                // Target is to the left
-                if (isReverse && edge.source > edge.target) {
-                    sourceHandle = 'top';
-                    targetHandle = 'top';
-                } else if (siblingIndex > 0) {
-                    sourceHandle = siblingIndex % 2 === 1 ? 'top' : 'left';
-                    targetHandle = siblingIndex % 2 === 1 ? 'top' : 'right';
-                } else {
-                    sourceHandle = 'left';
-                    targetHandle = 'right';
-                }
-            }
+            const semanticEdge = {
+                ...edge,
+                sourceHandle: semanticSourceHandle,
+                targetHandle: semanticTargetHandle,
+            };
+            return preserveEdgeLabelPlacement(edge, semanticEdge);
         }
+
+        const { sourceHandleSide, targetHandleSide } = resolveAutoHandleSides(dx, dy, profile);
+
+        const sourceHandle = getNodeHandleIdForSide(sourceNode, sourceHandleSide);
+        const targetHandle = getNodeHandleIdForSide(targetNode, targetHandleSide);
 
         // Optimization: Only create new object if handles changed
         if (edge.sourceHandle === sourceHandle && edge.targetHandle === targetHandle) {

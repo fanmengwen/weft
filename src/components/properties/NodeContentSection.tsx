@@ -1,5 +1,5 @@
 import React from 'react';
-import { Node } from 'reactflow';
+import { Node } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
 import { Bold, Italic, AlignLeft, AlignCenter, AlignRight } from 'lucide-react';
 import { CollapsibleSection } from '../ui/CollapsibleSection';

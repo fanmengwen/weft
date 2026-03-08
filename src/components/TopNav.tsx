@@ -1,13 +1,18 @@
-import React from 'react';
-import { FlowTab } from '@/lib/types';
+import React, { Suspense, lazy } from 'react';
+import type { FlowTab } from '@/lib/types';
 import { FlowTabs } from './FlowTabs';
 import { useFlowStore } from '../store';
-import { SettingsModal } from './SettingsModal/SettingsModal';
 import { trackEvent } from '../lib/analytics';
 import { TopNavMenu } from './top-nav/TopNavMenu';
 import { TopNavBrand } from './top-nav/TopNavBrand';
 import { TopNavActions } from './top-nav/TopNavActions';
 import { useTopNavState } from './top-nav/useTopNavState';
+import { useBrandButtonStyle, useBrandConfig } from '@/store/brandHooks';
+
+const LazySettingsModal = lazy(async () => {
+    const module = await import('./SettingsModal/SettingsModal');
+    return { default: module.SettingsModal };
+});
 
 interface TopNavProps {
     tabs: FlowTab[];
@@ -28,9 +33,38 @@ interface TopNavProps {
     onHistory: () => void;
     onGoHome: () => void;
     onPlay: () => void;
+    collaboration?: {
+        roomId: string;
+        viewerCount: number;
+        status: 'realtime' | 'waiting' | 'fallback';
+        cacheState: 'unavailable' | 'syncing' | 'ready' | 'hydrated';
+        participants: Array<{
+            clientId: string;
+            name: string;
+            color: string;
+            isLocal: boolean;
+        }>;
+        onCopyShareLink: () => void;
+    };
 }
 
-export const TopNav: React.FC<TopNavProps> = ({
+function trackAndRun(eventName: string, action: () => void): () => void {
+    return () => {
+        trackEvent(eventName);
+        action();
+    };
+}
+
+function trackAndRunExport(
+    action: (format?: 'png' | 'jpeg') => void
+): (format?: 'png' | 'jpeg') => void {
+    return (format) => {
+        trackEvent('export_png', { format });
+        action(format);
+    };
+}
+
+export function TopNav({
     tabs,
     activeTabId,
     onSwitchTab,
@@ -47,9 +81,16 @@ export const TopNav: React.FC<TopNavProps> = ({
     onHistory,
     onGoHome,
     onPlay,
-}) => {
-    const { brandConfig } = useFlowStore();
-    const isBeveled = brandConfig.ui.buttonStyle === 'beveled';
+    collaboration,
+}: TopNavProps): React.ReactElement {
+    const brandConfig = useBrandConfig();
+    const isBeveled = useBrandButtonStyle() === 'beveled';
+    const handleExportPNG = trackAndRunExport(onExportPNG);
+    const handleExportJSON = trackAndRun('export_json', onExportJSON);
+    const handleExportMermaid = trackAndRun('export_mermaid', onExportMermaid);
+    const handleExportPlantUML = trackAndRun('export_plantuml', onExportPlantUML);
+    const handleExportOpenFlowDSL = trackAndRun('export_dsl', onExportOpenFlowDSL);
+    const handleExportFigma = trackAndRun('export_figma', onExportFigma);
     const {
         isMenuOpen,
         isSettingsOpen,
@@ -62,7 +103,6 @@ export const TopNav: React.FC<TopNavProps> = ({
 
     return (
         <div className="absolute top-0 left-0 right-0 z-50 h-16 bg-white/70 backdrop-blur-md border-b border-white/20 shadow-sm px-6 flex items-center justify-between transition-all">
-            {/* Left: Brand */}
             {/* Left: Menu & Brand */}
             <div className="flex items-center gap-4 min-w-[240px]">
                 <TopNavMenu
@@ -72,6 +112,8 @@ export const TopNav: React.FC<TopNavProps> = ({
                     onClose={closeMenu}
                     onGoHome={onGoHome}
                     onOpenSettings={() => openSettings('general')}
+                    onHistory={onHistory}
+                    onImportJSON={onImportJSON}
                 />
                 <TopNavBrand
                     appName={brandConfig.appName}
@@ -96,40 +138,26 @@ export const TopNav: React.FC<TopNavProps> = ({
             </div>
 
             <TopNavActions
-                onHistory={onHistory}
-                onImportJSON={onImportJSON}
                 onPlay={onPlay}
-                onExportPNG={(format) => {
-                    trackEvent('export_png', { format });
-                    onExportPNG(format);
-                }}
-                onExportJSON={() => {
-                    trackEvent('export_json');
-                    onExportJSON();
-                }}
-                onExportMermaid={() => {
-                    trackEvent('export_mermaid');
-                    onExportMermaid();
-                }}
-                onExportPlantUML={() => {
-                    trackEvent('export_plantuml');
-                    onExportPlantUML();
-                }}
-                onExportOpenFlowDSL={() => {
-                    trackEvent('export_dsl');
-                    onExportOpenFlowDSL();
-                }}
-                onExportFigma={() => {
-                    trackEvent('export_figma');
-                    onExportFigma();
-                }}
+                onExportPNG={handleExportPNG}
+                onExportJSON={handleExportJSON}
+                onExportMermaid={handleExportMermaid}
+                onExportPlantUML={handleExportPlantUML}
+                onExportOpenFlowDSL={handleExportOpenFlowDSL}
+                onExportFigma={handleExportFigma}
+                collaboration={collaboration}
+                isBeveled={isBeveled}
             />
 
-            <SettingsModal
-                isOpen={isSettingsOpen}
-                onClose={closeSettings}
-                initialTab={activeSettingsTab}
-            />
+            {isSettingsOpen ? (
+                <Suspense fallback={null}>
+                    <LazySettingsModal
+                        isOpen={isSettingsOpen}
+                        onClose={closeSettings}
+                        initialTab={activeSettingsTab}
+                    />
+                </Suspense>
+            ) : null}
         </div>
     );
-};
+}

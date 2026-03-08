@@ -1,28 +1,19 @@
 import React, { memo } from 'react';
-import { Handle, Position, NodeProps, NodeResizer } from 'reactflow';
-import { NodeData } from '@/lib/types';
-import { NODE_COLOR_PALETTE } from '../theme';
+import type { LegacyNodeProps } from '@/lib/reactflowCompat';
+import type { NodeData } from '@/lib/types';
+import { NodeChrome } from './NodeChrome';
 
-const ImageNode = ({ data, selected }: NodeProps<NodeData>) => {
-    // Default styles
-    const style = NODE_COLOR_PALETTE.slate;
-
+function ImageNode({ data, selected }: LegacyNodeProps<NodeData>): React.ReactElement {
     return (
-        <>
-            <NodeResizer
-                color="#94a3b8"
-                isVisible={selected}
-                minWidth={50}
-                minHeight={50}
-                keepAspectRatio={true}
-                lineStyle={{ borderStyle: 'solid', borderWidth: 1 }}
-                handleStyle={{ width: 8, height: 8, borderRadius: 4 }}
-            />
-
+        <NodeChrome
+            selected={Boolean(selected)}
+            minWidth={50}
+            minHeight={50}
+            keepAspectRatio
+            handleClassName="!w-3 !h-3 !border-2 !border-white transition-all duration-150 hover:scale-125"
+        >
             <div
-                className={`relative group flex flex-col justify-center h-full transition-all duration-200
-                    ${selected ? 'ring-2 ring-indigo-500 ring-offset-4' : ''}
-                `}
+                className="relative group flex flex-col justify-center h-full transition-all duration-200"
                 style={{
                     width: '100%',
                     height: '100%',
@@ -42,47 +33,8 @@ const ImageNode = ({ data, selected }: NodeProps<NodeData>) => {
                     </div>
                 )}
             </div>
-
-            {/* Universal Handles - Allow connections */}
-            {/* Hidden by default, visible on hover/connect */}
-            <Handle
-                type="source"
-                position={Position.Top}
-                id="top"
-                isConnectableStart={true}
-                isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-                style={{ left: '50%', top: 0, transform: 'translate(-50%, -50%)' }}
-            />
-            <Handle
-                type="source"
-                position={Position.Bottom}
-                id="bottom"
-                isConnectableStart={true}
-                isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-                style={{ left: '50%', top: '100%', transform: 'translate(-50%, -50%)' }}
-            />
-            <Handle
-                type="source"
-                position={Position.Left}
-                id="left"
-                isConnectableStart={true}
-                isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-                style={{ top: '50%', left: 0, transform: 'translate(-50%, -50%)' }}
-            />
-            <Handle
-                type="source"
-                position={Position.Right}
-                id="right"
-                isConnectableStart={true}
-                isConnectableEnd={true}
-                className={`!w-3 !h-3 !border-2 !border-white ${style.handle} transition-all duration-150 hover:scale-125 ${selected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100 [.is-connecting_&]:opacity-100'}`}
-                style={{ top: '50%', left: '100%', transform: 'translate(-50%, -50%)' }}
-            />
-        </>
+        </NodeChrome>
     );
-};
+}
 
 export default memo(ImageNode);

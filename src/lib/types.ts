@@ -1,8 +1,31 @@
-import { Edge, Node } from 'reactflow';
+import { type LegacyEdge, type LegacyNode } from '@/lib/reactflowCompat';
+import type { ClassRelationToken, ERRelationToken } from '@/lib/relationSemantics';
+
+export const DIAGRAM_TYPES = [
+  'flowchart',
+  'stateDiagram',
+  'classDiagram',
+  'erDiagram',
+  'gitGraph',
+  'mindmap',
+  'journey',
+  'architecture',
+] as const;
+
+export type DiagramType = (typeof DIAGRAM_TYPES)[number];
+
+export function isDiagramType(value: unknown): value is DiagramType {
+  return typeof value === 'string' && (DIAGRAM_TYPES as readonly string[]).includes(value);
+}
 
 export enum NodeType {
   START = 'start',
   PROCESS = 'process',
+  JOURNEY = 'journey',
+  MINDMAP = 'mindmap',
+  ARCHITECTURE = 'architecture',
+  CLASS = 'class',
+  ER_ENTITY = 'er_entity',
   DECISION = 'decision',
   END = 'end',
   CUSTOM = 'custom',
@@ -14,13 +37,16 @@ export enum NodeType {
 }
 
 export interface NodeData {
+  [key: string]: unknown;
   label: string;
   subLabel?: string; // Supports Markdown
   icon?: string; // Key for the icon map
   secondaryIcon?: string; // Optional secondary icon key
   customIconUrl?: string; // User-uploaded icon (base64 or URL)
   imageUrl?: string; // Base64 or URL
-  color?: string; // Tailwind color class key (e.g., 'blue', 'red')
+  color?: string; // Preset color key (e.g., 'white', 'blue', 'custom')
+  colorMode?: 'subtle' | 'filled';
+  customColor?: string; // Hex color for the "custom" preset
   align?: 'left' | 'center' | 'right';
   shape?: 'rectangle' | 'rounded' | 'capsule' | 'diamond' | 'hexagon' | 'cylinder' | 'ellipse' | 'parallelogram' | 'circle';
   rotation?: number;
@@ -33,6 +59,25 @@ export interface NodeData {
   backgroundColor?: string;
   transparency?: number; // 0-1
   variant?: string; // wireframe preset key (e.g. 'landing', 'modal')
+  layerId?: string; // layer identifier for visibility/lock/group operations
+  classStereotype?: string;
+  classAttributes?: string[];
+  classMethods?: string[];
+  erFields?: string[];
+  journeySection?: string;
+  journeyActor?: string;
+  journeyTask?: string;
+  journeyScore?: number;
+  mindmapDepth?: number;
+  mindmapParentId?: string;
+  mindmapSide?: 'left' | 'right';
+  mindmapBranchStyle?: 'curved' | 'straight';
+  archProvider?: string;
+  archResourceType?: string;
+  archEnvironment?: string;
+  archBoundaryId?: string;
+  archZone?: string;
+  archTrustDomain?: string;
 }
 
 export interface AIRequestParams {
@@ -40,9 +85,11 @@ export interface AIRequestParams {
   apiKey: string;
 }
 
-export type FlowNode = Node<NodeData>;
+export type FlowNode = LegacyNode<NodeData>;
 
 export interface EdgeData {
+  [key: string]: unknown;
+  routingMode?: 'auto' | 'elk' | 'manual';
   condition?: EdgeCondition;
   labelOffsetX?: number;
   labelOffsetY?: number;
@@ -50,6 +97,28 @@ export interface EdgeData {
   strokeWidth?: number; // 1-6, default 2
   dashPattern?: 'solid' | 'dashed' | 'dotted' | 'dashdot';
   opacity?: number; // 0-1, default 1
+  archProtocol?: string;
+  archPort?: string;
+  archDirection?: '-->' | '<--' | '<-->';
+  archSourceSide?: 'L' | 'R' | 'T' | 'B';
+  archTargetSide?: 'L' | 'R' | 'T' | 'B';
+  classRelation?: ClassRelationToken;
+  classRelationLabel?: string;
+  erRelation?: ERRelationToken;
+  erRelationLabel?: string;
+  elkPoints?: {
+    x: number;
+    y: number;
+  }[];
+  mindmapBranchKind?: 'root' | 'branch';
+  waypoint?: {
+    x: number;
+    y: number;
+  };
+  waypoints?: {
+    x: number;
+    y: number;
+  }[];
 }
 
 export interface GlobalEdgeOptions {
@@ -59,7 +128,7 @@ export interface GlobalEdgeOptions {
   color?: string; // Optional override
 }
 
-export type FlowEdge = Edge<EdgeData>;
+export type FlowEdge = LegacyEdge<EdgeData>;
 
 export interface GeneratedFlowData {
   nodes: {
@@ -86,6 +155,8 @@ export interface FlowHistoryState {
 export interface FlowTab {
   id: string;
   name: string;
+  diagramType?: DiagramType;
+  updatedAt?: string;
   nodes: FlowNode[];
   edges: FlowEdge[];
   history: {
@@ -100,6 +171,7 @@ export interface FlowSnapshot {
   id: string;
   name: string;
   timestamp: string;
+  kind?: 'manual' | 'auto';
   nodes: FlowNode[];
   edges: FlowEdge[];
 }

@@ -58,12 +58,17 @@ export function Navbar({ isScrolled, onLaunch }: NavbarProps): React.ReactElemen
           className={`transition-all duration-500 w-full max-w-5xl rounded-full border ${navContainerClasses} py-2.5 px-4 md:px-5 relative flex items-center justify-between`}
         >
           {/* Logo */}
-          <div onClick={onLaunch} className="flex items-center gap-2.5 cursor-pointer group select-none min-w-0">
+          <button
+            type="button"
+            onClick={onLaunch}
+            className="flex items-center gap-2.5 cursor-pointer group select-none min-w-0"
+            aria-label="Open OpenFlowKit"
+          >
             <div className="w-8 h-8 bg-brand-primary rounded-lg flex items-center justify-center text-white shadow-lg shadow-brand-primary/20 transition-transform duration-500 group-hover:rotate-12 group-hover:scale-105 ring-1 ring-white/20 shrink-0">
               <OpenFlowLogo className="w-5 h-5 text-white" />
             </div>
             <span className="text-lg font-bold tracking-tight text-brand-primary font-sans group-hover:opacity-80 transition-opacity whitespace-nowrap">OpenFlowKit</span>
-          </div>
+          </button>
 
           {/* Links - Desktop */}
           <div className="hidden md:flex items-center gap-8">

@@ -1,5 +1,6 @@
-import { Node, Edge } from 'reactflow';
+import { setNodeParent } from './nodeParent';
 import { NODE_DEFAULTS } from '../theme';
+import type { FlowEdge, FlowNode, NodeData } from './types';
 
 // --- Types ---
 
@@ -8,23 +9,25 @@ export interface DSLNode {
     type: string;
     label: string;
     parentId?: string;
-    attributes: Record<string, any>;
+    attributes: Record<string, DSLAttributeValue>;
 }
 
 export interface DSLEdge {
     sourceId: string;
     targetId: string;
     label?: string;
-    attributes: Record<string, any>;
+    attributes: Record<string, DSLAttributeValue>;
     type?: 'default' | 'step' | 'smoothstep' | 'straight';
 }
 
 export interface DSLResult {
-    nodes: Node[];
-    edges: Edge[];
-    metadata: Record<string, any>;
+    nodes: FlowNode[];
+    edges: FlowEdge[];
+    metadata: Record<string, string>;
     errors: string[];
 }
+
+type DSLAttributeValue = string | number | boolean;
 
 // --- Constants ---
 
@@ -38,43 +41,124 @@ const NODE_TYPE_MAP: Record<string, string> = {
     section: 'section',
     browser: 'browser',
     mobile: 'mobile',
-    button: 'wireframe_button',
-    input: 'wireframe_input',
-    icon: 'icon',
-    placeholder: 'wireframe_image',
     container: 'container', // New generic container
 };
 
 // --- Helpers ---
 
-function parseAttributes(text: string): Record<string, any> {
-    const attributes: Record<string, any> = {};
+function parseAttributes(text: string): Record<string, DSLAttributeValue> {
+    const attributes: Record<string, DSLAttributeValue> = {};
     if (!text) return attributes;
 
-    // Simple parser for { key: "value", key2: 123 }
-    // Remove wrapping braces
     const content = text.trim();
     if (!content.startsWith('{') || !content.endsWith('}')) return attributes;
 
     const inner = content.slice(1, -1);
-    const pairs = inner.split(',').map(p => p.trim()).filter(Boolean);
+    const pairs: string[] = [];
+    let buffer = '';
+    let quote: '"' | "'" | null = null;
+    let escaping = false;
 
-    pairs.forEach(pair => {
-        const [key, rawValue] = pair.split(':').map(s => s.trim());
+    for (const char of inner) {
+        if (escaping) {
+            buffer += char;
+            escaping = false;
+            continue;
+        }
+
+        if (char === '\\') {
+            buffer += char;
+            escaping = true;
+            continue;
+        }
+
+        if (quote) {
+            buffer += char;
+            if (char === quote) {
+                quote = null;
+            }
+            continue;
+        }
+
+        if (char === '"' || char === "'") {
+            quote = char;
+            buffer += char;
+            continue;
+        }
+
+        if (char === ',') {
+            const pair = buffer.trim();
+            if (pair) pairs.push(pair);
+            buffer = '';
+            continue;
+        }
+
+        buffer += char;
+    }
+
+    const trailingPair = buffer.trim();
+    if (trailingPair) {
+        pairs.push(trailingPair);
+    }
+
+    pairs.forEach((pair) => {
+        let colonIndex = -1;
+        let pairQuote: '"' | "'" | null = null;
+        let pairEscaping = false;
+
+        for (let index = 0; index < pair.length; index += 1) {
+            const char = pair[index];
+
+            if (pairEscaping) {
+                pairEscaping = false;
+                continue;
+            }
+
+            if (char === '\\') {
+                pairEscaping = true;
+                continue;
+            }
+
+            if (pairQuote) {
+                if (char === pairQuote) {
+                    pairQuote = null;
+                }
+                continue;
+            }
+
+            if (char === '"' || char === "'") {
+                pairQuote = char;
+                continue;
+            }
+
+            if (char === ':') {
+                colonIndex = index;
+                break;
+            }
+        }
+
+        if (colonIndex <= 0) return;
+
+        const key = pair.slice(0, colonIndex).trim();
+        const rawValue = pair.slice(colonIndex + 1).trim();
         if (!key || !rawValue) return;
 
-        let value: any = rawValue;
-        // String
-        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-            value = value.slice(1, -1);
-        }
-        // Number
-        else if (!isNaN(Number(value))) {
+        let value: DSLAttributeValue = rawValue;
+        if (
+            (value.startsWith('"') && value.endsWith('"'))
+            || (value.startsWith("'") && value.endsWith("'"))
+        ) {
+            value = value
+                .slice(1, -1)
+                .replace(/\\(["'])/g, '$1')
+                .replace(/\\\\/g, '\\');
+        } else if (!Number.isNaN(Number(value))) {
             value = Number(value);
+        } else if (value === 'true') {
+            value = true;
+        } else if (value === 'false') {
+            value = false;
         }
-        // Boolean
-        else if (value === 'true') value = true;
-        else if (value === 'false') value = false;
 
         attributes[key] = value;
     });
@@ -87,7 +171,7 @@ function parseAttributes(text: string): Record<string, any> {
 export function parseFlowMindDSL(input: string): DSLResult {
     const dslNodes: DSLNode[] = [];
     const dslEdges: DSLEdge[] = [];
-    const metadata: Record<string, any> = { direction: 'TB' };
+    const metadata: Record<string, string> = { direction: 'TB' };
     const errors: string[] = [];
 
     const lines = input.split('\n');
@@ -221,8 +305,8 @@ export function parseFlowMindDSL(input: string): DSLResult {
     }
 
     // Post-processing: Resolve implicit nodes and edge IDs
-    const finalNodes: Node[] = [];
-    const finalEdges: Edge[] = [];
+    const finalNodes: FlowNode[] = [];
+    const finalEdges: FlowEdge[] = [];
     const createdNodeIds = new Set<string>();
 
     // 1. Process explicit nodes
@@ -230,21 +314,21 @@ export function parseFlowMindDSL(input: string): DSLResult {
         const defaultStyle = NODE_DEFAULTS[n.type] || NODE_DEFAULTS['process'];
 
         // Layout placeholder (will be handled by ELK layout)
-        const node: Node & { parentId?: string } = {
+        let node: FlowNode = {
             id: n.id,
             type: n.type,
             position: { x: 0, y: 0 },
             data: {
                 label: n.label,
-                shape: defaultStyle?.shape,
+                shape: defaultStyle?.shape as NodeData['shape'],
                 color: defaultStyle?.color,
                 icon: defaultStyle?.icon && defaultStyle.icon !== 'none' ? defaultStyle.icon : undefined,
                 ...n.attributes
             },
-            parentNode: n.parentId,
-            extent: n.parentId ? 'parent' : undefined,
         };
-        if (n.parentId) node.parentId = n.parentId;
+        if (n.parentId) {
+            node = setNodeParent(node, n.parentId);
+        }
         finalNodes.push(node);
         createdNodeIds.add(n.id);
     });
@@ -264,7 +348,7 @@ export function parseFlowMindDSL(input: string): DSLResult {
                 position: { x: 0, y: 0 },
                 data: {
                     label: sourceId,
-                    shape: defaultProcessStyle?.shape,
+                    shape: defaultProcessStyle?.shape as NodeData['shape'],
                     color: defaultProcessStyle?.color,
                     icon: defaultProcessStyle?.icon && defaultProcessStyle.icon !== 'none' ? defaultProcessStyle.icon : undefined,
                 }
@@ -279,7 +363,7 @@ export function parseFlowMindDSL(input: string): DSLResult {
                 position: { x: 0, y: 0 },
                 data: {
                     label: targetId,
-                    shape: defaultProcessStyle?.shape,
+                    shape: defaultProcessStyle?.shape as NodeData['shape'],
                     color: defaultProcessStyle?.color,
                     icon: defaultProcessStyle?.icon && defaultProcessStyle.icon !== 'none' ? defaultProcessStyle.icon : undefined,
                 }
@@ -288,7 +372,7 @@ export function parseFlowMindDSL(input: string): DSLResult {
             labelToIdMap.set(targetId, targetId);
         }
 
-        const finalEdge: Edge = {
+        const finalEdge: FlowEdge = {
             id: `edge-${i}`, // Unique ID for the edge
             source: sourceId,
             target: targetId,

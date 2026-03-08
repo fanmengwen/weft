@@ -4,18 +4,23 @@ import type {
     NodeChange,
     OnEdgesChange,
     OnNodesChange,
-} from 'reactflow';
-import type { DesignSystem, FlowEdge, FlowNode, FlowTab, GlobalEdgeOptions } from '@/lib/types';
+} from '@/lib/reactflowCompat';
+import type { ParseDiagnostic } from '@/lib/openFlowDSLParser';
+import type { DesignSystem, DiagramType, FlowEdge, FlowNode, FlowTab, GlobalEdgeOptions } from '@/lib/types';
 import type { ExportSerializationMode } from '@/services/canonicalSerialization';
 
 export interface ViewSettings {
     showGrid: boolean;
     snapToGrid: boolean;
-    showMiniMap: boolean;
+    alignmentGuidesEnabled: boolean;
     isShortcutsHelpOpen: boolean;
     defaultIconsEnabled: boolean;
     smartRoutingEnabled: boolean;
+    smartRoutingProfile: 'standard' | 'infrastructure';
+    smartRoutingBundlingEnabled: boolean;
+    architectureStrictMode: boolean;
     largeGraphSafetyMode: 'auto' | 'on' | 'off';
+    largeGraphSafetyProfile: 'performance' | 'balanced' | 'quality';
     exportSerializationMode: ExportSerializationMode;
     historyModelV2Enabled: boolean;
     analyticsEnabled: boolean;
@@ -79,6 +84,27 @@ export interface BrandKit extends BrandConfig {
     isDefault: boolean;
 }
 
+export interface Layer {
+    id: string;
+    name: string;
+    visible: boolean;
+    locked: boolean;
+}
+
+export interface MermaidDiagnosticsSnapshot {
+    source: 'paste' | 'import' | 'code';
+    diagramType?: DiagramType;
+    diagnostics: ParseDiagnostic[];
+    error?: string;
+    updatedAt: number;
+}
+
+export interface PendingNodeLabelEditRequest {
+    nodeId: string;
+    seedText?: string;
+    replaceExisting?: boolean;
+}
+
 export interface FlowState {
     nodes: FlowNode[];
     edges: FlowEdge[];
@@ -92,8 +118,12 @@ export interface FlowState {
     brandConfig: BrandConfig;
     brandKits: BrandKit[];
     activeBrandKitId: string;
+    layers: Layer[];
+    activeLayerId: string;
     selectedNodeId: string | null;
     selectedEdgeId: string | null;
+    pendingNodeLabelEditRequest: PendingNodeLabelEditRequest | null;
+    mermaidDiagnostics: MermaidDiagnosticsSnapshot | null;
     onNodesChange: OnNodesChange;
     onEdgesChange: OnEdgesChange;
     setNodes: (nodes: FlowNode[] | ((nodes: FlowNode[]) => FlowNode[])) => void;
@@ -102,8 +132,12 @@ export interface FlowState {
     setActiveTabId: (id: string) => void;
     setTabs: (tabs: FlowTab[]) => void;
     addTab: () => string;
+    duplicateActiveTab: () => string | null;
+    duplicateTab: (id: string) => string | null;
     closeTab: (id: string) => void;
     updateTab: (id: string, updates: Partial<FlowTab>) => void;
+    copySelectedToTab: (targetTabId: string) => number;
+    moveSelectedToTab: (targetTabId: string) => number;
     setActiveDesignSystem: (id: string) => void;
     addDesignSystem: (ds: DesignSystem) => void;
     updateDesignSystem: (id: string, updates: Partial<DesignSystem>) => void;
@@ -111,13 +145,15 @@ export interface FlowState {
     duplicateDesignSystem: (id: string) => void;
     toggleGrid: () => void;
     toggleSnap: () => void;
-    toggleMiniMap: () => void;
     setShortcutsHelpOpen: (open: boolean) => void;
     setViewSettings: (settings: Partial<ViewSettings>) => void;
     setGlobalEdgeOptions: (options: Partial<GlobalEdgeOptions>) => void;
     setDefaultIconsEnabled: (enabled: boolean) => void;
     setSmartRoutingEnabled: (enabled: boolean) => void;
+    setSmartRoutingProfile: (profile: ViewSettings['smartRoutingProfile']) => void;
+    setSmartRoutingBundlingEnabled: (enabled: boolean) => void;
     setLargeGraphSafetyMode: (mode: ViewSettings['largeGraphSafetyMode']) => void;
+    setLargeGraphSafetyProfile: (profile: ViewSettings['largeGraphSafetyProfile']) => void;
     toggleAnalytics: (enabled: boolean) => void;
     setAISettings: (settings: Partial<AISettings>) => void;
     setBrandConfig: (config: Partial<BrandConfig>) => void;
@@ -126,8 +162,21 @@ export interface FlowState {
     updateBrandKitName: (id: string, name: string) => void;
     deleteBrandKit: (id: string) => void;
     setActiveBrandKitId: (id: string) => void;
+    addLayer: (name?: string) => string;
+    renameLayer: (id: string, name: string) => void;
+    deleteLayer: (id: string) => void;
+    setActiveLayerId: (id: string) => void;
+    toggleLayerVisibility: (id: string) => void;
+    toggleLayerLock: (id: string) => void;
+    moveLayer: (id: string, direction: 'up' | 'down') => void;
+    moveSelectedNodesToLayer: (layerId: string) => void;
+    selectNodesInLayer: (layerId: string) => void;
     setSelectedNodeId: (id: string | null) => void;
     setSelectedEdgeId: (id: string | null) => void;
+    queuePendingNodeLabelEditRequest: (request: PendingNodeLabelEditRequest) => void;
+    clearPendingNodeLabelEditRequest: () => void;
+    setMermaidDiagnostics: (snapshot: MermaidDiagnosticsSnapshot | null) => void;
+    clearMermaidDiagnostics: () => void;
     recordHistoryV2: () => void;
     undoV2: () => void;
     redoV2: () => void;

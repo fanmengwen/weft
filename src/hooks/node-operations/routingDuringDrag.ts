@@ -1,11 +1,11 @@
-import type { Edge, Node } from 'reactflow';
+import type { FlowEdge, FlowNode } from '@/lib/types';
 import { assignSmartHandles } from '@/services/smartEdgeRouting';
 
 export function rerouteConnectedEdgesDuringDrag(
-  allNodes: Node[],
-  allEdges: Edge[],
-  draggedNodes: Node[]
-): Edge[] {
+  allNodes: FlowNode[],
+  allEdges: FlowEdge[],
+  draggedNodes: FlowNode[]
+): FlowEdge[] {
   if (allEdges.length === 0 || draggedNodes.length === 0) {
     return allEdges;
   }
