@@ -223,7 +223,7 @@ function DiagramViewerInner(): React.ReactElement {
                     <div className="flex items-center gap-2">
                         <OpenFlowLogo className="h-5 w-5 text-orange-600" />
                         <span className="text-xs font-semibold text-slate-700">
-                            {viewerSize === 'card' ? 'OpenFlowKit Viewer' : 'OpenFlowKit'}
+                            {viewerSize === 'card' ? 'Weft Viewer' : 'Weft'}
                         </span>
                     </div>
                     <button
@@ -237,7 +237,7 @@ function DiagramViewerInner(): React.ReactElement {
                 </div>
             ) : (
                 <div className="flex h-7 shrink-0 items-center justify-between border-b border-slate-200 bg-white/95 px-3 text-[10px] font-semibold uppercase tracking-widest text-slate-500">
-                    <span>OpenFlowKit</span>
+                    <span>Weft</span>
                     <span>Badge Viewer</span>
                 </div>
             )}

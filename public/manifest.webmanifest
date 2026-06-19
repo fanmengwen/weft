@@ -1,7 +1,7 @@
 {
-  "name": "OpenFlowKit",
-  "short_name": "OpenFlowKit",
-  "description": "Local-first diagramming for developers and technical builders.",
+  "name": "Weft",
+  "short_name": "Weft",
+  "description": "AI diagramming canvas — turn natural language into editable diagrams, local-first.",
   "start_url": "/index.html#/home",
   "display": "standalone",
   "background_color": "#f8fafc",

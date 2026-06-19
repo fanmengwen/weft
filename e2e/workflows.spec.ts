@@ -219,7 +219,7 @@ test('welcome modal shows on first visit', async ({ page }) => {
   await page.addInitScript(() => localStorage.clear());
   await page.goto('/#/home');
 
-  await expect(page.getByRole('heading', { name: 'OpenFlowKit' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Weft' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Get Started' })).toBeVisible();
 });
 

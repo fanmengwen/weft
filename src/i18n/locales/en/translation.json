@@ -238,7 +238,7 @@
     },
     "solution": {
       "title": "The Solution",
-      "description": "OpenFlowKit combines the best of both worlds."
+      "description": "Weft combines the best of both worlds."
     },
     "demo": {
       "title": "Simple for sketching.",
@@ -263,11 +263,11 @@
     },
     "footer": {
       "rights": "All rights reserved.",
-      "madeWith": "Made with ❤️ by the OpenFlowKit Team"
+      "madeWith": "Made with ❤️ by the Weft Team"
     }
   },
   "home": {
-    "appName": "OpenFlowKit",
+    "appName": "Weft",
     "title": "Dashboard",
     "description": "Manage your flows and diagrams.",
     "recentFiles": "Recent Files",
@@ -405,7 +405,7 @@
     "importFailed": "Failed to import"
   },
   "welcome": {
-    "title": "OpenFlowKit",
+    "title": "Weft",
     "description": "Design beautiful, structured diagrams with a developer-first canvas.",
     "press": "Press",
     "shortcuts": "for shortcuts",
@@ -440,7 +440,7 @@
   "pricing": {
     "title": "Premium features.",
     "subtitle": "Zero dollar price tag.",
-    "description": "OpenFlowKit is 100% open source. There is no \"Enterprise Edition\" hidden behind a sales call.",
+    "description": "Weft is 100% open source. There is no \"Enterprise Edition\" hidden behind a sales call.",
     "mitLicense": "MIT License",
     "freeForever": "Free Forever.",
     "fullAccess": "Full access to the core engine.",
@@ -580,7 +580,7 @@
     "badge": "Workflows",
     "title": "One engine.",
     "subtitle": "Three native workflows.",
-    "description": "OpenFlowKit adapts to the tool you are already using. No new tabs to open. No context switching.",
+    "description": "Weft adapts to the tool you are already using. No new tabs to open. No context switching.",
     "engineering": "Engineering",
     "diagramAsCode": "DIAGRAM AS CODE",
     "engineeringDesc": "Write diagrams in our DSL or Mermaid.js syntax. Paste code, get a fully laid-out diagram. Export as JSON to version control.",
@@ -598,7 +598,7 @@
     "badge": "Zero Plugins Required",
     "title": "Copy the code.",
     "subtitle": "Paste the design.",
-    "description": "Copy a diagram from OpenFlowKit and paste it straight into Figma — you'll get editable text and clean vector shapes, not a flat image. No plugins needed.",
+    "description": "Copy a diagram from Weft and paste it straight into Figma — you'll get editable text and clean vector shapes, not a flat image. No plugins needed.",
     "editableText": "Editable Text",
     "vectorFidelity": "Vector Fidelity",
     "selected": "Selected",
@@ -609,13 +609,13 @@
     "badge": "Under Construction",
     "title": "Build in public.",
     "subtitle": "Shape the engine.",
-    "description": "OpenFlowKit is just getting started. We are building the core engine in the open. Join us on Day 1.",
+    "description": "Weft is just getting started. We are building the core engine in the open. Join us on Day 1.",
     "starTheRepo": "Star the Repo",
     "openSource": "Open Source",
     "openSourceDesc": "The core engine is MIT licensed. Read the source, submit PRs, or fork it for your internal tools.",
     "prsWelcome": "PRs Welcome",
     "community": "Community",
-    "communityDesc": "Join developers building on OpenFlowKit.",
+    "communityDesc": "Join developers building on Weft.",
     "roadmap": "Roadmap",
     "coreRenderer": "Core Renderer",
     "flowpilotAI": "Flowpilot AI"
@@ -661,7 +661,7 @@
       },
       "dslSyntax": {
         "title": "DSL Syntax",
-        "description": "Show me an example of the OpenFlowKit DSL.",
+        "description": "Show me an example of the Weft DSL.",
         "icon": "{}"
       }
     }
@@ -1448,7 +1448,7 @@
   },
   "mcpSettings": {
     "title": "Connect AI tools (MCP)",
-    "intro": "Add the OpenFlowKit MCP server to Claude Desktop, Cursor, Windsurf, or any MCP client. Your assistant uses its own model to author diagrams, while OpenFlowKit supplies local validation, templates, icon lookup, codebase analysis, and viewer links.",
+    "intro": "Add the Weft MCP server to Claude Desktop, Cursor, Windsurf, or any MCP client. Your assistant uses its own model to author diagrams, while Weft supplies local validation, templates, icon lookup, codebase analysis, and viewer links.",
     "installHeading": "Install the server",
     "installNote": "Requires Node 18+. No global install needed — npx fetches on demand.",
     "configHeading": "Add to your AI assistant",
@@ -1482,7 +1482,7 @@
   "mcp": {
     "pageTitle": "Connect AI tools",
     "pageSubtitle": "Give any MCP client first-class diagramming tools. Local-first, no API key.",
-    "visualAlt": "Your AI client connects to the OpenFlowKit MCP server over stdio, which provides local diagramming tools.",
+    "visualAlt": "Your AI client connects to the Weft MCP server over stdio, which provides local diagramming tools.",
     "visualClient": "Your AI client",
     "visualCaption": "Local · stdio · no API key"
   }
