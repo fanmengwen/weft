@@ -60,3 +60,9 @@ test('saves and restores snapshot state', async ({ page }) => {
   await restoreButton.dispatchEvent('click');
   await expect(canvasNodes).toHaveCount(1);
 });
+
+test('is rebranded to Weft with no OpenFlowKit residue in the title', async ({ page }) => {
+  await openHomeDashboard(page);
+  await expect(page).toHaveTitle(/Weft/);
+  await expect(page).not.toHaveTitle(/OpenFlowKit/i);
+});

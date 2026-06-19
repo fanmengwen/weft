@@ -107,7 +107,7 @@ export function WelcomeModal({
         <div className="px-8 pb-3 pt-10 text-center">
           <OpenFlowLogo className="mx-auto mb-5 h-12 w-12 text-[var(--brand-primary)]" />
           <h2 className="text-[24px] font-bold tracking-tight text-[var(--brand-text)] mb-2">
-            {t('welcome.title', 'Welcome to OpenFlowKit')}
+            {t('welcome.title', 'Welcome to Weft')}
           </h2>
         </div>
 
