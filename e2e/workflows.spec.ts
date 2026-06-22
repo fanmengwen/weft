@@ -4,6 +4,9 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.clear();
     localStorage.setItem('hasSeenWelcome_v1', 'true');
+    // Pin the UI locale: the app now defaults to Chinese, but these specs assert
+    // English text. Locale pinning keeps them deterministic against the source locale.
+    localStorage.setItem('weftLang', 'en');
   });
 });
 
@@ -216,7 +219,10 @@ test('command bar fuzzy search works', async ({ page }) => {
 // ---------------------------------------------------------------------------
 
 test('welcome modal shows on first visit', async ({ page }) => {
-  await page.addInitScript(() => localStorage.clear());
+  await page.addInitScript(() => {
+    localStorage.clear();
+    localStorage.setItem('weftLang', 'en');
+  });
   await page.goto('/#/home');
 
   await expect(page.getByRole('heading', { name: 'Weft' })).toBeVisible();
@@ -224,7 +230,10 @@ test('welcome modal shows on first visit', async ({ page }) => {
 });
 
 test('welcome modal feature cards are clickable', async ({ page }) => {
-  await page.addInitScript(() => localStorage.clear());
+  await page.addInitScript(() => {
+    localStorage.clear();
+    localStorage.setItem('weftLang', 'en');
+  });
   await page.goto('/#/home');
 
   await page.getByText('Create amazing diagrams').click();
@@ -273,4 +282,17 @@ test('can navigate nodes with keyboard', async ({ page }) => {
 
   await page.keyboard.press('Tab');
   await page.keyboard.press('Tab');
+});
+
+// ---------------------------------------------------------------------------
+// Default locale — the audience is Chinese, so a brand-new visitor (no stored
+// language preference) must land on a Chinese UI.
+// ---------------------------------------------------------------------------
+
+test('defaults to Chinese for a brand-new visitor', async ({ page }) => {
+  // Clear everything AFTER the beforeEach pin so no weftLang remains.
+  await page.addInitScript(() => localStorage.clear());
+  await page.goto('/#/home');
+
+  await expect(page.getByRole('button', { name: '开始使用' })).toBeVisible();
 });

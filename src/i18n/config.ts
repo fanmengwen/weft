@@ -135,10 +135,26 @@ export function getTranslationFallback(key: string): string {
   );
 }
 
+// Bumped from i18next's default 'i18nextLng' so existing visitors who have a stale
+// auto-detected language cached under the old key are reset once to the Chinese
+// default below. Explicit switches persist under this key thereafter.
+const LANGUAGE_STORAGE_KEY = 'weftLang';
+
+export function getInitialLanguage(): string {
+  try {
+    const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(LANGUAGE_STORAGE_KEY) : null;
+    return stored ?? 'zh';
+  } catch {
+    // localStorage may be unavailable (private mode / sandboxed iframe); default to Chinese.
+    return 'zh';
+  }
+}
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    lng: getInitialLanguage(),
     fallbackLng: 'en',
     debug: false,
     missingKeyHandler: (_languages, _namespace, key) => warnMissingTranslationKey(key),
@@ -161,9 +177,12 @@ i18n
       ja: { translation: jaTranslation },
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      // No 'navigator': the audience is Chinese, so don't auto-switch to the browser
+      // language. New users get the explicit default (zh); an explicit user choice is
+      // restored from localStorage via getInitialLanguage() and cached here on change.
+      order: ['localStorage'],
       caches: ['localStorage'],
-      lookupLocalStorage: 'i18nextLng',
+      lookupLocalStorage: LANGUAGE_STORAGE_KEY,
     },
     react: {
       useSuspense: false,

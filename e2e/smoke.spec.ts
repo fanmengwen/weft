@@ -4,6 +4,9 @@ test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.clear();
     localStorage.setItem('hasSeenWelcome_v1', 'true');
+    // Pin the UI locale: the app now defaults to Chinese, but these specs assert
+    // English text. Locale pinning keeps them deterministic against the source locale.
+    localStorage.setItem('weftLang', 'en');
   });
 });
 

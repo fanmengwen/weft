@@ -17,7 +17,7 @@ const LANGUAGES: Language[] = [
   { code: 'de', name: 'German', nativeName: 'Deutsch', flag: '/flags/de.svg', scope: 'ui' },
   { code: 'fr', name: 'French', nativeName: 'Français', flag: '/flags/fr.svg', scope: 'ui' },
   { code: 'es', name: 'Spanish', nativeName: 'Español', flag: '/flags/es.svg', scope: 'ui' },
-  { code: 'zh', name: 'Chinese', nativeName: '中文', flag: '/flags/cn.svg', scope: 'ui' },
+  { code: 'zh', name: 'Chinese', nativeName: '中文', flag: '/flags/cn.svg', scope: 'full' },
   { code: 'ja', name: 'Japanese', nativeName: '日本語', flag: '/flags/jp.svg', scope: 'ui' },
 ];
 
