@@ -153,4 +153,29 @@ describe('OpenFlow DSL V2 Parser', () => {
     expect(result.metadata.icons).toBe('auto');
     expect(result.nodes).toHaveLength(1);
   });
+
+  // The DSL generation prompt tells models to connect [note] callouts with the
+  // `..>` operator. This locks that the syntax the prompt recommends actually
+  // parses — a bare `..` (which the prompt previously documented) is NOT a
+  // recognized edge operator and would push an "Unrecognized syntax" error.
+  it('parses a [note] connected with the ..> async operator as a dashed edge', () => {
+    const input = `
+            [process] validate_reg: Validate Registration
+            [note] note1: Rate limited to 5/min
+            note1 ..> validate_reg
+        `;
+    const result = parseOpenFlowDslV2(input);
+
+    expect(result.errors).toHaveLength(0);
+    expect(result.nodes.find((n) => n.id === 'note1')?.type).toBe('annotation');
+    expect(result.edges).toHaveLength(1);
+    expect(result.edges[0]?.data?.styleType).toBe('dashed');
+  });
+
+  it('rejects a bare `..` edge operator as unrecognized syntax', () => {
+    const result = parseOpenFlowDslV2('note1 .. validate_reg');
+
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain('Unrecognized syntax');
+  });
 });
