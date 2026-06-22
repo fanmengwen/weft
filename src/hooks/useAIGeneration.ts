@@ -192,6 +192,9 @@ export function useAIGeneration(
   const [pendingDiff, setPendingDiff] = useState<ImportDiff | null>(null);
   const [assistantThread, setAssistantThread] = useState<AssistantThreadItem[]>([]);
   const abortControllerRef = useRef<AbortController | null>(null);
+  // Accumulates streamed DSL text outside the React state updater so the live
+  // graph store can be updated at the top level of onChunk (see runDiagramRequest).
+  const streamingTextRef = useRef('');
   const [lastError, setLastError] = useState<string | null>(null);
   const readiness = getAIReadinessState(aiSettings);
 
@@ -362,6 +365,7 @@ export function useAIGeneration(
       }
 
       setLastError(null);
+      streamingTextRef.current = '';
       setStreamingText('');
       setStreamingGraph(null);
       setStreamingActive(true);
@@ -391,23 +395,36 @@ export function useAIGeneration(
           aiSettings,
           globalEdgeOptions,
           onChunk: (delta) => {
-            setStreamingText((prev) => {
-              const next = (prev ?? '') + delta;
-              const parsed = parseStreamingDsl(next);
-              if (parsed.nodeCount > 0) {
-                setStreamingGraph(parsed);
-              }
-              return next;
-            });
+            // Accumulate via a ref and update both stores at the TOP LEVEL of
+            // this async callback. Previously setStreamingGraph() was called
+            // inside the setStreamingText updater, which React runs during its
+            // render phase — that triggered "Cannot update a component
+            // (StreamingOverlay) while rendering a different component".
+            const next = streamingTextRef.current + delta;
+            streamingTextRef.current = next;
+            setStreamingText(next);
+            const parsed = parseStreamingDsl(next);
+            if (parsed.nodeCount > 0) {
+              setStreamingGraph(parsed);
+            }
           },
           onRetry: (attempt) => {
             setRetryCount(attempt);
+            streamingTextRef.current = '';
             setStreamingText('');
           },
           signal: controller.signal,
         });
 
         const { dslText, layoutedNodes, layoutedEdges } = result;
+        if (result.diagnostics?.length) {
+          // The model's output still had unparseable lines after self-repair;
+          // we kept the valid nodes and dropped the rest. Tell the user.
+          notifyOperationOutcome(addToast, {
+            status: 'warning',
+            summary: `AI 生成的图有 ${result.diagnostics.length} 行无法解析,已跳过并保留 ${layoutedNodes.length} 个节点`,
+          });
+        }
         if (showPreview) {
           const previewDiff = computeImportDiff(
             nodes,
@@ -479,6 +496,7 @@ export function useAIGeneration(
       } finally {
         abortControllerRef.current = null;
         setIsGenerating(false);
+        streamingTextRef.current = '';
         setStreamingText(null);
         setStreamingGraph(null);
         setStreamingActive(false);
