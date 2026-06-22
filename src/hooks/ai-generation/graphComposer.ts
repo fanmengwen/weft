@@ -2,7 +2,7 @@ import { createDefaultEdge } from '@/constants';
 import { createId } from '@/lib/id';
 import { APP_DSL_CODE_FENCE_ALIASES } from '@/lib/legacyBranding';
 import { createLogger } from '@/lib/logger';
-import { parseOpenFlowDSL } from '@/lib/openFlowDSLParser';
+import { parseOpenFlowDSL, type ParseDiagnostic } from '@/lib/openFlowDSLParser';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 
 const logger = createLogger({ scope: 'graphComposer' });
@@ -12,19 +12,40 @@ export interface ParsedFlowResult {
   edges: FlowEdge[];
 }
 
-export function parseDslOrThrow(dslText: string): ParsedFlowResult {
+function cleanDslText(dslText: string): string {
   const codeFenceAliasPattern = ['yaml', 'openflow', ...APP_DSL_CODE_FENCE_ALIASES].join('|');
-  const cleanDsl = dslText
+  return dslText
     .replace(new RegExp(`\`\`\`(${codeFenceAliasPattern}|)?`, 'g'), '')
     .replace(/```/g, '')
     .trim();
-  const parseResult = parseOpenFlowDSL(cleanDsl);
+}
+
+export function parseDslOrThrow(dslText: string): ParsedFlowResult {
+  const parseResult = parseOpenFlowDSL(cleanDslText(dslText));
   if (parseResult.error) {
     throw new Error(parseResult.error);
   }
   return {
     nodes: parseResult.nodes as FlowNode[],
     edges: parseResult.edges,
+  };
+}
+
+export interface PartialFlowResult extends ParsedFlowResult {
+  diagnostics: ParseDiagnostic[];
+}
+
+// Lenient counterpart to parseDslOrThrow: returns whatever nodes/edges parsed
+// plus the per-line diagnostics, never throwing. Used as a last-resort fallback
+// after the self-repair retry still fails, so a single unparseable line degrades
+// to a partial diagram instead of discarding the whole thing. Shares the exact
+// code-fence cleaning so its diagnostics match what parseDslOrThrow produced.
+export function parseDslPartial(dslText: string): PartialFlowResult {
+  const parseResult = parseOpenFlowDSL(cleanDslText(dslText));
+  return {
+    nodes: parseResult.nodes as FlowNode[],
+    edges: parseResult.edges,
+    diagnostics: parseResult.diagnostics ?? [],
   };
 }
 

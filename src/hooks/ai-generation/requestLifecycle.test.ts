@@ -26,6 +26,7 @@ vi.mock('./graphComposer', () => ({
     nodes: [{ id: 'generated-a', type: 'process', position: { x: 0, y: 0 }, data: { label: 'A' } }],
     edges: [{ id: 'edge-a', source: 'generated-a', target: 'generated-a' }],
   })),
+  parseDslPartial: vi.fn(() => ({ nodes: [], edges: [], diagnostics: [] })),
   buildIdMap: vi.fn(() => new Map([['generated-a', 'existing-a']])),
   toFinalNodes: vi.fn(() => [{ id: 'existing-a', type: 'process', position: { x: 0, y: 0 }, data: { label: 'A' } }]),
   toFinalEdges: vi.fn(() => [{ id: 'edge-final', source: 'existing-a', target: 'existing-a' }]),
@@ -153,5 +154,39 @@ describe('requestLifecycle', () => {
     expect(repairPrompt).toContain('PREVIOUS ATTEMPT FAILED TO PARSE');
     expect(repairPrompt).toContain('Unexpected token at line 2');
     expect(repairPrompt).toContain('[bad syntax');
+  });
+
+  it('accepts a partial diagram when the final retry still fails to parse cleanly', async () => {
+    const composer = await import('./graphComposer');
+    vi.mocked(composer.parseDslOrThrow)
+      .mockImplementationOnce(() => {
+        throw new Error('Line 5: Unrecognized syntax');
+      })
+      .mockImplementationOnce(() => {
+        throw new Error('Line 5: Unrecognized syntax');
+      });
+    vi.mocked(composer.parseDslPartial).mockReturnValueOnce({
+      nodes: [{ id: 'generated-a', type: 'process', position: { x: 0, y: 0 }, data: { label: 'A' } }],
+      edges: [],
+      diagnostics: [{ message: 'Unrecognized syntax', line: 5 }],
+    });
+    vi.mocked(generateDiagramFromChat)
+      .mockResolvedValueOnce('flow: "A"\nbad .. line')
+      .mockResolvedValueOnce('flow: "A"\nstill .. bad');
+
+    const result = await generateAIFlowResult({
+      chatMessages: [],
+      prompt: 'Login flow',
+      nodes: [],
+      edges: [],
+      aiSettings: BASE_AI_SETTINGS,
+      globalEdgeOptions: BASE_EDGE_OPTIONS,
+    });
+
+    // Both attempts threw, so the final-attempt fallback parsed partially.
+    expect(generateDiagramFromChat).toHaveBeenCalledTimes(2);
+    expect(composer.parseDslPartial).toHaveBeenCalledTimes(1);
+    expect(result.diagnostics).toHaveLength(1);
+    expect(result.layoutedNodes.length).toBeGreaterThan(0);
   });
 });

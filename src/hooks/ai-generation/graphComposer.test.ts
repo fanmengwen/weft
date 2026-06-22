@@ -4,6 +4,7 @@ import { parseOpenFlowDSL } from '@/lib/openFlowDSLParser';
 import {
   buildIdMap,
   parseDslOrThrow,
+  parseDslPartial,
   toErrorMessage,
   toFinalEdges,
   toFinalNodes,
@@ -45,6 +46,30 @@ describe('graphComposer', () => {
     });
 
     expect(() => parseDslOrThrow('broken')).toThrow('Line 1: Invalid DSL');
+  });
+
+  it('parseDslPartial returns partial nodes plus diagnostics without throwing', () => {
+    vi.mocked(parseOpenFlowDSL).mockReturnValueOnce({
+      nodes: [createNode('n1', 'Node 1')],
+      edges: [],
+      diagnostics: [{ message: 'Unrecognized syntax "x .. y"', line: 3 }],
+      error: 'Line 3: Unrecognized syntax "x .. y"',
+    });
+
+    const result = parseDslPartial('flow: ok\nx .. y');
+    expect(result.nodes).toEqual([createNode('n1', 'Node 1')]);
+    expect(result.diagnostics).toHaveLength(1);
+  });
+
+  it('parseDslPartial returns no nodes when nothing parsed', () => {
+    vi.mocked(parseOpenFlowDSL).mockReturnValueOnce({
+      nodes: [],
+      edges: [],
+      diagnostics: [{ message: 'No nodes found.' }],
+      error: 'No nodes found.',
+    });
+
+    expect(parseDslPartial('garbage').nodes).toEqual([]);
   });
 
   it('reuses ids by matching labels and normalizes final nodes', () => {

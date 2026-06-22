@@ -3,7 +3,8 @@ import { serializeCanvasContextForAI } from '@/services/ai/contextSerializer';
 import { generateDiagramFromChat, type ChatMessage } from '@/services/aiService';
 import type { FlowEdge, FlowNode, GlobalEdgeOptions } from '@/lib/types';
 import type { AISettings } from '@/store/types';
-import { buildIdMap, parseDslOrThrow, toFinalEdges, toFinalNodes } from './graphComposer';
+import { buildIdMap, parseDslOrThrow, parseDslPartial, toFinalEdges, toFinalNodes } from './graphComposer';
+import type { ParseDiagnostic } from '@/lib/openFlowDSLParser';
 import {
   applyAIResultToCanvas,
   positionNewNodesSmartly,
@@ -69,6 +70,9 @@ export interface GenerateAIFlowResult {
   userMessage: ChatMessage;
   layoutedNodes: FlowNode[];
   layoutedEdges: FlowEdge[];
+  // Set only when the final parse still had errors but produced usable nodes —
+  // the diagram was accepted partially and these are the dropped lines.
+  diagnostics?: ParseDiagnostic[];
 }
 
 export function buildUserChatMessage(prompt: string, imageBase64?: string): ChatMessage {
@@ -128,6 +132,7 @@ export async function generateAIFlowResult({
   let activePrompt = fullPrompt;
   let dslText = '';
   let parsed: ReturnType<typeof parseDslOrThrow>;
+  let diagnostics: ParseDiagnostic[] | undefined;
 
   for (let attempt = 0; attempt <= 1; attempt++) {
     dslText = await withRetry(
@@ -153,7 +158,18 @@ export async function generateAIFlowResult({
       parsed = parseDslOrThrow(dslText);
       break;
     } catch (parseErr) {
-      if (attempt === 1) throw parseErr;
+      if (attempt === 1) {
+        // Self-repair already failed once. Rather than discarding a diagram
+        // that is mostly valid, accept whatever parsed and surface the dropped
+        // lines as diagnostics; only a genuinely empty parse is a hard failure.
+        const partial = parseDslPartial(dslText);
+        if (partial.nodes.length > 0) {
+          parsed = partial;
+          diagnostics = partial.diagnostics;
+          break;
+        }
+        throw parseErr;
+      }
       const msg = parseErr instanceof Error ? parseErr.message : 'DSL syntax error';
       // Show the model its own broken output verbatim so it can see what
       // went wrong rather than re-deriving from the prompt. Truncate to keep
@@ -194,6 +210,7 @@ export async function generateAIFlowResult({
       userMessage: buildUserChatMessage(prompt, imageBase64),
       layoutedNodes,
       layoutedEdges,
+      diagnostics,
     };
   }
 
@@ -211,6 +228,7 @@ export async function generateAIFlowResult({
       userMessage: buildUserChatMessage(prompt, imageBase64),
       layoutedNodes: mergedNodes,
       layoutedEdges: mergedEdges,
+      diagnostics,
     };
   }
 
@@ -232,6 +250,7 @@ export async function generateAIFlowResult({
       userMessage: buildUserChatMessage(prompt, imageBase64),
       layoutedNodes: smartPositioned,
       layoutedEdges: mergedEdges,
+      diagnostics,
     };
   }
 
@@ -249,5 +268,6 @@ export async function generateAIFlowResult({
     userMessage: buildUserChatMessage(prompt, imageBase64),
     layoutedNodes,
     layoutedEdges: elkEdges,
+    diagnostics,
   };
 }
