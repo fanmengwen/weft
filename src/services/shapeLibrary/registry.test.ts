@@ -7,7 +7,7 @@ function createPack(id: string, shapeId: string): ShapePackManifest {
         id,
         name: `Pack ${id}`,
         version: '1.0.0',
-        author: 'OpenFlowKit',
+        author: 'Weft',
         shapes: [
             {
                 id: shapeId,

@@ -32,9 +32,9 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const variants = {
       primary: `
-            bg-[var(--brand-primary)] text-white 
+            bg-[image:var(--brand-primary-grad)] text-[var(--brand-on-primary)]
             ${isBeveled ? 'btn-beveled-primary' : 'shadow-sm hover:shadow-md'}
-            hover:brightness-110 disabled:border-[color-mix(in_srgb,var(--brand-primary),var(--color-brand-border)_55%)] disabled:bg-[color-mix(in_srgb,var(--brand-primary),var(--brand-surface)_62%)] disabled:text-[color-mix(in_srgb,white,transparent_12%)] disabled:opacity-75
+            hover:brightness-105 disabled:bg-none disabled:border-[color-mix(in_srgb,var(--brand-primary),var(--color-brand-border)_55%)] disabled:bg-[color-mix(in_srgb,var(--brand-primary),var(--brand-surface)_62%)] disabled:text-[color-mix(in_srgb,white,transparent_12%)] disabled:opacity-75
         `
         .replace(/\s+/g, ' ')
         .trim(),

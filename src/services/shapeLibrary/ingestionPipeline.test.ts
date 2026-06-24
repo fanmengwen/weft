@@ -7,7 +7,7 @@ describe('shape library ingestion pipeline', () => {
             packId: 'aws-starter-v1',
             packName: 'AWS Starter',
             version: '1.0.0',
-            author: 'OpenFlowKit',
+            author: 'Weft',
             assets: [
                 {
                     path: 'compute/ec2-instance.svg',
@@ -30,7 +30,7 @@ describe('shape library ingestion pipeline', () => {
             packId: 'aws-starter-v1',
             packName: 'AWS Starter',
             version: '1.0.0',
-            author: 'OpenFlowKit',
+            author: 'Weft',
             assets: [
                 {
                     path: 'network/vpc-gateway.svg',

@@ -10,7 +10,7 @@ export const STARTER_SHAPE_PACKS: ShapePackManifest[] = [
         id: 'starter-core-v1',
         name: 'Starter Core Shapes',
         version: '1.0.0',
-        author: 'OpenFlowKit',
+        author: 'Weft',
         description: 'Small curated starter pack to bootstrap shape-library ingestion contracts.',
         shapes: [
             {

@@ -1,8 +1,8 @@
 import React from 'react';
 
-const LOGO_SRC = '/favicon.svg';
+const LOGO_SRC = '/logo-weft.svg';
 
-export const OpenFlowLogo: React.FC<{ className?: string }> = ({ className = '' }) => {
+export const WeftLogo: React.FC<{ className?: string }> = ({ className = '' }) => {
     return (
         <img
             src={LOGO_SRC}

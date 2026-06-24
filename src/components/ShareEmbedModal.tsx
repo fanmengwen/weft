@@ -53,9 +53,9 @@ export function ShareEmbedModal({ viewerUrl, onClose }: ShareEmbedModalProps): R
         next.searchParams.set('size', 'badge');
         return next.toString();
     })();
-    const markdownLink = `[Open interactive diagram on OpenFlowKit](${viewerUrl})`;
+    const markdownLink = `[Open interactive diagram on Weft](${viewerUrl})`;
     const readmeLink = `[View architecture diagram](${badgeViewerUrl})`;
-    const iframeSnippet = `<iframe src="${cardViewerUrl}" width="720" height="420" style="border:0;border-radius:16px;overflow:hidden;" loading="lazy" title="OpenFlowKit diagram"></iframe>`;
+    const iframeSnippet = `<iframe src="${cardViewerUrl}" width="720" height="420" style="border:0;border-radius:16px;overflow:hidden;" loading="lazy" title="Weft diagram"></iframe>`;
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" onClick={onClose}>

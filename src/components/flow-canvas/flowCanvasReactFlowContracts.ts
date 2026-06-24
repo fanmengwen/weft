@@ -44,9 +44,9 @@ export const FLOW_CANVAS_STYLE_PRESETS = {
         },
         background: {
             variant: BackgroundVariant.Dots,
-            gap: 24,
-            size: 1.5,
-            color: 'color-mix(in srgb, var(--brand-secondary), transparent 68%)',
+            gap: 26,
+            size: 1,
+            color: 'var(--brand-dot-color)',
         },
     },
     standard: {
@@ -57,15 +57,15 @@ export const FLOW_CANVAS_STYLE_PRESETS = {
         },
         background: {
             variant: BackgroundVariant.Dots,
-            gap: 24,
-            size: 1.5,
-            color: 'color-mix(in srgb, var(--brand-secondary), transparent 64%)',
+            gap: 26,
+            size: 1,
+            color: 'var(--brand-dot-color)',
         },
     },
 } as const;
 
 export function getFlowCanvasClassName(isEffectiveSelectMode: boolean): string {
-    return `bg-[var(--brand-background)] ${isEffectiveSelectMode ? 'flow-canvas-select-mode' : 'flow-canvas-pan-mode'}`;
+    return `bg-[var(--brand-background)] [background-image:var(--brand-bg-gradient)] ${isEffectiveSelectMode ? 'flow-canvas-select-mode' : 'flow-canvas-pan-mode'}`;
 }
 
 export function getFlowCanvasInteractionMode(isEffectiveSelectMode: boolean): {

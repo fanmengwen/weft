@@ -1,7 +1,7 @@
 import React from 'react';
 import { Book, Home, LayoutTemplate, Plug, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { OpenFlowLogo } from '../icons/OpenFlowLogo';
+import { WeftLogo } from '../icons/WeftLogo';
 import { SidebarFooter } from './SidebarFooter';
 import { GithubCard } from './GithubCard';
 import { SidebarItem } from '../ui/SidebarItem';
@@ -64,7 +64,7 @@ export function HomeSidebar({
   return (
     <aside className="sticky top-0 z-20 flex w-full flex-col border-b border-[var(--color-brand-border)] bg-[var(--brand-surface)] md:fixed md:inset-y-0 md:left-0 md:w-64 md:border-b-0 md:border-r">
       <div className="flex h-14 items-center gap-3 border-b border-[var(--color-brand-border)] px-4">
-        <OpenFlowLogo className="h-8 w-8 shrink-0" />
+        <WeftLogo className="h-8 w-8 shrink-0" />
 
         <span className="truncate text-base font-semibold tracking-tight text-[var(--brand-text)]">
           {localizedAppName}

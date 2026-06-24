@@ -297,7 +297,7 @@ export function useCinematicExport({
         const extension = getAnimatedExportFileExtension(blob.type || mimeType);
         createDownload(
           blob,
-          buildExportFileName(exportBaseName ?? 'openflowkit-cinematic-build', extension)
+          buildExportFileName(exportBaseName ?? 'weft-cinematic-build', extension)
         );
         setJobState((current) => ({
           ...current,

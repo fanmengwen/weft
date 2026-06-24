@@ -172,7 +172,7 @@ export function getImportRecoveryGuidance(report: ImportFidelityReport): string 
         );
     }
 
-    return 'If this file came from another tool, try exporting a plain JSON/OpenFlowKit file again or remove unsupported metadata before retrying.';
+    return 'If this file came from another tool, try exporting a plain JSON/Weft file again or remove unsupported metadata before retrying.';
 }
 
 function getMermaidReportLayoutDetail(report: ImportFidelityReport): string | null {

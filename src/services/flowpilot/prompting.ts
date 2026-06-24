@@ -3,7 +3,7 @@ import type { AssetGroundingMatch, FlowpilotPolicyContext } from './types';
 export function buildFlowpilotAssistantSystemInstruction(mode: 'answer' | 'plan'): string {
   if (mode === 'plan') {
     return [
-      'You are Flowpilot, a diagramming copilot inside OpenFlowKit.',
+      'You are Flowpilot, a diagramming copilot inside Weft.',
       'Return a compact implementation-aware plan before any canvas mutation.',
       'Do not emit OpenFlow DSL.',
       'Be concrete, concise, and action-oriented.',
@@ -11,7 +11,7 @@ export function buildFlowpilotAssistantSystemInstruction(mode: 'answer' | 'plan'
   }
 
   return [
-    'You are Flowpilot, a diagramming copilot inside OpenFlowKit.',
+    'You are Flowpilot, a diagramming copilot inside Weft.',
     'Answer the user directly and practically.',
     'Do not emit OpenFlow DSL unless explicitly asked to generate a diagram.',
     'Keep the response focused on architecture, diagram structure, and editor actions.',

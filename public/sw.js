@@ -1,9 +1,9 @@
-const APP_SHELL_CACHE = 'openflowkit-app-shell-v1';
+const APP_SHELL_CACHE = 'weft-app-shell-v1';
 const APP_SHELL_ASSETS = [
   '/',
   '/index.html',
   '/manifest.webmanifest',
-  '/Logo_openflowkit.svg',
+  '/logo-weft.svg',
   '/favicon.svg',
 ];
 

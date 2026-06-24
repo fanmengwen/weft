@@ -4,8 +4,8 @@ import type { AISettings, Layer, ViewSettings } from './types';
 
 export const DEFAULT_DESIGN_SYSTEM: DesignSystem = {
     id: 'default',
-    name: 'OpenFlowKit Default',
-    description: 'The default OpenFlowKit design system.',
+    name: 'Weft Default',
+    description: 'The default Weft design system.',
     colors: {
         primary: '#6366f1',
         secondary: '#64748b',

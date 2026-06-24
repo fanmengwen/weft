@@ -1,5 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Fira+Code:wght@400;500;600;700&display=swap');
 @plugin "tailwindcss-animate";
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
@@ -8,71 +8,6 @@
   src: url('/fonts/inter/inter-400-700-latin.woff2') format('woff2');
   font-style: normal;
   font-weight: 400 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans Flex';
-  src: url('/fonts/google-sans/google-sans-flex-400-700-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 400 700;
-  font-stretch: 100%;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/google-sans-400-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/google-sans-500-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/google-sans-600-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans';
-  src: url('/fonts/google-sans/google-sans-700-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans Text';
-  src: url('/fonts/google-sans/google-sans-text-400-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans Text';
-  src: url('/fonts/google-sans/google-sans-text-500-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Google Sans Text';
-  src: url('/fonts/google-sans/google-sans-text-700-latin.woff2') format('woff2');
-  font-style: normal;
-  font-weight: 700;
   font-display: swap;
 }
 
@@ -112,10 +47,10 @@ html {
 
   /* Typography */
   --font-display:
-    'Inter', 'Segoe UI', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    'Hanken Grotesk', 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-serif: ui-serif, Georgia, Cambria, 'Times New Roman', serif;
   --font-sans:
-    'Inter', 'Segoe UI', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    'Hanken Grotesk', 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono:
     'Google Sans Code', ui-monospace, 'SFMono-Regular', 'SF Mono', Menlo, Monaco, Consolas,
     'Liberation Mono', monospace;
@@ -294,60 +229,68 @@ html {
   display: inline-block;
   overflow: hidden;
   white-space: nowrap;
-  border-right: 2px solid #4f46e5;
+  border-right: 2px solid var(--brand-primary);
   animation:
     typing 3s steps(30, end),
     blink 0.75s step-end infinite;
 }
 
 :root {
-  /* Brand Colors - Default: Indigo */
-  --brand-primary: #e95420;
+  /* Brand Colors — Weft v2: soft glass, blue accent */
+  --brand-primary: #3b82f6;
+  --brand-primary-grad: linear-gradient(180deg, #5b9bff, #3b82f6);
+  --brand-on-primary: #ffffff;
   --brand-secondary: #64748b;
   --brand-surface: #ffffff;
-  --brand-background: #f8fafc;
-  --brand-text: #0f172a;
+  --brand-background: #eef2fb;
+  --brand-text: #1e2433;
 
-  /* Brand Palette */
-  --brand-primary-50: #fef4f0;
-  --brand-primary-100: #fde4d8;
-  --brand-primary-200: #fbc9b1;
-  --brand-primary-300: #f7a07a;
-  --brand-primary-400: #f07043;
-  --brand-primary-500: #e95420;
-  --brand-primary-600: #d14a1b;
-  --brand-primary-700: #b03f16;
-  --brand-primary-800: #8f3411;
-  --brand-primary-900: #6e290d;
+  /* Brand Palette — Blue */
+  --brand-primary-50: #eff6ff;
+  --brand-primary-100: #dbeafe;
+  --brand-primary-200: #bfdbfe;
+  --brand-primary-300: #93c5fd;
+  --brand-primary-400: #60a5fa;
+  --brand-primary-500: #3b82f6;
+  --brand-primary-600: #2563eb;
+  --brand-primary-700: #1d4ed8;
+  --brand-primary-800: #1e40af;
+  --brand-primary-900: #1e3a8a;
 
-  --brand-border: #e2e8f0;
+  /* Ambient canvas wash (radial glow + dot grid + corner blob) */
+  --brand-bg-gradient: radial-gradient(560px circle at 88% 94%, var(--brand-glow-blob), transparent 62%), radial-gradient(130% 90% at 18% 0%, #e6f0ff 0%, #eaf0fb 42%, #eef2fb 100%);
+  --brand-dot-color: rgba(59, 130, 246, 0.1);
+  --brand-glow-blob: rgba(90, 150, 255, 0.18);
 
-  /* Dimensions */
-  --brand-radius: 8px;
-  --radius-xs: 4px;
-  --radius-sm: 6px;
+  --brand-border: #e4e9f2;
+
+  /* Dimensions — softer, larger radii */
+  --brand-radius: 12px;
+  --radius-xs: 7px;
+  --radius-sm: 9px;
   --radius-md: var(--brand-radius);
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 26px;
   --radius-3xl: 32px;
   --brand-border-width: 1px;
 
   /* Typography */
   --brand-font-family: var(--font-sans);
 
-  /* UI Effects */
-  --brand-glass-blur: 12px;
-  --brand-glass-opacity: 0.7;
-  --brand-glass-bg: rgba(255, 255, 255, 0.7);
+  /* Glass (v2 glassmorphism) */
+  --brand-glass-blur: 16px;
+  --brand-glass-opacity: 0.66;
+  --brand-glass-bg: rgba(255, 255, 255, 0.64);
+  --brand-glass-border: rgba(255, 255, 255, 0.9);
 
-  /* App Shadows */
-  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.03), 0 1px 1px rgba(15, 23, 42, 0.02);
-  --shadow-sm: 0 4px 10px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.03);
-  --shadow-md: 0 10px 24px rgba(15, 23, 42, 0.07), 0 3px 8px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 16px 36px rgba(15, 23, 42, 0.09), 0 6px 16px rgba(15, 23, 42, 0.05);
-  --shadow-overlay: 0 22px 48px rgba(15, 23, 42, 0.11), 0 8px 20px rgba(15, 23, 42, 0.05);
-  --shadow-floating: 0 14px 32px rgba(15, 23, 42, 0.12), 0 4px 12px rgba(15, 23, 42, 0.06);
+  /* App Shadows — soft blue cast */
+  --shadow-xs: 0 2px 8px rgba(30, 50, 100, 0.05);
+  --shadow-sm: 0 4px 16px rgba(30, 50, 100, 0.06);
+  --shadow-md: 0 8px 24px rgba(30, 50, 100, 0.08);
+  --shadow-lg: 0 16px 40px rgba(40, 70, 130, 0.12);
+  --shadow-overlay: 0 24px 70px rgba(40, 70, 130, 0.14);
+  --shadow-floating: 0 16px 40px rgba(40, 70, 130, 0.16);
 
   /* Semantic surfaces */
   --color-surface-success-bg: #edfdf4;
@@ -366,19 +309,21 @@ html {
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --brand-surface: #171717;
-    --brand-background: #0a0a0a;
-    --brand-text: #f5f5f5;
-    --brand-secondary: #a3a3a3;
-    --brand-border: #262626;
-    --brand-primary-50: rgba(233, 84, 32, 0.12);
-    --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.6);
-    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.6);
-    --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.7);
-    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.75);
-    --shadow-overlay: 0 24px 56px rgba(0, 0, 0, 0.85);
-    --shadow-floating: 0 18px 38px rgba(0, 0, 0, 0.78), 0 6px 18px rgba(0, 0, 0, 0.48);
-    --brand-glass-bg: rgba(23, 23, 23, 0.8);
+    --brand-primary: #2dd4bf;
+    --brand-on-primary: #0a0a0b;
+    --brand-surface: #141416;
+    --brand-background: #0a0a0b;
+    --brand-text: #f4f4f5;
+    --brand-secondary: #a1a1aa;
+    --brand-border: #27272a;
+    --brand-primary-50: rgba(45, 212, 191, 0.14);
+    --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.45);
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.55);
+    --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+    --shadow-overlay: 0 24px 56px rgba(0, 0, 0, 0.65);
+    --shadow-floating: 0 18px 38px rgba(0, 0, 0, 0.6), 0 6px 18px rgba(0, 0, 0, 0.4);
+    --brand-glass-bg: rgba(20, 20, 22, 0.8);
     --color-surface-success-bg: rgba(20, 83, 45, 0.28);
     --color-surface-success-border: rgba(74, 222, 128, 0.32);
     --color-surface-success-text: #86efac;
@@ -396,19 +341,21 @@ html {
 }
 
 [data-theme='dark'] {
-  --brand-surface: #171717;
-  --brand-background: #0a0a0a;
-  --brand-text: #f5f5f5;
-  --brand-secondary: #a3a3a3;
-  --brand-border: #262626;
-  --brand-primary-50: rgba(233, 84, 32, 0.12);
-  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.6);
-  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.6);
-  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.75);
-  --shadow-overlay: 0 24px 56px rgba(0, 0, 0, 0.85);
-  --shadow-floating: 0 18px 38px rgba(0, 0, 0, 0.78), 0 6px 18px rgba(0, 0, 0, 0.48);
-  --brand-glass-bg: rgba(23, 23, 23, 0.8);
+  --brand-primary: #2dd4bf;
+  --brand-on-primary: #0a0a0b;
+  --brand-surface: #141416;
+  --brand-background: #0a0a0b;
+  --brand-text: #f4f4f5;
+  --brand-secondary: #a1a1aa;
+  --brand-border: #27272a;
+  --brand-primary-50: rgba(45, 212, 191, 0.14);
+  --shadow-xs: 0 1px 3px rgba(0, 0, 0, 0.45);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 28px rgba(0, 0, 0, 0.55);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.6);
+  --shadow-overlay: 0 24px 56px rgba(0, 0, 0, 0.65);
+  --shadow-floating: 0 18px 38px rgba(0, 0, 0, 0.6), 0 6px 18px rgba(0, 0, 0, 0.4);
+  --brand-glass-bg: rgba(20, 20, 22, 0.8);
   --color-surface-success-bg: rgba(20, 83, 45, 0.28);
   --color-surface-success-border: rgba(74, 222, 128, 0.32);
   --color-surface-success-text: #86efac;
@@ -428,6 +375,33 @@ body {
   font-family: var(--brand-font-family);
   color: var(--brand-text);
   background-color: var(--brand-background);
+  background-image: var(--brand-bg-gradient);
+  background-attachment: fixed;
+}
+
+.react-flow__controls {
+  background: var(--brand-glass-bg);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--brand-glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  padding: 4px;
+}
+
+.react-flow__controls-button {
+  background: transparent;
+  border-bottom: 1px solid color-mix(in srgb, var(--brand-border), transparent 50%);
+  color: var(--brand-secondary);
+}
+
+.react-flow__controls-button:hover {
+  background: var(--brand-primary-50);
+  color: var(--brand-primary);
+}
+
+.react-flow__controls-button svg {
+  fill: currentColor;
 }
 
 .flow-handle-hitarea.react-flow__handle::after {
@@ -604,7 +578,7 @@ body {
 .spotlight {
   background: radial-gradient(
     600px circle at var(--mouse-x) var(--mouse-y),
-    rgba(99, 102, 241, 0.06),
+    rgba(59, 130, 246, 0.06),
     transparent 40%
   );
 }
@@ -712,8 +686,8 @@ body {
 
 /* ===== Selection marquee — Figma style ===== */
 .react-flow__selection {
-  background: rgba(233, 84, 32, 0.06);
-  border: 1px solid var(--brand-primary, #e95420);
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid var(--brand-primary, #3b82f6);
   border-radius: 2px;
 }
 
@@ -868,7 +842,7 @@ body {
 }
 
 .markdown-content a {
-  color: #3b82f6;
+  color: var(--brand-primary);
   text-decoration: underline;
 }
 

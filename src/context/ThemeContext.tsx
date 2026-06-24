@@ -9,7 +9,7 @@ interface ThemeContextValue {
 }
 
 const ThemeContext = createContext<ThemeContextValue>({
-  theme: 'system',
+  theme: 'light',
   resolvedTheme: 'light',
   setTheme: () => {},
 });
@@ -23,8 +23,8 @@ function getSystemTheme(): 'light' | 'dark' {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }): React.ReactElement {
   const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === 'undefined') return 'system';
-    return (localStorage.getItem(STORAGE_KEY) as Theme) || 'system';
+    if (typeof window === 'undefined') return 'light';
+    return (localStorage.getItem(STORAGE_KEY) as Theme) || 'light';
   });
 
   const [systemTheme, setSystemTheme] = useState<'light' | 'dark'>(() => getSystemTheme());

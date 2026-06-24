@@ -30,9 +30,9 @@ export function FlowEditorEmptyState({
     return (
         <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none animate-[fadeIn_200ms_ease-out]">
             <div className="pointer-events-auto w-full max-w-[400px] px-6">
-                <div className="rounded-[var(--radius-md)] border border-[var(--color-brand-border)]/60 bg-[var(--brand-surface)] p-8 text-center shadow-[var(--shadow-md)] ring-1 ring-black/5">
-                    
-                    <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-[var(--radius-md)] bg-[var(--brand-primary-50)] text-[var(--brand-primary)]">
+                <div className="rounded-[var(--radius-2xl)] border border-[var(--brand-glass-border)] bg-[var(--brand-glass-bg)] p-10 text-center shadow-[var(--shadow-overlay)] backdrop-blur-2xl">
+
+                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[var(--radius-lg)] bg-[image:var(--brand-primary-grad)] text-white shadow-[0_10px_26px_rgba(59,130,246,0.4)]">
                         <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
                             <path d="M12 4.5v15m7.5-7.5h-15" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
