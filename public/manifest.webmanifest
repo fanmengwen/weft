@@ -4,11 +4,11 @@
   "description": "AI diagramming canvas — turn natural language into editable diagrams, local-first.",
   "start_url": "/index.html#/home",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#2563eb",
+  "background_color": "#0a0a0b",
+  "theme_color": "#0a0a0b",
   "icons": [
     {
-      "src": "/Logo_openflowkit.svg",
+      "src": "/logo-weft.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"

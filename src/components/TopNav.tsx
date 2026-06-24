@@ -112,7 +112,7 @@ export function TopNav({
     }, [openAISettings]);
 
     return (
-        <div className="absolute top-0 left-0 right-0 z-50 flex h-14 items-center justify-between border-b border-[var(--color-brand-border)]/70 bg-[var(--brand-surface)]/70 px-3 shadow-sm backdrop-blur-md transition-all sm:px-4">
+        <div className="absolute top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-4 transition-all sm:px-6">
             {/* Left: Menu & Brand */}
             <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
                 <TopNavMenu

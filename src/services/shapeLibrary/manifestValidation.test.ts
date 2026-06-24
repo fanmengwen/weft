@@ -8,7 +8,7 @@ function createValidPack(): ShapePackManifest {
         id: 'pack-a',
         name: 'Pack A',
         version: '1.0.0',
-        author: 'OpenFlowKit',
+        author: 'Weft',
         shapes: [
             {
                 id: 'shape-a',

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAnalyticsPreference } from '@/hooks/useAnalyticsPreference';
-import { OpenFlowLogo } from './icons/OpenFlowLogo';
+import { WeftLogo } from './icons/WeftLogo';
 import { Switch } from './ui/Switch';
 import { Button } from './ui/Button';
 import { writeLocalStorageString } from '@/services/storage/uiLocalStorage';
@@ -64,7 +64,7 @@ export function WelcomeModal({
 
   const features = [
     {
-      icon: <Paintbrush className="h-5 w-5 text-blue-500" />,
+      icon: <Paintbrush className="h-5 w-5 text-[var(--brand-primary)]" />,
       title: t('welcome.feature1Title', 'Create amazing diagrams'),
       description: t(
         'welcome.feature1Desc',
@@ -73,7 +73,7 @@ export function WelcomeModal({
       action: () => handleTrackedAction('welcome_blank_selected', onBlankCanvas),
     },
     {
-      icon: <WandSparkles className="h-5 w-5 text-amber-500" />,
+      icon: <WandSparkles className="h-5 w-5 text-[var(--brand-primary)]" />,
       title: t('welcome.feature2Title', 'Use AI'),
       description: t(
         'welcome.feature2Desc',
@@ -82,7 +82,7 @@ export function WelcomeModal({
       action: () => handleTrackedAction('welcome_prompt_selected', onPromptWithAI),
     },
     {
-      icon: <FileCode2 className="h-5 w-5 text-emerald-500" />,
+      icon: <FileCode2 className="h-5 w-5 text-[var(--brand-primary)]" />,
       title: t('welcome.feature3Title', 'Code to diagram'),
       description: t(
         'welcome.feature3Desc',
@@ -91,7 +91,7 @@ export function WelcomeModal({
       action: () => handleTrackedAction('welcome_import_selected', onImport),
     },
     {
-      icon: <MonitorPlay className="h-5 w-5 text-purple-500" />,
+      icon: <MonitorPlay className="h-5 w-5 text-[var(--brand-primary)]" />,
       title: t('welcome.feature4Title', 'Export in many formats'),
       description: t(
         'welcome.feature4Desc',
@@ -105,7 +105,7 @@ export function WelcomeModal({
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="w-full max-w-[440px] overflow-hidden rounded-[24px] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] shadow-2xl animate-in zoom-in-95 duration-300">
         <div className="px-8 pb-3 pt-10 text-center">
-          <OpenFlowLogo className="mx-auto mb-5 h-12 w-12 text-[var(--brand-primary)]" />
+          <WeftLogo className="mx-auto mb-5 h-12 w-12 text-[var(--brand-primary)]" />
           <h2 className="text-[24px] font-bold tracking-tight text-[var(--brand-text)] mb-2">
             {t('welcome.title', 'Welcome to Weft')}
           </h2>

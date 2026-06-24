@@ -17,15 +17,15 @@
     "play": "播放",
     "select": "选择",
     "selectAll": "全选",
-    "clearSelection": "清除选择",
+    "clearSelection": "Clear Selection",
     "duplicate": "复制",
     "duplicateDrag": "复制并拖拽",
     "multiSelect": "多选",
     "selectionBox": "选择框",
     "copy": "复制",
     "paste": "粘贴",
-    "copyStyle": "复制样式",
-    "pasteStyle": "粘贴样式",
+    "copyStyle": "Copy Style",
+    "pasteStyle": "Paste Style",
     "zoomIn": "放大",
     "zoomOut": "缩小",
     "zoomInOut": "放大/缩小",
@@ -34,14 +34,14 @@
     "fitView": "适应视图",
     "nudgeNode": "微移节点",
     "groupSelection": "分组选择",
-    "mindmapAddChild": "思维导图：添加子主题",
-    "mindmapAddSibling": "思维导图：添加同级主题",
+    "mindmapAddChild": "Mindmap: Add Child Topic",
+    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "重命名所选项",
-    "quickCreateConnectedNode": "快速创建关联节点",
-    "annotationColors": "标注颜色",
+    "quickCreateConnectedNode": "Quick-create Connected Node",
+    "annotationColors": "Annotation Colors",
     "keyboardShortcuts": "键盘快捷键",
     "commandBar": "命令栏",
-    "searchNodes": "搜索节点",
+    "searchNodes": "Search Nodes",
     "loading": "加载中...",
     "error": "错误",
     "success": "成功",
@@ -125,17 +125,17 @@
     "json": "导出为 JSON",
     "mermaid": "导出为 Mermaid",
     "plantuml": "导出为 PlantUML",
-    "openflowdsl": "导出为 {{appName}} DSL",
+    "openflowdsl": "导出为 OpenFlow DSL",
     "figma": "导出到 Figma",
     "hintTransparent4K": "透明 (4K)",
     "hintWhiteBg4K": "白色背景 (4K)",
-    "jsonLabel": "JSON 文件",
+    "jsonLabel": "JSON File",
     "hintDownload": "下载",
     "openflowdslLabel": "{{appName}} DSL",
     "hintClipboard": "复制",
     "figmaEditable": "Figma 可编辑",
-    "exportDiagram": "导出图表",
-    "exportAs": "导出为",
+    "exportDiagram": "Export Diagram",
+    "exportAs": "Export As",
     "actionCopy": "复制",
     "exportOrShare": "导出或分享此画布",
     "svg": "导出为 SVG",
@@ -159,7 +159,7 @@
     "revealGif": "渐显 GIF",
     "hintRevealGif": "适用于文档/社交媒体的动画渐显",
     "cinematicVideo": "电影级构建视频",
-    "hintCinematicVideo": "可直接用于演示的动画导出",
+    "hintCinematicVideo": "Dark launch-style build",
     "cinematicGif": "电影级构建 GIF",
     "hintCinematicGif": "适用于社交媒体的深色循环",
     "actionDownload": "下载",
@@ -247,7 +247,7 @@
     }
   },
   "home": {
-    "appName": "开放流程工具包",
+    "appName": "Weft",
     "title": "仪表板",
     "description": "管理您的流程和图表。",
     "recentFiles": "最近文件",
@@ -397,17 +397,17 @@
       "privateSecure": "私密安全",
       "localFirst": "本地优先架构确保您的数据安全。"
     },
-    "feature1Title": "创建惊艳的图表",
-    "feature1Desc": "以可视化方式设计精美的企业级架构。",
-    "feature2Title": "使用 AI",
-    "feature2Desc": "一句智能提示词即可生成完整架构。",
-    "feature3Title": "代码转图表",
-    "feature3Desc": "从文本即刻构建出色的可视化基础设施。",
-    "feature4Title": "多格式导出",
-    "feature4Desc": "导出为精美、带完整动画的演示图表。",
-    "analyticsTitle": "匿名分析",
-    "analyticsDesc": "我们仅收集诊断数据，绝不读取你的图表或提示词。",
-    "getStarted": "开始使用",
+    "feature1Title": "Create amazing diagrams",
+    "feature1Desc": "Design beautiful, enterprise-grade architecture visually.",
+    "feature2Title": "Use AI",
+    "feature2Desc": "Generate complete architectures with a single intelligent prompt.",
+    "feature3Title": "Code to diagram",
+    "feature3Desc": "Instantly construct stunning visual infrastructure from text.",
+    "feature4Title": "Export in many formats",
+    "feature4Desc": "Export into beautiful, fully animated presentation diagrams.",
+    "analyticsTitle": "Anonymous Analytics",
+    "analyticsDesc": "We collect diagnostic data. We never read your diagrams or prompts.",
+    "getStarted": "Get Started",
     "shortcutCommandBar": "打开命令中心",
     "shortcutHelp": "查看键盘快捷键",
     "shortcutCanvas": "在画布上添加节点",
@@ -549,7 +549,7 @@
     "greeting": "你好，我能帮你什么？",
     "tagline": "智能指南",
     "messagePlaceholder": "消息",
-    "aiSuffix": "AI…",
+    "aiSuffix": "AI...",
     "sendMessage": "发送消息",
     "newChat": "新对话",
     "docsTitle": "文档",
@@ -603,8 +603,8 @@
       "noResults": "未找到节点",
       "untitled": "未命名节点",
       "type": "类型",
-      "showingCount": "显示：{{count}}",
-      "totalCount": "画布总计：{{count}}"
+      "showingCount": "Showing: {{count}}",
+      "totalCount": "Total on canvas: {{count}}"
     },
     "templates": {
       "title": "模板",
@@ -758,7 +758,7 @@
       },
       "infraFormats": {
         "terraformState": "Terraform状态",
-        "kubernetes": "Kubernetes YAML",
+        "kubernetes": "Kubernetes",
         "dockerCompose": "Docker Compose",
         "terraformHcl": "Terraform HCL (AI)"
       },
@@ -774,9 +774,9 @@
       },
       "categories": {
         "sql": "SQL",
-        "infra": "基础设施",
+        "infra": "Infra",
         "openapi": "OpenAPI",
-        "code": "代码",
+        "code": "Code",
         "codebase": "仓库"
       },
       "title": "从数据导入",
@@ -784,7 +784,7 @@
       "uploadFile": "上传文件",
       "parsing": "解析中...",
       "parse": "解析",
-      "parseNativeProject": "生成原生图表",
+      "parseNativeProject": "Generate Native Diagram",
       "analyzing": "分析中...",
       "aiActions": {
         "generateErd": "生成 ERD（AI）",
@@ -842,14 +842,14 @@
     "flowpilotConfigurations": "Flowpilot 配置",
     "keyboardShortcuts": "键盘快捷键",
     "canvas": {
-      "title": "画布",
-      "showGrid": "显示网格",
-      "showGridDesc": "在画布上显示点状网格",
-      "snapToGrid": "对齐网格",
-      "snapToGridDesc": "移动时将节点吸附到网格",
-      "alignmentGuides": "对齐参考线",
-      "alignmentGuidesDesc": "拖动节点时显示智能参考线",
-      "routingProfile": "连线路由方案",
+      "title": "Canvas",
+      "showGrid": "Show Grid",
+      "showGridDesc": "Display a dot grid on the canvas",
+      "snapToGrid": "Snap to Grid",
+      "snapToGridDesc": "Snap nodes to the grid when moving",
+      "alignmentGuides": "Alignment Guides",
+      "alignmentGuidesDesc": "Show smart guide lines while dragging nodes",
+      "routingProfile": "Routing Profile",
       "routingProfileStandard": "标准",
       "routingProfileInfrastructure": "基础设施",
       "routingProfileHint": "基础设施模式偏好服务地图的正交路由。",
@@ -859,10 +859,10 @@
       "architectureStrictModeDesc": "当架构诊断包含恢复/验证问题时阻止Mermaid导入",
       "miniMap": "小地图",
       "miniMapDesc": "在右下角显示小地图",
-      "mermaidImportMode": "Mermaid 导入模式",
-      "mermaidImportModeRenderer": "保真优先",
-      "mermaidImportModeEditable": "可编辑优先",
-      "mermaidImportModeDesc": "控制 Mermaid 图表如何导入到画布。",
+      "mermaidImportMode": "Mermaid Import Mode",
+      "mermaidImportModeRenderer": "Fidelity-first",
+      "mermaidImportModeEditable": "Editable-first",
+      "mermaidImportModeDesc": "Controls how Mermaid diagrams are imported to the canvas.",
       "edgeStyleCurved": "曲线",
       "edgeStyleRounded": "圆角",
       "edgeStyleSharp": "尖角",
@@ -886,11 +886,11 @@
       "customEndpoint": "自定义 URL",
       "providers": {
         "gemini": {
-          "hint": "Google · 最佳免费层 · 多模态",
+          "hint": "Google",
           "keySetupNote": "免费额度"
         },
         "openai": {
-          "hint": "GPT-5 系列 · 行业标准",
+          "hint": "GPT-5",
           "keySetupNote": "需付费账户"
         },
         "claude": {
@@ -902,15 +902,15 @@
           "keySetupNote": "免费额度"
         },
         "nvidia": {
-          "hint": "NIM · Kimi-V2.5 · 前沿模型",
+          "hint": "NIM",
           "keySetupNote": "免费积分"
         },
         "cerebras": {
-          "hint": "2,400 tok/s · Qwen 3 235B · WSE-3 速度",
+          "hint": "2,400 tok/s",
           "keySetupNote": "免费额度"
         },
         "mistral": {
-          "hint": "Le Chat · Codestral · 欧洲 AI 领军者",
+          "hint": "Le Chat",
           "keySetupNote": "免费额度"
         },
         "custom": {
@@ -921,7 +921,7 @@
       "howToGetKey": "如何获取 API 密钥",
       "pasteKeyStep": "将其粘贴到上方字段中，我们绝不会与我们共享",
       "customEndpointTitle": "什么是自定义端点？",
-      "privacyTitle": "隐私与加密",
+      "privacyTitle": "Privacy & Encryption",
       "customEndpointText": "任何 <1>兼容 OpenAI</1> 的 API 端点，本地或远程均可。非常适合：",
       "customEndpointMustSupport": "必须支持 <1>POST /chat/completions</1>（OpenAI 格式）",
       "advancedEndpointOverride": "高级基础 URL 覆盖",
@@ -941,226 +941,226 @@
       "models": {
         "gemini": {
           "gemini-3-flash": {
-            "label": "3 Flash",
-            "hint": "前沿速度 + 智能",
-            "category": "旧版",
-            "badge": "新"
+            "label": "Gemini 3 Flash",
+            "hint": "Frontier speed + intelligence",
+            "category": "Legacy",
+            "badge": "New"
           },
           "gemini-3-pro": {
-            "label": "3 Pro",
-            "hint": "最强大 · 多模态",
-            "category": "旧版",
-            "badge": "新"
+            "label": "Gemini 3 Pro",
+            "hint": "Most powerful · Multimodal",
+            "category": "Legacy",
+            "badge": "New"
           },
           "gemini-2.5-flash-lite": {
             "label": "2.5 Flash Lite",
-            "hint": "最快 · 免费层默认",
-            "category": "速度",
-            "badge": "默认"
+            "hint": "Fastest · Free tier default",
+            "category": "Speed",
+            "badge": "Default"
           },
           "gemini-2.5-flash": {
             "label": "2.5 Flash",
-            "hint": "最佳性价比平衡",
-            "category": "速度"
+            "hint": "Best price/performance balance",
+            "category": "Speed"
           },
           "gemini-2.5-pro": {
             "label": "2.5 Pro",
-            "hint": "最佳推理 · 复杂图表",
-            "category": "推理"
+            "hint": "Best reasoning · Complex diagrams",
+            "category": "Reasoning"
           }
         },
         "openai": {
           "gpt-5-mini": {
-            "label": "GPT-5 mini",
-            "hint": "快速 · 高性价比",
-            "category": "速度",
-            "badge": "默认"
+            "label": "GPT-5 Mini",
+            "hint": "Fast · Cost-efficient",
+            "category": "Speed",
+            "badge": "Default"
           },
           "o4-mini": {
-            "label": "o4-mini",
-            "hint": "高级推理 · 快速",
-            "category": "推理",
-            "badge": "推理"
+            "label": "O4-Mini",
+            "hint": "Advanced reasoning · Fast",
+            "category": "Reasoning",
+            "badge": "Reasoning"
           },
           "o3": {
-            "label": "o3",
-            "hint": "深度推理 · 复杂任务",
-            "category": "推理",
-            "badge": "推理"
+            "label": "O3",
+            "hint": "Deep reasoning · Complex tasks",
+            "category": "Reasoning",
+            "badge": "Reasoning"
           },
           "gpt-5": {
             "label": "GPT-5",
-            "hint": "旗舰模型 · 能力最强",
-            "category": "旗舰"
+            "hint": "Flagship model · Most capable",
+            "category": "Flagship"
           },
           "gpt-5.2": {
             "label": "GPT-5.2",
-            "hint": "最新版本 · 推理增强",
-            "category": "推理",
-            "badge": "新"
+            "hint": "Latest update · Improved reasoning",
+            "category": "Reasoning",
+            "badge": "New"
           }
         },
         "claude": {
           "claude-haiku-4-5": {
             "label": "Claude Haiku 4.5",
-            "hint": "最快 · 最实惠",
-            "category": "速度"
+            "hint": "Fastest · Most affordable",
+            "category": "Speed"
           },
           "claude-sonnet-4-5": {
             "label": "Claude Sonnet 4.5",
-            "hint": "智能与速度兼顾",
-            "category": "旗舰"
+            "hint": "Balanced intelligence & speed",
+            "category": "Flagship"
           },
           "claude-sonnet-4-6": {
             "label": "Claude Sonnet 4.6",
-            "hint": "最新 Sonnet · 最佳编程",
-            "category": "旗舰",
-            "badge": "默认"
+            "hint": "Latest Sonnet · Best coding",
+            "category": "Flagship",
+            "badge": "Default"
           },
           "claude-opus-4-6": {
             "label": "Claude Opus 4.6",
-            "hint": "最智能 · 1M token 上下文",
-            "category": "推理",
-            "badge": "旗舰"
+            "hint": "Most intelligent · 1M token context",
+            "category": "Reasoning",
+            "badge": "Flagship"
           }
         },
         "groq": {
           "meta-llama/llama-4-scout-17b-16e-instruct": {
             "label": "Llama 4 Scout",
-            "hint": "免费层 · 极快",
-            "category": "速度",
-            "badge": "免费"
+            "hint": "Free tier · Very fast",
+            "category": "Speed",
+            "badge": "Free"
           },
           "meta-llama/llama-4-maverick-17b-128e-instruct": {
             "label": "Llama 4 Maverick",
-            "hint": "能力更强 · 免费层",
-            "category": "速度",
-            "badge": "免费"
+            "hint": "More capable · Free tier",
+            "category": "Speed",
+            "badge": "Free"
           },
           "qwen/qwen3-32b": {
-            "label": "Qwen3 32B",
-            "hint": "高级推理 · 工具调用",
-            "category": "推理"
+            "label": "Qwen 3 32B",
+            "hint": "Advanced reasoning · Tool use",
+            "category": "Reasoning"
           },
           "llama-3.3-70b-versatile": {
             "label": "Llama 3.3 70B Versatile",
-            "hint": "通用模型",
-            "category": "性能",
-            "badge": "性能"
+            "hint": "Versatile model",
+            "category": "Performance",
+            "badge": "Performance"
           }
         },
         "nvidia": {
           "meta/llama-4-scout-17b-16e-instruct": {
             "label": "Llama 4 Scout",
-            "hint": "高效 · 多模态",
-            "category": "速度"
+            "hint": "Efficient · Multi-modal",
+            "category": "Speed"
           },
           "nvidia/nemotron-nano-12b-v2-vl": {
             "label": "Nemotron Nano 12B",
-            "hint": "轻量 · 视觉语言 · 快速",
-            "category": "速度"
+            "hint": "Lightweight · Vision-language · Fast",
+            "category": "Speed"
           },
           "deepseek/deepseek-v3-2": {
-            "label": "DeepSeek-V3.2 (685B)",
-            "hint": "最新 · 比肩 GPT-5",
-            "category": "旗舰",
-            "badge": "新"
+            "label": "DeepSeek V3-2",
+            "hint": "Latest · GPT-5 comparable",
+            "category": "Flagship",
+            "badge": "New"
           },
           "qwen/qwq-32b": {
             "label": "QwQ 32B",
-            "hint": "强推理模型",
-            "category": "推理"
+            "hint": "Strong reasoning model",
+            "category": "Reasoning"
           },
           "moonshotai/kimi-k2-thinking": {
             "label": "Kimi K2 Thinking",
-            "hint": "高级推理 · 工具调用",
-            "category": "推理"
+            "hint": "Advanced reasoning · Tool use",
+            "category": "Reasoning"
           }
         },
         "cerebras": {
           "gpt-oss-120b": {
-            "label": "GPT-OSS 120B",
-            "hint": "120B 参数 · WSE-3 上高速",
-            "category": "速度",
-            "badge": "默认"
+            "label": "GPT OSS 120B",
+            "hint": "120B params · Fast on WSE-3",
+            "category": "Speed",
+            "badge": "Default"
           },
           "qwen-3-32b": {
-            "label": "Qwen3 32B",
-            "hint": "2,403 tok/s · 业界最快",
-            "category": "速度",
-            "badge": "🚀 最快"
+            "label": "Qwen 3 32B",
+            "hint": "2,403 tok/s · Industry fastest",
+            "category": "Speed",
+            "badge": "🚀 Fastest"
           },
           "qwen-3-235b-a22b": {
-            "label": "Qwen3 235B A22B",
-            "hint": "旗舰 · 最佳质量",
-            "category": "旗舰",
-            "badge": "旗舰"
+            "label": "Qwen 3 235B",
+            "hint": "Flagship · Best quality",
+            "category": "Flagship",
+            "badge": "Flagship"
           },
           "zai-glm-4.7": {
             "label": "Zai-GLM 4.7",
-            "hint": "高级推理 · 工具调用",
-            "category": "推理"
+            "hint": "Advanced reasoning · Tool use",
+            "category": "Reasoning"
           }
         },
         "mistral": {
           "mistral-small-latest": {
             "label": "Mistral Small",
-            "hint": "快速 · 高性价比 · 32k 上下文",
-            "category": "速度",
-            "badge": "免费"
+            "hint": "Fast · Cost-efficient · 32k context",
+            "category": "Speed",
+            "badge": "Free"
           },
           "mistral-medium-latest": {
             "label": "Mistral Medium",
-            "hint": "质量成本均衡 · 最佳默认",
-            "category": "旗舰",
-            "badge": "默认"
+            "hint": "Balanced quality-cost · Best default",
+            "category": "Flagship",
+            "badge": "Default"
           },
           "mistral-large-latest": {
             "label": "Mistral Large",
-            "hint": "能力最强 · 128k 上下文 · 旗舰",
-            "category": "旗舰",
-            "badge": "旗舰"
+            "hint": "Most capable · 128k context · Flagship",
+            "category": "Flagship",
+            "badge": "Flagship"
           },
           "codestral-latest": {
             "label": "Codestral",
-            "hint": "代码优化 · 256k 上下文",
-            "category": "编程",
-            "badge": "代码"
+            "hint": "Code-optimized · 256k context",
+            "category": "Coding",
+            "badge": "Code"
           },
           "pixtral-large-latest": {
             "label": "Pixtral Large",
-            "hint": "视觉 + 推理 · 多模态",
-            "category": "多模态",
-            "badge": "视觉"
+            "hint": "Vision + reasoning · Multimodal",
+            "category": "Multimodal",
+            "badge": "Vision"
           }
         },
         "custom": {
           "custom": {
-            "label": "自定义模型",
-            "hint": "在下方输入你的模型 ID",
-            "category": "自定义"
+            "label": "Custom Model",
+            "hint": "Enter your model ID below",
+            "category": "Custom"
           }
         }
       },
       "customEndpoints": {
         "ollama": {
           "name": "Ollama",
-          "hint": "本地 · 免费"
+          "hint": "Local · Free"
         },
         "lmStudio": {
           "name": "LM Studio",
-          "hint": "本地 · 免费"
+          "hint": "Local · Free"
         },
         "together": {
-          "name": "Together.ai",
-          "hint": "云端 · 快速"
+          "name": "Together AI",
+          "hint": "Cloud · Fast"
         }
       },
       "byok": {
-        "dataPrivacy": "你的数据绝不经过我们的服务器",
-        "control": "完全掌控成本与速率限制",
-        "flexibility": "随时切换提供商，无需重新关联",
-        "cuttingEdge": "模型一经发布即可使用最前沿能力"
+        "dataPrivacy": "Your data never passes through our servers",
+        "control": "Full control over cost and rate limits",
+        "flexibility": "Switch providers anytime without re-linking",
+        "cuttingEdge": "Access cutting-edge models as soon as they launch"
       }
     },
     "brand": {
@@ -1177,20 +1177,20 @@
       "resetToDefaults": "重置为默认",
       "tabIdentity": "标识",
       "tabColors": "颜色",
-      "tabType": "字体",
-      "tabUI": "界面与形状",
+      "tabType": "Type",
+      "tabUI": "UI & Shape",
       "appName": "应用名称",
       "logo": "标志",
       "favicon": "网站图标",
       "logoStyle": "Logo 样式",
       "fontFamily": "字体系列",
-      "googleFontsHint": "从 Google Fonts 动态加载",
-      "cornerRadius": "圆角半径",
-      "glassmorphism": "玻璃拟态",
-      "beveledButtons": "斜角按钮",
-      "beveledButtonsHint": "为按钮添加立体感与边框",
-      "showBetaBadge": "显示 Beta 标识",
-      "showBetaBadgeHint": "在 Logo 旁显示 BETA 标签"
+      "googleFontsHint": "Dynamically loaded from Google Fonts",
+      "cornerRadius": "Corner Radius",
+      "glassmorphism": "Glassmorphism",
+      "beveledButtons": "Beveled Buttons",
+      "beveledButtonsHint": "Add depth and borders to buttons",
+      "showBetaBadge": "Show Beta Badge",
+      "showBetaBadgeHint": "Display the BETA chip next to logo"
     },
     "shortcutsHint": "你也可以随时按下 ? 键来查看这些快捷键。",
     "settings": "设置",
@@ -1301,11 +1301,11 @@
     "noNamedSnapshots": "还没有命名版本。",
     "autosavedVersions": "自动保存检查点",
     "noAutoSnapshots": "还没有自动保存检查点。",
-    "undoTimelinePosition": "当前历史栈中的第 {{current}} / {{total}} 步。",
-    "undoTimelineScrubber": "拖动浏览最近的撤销历史",
-    "undoTimeline": "撤销时间线",
-    "undoTimelineAtEarliest": "已处于最早记录的状态。",
-    "undoTimelineAtLatest": "已处于最新状态。"
+    "undoTimelinePosition": "Step {{current}} of {{total}} in the current history stack.",
+    "undoTimelineScrubber": "Scrub through recent undo history",
+    "undoTimeline": "Undo Timeline",
+    "undoTimelineAtEarliest": "You are at the earliest captured state.",
+    "undoTimelineAtLatest": "You are at the latest state."
   },
   "templatesPanel": {
     "title": "流程模板",
@@ -1348,40 +1348,40 @@
     "branch": "分支",
     "processStep": "流程步骤",
     "addText": "添加文本",
-    "group": "分组",
-    "items": "项",
+    "group": "Group",
+    "items": "items",
     "addCommentsHere": "在这里添加你的评论。",
     "newSection": "新分区",
     "section": "部分",
-    "text": "文本",
-    "image": "图片",
+    "text": "Text",
+    "image": "Image",
     "mindmap": "主题"
   },
   "actions": {
     "clearCanvasConfirm": "确定要清空画布吗？"
   },
   "share": {
-    "close": "关闭",
+    "close": "Close",
     "title": "分享",
     "betaBadge": "测试版",
     "description": "分享此画布",
     "roomId": "房间 ID",
     "link": "分享链接",
-    "copied": "已复制链接！",
+    "copied": "Copied Link!",
     "copyLink": "复制链接",
     "footerNote": "除非你分享这个房间，否则图表会一直保存在本地。如果复制被阻止，请手动复制上方链接。",
     "closeDialog": "关闭分享对话框",
     "status": {
       "cache": {
-        "syncing": " 本地缓存同步中",
-        "ready": " 本地缓存就绪",
-        "hydrated": " 已从本地缓存恢复"
+        "syncing": " local cache syncing",
+        "ready": " local cache ready",
+        "hydrated": " restored from local cache"
       },
       "realtime": "实时点对点同步",
       "waiting": "正在连接实时同步",
       "fallback": "仅本地模式"
     },
-    "openDialog": "分享对话框",
+    "openDialog": "Share dialog",
     "toast": {
       "fallbackMode": "实时同步不可用。将继续以仅本地模式运行。",
       "reconnected": "实时协作已恢复。",
@@ -1431,7 +1431,7 @@
   },
   "connectionPanel": {
     "architecture": "架构",
-    "label": "标签",
+    "label": "Label",
     "messagePlaceholder": "消息",
     "route": "路由",
     "appearance": "外观",
@@ -1466,7 +1466,7 @@
     "docsLink": "完整 MCP 文档",
     "copy": "复制",
     "copied": "已复制",
-    "eyebrow": "模型上下文协议",
+    "eyebrow": "Model Context Protocol",
     "statTools": "工具",
     "statClients": "客户端",
     "statTransport": "stdio",
@@ -1485,10 +1485,10 @@
     "copyTestPrompt": "复制测试提示语"
   },
   "mcp": {
-    "pageTitle": "连接 AI 工具",
-    "pageSubtitle": "为任意 MCP 客户端提供一流的绘图工具。本地优先，无需 API 密钥。",
-    "visualAlt": "你的 AI 客户端通过 stdio 连接到 Weft MCP 服务器，由其提供本地绘图工具。",
-    "visualClient": "你的 AI 客户端",
-    "visualCaption": "本地 · stdio · 无需 API 密钥"
+    "pageTitle": "Connect AI tools",
+    "pageSubtitle": "Give any MCP client first-class diagramming tools. Local-first, no API key.",
+    "visualAlt": "Your AI client connects to the Weft MCP server over stdio, which provides local diagramming tools.",
+    "visualClient": "Your AI client",
+    "visualCaption": "Local · stdio · no API key"
   }
 }

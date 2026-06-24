@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { OpenFlowLogo } from '../icons/OpenFlowLogo';
+import { WeftLogo } from '../icons/WeftLogo';
 import { Tooltip } from '../Tooltip';
 import { SaveStatusIndicator } from './SaveStatusIndicator';
 
@@ -41,7 +41,7 @@ export function TopNavBrand({
           {logoUrl ? (
             <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
           ) : (
-            <OpenFlowLogo className="h-9 w-9" />
+            <WeftLogo className="h-9 w-9" />
           )}
         </div>
       )}
@@ -62,7 +62,7 @@ export function TopNavBrand({
               side="bottom"
             >
               <div className="flex cursor-default items-center gap-2 rounded-[var(--radius-md)] border border-[var(--brand-primary-100)] px-3 py-1.5 opacity-80 transition-opacity hover:opacity-100">
-                <OpenFlowLogo className="h-4 w-4" />
+                <WeftLogo className="h-4 w-4" />
                 <span className="whitespace-nowrap text-xs font-semibold">
                   {t('nav.wideLogo', 'Your Wide Logo')}
                 </span>

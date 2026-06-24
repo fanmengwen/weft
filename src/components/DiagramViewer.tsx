@@ -18,7 +18,7 @@ import { parseDslOrThrow } from '@/hooks/ai-generation/graphComposer';
 import { getElkLayout } from '@/services/elkLayout';
 import { decodeDslFromViewerParam } from '@/services/viewerUrlCodec';
 import { useWorkspaceDocumentActions } from '@/store/documentHooks';
-import { OpenFlowLogo } from './icons/OpenFlowLogo';
+import { WeftLogo } from './icons/WeftLogo';
 import type { FlowNode, FlowEdge } from '@/lib/types';
 
 type ParsedGraph = ReturnType<typeof parseDslOrThrow>;
@@ -221,7 +221,7 @@ function DiagramViewerInner(): React.ReactElement {
             {viewerSize !== 'badge' ? (
                 <div className={`flex shrink-0 items-center justify-between border-b border-slate-200 bg-white/95 px-4 backdrop-blur ${viewerSize === 'card' ? 'h-10' : 'h-12'}`}>
                     <div className="flex items-center gap-2">
-                        <OpenFlowLogo className="h-5 w-5 text-orange-600" />
+                        <WeftLogo className="h-5 w-5 text-[var(--brand-primary)]" />
                         <span className="text-xs font-semibold text-slate-700">
                             {viewerSize === 'card' ? 'Weft Viewer' : 'Weft'}
                         </span>

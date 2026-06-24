@@ -42,7 +42,7 @@ const TOOL_GROUPS: ToolGroup[] = [
     label: 'Author',
     tools: [
       { name: 'validate_openflow_dsl', desc: 'Lint and validate agent-authored DSL' },
-      { name: 'create_viewer_url', desc: 'Turn DSL into a shareable OpenFlowKit link' },
+      { name: 'create_viewer_url', desc: 'Turn DSL into a shareable Weft link' },
     ],
   },
   {
@@ -196,7 +196,7 @@ export function MCPSettings({ variant = 'panel' }: MCPSettingsProps = {}): React
           <p className="mt-2 max-w-prose text-[13px] leading-relaxed text-[var(--brand-secondary)]">
             {t(
               'mcpSettings.intro',
-              'Add the OpenFlowKit MCP server to Claude Desktop, Cursor, Windsurf, or any MCP client. Your assistant uses its own model to author diagrams, while OpenFlowKit supplies local validation, templates, icon lookup, codebase analysis, and viewer links.',
+              'Add the Weft MCP server to Claude Desktop, Cursor, Windsurf, or any MCP client. Your assistant uses its own model to author diagrams, while Weft supplies local validation, templates, icon lookup, codebase analysis, and viewer links.',
             )}
           </p>
         </header>

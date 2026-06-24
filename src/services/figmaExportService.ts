@@ -34,7 +34,7 @@ export const toFigmaSVG = async (nodes: FlowNode[], edges: FlowEdge[]): Promise<
 
     out.push('<?xml version="1.0" encoding="UTF-8"?>');
     out.push(`<svg width="${width}" height="${height}" viewBox="${minX} ${minY} ${width} ${height}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">`);
-    out.push('  <title>OpenFlowKit diagram export</title>');
+    out.push('  <title>Weft diagram export</title>');
     out.push('  <desc>Editable diagram export for Figma.</desc>');
     out.push(`  <rect x="${minX}" y="${minY}" width="${width}" height="${height}" fill="#ffffff" />`);
     out.push(`<defs>

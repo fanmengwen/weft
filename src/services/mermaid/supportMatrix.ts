@@ -45,7 +45,7 @@ const MERMAID_FAMILY_SUPPORT_MATRIX: Record<DiagramType, MermaidFamilySupportMat
       'provider-aware icon enrichment',
     ],
     partialConstructs: [
-      'OpenFlowKit-specific labeled architecture edge extensions',
+      'Weft-specific labeled architecture edge extensions',
       'recovered implicit nodes',
       'title and metadata round-trip nuance',
     ],

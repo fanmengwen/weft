@@ -230,7 +230,7 @@ export const TEMPLATE_DEFINITIONS: ArchitectureTemplateDefinition[] = [
     label: 'C4 system context',
     description: 'People, platform boundary, and supporting systems.',
     anchor: {
-      label: 'OpenFlowKit Platform',
+      label: 'Weft Platform',
       subLabel: 'Primary software system',
       archProvider: 'custom',
       archResourceType: 'system',

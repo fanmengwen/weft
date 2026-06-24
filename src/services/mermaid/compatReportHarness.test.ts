@@ -33,7 +33,7 @@ describe('mermaid compat report harness', () => {
     60_000
   );
 
-  it('measures actual OpenFlowKit import outcomes for the fixture corpus', () => {
+  it('measures actual Weft import outcomes for the fixture corpus', () => {
     const fixtures = MERMAID_COMPAT_FIXTURES as Array<{
       name: string;
       family: string;

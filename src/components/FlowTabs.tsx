@@ -30,7 +30,7 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
   const [editName, setEditName] = useState('');
   const [draggedPageId, setDraggedPageId] = useState<string | null>(null);
   const [dropTargetPageId, setDropTargetPageId] = useState<string | null>(null);
-  const activeTabClassName = `${getSegmentedTabButtonClass(true, 'sm')} h-10 sm:h-9 border-[var(--brand-primary-200)] bg-[var(--brand-primary-50)] text-[var(--brand-primary-700)]`;
+  const activeTabClassName = `${getSegmentedTabButtonClass(true, 'sm')} h-10 sm:h-9 border-transparent bg-[image:var(--brand-primary-grad)] text-white shadow-[var(--shadow-sm)]`;
   const inactiveTabClassName = `${getSegmentedTabButtonClass(false, 'sm')} h-10 sm:h-9 border-[var(--color-brand-border)] bg-[var(--brand-surface)] text-[var(--brand-secondary)] hover:border-[var(--color-brand-border)] hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)]`;
 
   const handleStartEdit = (page: EditorPage) => {
@@ -140,7 +140,7 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
               title={t('flowTabs.closeTab', 'Close page')}
               className={`
                 rounded-full p-1 transition-colors opacity-0 group-hover:opacity-100 hover:bg-[var(--color-brand-border)]
-                ${activePageId === page.id ? 'text-[var(--brand-primary-400)] hover:text-[var(--brand-primary)]' : 'text-[var(--brand-secondary)] hover:text-[var(--brand-secondary)]'}
+                ${activePageId === page.id ? 'text-white/70 hover:text-white' : 'text-[var(--brand-secondary)] hover:text-[var(--brand-secondary)]'}
               `}
             >
               <X className="w-3 h-3" />

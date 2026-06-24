@@ -1,4 +1,4 @@
-const DEFAULT_EXPORT_BASENAME = 'openflowkit-diagram';
+const DEFAULT_EXPORT_BASENAME = 'weft-diagram';
 const MAX_EXPORT_BASENAME_LENGTH = 80;
 
 export function sanitizeExportBaseName(value?: string | null): string {

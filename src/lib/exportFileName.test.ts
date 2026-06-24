@@ -11,7 +11,7 @@ describe('exportFileName', () => {
     });
 
     it('falls back to the default export base name when the source is empty', () => {
-        expect(buildExportFileName('', 'png')).toBe('openflowkit-diagram.png');
+        expect(buildExportFileName('', 'png')).toBe('weft-diagram.png');
     });
 
     it('builds variant filenames for specialized exports', () => {

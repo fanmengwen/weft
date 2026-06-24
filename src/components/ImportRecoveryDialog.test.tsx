@@ -18,7 +18,7 @@ function createReport(): ImportFidelityReport {
         code: 'DOC-001',
         severity: 'error',
         message: 'Invalid flow file: missing nodes or edges arrays.',
-        hint: 'Re-export the file from OpenFlowKit or supply both arrays.',
+        hint: 'Re-export the file from Weft or supply both arrays.',
       },
       {
         code: 'FMT-001',

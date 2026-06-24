@@ -5,7 +5,7 @@ import { sanitizePlaybackState } from './playback/model';
 
 export const DIAGRAM_DOCUMENT_VERSION = '1.0';
 export const EXTENDED_DIAGRAM_DOCUMENT_VERSION = '1.1';
-const DIAGRAM_DOCUMENT_NAME = 'OpenFlowKit Diagram';
+const DIAGRAM_DOCUMENT_NAME = 'Weft Diagram';
 export const DEFAULT_DIAGRAM_TYPE: DiagramType = 'flowchart';
 
 export interface DiagramDocumentV1 {

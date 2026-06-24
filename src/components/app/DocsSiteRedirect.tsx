@@ -17,7 +17,7 @@ export function DocsSiteRedirect(): React.ReactElement {
     return (
         <RouteLoadingFallback
             title="Opening docs"
-            description="Redirecting to the OpenFlowKit docs site."
+            description="Redirecting to the Weft docs site."
         />
     );
 }
