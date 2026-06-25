@@ -276,6 +276,47 @@ describe('store persistence helpers', () => {
         persistAISettingsSpy.mockRestore();
     });
 
+    it('keeps the resolved default ai settings when the persisted blob has no aiSettings', () => {
+        // The main persisted slice never carries aiSettings (partialize excludes
+        // it), so migration must preserve the resolved defaults verbatim —
+        // including optional custom-endpoint fields seeded from env — instead of
+        // running them through sanitizeAISettings, which would drop them.
+        const loadPersistedAISettingsSpy = vi.spyOn(aiSettingsPersistence, 'loadPersistedAISettings').mockReturnValue({
+            provider: 'custom',
+            storageMode: 'local',
+            apiKey: 'env-key',
+            model: 'qwen-plus',
+            customBaseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+            customHeaders: [],
+        });
+        const persistAISettingsSpy = vi.spyOn(aiSettingsPersistence, 'persistAISettings').mockImplementation(() => undefined);
+
+        const migrated = migratePersistedFlowState({
+            tabs: [
+                {
+                    id: 'tab-a',
+                    name: 'A',
+                    nodes: [createNode('na', 'A')],
+                    edges: [],
+                    history: { past: [], future: [] },
+                },
+            ],
+            activeTabId: 'tab-a',
+        }) as {
+            aiSettings: { provider: string; model?: string; customBaseUrl?: string; apiKey?: string };
+        };
+
+        expect(migrated.aiSettings.provider).toBe('custom');
+        expect(migrated.aiSettings.model).toBe('qwen-plus');
+        expect(migrated.aiSettings.customBaseUrl).toBe('https://dashscope.aliyuncs.com/compatible-mode/v1');
+        expect(migrated.aiSettings.apiKey).toBe('env-key');
+        // No persisted aiSettings means nothing to re-persist.
+        expect(persistAISettingsSpy).not.toHaveBeenCalled();
+
+        loadPersistedAISettingsSpy.mockRestore();
+        persistAISettingsSpy.mockRestore();
+    });
+
     it('does not include aiSettings in the main persisted flow slice', () => {
         const persistedSlice = partializePersistedFlowState(createInitialFlowState() as never);
 

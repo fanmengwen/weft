@@ -1,6 +1,6 @@
 import type { DesignSystem, GlobalEdgeOptions } from '@/lib/types';
-import { sanitizeAISettings } from './aiSettings';
-import type { AISettings, Layer, ViewSettings } from './types';
+import { isAIProvider, sanitizeAISettings } from './aiSettings';
+import type { AIProvider, AISettings, Layer, ViewSettings } from './types';
 
 export const DEFAULT_DESIGN_SYSTEM: DesignSystem = {
     id: 'default',
@@ -44,17 +44,50 @@ export const DEFAULT_DESIGN_SYSTEM: DesignSystem = {
     },
 };
 
-export const DEFAULT_AI_SETTINGS: AISettings = sanitizeAISettings(
-    { provider: 'gemini' },
-    {
+// The provider selected on a fresh load (empty storage). Seeded from
+// VITE_DEFAULT_AI_PROVIDER so a deployment can be usable on startup with no
+// in-app configuration; falls back to gemini for unset or invalid values.
+export function resolveDefaultAIProvider(value: unknown): AIProvider {
+    return isAIProvider(value) ? value : 'gemini';
+}
+
+function readStringEnv(value: unknown): string | undefined {
+    return typeof value === 'string' && value.trim().length > 0 ? value.trim() : undefined;
+}
+
+interface AISettingsEnv {
+    VITE_DEFAULT_AI_PROVIDER?: unknown;
+    VITE_CUSTOM_AI_BASE_URL?: unknown;
+    VITE_CUSTOM_AI_MODEL?: unknown;
+    VITE_CUSTOM_AI_API_KEY?: unknown;
+    // Accept the broader import.meta.env shape (whose DEV/PROD are booleans)
+    // without tripping TypeScript's weak-type check on the call site.
+    [key: string]: unknown;
+}
+
+// Seed the initial AI settings from env so a deployment can generate on startup
+// with no in-app configuration. For the custom provider we hydrate the
+// OpenAI-compatible endpoint (base URL / model / key) from VITE_CUSTOM_AI_* — the
+// same fields the readiness gate and aiService read — so generation is unblocked.
+export function buildDefaultAISettings(env: AISettingsEnv): AISettings {
+    const provider = resolveDefaultAIProvider(env.VITE_DEFAULT_AI_PROVIDER);
+    const seed: Partial<AISettings> = { provider };
+    if (provider === 'custom') {
+        seed.customBaseUrl = readStringEnv(env.VITE_CUSTOM_AI_BASE_URL);
+        seed.model = readStringEnv(env.VITE_CUSTOM_AI_MODEL);
+        seed.apiKey = readStringEnv(env.VITE_CUSTOM_AI_API_KEY);
+    }
+    return sanitizeAISettings(seed, {
         provider: 'gemini',
         storageMode: 'local',
         apiKey: undefined,
         model: undefined,
         customBaseUrl: undefined,
         customHeaders: [],
-    }
-);
+    });
+}
+
+export const DEFAULT_AI_SETTINGS: AISettings = buildDefaultAISettings(import.meta.env);
 
 export const INITIAL_VIEW_SETTINGS: ViewSettings = {
     showGrid: true,

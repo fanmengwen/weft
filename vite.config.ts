@@ -83,6 +83,15 @@ export default defineConfig(() => {
       globals: true,
       environment: 'jsdom',
       setupFiles: './vitest.setup.ts',
+      // Pin AI provider env to a clean baseline so module-level defaults
+      // (DEFAULT_AI_SETTINGS) stay deterministic and never pick up a
+      // developer's local .env.local secrets during tests.
+      env: {
+        VITE_DEFAULT_AI_PROVIDER: '',
+        VITE_CUSTOM_AI_BASE_URL: '',
+        VITE_CUSTOM_AI_MODEL: '',
+        VITE_CUSTOM_AI_API_KEY: '',
+      },
       testTimeout: 10000,
       maxWorkers: 2,
       exclude: ['e2e/**', 'node_modules/**', 'dist/**', 'mcp-server/**'],
