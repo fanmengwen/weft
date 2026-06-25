@@ -192,8 +192,17 @@ export function migratePersistedFlowState(
   const persistedAiSettings = parsePersistedAISettings(state.aiSettings) as
     | Partial<FlowState['aiSettings']>
     | undefined;
-  const migratedAISettings = sanitizeAISettings(persistedAiSettings, loadPersistedAISettings());
-  if (persistedAiSettings) {
+  const baseAiSettings = loadPersistedAISettings();
+  // Only re-sanitize when the persisted blob actually carried AI settings.
+  // Otherwise keep the resolved defaults intact — sanitizeAISettings drops
+  // optional fields (model / customBaseUrl / apiKey) that are absent from its
+  // input, which would strip env-seeded custom-endpoint config on every reload.
+  const hasPersistedAiSettings =
+    !!persistedAiSettings && Object.keys(persistedAiSettings).length > 0;
+  const migratedAISettings = hasPersistedAiSettings
+    ? sanitizeAISettings(persistedAiSettings, baseAiSettings)
+    : baseAiSettings;
+  if (hasPersistedAiSettings) {
     persistAISettings(migratedAISettings);
   }
 
