@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AlertTriangle, Pencil, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { getFlowDisplayName } from '@/lib/flowDisplayName';
 import { Button } from '../ui/Button';
 
 interface HomeFlowRenameDialogProps {
@@ -192,7 +193,9 @@ export function HomeFlowDeleteDialog({
 
                 <div className="px-6 py-5">
                     <p className="text-sm leading-6 text-[var(--brand-text)]">
-                        {t('home.deleteFlow.confirmation', 'Delete "{{name}}"?', { name: flowName })}
+                        {t('home.deleteFlow.confirmation', 'Delete "{{name}}"?', {
+                            name: getFlowDisplayName(flowName, t),
+                        })}
                     </p>
                     <p className="mt-2 text-xs text-[var(--brand-secondary)]">
                         {t('home.deleteFlow.hint', 'This cannot be undone unless you have an exported backup or another copy.')}
