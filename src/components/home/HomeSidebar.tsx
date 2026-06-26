@@ -1,9 +1,8 @@
 import React from 'react';
-import { Book, Home, LayoutTemplate, Plug, Settings } from 'lucide-react';
+import { Home, LayoutTemplate, Plug, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WeftLogo } from '../icons/WeftLogo';
 import { SidebarFooter } from './SidebarFooter';
-import { GithubCard } from './GithubCard';
 import { SidebarItem } from '../ui/SidebarItem';
 import { APP_NAME } from '@/lib/brand';
 
@@ -12,9 +11,8 @@ type HomeSidebarTab = 'home' | 'templates' | 'settings' | 'mcp';
 interface NavigationItem {
   icon: React.ReactNode;
   label: string;
-  tab?: HomeSidebarTab;
+  tab: HomeSidebarTab;
   testId: string;
-  to?: string;
 }
 
 interface HomeSidebarProps {
@@ -53,12 +51,6 @@ export function HomeSidebar({
       tab: 'settings',
       testId: 'sidebar-settings',
     },
-    {
-      icon: <Book className="w-4 h-4" />,
-      label: t('nav.documentation', 'Documentation'),
-      testId: 'sidebar-docs',
-      to: 'https://docs.openflowkit.com',
-    },
   ];
 
   return (
@@ -83,9 +75,8 @@ export function HomeSidebar({
             <SidebarItem
               key={item.testId}
               icon={item.icon}
-              isActive={item.tab ? activeTab === item.tab : false}
-              onClick={item.tab ? () => onTabChange(item.tab) : undefined}
-              to={item.to}
+              isActive={activeTab === item.tab}
+              onClick={() => onTabChange(item.tab)}
               testId={item.testId}
               className="min-w-fit md:min-w-0"
             >
@@ -96,7 +87,6 @@ export function HomeSidebar({
       </div>
 
       <div className="hidden md:mt-auto md:block">
-        <GithubCard />
         <SidebarFooter />
       </div>
     </aside>

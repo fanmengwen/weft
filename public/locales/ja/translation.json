@@ -191,7 +191,7 @@
       "figma": "Figma",
       "useCases": "使用例",
       "pricing": "料金",
-      "viewGithub": "GitHubで見る"
+      "viewGithub": "機能を見る"
     },
     "hero": {
       "title": "美しいフローチャートを、",
@@ -202,8 +202,8 @@
       "description1": "図作成エンジン",
       "description2": "それは",
       "description3": "あなたのように思考します。",
-      "description4": "100%無料のオープンソース開発者向け図作成ツール。",
-      "forkOnGithub": "GitHubでFork",
+      "description4": "ビルダー向けの洗練された図表ツール。コードでもドラッグでも、美しい結果を。",
+      "forkOnGithub": "始める",
       "licence": "MITライセンス",
       "localFirst": "ローカルファースト",
       "noAuth": "ログイン不要",
@@ -218,7 +218,7 @@
     },
     "solution": {
       "title": "解決策",
-      "description": "OpenFlowKitは両方の長所を組み合わせています。"
+      "description": "Weftは両方の長所を組み合わせています。"
     },
     "demo": {
       "title": "スケッチは簡単に。",
@@ -243,7 +243,7 @@
     },
     "footer": {
       "rights": "無断複写・転載を禁じます。",
-      "madeWith": "OpenFlowKitチームによって❤️を込めて作られました"
+      "madeWith": "Weftチームによって❤️を込めて作られました"
     }
   },
   "home": {
@@ -385,7 +385,7 @@
     "importFailed": "インポートに失敗しました"
   },
   "welcome": {
-    "title": "OpenFlowKit",
+    "title": "Weft",
     "description": "開発者向けキャンバスで美しく構造化された図を設計します。",
     "press": "押す",
     "shortcuts": "ショートカット表示",
@@ -420,7 +420,7 @@
   "pricing": {
     "title": "プレミアム機能。",
     "subtitle": "コストはゼロ。",
-    "description": "OpenFlowKitは100%オープンソースです。隠されたエンタープライズ版はありません。",
+    "description": "Weftは無料で利用できます。コアエンジンにフルアクセス — どこでもホスト、自由に改変。",
     "mitLicense": "MITライセンス",
     "freeForever": "永久無料。",
     "fullAccess": "コアエンジンへの完全アクセス。",
@@ -438,18 +438,18 @@
       "mermaidSupport": "Mermaid.jsサポート",
       "aiGeneration": "AIによる図の生成"
     },
-    "supportDevelopment": "GitHubでの開発を支援する"
+    "supportDevelopment": "フィードバックやアイデアを共有"
   },
   "cta": {
     "readyToUse": "準備完了",
     "buildDiagrams": "図を作成しよう。",
     "dontLookGeneric": "平凡なものはやめよう。",
-    "joinUs": "次世代のビジュアルツールを一緒に作りましょう。",
+    "joinUs": "次世代のビジュアルツールを一緒に作りましょう。ローカル優先、洗練され、いつでも使える。",
     "getStartedNow": "今すぐ始める",
     "copied": "コピーしました",
     "copy": "コピー",
     "documentation": "ドキュメント",
-    "github": "GitHub",
+    "github": "詳しく見る",
     "roadmap": "ロードマップ"
   },
   "problem": {
@@ -491,7 +491,7 @@
     "badge": "ワークフロー",
     "title": "1つのエンジン。",
     "subtitle": "3つのネイティブワークフロー。",
-    "description": "OpenFlowKitはあなたのツールに適応します。",
+    "description": "Weftはあなたのツールに適応します。",
     "engineering": "エンジニアリング",
     "diagramAsCode": "コードとしての図",
     "engineeringDesc": "DSLまたはMermaid.jsで図を書きます。",
@@ -509,7 +509,7 @@
     "badge": "プラグイン不要",
     "title": "コードをコピー。",
     "subtitle": "デザインを貼り付け。",
-    "description": "OpenFlowKitからコピーしてFigmaに直接貼り付けると、編集可能なテキストやきれいなベクター形状になります。",
+    "description": "WeftからコピーしてFigmaに直接貼り付けると、編集可能なテキストやきれいなベクター形状になります。",
     "editableText": "編集可能なテキスト",
     "vectorFidelity": "ベクター忠実度",
     "selected": "選択済み",
@@ -520,13 +520,13 @@
     "badge": "構築中",
     "title": "公開での作成。",
     "subtitle": "エンジンを形作る。",
-    "description": "OpenFlowKitはまだ始まったばかりです。初日から参加してください。",
-    "starTheRepo": "リポジトリにスターを付ける",
-    "openSource": "オープンソース",
-    "openSourceDesc": "MITライセンス。コードを読み、PRを送信します。",
-    "prsWelcome": "PRを歓迎します",
+    "description": "Weftは始まったばかり。次の形を一緒に作りましょう。",
+    "starTheRepo": "更新を受け取る",
+    "openSource": "メーカー向け",
+    "openSourceDesc": "AI支援ワークフローとエクスポート内蔵の図表キャンバス。",
+    "prsWelcome": "フィードバック歓迎",
     "community": "コミュニティ",
-    "communityDesc": "OpenFlowKitを活用している開発者に参加しましょう。",
+    "communityDesc": "Weftを活用している開発者に参加しましょう。",
     "roadmap": "ロードマップ",
     "coreRenderer": "コアレンダラー",
     "flowpilotAI": "Flowpilot 人工知能"
@@ -1510,7 +1510,7 @@
   },
   "mcpSettings": {
     "title": "AIツールを接続（MCP）",
-    "intro": "OpenFlowKit MCP サーバーを Claude Desktop、Cursor、Windsurf、その他の MCP クライアントに追加します。アシスタントはローカルで動く図表ツールを獲得します。API キーは不要、データはマシンから外に出ません。",
+    "intro": "Weft MCP サーバーを Claude Desktop、Cursor、Windsurf、その他の MCP クライアントに追加します。アシスタントはローカルで動く図表ツールを獲得します。API キーは不要、データはマシンから外に出ません。",
     "installHeading": "サーバーをインストール",
     "installNote": "Node 18+ が必要です。グローバルインストールは不要、npx が必要に応じて取得します。",
     "configHeading": "AI アシスタントに追加",
@@ -1539,12 +1539,13 @@
     "testPromptLabel": "テストプロンプト",
     "testPromptHint": "接続済みの任意のクライアントに貼り付け",
     "copyInstallPrompt": "インストールプロンプトをコピー",
-    "copyTestPrompt": "テストプロンプトをコピー"
+    "copyTestPrompt": "テストプロンプトをコピー",
+    "comingSoon": "MCP連携はロードマップ上です。現行版はキャンバス内のAI生成・編集・エクスポートに注力しています。"
   },
   "mcp": {
     "pageTitle": "Connect AI tools",
     "pageSubtitle": "Give any MCP client first-class diagramming tools. Local-first, no API key.",
-    "visualAlt": "Your AI client connects to the OpenFlowKit MCP server over stdio, which provides local diagramming tools.",
+    "visualAlt": "Your AI client connects to the Weft MCP server over stdio, which provides local diagramming tools.",
     "visualClient": "Your AI client",
     "visualCaption": "Local · stdio · no API key"
   }

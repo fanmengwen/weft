@@ -32,14 +32,14 @@ branch ->|No|  e1
 # to render a real provider icon (AWS, Azure, GCP, CNCF, or developer brand logos).
 # Always call the find_icon tool to discover the correct slug; do not guess.
 # Providers: aws, azure, gcp, cncf, developer
-# Catalog resource: openflowkit://icons (full) or openflowkit://icons/{provider} (per pack)
+# Catalog resource: weft://icons (full) or weft://icons/{provider} (per pack)
 `;
 
 export function registerResources(server: McpServer): void {
   // Static cheatsheet — agents read it once to learn DSL surface.
   server.registerResource(
     'dsl-cheatsheet',
-    'openflowkit://docs/dsl-cheatsheet',
+    'weft://docs/dsl-cheatsheet',
     {
       title: 'OpenFlow DSL Cheatsheet',
       description: 'Quick reference for OpenFlow DSL node types, attributes, and edge styles.',
@@ -59,7 +59,7 @@ export function registerResources(server: McpServer): void {
   // Templates exposed both as a catalog and via per-name URI template.
   server.registerResource(
     'templates-catalog',
-    'openflowkit://templates',
+    'weft://templates',
     {
       title: 'Starter template catalog',
       description: 'JSON list of all available starter templates (name, title, category, summary).',
@@ -89,7 +89,7 @@ export function registerResources(server: McpServer): void {
   // find_icon tool for targeted queries.
   server.registerResource(
     'icons-catalog',
-    'openflowkit://icons',
+    'weft://icons',
     {
       title: 'Provider icon catalog',
       description:
@@ -110,12 +110,12 @@ export function registerResources(server: McpServer): void {
 
   server.registerResource(
     'icons-by-provider',
-    new ResourceTemplate('openflowkit://icons/{provider}', {
+    new ResourceTemplate('weft://icons/{provider}', {
       list: async () => {
         const providers = await getIconProviders();
         return {
           resources: providers.map((provider) => ({
-            uri: `openflowkit://icons/${provider}`,
+            uri: `weft://icons/${provider}`,
             name: `icons-${provider}`,
             title: `${provider} icons`,
             description: `Icon catalog for the ${provider} provider pack.`,
@@ -152,10 +152,10 @@ export function registerResources(server: McpServer): void {
 
   server.registerResource(
     'template',
-    new ResourceTemplate('openflowkit://templates/{name}', {
+    new ResourceTemplate('weft://templates/{name}', {
       list: async () => ({
         resources: STARTER_TEMPLATES.map((template) => ({
-          uri: `openflowkit://templates/${template.name}`,
+          uri: `weft://templates/${template.name}`,
           name: template.name,
           title: template.title,
           description: template.summary,

@@ -191,7 +191,7 @@
       "figma": "Figma",
       "useCases": "应用场景",
       "pricing": "价格",
-      "viewGithub": "在 GitHub 上查看"
+      "viewGithub": "探索功能"
     },
     "hero": {
       "title": "精美的流程图，",
@@ -202,8 +202,8 @@
       "description1": "图表引擎",
       "description2": "让它",
       "description3": "像你一样思考。",
-      "description4": "100% 免费的开源开发者绘图工具。编写代码或拖拽 — 无论哪种方式都能获得精美结果。",
-      "forkOnGithub": "在 GitHub 上 Fork",
+      "description4": "为创作者打造的精致图表工具。写代码或拖拽——都能产出精美结果。",
+      "forkOnGithub": "开始使用",
       "licence": "MIT 开源协议",
       "localFirst": "本地优先",
       "noAuth": "无需登录",
@@ -420,7 +420,7 @@
   "pricing": {
     "title": "高级功能。",
     "subtitle": "零成本。",
-    "description": "Weft 100% 开源。没有隐藏在销售电话背后的企业版。",
+    "description": "Weft 免费使用。完整访问核心引擎——随处托管，自由修改。",
     "mitLicense": "MIT 协议",
     "freeForever": "永久免费。",
     "fullAccess": "完全访问核心引擎。",
@@ -438,18 +438,18 @@
       "mermaidSupport": "Mermaid.js 支持",
       "aiGeneration": "AI 图表生成"
     },
-    "supportDevelopment": "在 GitHub 上支持开发"
+    "supportDevelopment": "分享反馈与想法"
   },
   "cta": {
     "readyToUse": "准备就绪",
     "buildDiagrams": "制作不落俗套的图表。",
     "dontLookGeneric": "告别千篇一律。",
-    "joinUs": "加入我们，共同打造下一代可视化工具。开源、本地优先、永久免费。",
+    "joinUs": "一起打造下一代可视化工具。本地优先、精致打磨、随时可用。",
     "getStartedNow": "立即开始",
     "copied": "已复制",
     "copy": "复制",
     "documentation": "文档",
-    "github": "GitHub",
+    "github": "了解更多",
     "roadmap": "路线图"
   },
   "problem": {
@@ -520,11 +520,11 @@
     "badge": "建设中",
     "title": "公开构建。",
     "subtitle": "塑造引擎。",
-    "description": "Weft 才刚刚起步。从第一天起就加入我们。",
-    "starTheRepo": "给仓库点赞",
-    "openSource": "开源",
-    "openSourceDesc": "MIT 协议。阅读源码，提交 PR。",
-    "prsWelcome": "欢迎提交 PR",
+    "description": "Weft 刚刚起步。一起塑造下一步。",
+    "starTheRepo": "获取更新",
+    "openSource": "为创作者而生",
+    "openSourceDesc": "专注的图表画布，内置 AI 工作流与导出。",
+    "prsWelcome": "欢迎反馈",
     "community": "社区",
     "communityDesc": "加入构建者行列。",
     "roadmap": "路线图",
@@ -1539,7 +1539,8 @@
     "testPromptLabel": "测试提示语",
     "testPromptHint": "粘贴到任何已连接的客户端",
     "copyInstallPrompt": "复制安装提示语",
-    "copyTestPrompt": "复制测试提示语"
+    "copyTestPrompt": "复制测试提示语",
+    "comingSoon": "MCP 集成在路线图中。当前版本专注于画布内 AI 生成、编辑与导出。"
   },
   "mcp": {
     "pageTitle": "Connect AI tools",

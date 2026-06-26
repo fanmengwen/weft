@@ -9,7 +9,7 @@ export function registerFindIcon(server: McpServer): void {
     {
       title: 'Find a provider icon by human name',
       description:
-        'Fuzzy-search the OpenFlowKit icon catalog (1600+ icons across AWS, Azure, GCP, ' +
+        'Fuzzy-search the Weft icon catalog (1600+ icons across AWS, Azure, GCP, ' +
         'CNCF, and developer brand logos). Returns ranked matches with their `provider` ' +
         'and `slug` values, which you pass back into [architecture] node attributes as ' +
         '`archProvider` and `archResourceType` to render the icon. Always call this before ' +
