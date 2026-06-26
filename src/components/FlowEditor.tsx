@@ -181,16 +181,12 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
                   actionLabel={
                     mermaidDiagnostics.visualMode === 'renderer_exact' && canRecoverMermaidSource
                       ? 'Convert to editable diagram'
-                      : canRecoverMermaidSource
-                        ? 'Open Mermaid code'
-                        : undefined
+                      : undefined
                   }
                   onAction={
                     mermaidDiagnostics.visualMode === 'renderer_exact' && canRecoverMermaidSource
                       ? handleConvertMermaidToEditable
-                      : canRecoverMermaidSource
-                        ? () => flowEditorController.openStudioCode('mermaid')
-                        : undefined
+                      : undefined
                   }
                 />
               </div>
@@ -237,17 +233,17 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
               onRetry={handleImportJSON}
               onClose={dismissImportRecovery}
               actionLabel={
-                importRecoveryState.report.source === 'mermaid' && canRecoverMermaidSource
-                  ? mermaidDiagnostics?.visualMode === 'renderer_exact'
-                    ? 'Convert to editable diagram'
-                    : 'Open Mermaid code'
+                importRecoveryState.report.source === 'mermaid' &&
+                canRecoverMermaidSource &&
+                mermaidDiagnostics?.visualMode === 'renderer_exact'
+                  ? 'Convert to editable diagram'
                   : undefined
               }
               onAction={
-                importRecoveryState.report.source === 'mermaid' && canRecoverMermaidSource
-                  ? mermaidDiagnostics?.visualMode === 'renderer_exact'
-                    ? handleConvertMermaidToEditable
-                    : () => flowEditorController.openStudioCode('mermaid')
+                importRecoveryState.report.source === 'mermaid' &&
+                canRecoverMermaidSource &&
+                mermaidDiagnostics?.visualMode === 'renderer_exact'
+                  ? handleConvertMermaidToEditable
                   : undefined
               }
             />

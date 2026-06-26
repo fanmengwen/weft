@@ -276,10 +276,10 @@
     "homeEmptySubtitle": "Entwerfen Sie sofort Enterprise-Architekturen. Beginnen Sie mit einer leeren Leinwand, beschreiben Sie Ihre Infrastruktur mit unserem KI-Builder oder verwenden Sie eine maßgeschneiderte Vorlage.",
     "homeBlankCanvas": "Leere Leinwand",
     "createNew": "Neu erstellen",
-    "homeFlowpilotAI": "Flowpilot KI",
+    "homeFlowpilotAI": "KI-Assistent",
     "homeTemplates": "Vorlagen",
     "homeImportFile": "Oder eine bestehende Datei importieren",
-    "suggestionAI": "Flowpilot KI",
+    "suggestionAI": "KI-Assistent",
     "suggestionBlank": "Leere Leinwand",
     "suggestionBlankDesc": "Direkt in den Editor einsteigen",
     "suggestionAIDesc": "Mit einer Eingabe beginnen",
@@ -287,7 +287,8 @@
     "suggestionImportDesc": "Bestehende Arbeit einbringen",
     "suggestionTemplates": "Vorlagen",
     "suggestionTemplatesDesc": "Mit einem bewährten Muster beginnen",
-    "continueTitle": "Mit einer kürzlichen Aktion fortfahren"
+    "continueTitle": "Mit einer kürzlichen Aktion fortfahren",
+    "generateWithFlowpilot": "Mit KI generieren"
   },
   "settings": {
     "title": "Einstellungen",
@@ -307,7 +308,9 @@
     "themeLight": "Hell",
     "themeDark": "Dunkel",
     "themeSystem": "System",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "flowpilotAI": "KI-Assistent",
+    "aiAssistant": "KI-Assistent"
   },
   "shortcuts": {
     "title": "Tastaturkürzel",
@@ -360,7 +363,7 @@
     "apiKey": "API-Schlüssel",
     "placeholder": "Flussdiagramm beschreiben...",
     "settingsSubtitle": "Konfigurieren Sie unten Ihren bevorzugten KI-Anbieter, das Modell und den API-Schlüssel.",
-    "generateWithFlowpilot": "Mit Flowpilot generieren",
+    "generateWithFlowpilot": "Mit KI-Assistent generieren",
     "howToGetKey": "So erhalten Sie Ihren API-Schlüssel",
     "openConsole": "Konsole öffnen",
     "pasteKeyStep": "Fügen Sie ihn oben ein — er wird niemals mit uns geteilt",
@@ -477,7 +480,7 @@
     "description": "Das ultimative White-Label-Canvas.",
     "diagramAsCode": "Diagramm als Code",
     "diagramAsCodeDesc": "Erstklassige Unterstützung für Mermaid.js und DSL.",
-    "flowpilotAI": "Flowpilot",
+    "flowpilotAI": "KI-Assistent",
     "aiAssistant": "KI-Assistent",
     "flowpilotAIDesc": "Mit geführten KI-Bearbeitungen an Ihrem Diagramm arbeiten.",
     "addRedisCache": "Redis-Cache vor der DB hinzufügen.",
@@ -535,7 +538,7 @@
     "communityDesc": "Entwickler treffen, die auf Weft aufbauen.",
     "roadmap": "Roadmap",
     "coreRenderer": "Core-Renderer",
-    "flowpilotAI": "Flowpilot"
+    "flowpilotAI": "KI-Assistent"
   },
   "demo": {
     "livePreview": "Live-Vorschau",
@@ -544,7 +547,8 @@
     "description1": "Ideen schnell skizzieren.",
     "description2": "Produktionsreif exportieren.",
     "liveSync": "Live-Synchronisierung",
-    "liveSyncDesc": "Code bearbeiten ↔ Änderungen sofort sehen"
+    "liveSyncDesc": "Code bearbeiten ↔ Änderungen sofort sehen",
+    "flowpilotAI": "KI-Assistent"
   },
   "docs": {
     "documentation": "Dokumentation",
@@ -589,7 +593,7 @@
   },
   "commandBar": {
     "ai": {
-      "title": "Flowpilot fragen",
+      "title": "KI-Assistent fragen",
       "clearChat": "Chatverlauf löschen",
       "placeholder": "Beschreiben Sie, was Sie erstellen möchten...",
       "examples": {
@@ -721,8 +725,8 @@
       "removedCount": "{{count}} entfernt",
       "discard": "Verwerfen",
       "applyToCanvas": "Auf Canvas anwenden",
-      "emptyDescription": "Beschreibe das gewünschte Diagramm und {{appName}} erstellt den ersten Entwurf für dich.",
-      "editDescription": "Beschreibe die gewünschten Änderungen und {{appName}} aktualisiert das Diagramm für dich.",
+      "emptyDescription": "Beschreiben Sie das gewünschte Diagramm und der KI-Assistent erstellt einen ersten Entwurf.",
+      "editDescription": "Beschreiben Sie die gewünschten Änderungen und der KI-Assistent aktualisiert das Diagramm.",
       "addKeyCta": "KI-Schlüssel hinzufügen, um zu starten",
       "retrying": "Erneuter Versuch ({{retryCount}} von 3)...",
       "generating": "Wird generiert...",
@@ -766,7 +770,7 @@
         "importApplied": "Applied to the canvas",
         "planReady": "Plan ready",
         "answeredInChat": "Answered in chat",
-        "generationFailed": "FlowPilot could not finish the response",
+        "generationFailed": "Der KI-Assistent konnte die Antwort nicht abschließen",
         "assetMatchesFound": "Found strong local asset matches",
         "assetMatchesNone": "No strong local asset match yet. Try naming the cloud provider or exact service.",
         "previewDetail": {
@@ -790,6 +794,22 @@
           "inspectRequest": "Inspect the current request",
           "draftResponse": "Draft the response"
         }
+      },
+      "examples": {
+        "userRegistrationFlow": "Benutzerregistrierung",
+        "userRegistrationFlowPrompt": "Erstelle einen Benutzerregistrierungsablauf mit E-Mail-Verifizierung, Anmeldung und Passwort-Reset",
+        "contentReviewWorkflow": "Inhaltsprüfung",
+        "contentReviewWorkflowPrompt": "Erstelle einen Inhaltsprüfungs-Workflow mit Einreichung, Moderation, Freigabe und Veröffentlichung",
+        "dataProcessingPipeline": "Datenverarbeitung",
+        "dataProcessingPipelinePrompt": "Erstelle eine Datenverarbeitungspipeline mit Erfassung, Validierung, Transformation und Ausgabe",
+        "approvalWorkflow": "Genehmigungsprozess",
+        "approvalWorkflowPrompt": "Erstelle einen Genehmigungsprozess mit Antrag, Prüfung, Managerfreigabe und Benachrichtigung",
+        "iterationDatabase": "Datenbank",
+        "iterationDatabasePrompt": "Füge eine PostgreSQL-Datenbank zur Architektur hinzu",
+        "iterationServer": "Server",
+        "iterationServerPrompt": "Füge einen Node.js-Backend-Service hinzu",
+        "iterationDeploy": "Deployment",
+        "iterationDeployPrompt": "Füge Deployment- und Hosting-Schritte zum Diagramm hinzu"
       }
     },
     "figmaImport": {
@@ -893,16 +913,20 @@
       "quickActionsAria": "Schnellaktionen der Befehlsleiste",
       "results": "Ergebnisse",
       "noMatchingCommands": "Keine passenden Befehle für \"{{query}}\""
+    },
+    "commands": {
+      "openAIAssistant": "KI-Assistent öffnen",
+      "openAIAssistantDesc": "KI-Assistent in der rechten Leiste öffnen"
     }
   },
   "settingsModal": {
     "title": "Einstellungen",
     "general": "Allgemein",
-    "flowpilotAI": "Flowpilot",
+    "flowpilotAI": "KI-Assistent",
     "shortcuts": "Tastenkürzel",
     "running": "{appName} wird ausgeführt",
     "generalSettings": "Allgemeine Einstellungen",
-    "flowpilotConfigurations": "Flowpilot-Konfiguration",
+    "flowpilotConfigurations": "KI-Einstellungen",
     "keyboardShortcuts": "Tastaturkürzel",
     "canvas": {
       "title": "Canvas",
@@ -1325,7 +1349,7 @@
   "toolbar": {
     "selectMode": "Auswahlmodus (V)",
     "panMode": "Verschiebemodus (H)",
-    "flowpilot": "Flowpilot",
+    "flowpilot": "KI-Assistent (Cmd+K)",
     "templates": "Vorlagen",
     "addItem": "Element hinzufügen",
     "addToCanvas": "Zum Canvas hinzufügen",
@@ -1356,8 +1380,8 @@
     "applyingLayout": "Layout wird angewendet…",
     "emptyState": {
       "title": "Aufbauen beginnen",
-      "description": "Ihr Canvas ist leer. Generieren Sie einen Fluss mit Flowpilot oder starten Sie von Grund auf.",
-      "generateWithFlowpilot": "Mit Flowpilot generieren",
+      "description": "Ihre Leinwand ist leer. Generieren Sie ein Diagramm mit KI oder beginnen Sie von Grund auf.",
+      "generateWithFlowpilot": "Mit KI generieren",
       "browseTemplates": "Vorlagen durchsuchen",
       "addBlankNode": "Leere Form hinzufügen"
     },

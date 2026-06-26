@@ -1,5 +1,34 @@
-import { Database, Server, Cloud, Network } from 'lucide-react';
+import { ClipboardCheck, GitBranch, Layers, UserPlus } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+
+export interface AIStudioExampleDefinition {
+  labelKey: string;
+  promptKey: string;
+  icon: LucideIcon;
+}
+
+export const EMPTY_CANVAS_EXAMPLE_DEFINITIONS: AIStudioExampleDefinition[] = [
+  {
+    labelKey: 'commandBar.aiStudio.examples.userRegistrationFlow',
+    promptKey: 'commandBar.aiStudio.examples.userRegistrationFlowPrompt',
+    icon: UserPlus,
+  },
+  {
+    labelKey: 'commandBar.aiStudio.examples.contentReviewWorkflow',
+    promptKey: 'commandBar.aiStudio.examples.contentReviewWorkflowPrompt',
+    icon: ClipboardCheck,
+  },
+  {
+    labelKey: 'commandBar.aiStudio.examples.dataProcessingPipeline',
+    promptKey: 'commandBar.aiStudio.examples.dataProcessingPipelinePrompt',
+    icon: Layers,
+  },
+  {
+    labelKey: 'commandBar.aiStudio.examples.approvalWorkflow',
+    promptKey: 'commandBar.aiStudio.examples.approvalWorkflowPrompt',
+    icon: GitBranch,
+  },
+];
 
 export interface AIStudioExample {
   label: string;
@@ -7,37 +36,22 @@ export interface AIStudioExample {
   prompt: string;
 }
 
-export const EMPTY_CANVAS_EXAMPLES: AIStudioExample[] = [
+export const ITERATION_EXAMPLE_DEFINITIONS: AIStudioExampleDefinition[] = [
   {
-    label: 'Microservices architecture',
-    icon: Server,
-    prompt:
-      'Generate a microservices architecture with API gateway, auth service, user service, order service, and a shared PostgreSQL database',
+    labelKey: 'commandBar.aiStudio.examples.iterationDatabase',
+    promptKey: 'commandBar.aiStudio.examples.iterationDatabasePrompt',
+    icon: Layers,
   },
   {
-    label: 'AWS 3-tier webapp',
-    icon: Cloud,
-    prompt:
-      'Generate a 3-tier AWS architecture with CloudFront, ALB, ECS Fargate, RDS PostgreSQL, and ElastiCache Redis',
+    labelKey: 'commandBar.aiStudio.examples.iterationServer',
+    promptKey: 'commandBar.aiStudio.examples.iterationServerPrompt',
+    icon: GitBranch,
   },
   {
-    label: 'User auth flow',
-    icon: Network,
-    prompt:
-      'Generate a user authentication flow showing login, registration, password reset, OAuth, and session management',
+    labelKey: 'commandBar.aiStudio.examples.iterationDeploy',
+    promptKey: 'commandBar.aiStudio.examples.iterationDeployPrompt',
+    icon: ClipboardCheck,
   },
-  {
-    label: 'CI/CD pipeline',
-    icon: Database,
-    prompt:
-      'Generate a CI/CD pipeline with GitHub, build, test, staging deploy, approval gate, and production deploy stages',
-  },
-];
-
-export const ITERATION_EXAMPLES: AIStudioExample[] = [
-  { label: 'Database', icon: Database, prompt: 'Add a PostgreSQL database to the architecture' },
-  { label: 'Server', icon: Server, prompt: 'Add a backend Node.js server service' },
-  { label: 'Deploy to AWS', icon: Cloud, prompt: 'Deploy the main application to AWS' },
 ];
 
 export const EXAMPLE_ICON_COLORS = [

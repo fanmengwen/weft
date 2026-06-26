@@ -92,7 +92,7 @@ describe('StudioAIPanel', () => {
 
     expect(screen.queryByText('OpenAI is not ready yet')).not.toBeInTheDocument();
     expect(screen.queryByText('Add your OpenAI API key in Settings before generating.')).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: 'Generate with Flowpilot' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Generate with AI' }));
 
     expect(dispatchEventSpy).toHaveBeenCalledTimes(1);
     expect(dispatchEventSpy.mock.calls[0]?.[0]).toBeInstanceOf(CustomEvent);

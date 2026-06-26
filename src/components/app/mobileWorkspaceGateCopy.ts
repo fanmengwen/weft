@@ -1,9 +1,9 @@
 export const MOBILE_WORKSPACE_GATE_COPY = {
-    title: 'Made for big screens',
+    title: '建议在更大屏幕上使用',
     description:
-        'Weft\'s canvas needs room to breathe — drag-and-drop, multi-select, and panels shine on a laptop or tablet. We\'d love to have you there!',
-    recommendedLabel: 'Quick tip',
+        'Weft 的画布需要足够的空间——拖拽、多选和侧边面板在笔记本或平板上体验更佳。',
+    recommendedLabel: '小提示',
     recommendedBody:
-        'Open this link on a laptop or desktop and you\'ll land right in the editor with all tools ready.',
-    goHome: 'Go to Home',
+        '在笔记本或台式电脑上打开此链接，即可直接进入编辑器并使用全部工具。',
+    goHome: '返回首页',
 } as const;

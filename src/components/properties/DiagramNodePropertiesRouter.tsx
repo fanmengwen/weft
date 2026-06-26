@@ -27,7 +27,6 @@ interface DiagramNodePropertiesRouterProps {
   onGenerateEntityFields?: (nodeId: string) => Promise<void> | void;
   onSuggestArchitectureNode?: (nodeId: string) => Promise<void> | void;
   onConvertEntitySelectionToClassDiagram?: () => void;
-  onOpenMermaidCodeEditor?: () => void;
 }
 
 const NODE_TYPE_PANEL_MAP: Partial<Record<NodeType, DiagramType>> = {
@@ -62,7 +61,6 @@ export function DiagramNodePropertiesRouter({
   onGenerateEntityFields,
   onSuggestArchitectureNode,
   onConvertEntitySelectionToClassDiagram,
-  onOpenMermaidCodeEditor,
 }: DiagramNodePropertiesRouterProps): ReactElement {
   const tabs = useFlowStore((state) => state.tabs);
   const activeTabId = useFlowStore((state) => state.activeTabId);
@@ -104,6 +102,5 @@ export function DiagramNodePropertiesRouter({
     onGenerateEntityFields,
     onSuggestArchitectureNode,
     onConvertEntitySelectionToClassDiagram,
-    onOpenMermaidCodeEditor,
   });
 }

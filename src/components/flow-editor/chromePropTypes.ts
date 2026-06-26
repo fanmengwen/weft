@@ -74,7 +74,7 @@ export interface BuildPlaybackParams {
 export interface BuildEmptyStateParams {
   nodes: FlowNode[];
   t: TFunction;
-  openStudioPanel: (tab: 'ai' | 'code' | 'playback') => void;
+  openStudioPanel: (tab: 'ai' | 'playback' | 'infra') => void;
   openCommandBar: (
     view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system'
   ) => void;

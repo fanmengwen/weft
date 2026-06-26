@@ -54,8 +54,6 @@ function OpenCommandBarContent({
   onLayout,
   onSelectTemplate,
   onOpenStudioAI,
-  onOpenStudioOpenFlow,
-  onOpenStudioMermaid,
   onOpenArchitectureRules,
   initialView = 'root',
   onAddAnnotation: _onAddAnnotation,
@@ -131,12 +129,10 @@ function OpenCommandBarContent({
     settings,
     onUndo,
     onRedo,
-    onOpenStudioAI,
-    onOpenStudioOpenFlow,
-    onOpenStudioMermaid,
-    onOpenArchitectureRules,
-    hasImport,
-  });
+  onOpenStudioAI,
+  onOpenArchitectureRules,
+  hasImport,
+});
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center pb-24 pointer-events-none">

@@ -47,8 +47,6 @@ export interface CommandBarProps {
   ) => void;
   onSelectTemplate?: (template: FlowTemplate) => void;
   onOpenStudioAI?: () => void;
-  onOpenStudioOpenFlow?: () => void;
-  onOpenStudioMermaid?: () => void;
   onOpenStudioPlayback?: () => void;
   onOpenArchitectureRules?: () => void;
   initialView?: CommandView;

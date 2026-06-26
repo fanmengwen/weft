@@ -17,7 +17,7 @@ import {
   X,
 } from 'lucide-react';
 import { Tooltip } from './Tooltip';
-import { FLOWPILOT_NAME } from '@/lib/brand';
+import { AI_ASSISTANT_NAME } from '@/lib/brand';
 import type { ChatMessage } from '@/services/aiService';
 import {
   getPlanCardVariant,
@@ -427,19 +427,17 @@ export function ChatHistoryView({
           <WandSparkles className="h-6 w-6" />
         </div>
         <h3 className="text-xl font-bold tracking-tight text-[var(--brand-text)]">
-          {FLOWPILOT_NAME}
+          {t('settings.aiAssistant', AI_ASSISTANT_NAME)}
         </h3>
         <p className="mt-2.5 mb-8 max-w-[280px] text-[13px] leading-relaxed text-[var(--brand-secondary)]">
           {isCanvasEmpty
             ? t('commandBar.aiStudio.emptyDescription', {
-                appName: FLOWPILOT_NAME,
                 defaultValue:
-                  'Describe the diagram you want and {{appName}} will draft the first graph for you.',
+                  'Describe the diagram you want and the AI assistant will draft the first version for you.',
               })
             : t('commandBar.aiStudio.editDescription', {
-                appName: FLOWPILOT_NAME,
                 defaultValue:
-                  'Describe the changes you want and {{appName}} will update the graph for you.',
+                  'Describe the changes you want and the AI assistant will update the diagram for you.',
               })}
         </p>
 
@@ -734,8 +732,8 @@ export function ComposerSection({
               onClick={onSubmit}
               disabled={isInputEmpty}
               className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all flex-shrink-0 ${getPrimaryComposerClassName(isInputEmpty, isBeveled)} ${!isInputEmpty ? 'active:scale-95' : ''}`}
-              aria-label={t('ai.generateWithFlowpilot', {
-                defaultValue: 'Generate with Flowpilot',
+              aria-label={t('flowEditor.emptyState.generateWithFlowpilot', {
+                defaultValue: 'Generate with AI',
               })}
               title={sendButtonLabel}
               type="button"

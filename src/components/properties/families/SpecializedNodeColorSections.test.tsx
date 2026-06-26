@@ -11,7 +11,6 @@ const baseHandlers = {
   onDelete: vi.fn(),
   onGenerateEntityFields: vi.fn(),
   onConvertEntitySelectionToClassDiagram: vi.fn(),
-  onOpenMermaidCodeEditor: vi.fn(),
 };
 
 function expectSharedColorSection(title: string): void {

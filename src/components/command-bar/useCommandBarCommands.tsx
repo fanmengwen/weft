@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     ArrowRight,
-    Code2,
     Compass,
     Import,
     Search,
@@ -11,7 +11,7 @@ import {
     Workflow,
 } from 'lucide-react';
 import { useFlowStore } from '@/store';
-import { FLOWPILOT_NAME } from '@/lib/brand';
+import { AI_ASSISTANT_NAME } from '@/lib/brand';
 import type { CommandItem, CommandBarProps } from './types';
 import { AssetsIcon } from '../icons/AssetsIcon';
 
@@ -20,8 +20,6 @@ interface UseCommandBarCommandsParams {
     onUndo?: CommandBarProps['onUndo'];
     onRedo?: CommandBarProps['onRedo'];
     onOpenStudioAI?: CommandBarProps['onOpenStudioAI'];
-    onOpenStudioOpenFlow?: CommandBarProps['onOpenStudioOpenFlow'];
-    onOpenStudioMermaid?: CommandBarProps['onOpenStudioMermaid'];
     onOpenArchitectureRules?: CommandBarProps['onOpenArchitectureRules'];
     hasImport?: boolean;
 }
@@ -31,11 +29,11 @@ export function useCommandBarCommands({
     onUndo,
     onRedo,
     onOpenStudioAI,
-    onOpenStudioOpenFlow: _onOpenStudioOpenFlow,
-    onOpenStudioMermaid,
     onOpenArchitectureRules,
     hasImport = false,
 }: UseCommandBarCommandsParams): CommandItem[] {
+    const { t } = useTranslation();
+
     return useMemo(() => {
         const importCommands: CommandItem[] = hasImport
             ? [{
@@ -80,13 +78,16 @@ export function useCommandBarCommands({
         return [
             {
                 id: 'studio-ai',
-                label: `Open ${FLOWPILOT_NAME}`,
+                label: t('commandBar.commands.openAIAssistant', {
+                    defaultValue: `Open ${AI_ASSISTANT_NAME}`,
+                }),
                 icon: <WandSparkles className="w-4 h-4 text-[var(--brand-primary)]" />,
                 tier: 'core',
                 type: 'action',
-                description: `Open ${FLOWPILOT_NAME} in the right rail`,
+                description: t('commandBar.commands.openAIAssistantDesc', {
+                    defaultValue: 'Open the AI assistant in the right rail',
+                }),
                 action: onOpenStudioAI,
-                badge: 'Beta',
             },
             ...importCommands,
             {
@@ -135,15 +136,6 @@ export function useCommandBarCommands({
                 description: 'Open architecture guardrails and rule templates',
                 action: onOpenArchitectureRules,
             },
-            {
-                id: 'studio-mermaid',
-                label: 'Edit Mermaid Code',
-                icon: <Code2 className="w-4 h-4 text-pink-500" />,
-                tier: 'advanced',
-                type: 'action',
-                description: 'Open Mermaid editing in Studio',
-                action: onOpenStudioMermaid,
-            },
             ...settingsCommands,
             {
                 id: 'undo',
@@ -183,9 +175,9 @@ export function useCommandBarCommands({
         hasImport,
         onOpenArchitectureRules,
         onOpenStudioAI,
-        onOpenStudioMermaid,
         onRedo,
         onUndo,
         settings,
+        t,
     ]);
 }

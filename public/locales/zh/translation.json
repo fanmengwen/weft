@@ -276,10 +276,10 @@
     "homeEmptySubtitle": "即时设计企业级架构。从空白画布开始，用我们的AI构建器描述您的基础设施，或使用定制模板。",
     "homeBlankCanvas": "空白画布",
     "createNew": "新建",
-    "homeFlowpilotAI": "流程领航人工智能",
+    "homeFlowpilotAI": "AI 助手",
     "homeTemplates": "模板",
     "homeImportFile": "或导入现有文件",
-    "suggestionAI": "Flowpilot 人工智能",
+    "suggestionAI": "AI 助手",
     "suggestionBlank": "空白画布",
     "suggestionBlankDesc": "直接进入编辑器",
     "suggestionAIDesc": "从提示开始",
@@ -287,7 +287,8 @@
     "suggestionImportDesc": "导入现有工作",
     "suggestionTemplates": "模板",
     "suggestionTemplatesDesc": "从经过验证的模式开始",
-    "continueTitle": "继续最近的操作"
+    "continueTitle": "继续最近的操作",
+    "generateWithFlowpilot": "用 AI 生成"
   },
   "settings": {
     "title": "设置",
@@ -307,7 +308,10 @@
     "themeLight": "浅色",
     "themeDark": "深色",
     "themeSystem": "跟随系统",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "flowpilotAI": "AI 助手",
+    "flowpilotAIDesc": "通过引导式 AI 编辑来完善你的图表。",
+    "aiAssistant": "AI 助手"
   },
   "shortcuts": {
     "title": "键盘快捷键",
@@ -360,7 +364,7 @@
     "apiKey": "API 密钥",
     "placeholder": "描述你的流程图...",
     "settingsSubtitle": "在下方配置您首选的 AI 提供商、模型和 API 密钥。",
-    "generateWithFlowpilot": "使用 Flowpilot 生成",
+    "generateWithFlowpilot": "用 AI 生成",
     "howToGetKey": "如何获取 API 密钥",
     "openConsole": "打开控制台",
     "pasteKeyStep": "将其粘贴到上方字段中，我们绝不会获取此信息",
@@ -477,7 +481,7 @@
     "description": "终极白标画布。",
     "diagramAsCode": "代码即图表",
     "diagramAsCodeDesc": "支持 Mermaid.js 和 DSL。",
-    "flowpilotAI": "Flowpilot 人工智能",
+    "flowpilotAI": "AI 助手 人工智能",
     "aiAssistant": "AI 助手",
     "flowpilotAIDesc": "通过引导式 AI 编辑来完善你的图表。",
     "addRedisCache": "在数据库前添加一个 Redis 缓存。",
@@ -535,7 +539,7 @@
     "communityDesc": "加入构建者行列。",
     "roadmap": "路线图",
     "coreRenderer": "核心渲染器",
-    "flowpilotAI": "Flowpilot 人工智能"
+    "flowpilotAI": "AI 助手 人工智能"
   },
   "demo": {
     "livePreview": "实时预览",
@@ -544,7 +548,8 @@
     "description1": "快速勾勒创意。",
     "description2": "导出生产图表。",
     "liveSync": "实时同步",
-    "liveSyncDesc": "编辑代码 ↔ 立即看到改变"
+    "liveSyncDesc": "编辑代码 ↔ 立即看到改变",
+    "flowpilotAI": "AI 助手"
   },
   "docs": {
     "documentation": "文档",
@@ -589,7 +594,7 @@
   },
   "commandBar": {
     "ai": {
-      "title": "询问 Flowpilot",
+      "title": "询问 AI 助手",
       "clearChat": "清除聊天记录",
       "placeholder": "描述你想创建的内容...",
       "examples": {
@@ -721,8 +726,8 @@
       "removedCount": "已删除 {{count}} 项",
       "discard": "丢弃",
       "applyToCanvas": "应用到画布",
-      "emptyDescription": "描述你想要的图表，{{appName}} 会先为你起草第一版。",
-      "editDescription": "描述你想要的改动，{{appName}} 会为你更新图表。",
+      "emptyDescription": "描述你想要的图表，AI 助手会先为你起草第一版。",
+      "editDescription": "描述你想要的改动，AI 助手会为你更新图表。",
       "addKeyCta": "添加 AI 密钥以开始生成",
       "retrying": "正在重试（第 {{retryCount}} / 3 次）...",
       "generating": "生成中...",
@@ -766,7 +771,7 @@
         "importApplied": "已应用到画布",
         "planReady": "计划已就绪",
         "answeredInChat": "已在对话中回复",
-        "generationFailed": "FlowPilot 未能完成响应",
+        "generationFailed": "AI 助手未能完成响应",
         "assetMatchesFound": "已找到以下本地素材匹配",
         "assetMatchesNone": "暂未找到合适的本地素材，请尝试指定云厂商或具体服务名",
         "previewDetail": {
@@ -790,6 +795,22 @@
           "inspectRequest": "理解当前请求",
           "draftResponse": "起草回复"
         }
+      },
+      "examples": {
+        "userRegistrationFlow": "用户注册流程",
+        "userRegistrationFlowPrompt": "生成一个用户注册流程，包含邮箱验证、登录和密码重置",
+        "contentReviewWorkflow": "内容审核工作流",
+        "contentReviewWorkflowPrompt": "生成一个内容审核工作流，包含提交、审核、批准和发布步骤",
+        "dataProcessingPipeline": "数据处理管线",
+        "dataProcessingPipelinePrompt": "生成一个数据处理管线，包含采集、校验、转换和输出阶段",
+        "approvalWorkflow": "审批流程",
+        "approvalWorkflowPrompt": "生成一个审批流程，包含申请、审核、主管批准和通知步骤",
+        "iterationDatabase": "数据库",
+        "iterationDatabasePrompt": "在架构中添加 PostgreSQL 数据库",
+        "iterationServer": "服务",
+        "iterationServerPrompt": "添加一个 Node.js 后端服务",
+        "iterationDeploy": "部署",
+        "iterationDeployPrompt": "在图表中添加部署与托管步骤"
       }
     },
     "figmaImport": {
@@ -893,16 +914,20 @@
       "quickActionsAria": "命令快捷操作",
       "results": "结果",
       "noMatchingCommands": "没有与“{{query}}”匹配的命令"
+    },
+    "commands": {
+      "openAIAssistant": "打开 AI 助手",
+      "openAIAssistantDesc": "在右侧栏打开 AI 助手"
     }
   },
   "settingsModal": {
     "title": "设置",
     "general": "通用",
-    "flowpilotAI": "Flowpilot 人工智能",
+    "flowpilotAI": "AI 助手",
     "shortcuts": "快捷键",
     "running": "正在运行 {appName}",
     "generalSettings": "通用设置",
-    "flowpilotConfigurations": "Flowpilot 配置",
+    "flowpilotConfigurations": "AI 配置",
     "keyboardShortcuts": "键盘快捷键",
     "canvas": {
       "title": "画布",
@@ -1358,7 +1383,7 @@
   "toolbar": {
     "selectMode": "选择模式 (V)",
     "panMode": "平移模式 (H)",
-    "flowpilot": "Flowpilot",
+    "flowpilot": "AI 助手 (Cmd+K)",
     "templates": "模板",
     "addItem": "添加元素",
     "addToCanvas": "添加到画布",
@@ -1389,8 +1414,8 @@
     "applyingLayout": "正在应用布局…",
     "emptyState": {
       "title": "开始构建",
-      "description": "您的画布是空的。使用 Flowpilot 生成流程，或从空白开始。",
-      "generateWithFlowpilot": "使用 Flowpilot 生成",
+      "description": "画布是空的。用 AI 生成图表，或从空白开始。",
+      "generateWithFlowpilot": "用 AI 生成",
       "browseTemplates": "浏览模板",
       "addBlankNode": "添加空白形状"
     },

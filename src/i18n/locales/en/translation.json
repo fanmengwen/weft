@@ -289,7 +289,7 @@
     "homeEmptySubtitle": "Design enterprise-grade architectures instantly. Start from a blank canvas, describe your infrastructure with our AI builder, or use a tailored template.",
     "homeBlankCanvas": "Blank Canvas",
     "createNew": "Create new",
-    "homeFlowpilotAI": "Flowpilot AI",
+    "homeFlowpilotAI": "AI Assistant",
     "homeTemplates": "Templates",
     "homeImportFile": "Or import an existing file",
     "deleteFlow": {
@@ -299,7 +299,7 @@
       "hint": "This cannot be undone unless you have an exported backup or another copy.",
       "closeDialog": "Close delete flow dialog"
     },
-    "suggestionAI": "Flowpilot AI",
+    "suggestionAI": "AI Assistant",
     "suggestionBlank": "Blank canvas",
     "suggestionBlankDesc": "Jump straight into the editor",
     "suggestionAIDesc": "Start from a prompt",
@@ -307,7 +307,8 @@
     "suggestionImportDesc": "Bring in existing work",
     "suggestionTemplates": "Templates",
     "suggestionTemplatesDesc": "Start from a proven pattern",
-    "continueTitle": "Continue with a recent action"
+    "continueTitle": "Continue with a recent action",
+    "generateWithFlowpilot": "Generate with AI"
   },
   "settings": {
     "title": "Settings",
@@ -327,7 +328,10 @@
     "about": "About",
     "brand": "Brand Settings",
     "privacy": "Privacy",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "flowpilotAI": "AI Assistant",
+    "flowpilotAIDesc": "Chat with your diagram. \"Make the corners rounder\", \"Add a load balancer\".",
+    "aiAssistant": "AI Assistant"
   },
   "shortcuts": {
     "title": "Keyboard Shortcuts",
@@ -375,7 +379,7 @@
   },
   "ai": {
     "generate": "Generate with AI",
-    "generateWithFlowpilot": "Generate with Flowpilot",
+    "generateWithFlowpilot": "Generate with AI",
     "provider": "AI Provider",
     "model": "Model",
     "apiKey": "API Key",
@@ -566,7 +570,7 @@
     "description": "The ultimate white-label canvas. Fully customizable nodes, edges, and themes — powered by React Flow. It's your brand, given infinite space to breathe.",
     "diagramAsCode": "Diagram as Code",
     "diagramAsCodeDesc": "First-class support for Mermaid.js and our type-safe DSL. Define your architecture in code, export as JSON, and let the engine handle the layout.",
-    "flowpilotAI": "Flowpilot AI",
+    "flowpilotAI": "AI Assistant AI",
     "aiAssistant": "AI Assistant",
     "flowpilotAIDesc": "Chat with your diagram. \"Make the corners rounder\", \"Add a load balancer\".",
     "addRedisCache": "Add a Redis cache in front of the DB.",
@@ -624,7 +628,7 @@
     "communityDesc": "Join developers building on Weft.",
     "roadmap": "Roadmap",
     "coreRenderer": "Core Renderer",
-    "flowpilotAI": "Flowpilot AI"
+    "flowpilotAI": "AI Assistant AI"
   },
   "demo": {
     "livePreview": "Live Preview",
@@ -633,7 +637,8 @@
     "description1": "Sketch your ideas fast.",
     "description2": "Export them production-ready.",
     "liveSync": "Live Sync",
-    "liveSyncDesc": "Edit code ↔ See changes instantly"
+    "liveSyncDesc": "Edit code ↔ See changes instantly",
+    "flowpilotAI": "AI Assistant"
   },
   "docs": {
     "documentation": "Documentation",
@@ -678,7 +683,7 @@
   },
   "commandBar": {
     "ai": {
-      "title": "Ask Flowpilot",
+      "title": "Ask AI Assistant",
       "clearChat": "Clear Chat History",
       "placeholder": "Describe what you want to create...",
       "examples": {
@@ -763,8 +768,8 @@
       "removedCount": "{{count}} removed",
       "discard": "Discard",
       "applyToCanvas": "Apply to canvas",
-      "emptyDescription": "Describe the diagram you want and {{appName}} will draft the first graph for you.",
-      "editDescription": "Describe the changes you want and {{appName}} will update the graph for you.",
+      "emptyDescription": "Describe the diagram you want and the AI assistant will draft the first version for you.",
+      "editDescription": "Describe the changes you want and the AI assistant will update the diagram for you.",
       "addKeyCta": "Add AI key to start generating",
       "retrying": "Retrying ({{retryCount}} of 3)...",
       "generating": "Generating...",
@@ -814,7 +819,7 @@
         "importApplied": "Applied to the canvas",
         "planReady": "Plan ready",
         "answeredInChat": "Answered in chat",
-        "generationFailed": "FlowPilot could not finish the response",
+        "generationFailed": "The AI assistant could not finish the response",
         "assetMatchesFound": "Found strong local asset matches",
         "assetMatchesNone": "No strong local asset match yet. Try naming the cloud provider or exact service.",
         "previewDetail": {
@@ -838,6 +843,22 @@
           "inspectRequest": "Inspect the current request",
           "draftResponse": "Draft the response"
         }
+      },
+      "examples": {
+        "userRegistrationFlow": "User registration flow",
+        "userRegistrationFlowPrompt": "Generate a user registration flow with email verification, login, and password reset",
+        "contentReviewWorkflow": "Content review workflow",
+        "contentReviewWorkflowPrompt": "Generate a content review workflow with submission, moderation, approval, and publishing steps",
+        "dataProcessingPipeline": "Data processing pipeline",
+        "dataProcessingPipelinePrompt": "Generate a data processing pipeline with ingestion, validation, transformation, and output stages",
+        "approvalWorkflow": "Approval workflow",
+        "approvalWorkflowPrompt": "Generate an approval workflow with request, review, manager approval, and notification steps",
+        "iterationDatabase": "Database",
+        "iterationDatabasePrompt": "Add a PostgreSQL database to the architecture",
+        "iterationServer": "Server",
+        "iterationServerPrompt": "Add a backend Node.js server service",
+        "iterationDeploy": "Deploy",
+        "iterationDeployPrompt": "Add deployment and hosting steps to the diagram"
       }
     },
     "import": {
@@ -982,6 +1003,10 @@
       "exportMode": "Export Mode",
       "exportModeDeterministic": "Deterministic",
       "exportModeLegacy": "Legacy"
+    },
+    "commands": {
+      "openAIAssistant": "Open AI Assistant",
+      "openAIAssistantDesc": "Open the AI assistant in the right rail"
     }
   },
   "settingsModal": {
@@ -991,11 +1016,11 @@
     "close": "Close settings",
     "closeDialog": "Close settings dialog",
     "general": "General",
-    "flowpilotAI": "Flowpilot AI",
+    "flowpilotAI": "AI Assistant",
     "shortcuts": "Shortcuts",
     "running": "Running {appName}",
     "generalSettings": "General Settings",
-    "flowpilotConfigurations": "Flowpilot Configurations",
+    "flowpilotConfigurations": "AI Settings",
     "keyboardShortcuts": "Keyboard Shortcuts",
     "canvas": {
       "title": "Canvas",
@@ -1414,7 +1439,7 @@
   "toolbar": {
     "selectMode": "Select Mode (V)",
     "panMode": "Pan Mode (H)",
-    "flowpilot": "Flowpilot",
+    "flowpilot": "AI Assistant (Cmd+K)",
     "templates": "Templates",
     "addItem": "Add Item",
     "addToCanvas": "Add to Canvas",
@@ -1446,8 +1471,8 @@
     "applyingLayout": "Applying layout…",
     "emptyState": {
       "title": "Start Building",
-      "description": "Your canvas is empty. Get started and create a flow. Saved locally on this device. Save named versions regularly for backup.",
-      "generateWithFlowpilot": "Generate with Flowpilot",
+      "description": "Your canvas is empty. Generate a diagram with AI, or start from scratch.",
+      "generateWithFlowpilot": "Generate with AI",
       "browseTemplates": "Browse Templates",
       "addBlankNode": "Add Blank Shape"
     },
@@ -1616,10 +1641,22 @@
     "title": "Playback Studio",
     "description": "Build a guided walkthrough with ordered scenes, stable step timing, and on-canvas preview.",
     "presets": {
-      "smart": { "label": "Smart", "description": "Topology first, then layout tie-breaks" },
-      "topToBottom": { "label": "Top to bottom", "description": "Best for vertical flows and runbooks" },
-      "leftToRight": { "label": "Left to right", "description": "Best for pipelines and timelines" },
-      "reverse": { "label": "Reverse", "description": "Flip the current visual reading order" }
+      "smart": {
+        "label": "Smart",
+        "description": "Topology first, then layout tie-breaks"
+      },
+      "topToBottom": {
+        "label": "Top to bottom",
+        "description": "Best for vertical flows and runbooks"
+      },
+      "leftToRight": {
+        "label": "Left to right",
+        "description": "Best for pipelines and timelines"
+      },
+      "reverse": {
+        "label": "Reverse",
+        "description": "Flip the current visual reading order"
+      }
     },
     "scenesTitle": "Scenes",
     "scenesDescription": "Scenes control which steps belong together and what order they preview in.",
