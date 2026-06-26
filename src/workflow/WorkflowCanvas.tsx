@@ -11,13 +11,14 @@ import { createWorkflowNode } from './dnd/createWorkflowNode';
 import { useWorkflowDnD } from './dnd/useWorkflowDnD';
 import { isValidWorkflowConnection } from './graph/workflowConnectionRules';
 import { workflowNodeTypes } from './nodes/workflowNodeTypes';
+import { WorkflowZoomControls } from './panels/WorkflowZoomControls';
 import { useWorkflowStore } from './store/workflowStore';
 
 function WorkflowCanvasInner(): React.ReactElement {
   const { t } = useTranslation();
   const { addToast } = useToast();
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const { screenToFlowPosition } = useReactFlow();
+  const { screenToFlowPosition, fitView } = useReactFlow();
   const { draggingKind, cancelDrag } = useWorkflowDnD();
 
   const workflowNodes = useWorkflowStore((state) => state.workflowNodes);
@@ -37,6 +38,10 @@ function WorkflowCanvasInner(): React.ReactElement {
       })),
     [selectedNodeId, workflowNodes]
   );
+
+  useEffect(() => {
+    fitView({ padding: 0.2, duration: 0 });
+  }, [fitView]);
 
   useEffect(() => {
     if (!draggingKind) {
@@ -104,12 +109,14 @@ function WorkflowCanvasInner(): React.ReactElement {
         isValidConnection={isValidConnection}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
-        fitView
+        autoPanOnNodeDrag={false}
+        autoPanOnConnect={false}
         proOptions={{ hideAttribution: true }}
         className="h-full w-full"
       >
         <Background gap={16} size={1} color="rgba(59, 130, 246, 0.1)" />
       </ReactFlow>
+      <WorkflowZoomControls />
       {nodes.length === 0 ? (
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
           <p className="text-base font-semibold text-[var(--brand-text)]">
