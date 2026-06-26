@@ -1,0 +1,37 @@
+import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, expect, it } from 'vitest';
+import { ReactFlowProvider } from '@/lib/reactflowCompat';
+import { ToastProvider } from '@/components/ui/ToastContext';
+import { WorkflowEditor } from './WorkflowEditor';
+import { useWorkflowStore } from './store/workflowStore';
+
+describe('WorkflowEditor', () => {
+  beforeEach(() => {
+    useWorkflowStore.setState({
+      mode: 'workflow',
+      workflowNodes: [],
+      workflowEdges: [],
+      selectedNodeId: null,
+    });
+    global.ResizeObserver = class ResizeObserver {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    } as typeof ResizeObserver;
+  });
+
+  it('renders the shell: mode selector + 4 node library cards', () => {
+    render(
+      <ToastProvider>
+        <ReactFlowProvider>
+          <WorkflowEditor onGoHome={() => {}} />
+        </ReactFlowProvider>
+      </ToastProvider>
+    );
+    expect(screen.getAllByRole('tab')).toHaveLength(2);
+    const icons = ['📝', '🤖', '🔍', '📤'];
+    for (const icon of icons) {
+      expect(screen.getByText(icon)).toBeInTheDocument();
+    }
+  });
+});
