@@ -11,6 +11,6 @@ async function main(): Promise<void> {
 
 main().catch((error) => {
   // Stderr only — stdout is the MCP protocol channel.
-  console.error('openflowkit-mcp failed to start:', error);
+  console.error('weft-mcp failed to start:', error);
   process.exit(1);
 });

@@ -3,10 +3,10 @@ import { inflate } from 'pako';
 import { buildViewerUrl } from '../src/lib/viewerUrl.js';
 
 describe('buildViewerUrl', () => {
-  it('encodes DSL into the OpenFlowKit viewer URL with pako compression', () => {
+  it('encodes DSL into the Weft viewer URL with pako compression', () => {
     const dsl = 'flow: Hello\n[start] s\n[end] e\ns -> e';
     const url = buildViewerUrl(dsl);
-    expect(url).toMatch(/^https:\/\/app\.openflowkit\.com\/#\/view\?flow=~/);
+    expect(url).toMatch(/^http:\/\/localhost:3000\/#\/view\?flow=~/);
 
     const encoded = url.split('flow=')[1]!;
     expect(encoded.startsWith('~')).toBe(true);
