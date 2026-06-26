@@ -38,3 +38,7 @@ docs/en/fix-log.md
 docs/en/next-level-roadmap-*.md
 docs/internal
 docs-site/.astro/
+
+.weft-dev-port
+.weft-dev.pid
+.weft-dev.log
