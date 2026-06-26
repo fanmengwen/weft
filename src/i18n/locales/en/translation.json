@@ -362,7 +362,13 @@
     "applyToSelectedNodes": "Apply to selected nodes",
     "selectFieldToApply": "Select a field to apply",
     "previewSummary": "Preview summary",
-    "selectionSummary": "Selection summary"
+    "selectionSummary": "Selection summary",
+    "addProviderIcon": "Add provider icon",
+    "uploadImage": "Click to Upload Image",
+    "uploadedIcon": "Uploaded icon",
+    "uploadCustomIcon": "Upload custom icon",
+    "replaceUploadedIcon": "Replace uploaded icon",
+    "remove": "Remove"
   },
   "saveStatus": {
     "saved": "Saved"
@@ -1016,7 +1022,12 @@
       "mermaidImportMode": "Mermaid Import Mode",
       "mermaidImportModeRenderer": "Fidelity-first",
       "mermaidImportModeEditable": "Editable-first",
-      "mermaidImportModeDesc": "Controls how Mermaid diagrams are imported to the canvas."
+      "mermaidImportModeDesc": "Controls how Mermaid diagrams are imported to the canvas.",
+      "safetyProfileLabel": "Safety Profile (100 / 300 / 500)",
+      "safetyProfilePerformance": "Performance",
+      "safetyProfileBalanced": "Balanced",
+      "safetyProfileQuality": "Quality",
+      "safetyProfileHint": "Performance starts safety at 100 nodes, Balanced at 300, Quality at 500."
     },
     "analytics": {
       "enableTitle": "Anonymous Launch Analytics",
@@ -1312,10 +1323,51 @@
       "customModelHint": "Enter the exact model ID for your endpoint",
       "privacyTitle": "Privacy & Encryption",
       "risk": {
-        "browserFriendly": "Browser-ready",
-        "proxyLikely": "Proxy likely",
-        "mixed": "Depends on endpoint"
-      }
+        "browserFriendly": {
+          "label": "Browser-friendly",
+          "title": "Usually works well from a local browser session",
+          "detail": "Good default for a local-first app. You still need a valid key and should expect the model to work best on targeted changes, not magic rewrites."
+        },
+        "proxyLikely": {
+          "label": "Proxy likely",
+          "title": "Often needs a server-side proxy",
+          "detail": "Browser-originated requests are commonly blocked or rate-limited. Plan to route this provider through your own backend if requests fail immediately."
+        },
+        "mixed": "Depends on endpoint",
+        "custom": {
+          "label": "Custom setup",
+          "title": "You control the gateway behavior",
+          "detail": "Use the exact model ID and base URL exposed by your endpoint. Local tools often work without an API key, but hosted gateways may still require one."
+        },
+        "setupVaries": {
+          "label": "Setup varies",
+          "title": "May require a proxy or account-specific setup",
+          "detail": "Some accounts work directly in the browser, while others need a proxy, allowlist, or custom gateway."
+        }
+      },
+      "temperature": {
+        "label": "Generation temperature",
+        "hint": "Lower = more precise and consistent. Higher = more creative and varied. Default: 0.2"
+      },
+      "keyStorage": {
+        "label": "Key storage",
+        "persistent": "Persistent",
+        "persistentDesc": "Keep this key on this browser until you clear it manually.",
+        "session": "Session only",
+        "sessionDesc": "Forget this key when the browser session closes. Better for shared or temporary machines.",
+        "sessionNote": "Session-only mode stores AI settings in session storage and clears them when the browser session ends.",
+        "persistentNote": "Persistent mode stores AI settings in local browser storage until you remove them or clear site data.",
+        "forgetHint": "Clear the saved API key from this browser without resetting the selected provider or model.",
+        "forgetKey": "Forget key",
+        "goToConsole": "Go to {{console}}",
+        "byokBadge": "BYOK"
+      },
+      "customModelPlaceholder": "e.g. llama3-70b-8192 or gpt-4o",
+      "customBaseUrlPlaceholder": "https://localhost:11434/v1",
+      "customBaseUrlHelper": "Use a full http:// or https:// base URL.",
+      "privacySessionFooter": "AI settings stay only for this browser session. Close the browser to clear them, or clear the key manually if you are handing the machine to someone else.",
+      "privacyPersistentFooter": "AI settings stay on this browser and device until you remove them. Treat shared browsers as untrusted and clear or rotate keys when needed.",
+      "selectProviderAria": "Select {{name}} as AI provider"
     },
     "brand": {
       "title": "Brand Kits",
@@ -1398,7 +1450,8 @@
       "generateWithFlowpilot": "Generate with Flowpilot",
       "browseTemplates": "Browse Templates",
       "addBlankNode": "Add Blank Shape"
-    }
+    },
+    "viewShortcuts": "View keyboard shortcuts"
   },
   "annotationNode": {
     "placeholder": "*Double click to edit note*"
@@ -1535,7 +1588,22 @@
     "testPromptLabel": "Test prompt",
     "testPromptHint": "Paste into any connected client",
     "copyInstallPrompt": "Copy install prompt",
-    "copyTestPrompt": "Copy test prompt"
+    "copyTestPrompt": "Copy test prompt",
+    "toolGroups": {
+      "author": "Author",
+      "inspect": "Inspect",
+      "discover": "Discover",
+      "validateDsl": "Lint and validate agent-authored DSL",
+      "createViewerUrl": "Turn DSL into a shareable Weft link",
+      "analyzeCodebase": "Summarize codebase structure for diagramming",
+      "findIcon": "Find exact cloud and developer icon slugs",
+      "listStarterTemplates": "List available diagram templates",
+      "getStarterTemplate": "Fetch a specific template by name",
+      "listDiagramNodeTypes": "List supported node types and shapes",
+      "serverInfo": "Server version and capability info"
+    },
+    "toolCount": "{{count}} tool",
+    "toolCount_plural": "{{count}} tools"
   },
   "mcp": {
     "pageTitle": "Connect AI tools",
@@ -1543,5 +1611,65 @@
     "visualAlt": "Your AI client connects to the Weft MCP server over stdio, which provides local diagramming tools.",
     "visualClient": "Your AI client",
     "visualCaption": "Local · stdio · no API key"
+  },
+  "studioPlayback": {
+    "title": "Playback Studio",
+    "description": "Build a guided walkthrough with ordered scenes, stable step timing, and on-canvas preview.",
+    "presets": {
+      "smart": { "label": "Smart", "description": "Topology first, then layout tie-breaks" },
+      "topToBottom": { "label": "Top to bottom", "description": "Best for vertical flows and runbooks" },
+      "leftToRight": { "label": "Left to right", "description": "Best for pipelines and timelines" },
+      "reverse": { "label": "Reverse", "description": "Flip the current visual reading order" }
+    },
+    "scenesTitle": "Scenes",
+    "scenesDescription": "Scenes control which steps belong together and what order they preview in.",
+    "addScene": "Add scene",
+    "timelineTitle": "Timeline",
+    "timelineDescription": "Use the scrubber to preview step order, then fine-tune the selected scene.",
+    "preview": "Preview",
+    "stepOf": "Step {{current}} of {{total}}",
+    "readyToPreview": "Ready to preview",
+    "pause": "Pause",
+    "play": "Play",
+    "previewAction": "Preview",
+    "previousStepAria": "Previous step",
+    "nextStepAria": "Next step",
+    "stopPreviewAria": "Stop preview",
+    "defaultStepDuration": "Default step duration",
+    "defaultStepDurationHint": "Used for new presets and fallback timing",
+    "noTimeline": "No playback timeline yet",
+    "noTimelineHint": "Generate a preset to create scenes and stable step order from the current graph.",
+    "generateSmartTimeline": "Generate smart timeline"
+  },
+  "shareEmbed": {
+    "title": "Share and embed diagram",
+    "description": "Viewer links are read-only and encode the diagram directly in the URL.",
+    "closeAria": "Close share dialog",
+    "viewerLink": "Viewer link",
+    "markdownLink": "Markdown link",
+    "readmeLink": "README link",
+    "embedIframe": "Embed iframe",
+    "openCardViewer": "Open card viewer",
+    "footer": "GitHub README usage should prefer the Markdown link. Blog posts and docs can use the iframe snippet with `size=card` or `size=badge`.",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "lintRules": {
+    "title": "Architecture Linting",
+    "subtitle": "Enforce architecture constraints in real time — like ESLint for diagrams.",
+    "ruleFileError": "Rule file error",
+    "allPass": "All rules pass",
+    "nodesChecked": "{{count}} node checked, no violations found.",
+    "nodesChecked_plural": "{{count}} nodes checked, no violations found.",
+    "violationCount": "{{count}} violation",
+    "violationCount_plural": "{{count}} violations",
+    "export": "Export",
+    "diagramRules": "Diagram rules",
+    "workspaceRules": "Workspace rules",
+    "noDiagramRules": "No diagram-level rules yet.",
+    "workspaceRulesEmpty": "Workspace rules apply to all diagrams. Good for org-wide standards.",
+    "noRulesTitle": "No rules defined yet",
+    "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
+    "browseTemplates": "Browse templates"
   }
 }

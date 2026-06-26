@@ -342,7 +342,13 @@
     "applyToSelectedNodes": "Aplicar a nodos seleccionados",
     "selectFieldToApply": "Seleccionar campo para aplicar",
     "previewSummary": "Resumen de vista previa",
-    "selectionSummary": "Resumen de selección"
+    "selectionSummary": "Resumen de selección",
+    "uploadedIcon": "Uploaded icon",
+    "remove": "Remove",
+    "replaceUploadedIcon": "Replace uploaded icon",
+    "uploadCustomIcon": "Upload custom icon",
+    "uploadImage": "Click to Upload Image",
+    "addProviderIcon": "Add provider icon"
   },
   "saveStatus": {
     "saved": "Guardado"
@@ -923,7 +929,12 @@
       "edgeStyleCurved": "Curva",
       "edgeStyleRounded": "Redondeada",
       "edgeStyleSharp": "Aguda",
-      "edgeStyleStraight": "Recta"
+      "edgeStyleStraight": "Recta",
+      "safetyProfileLabel": "Safety Profile (100 / 300 / 500)",
+      "safetyProfilePerformance": "Performance",
+      "safetyProfileBalanced": "Balanced",
+      "safetyProfileQuality": "Quality",
+      "safetyProfileHint": "Performance starts safety at 100 nodes, Balanced at 300, Quality at 500."
     },
     "ai": {
       "provider": "Proveedor",
@@ -991,9 +1002,27 @@
       "customHeadersEmpty": "No hay encabezados personalizados configurados.",
       "customHeadersSecurity": "Los valores de los encabezados se almacenan localmente en tu perfil del navegador.",
       "risk": {
-        "browserFriendly": "Listo para navegador",
-        "proxyLikely": "Probablemente requiere proxy",
-        "mixed": "Depende del endpoint"
+        "browserFriendly": {
+          "label": "Browser-friendly",
+          "title": "Usually works well from a local browser session",
+          "detail": "Good default for a local-first app. You still need a valid key and should expect the model to work best on targeted changes, not magic rewrites."
+        },
+        "proxyLikely": {
+          "label": "Proxy likely",
+          "title": "Often needs a server-side proxy",
+          "detail": "Browser-originated requests are commonly blocked or rate-limited. Plan to route this provider through your own backend if requests fail immediately."
+        },
+        "mixed": "Depende del endpoint",
+        "custom": {
+          "label": "Custom setup",
+          "title": "You control the gateway behavior",
+          "detail": "Use the exact model ID and base URL exposed by your endpoint. Local tools often work without an API key, but hosted gateways may still require one."
+        },
+        "setupVaries": {
+          "label": "Setup varies",
+          "title": "May require a proxy or account-specific setup",
+          "detail": "Some accounts work directly in the browser, while others need a proxy, allowlist, or custom gateway."
+        }
       },
       "models": {
         "gemini": {
@@ -1218,7 +1247,30 @@
         "control": "Full control over cost and rate limits",
         "flexibility": "Switch providers anytime without re-linking",
         "cuttingEdge": "Access cutting-edge models as soon as they launch"
-      }
+      },
+      "selectProviderAria": "Select {{name}} as AI provider",
+      "keyStorage": {
+        "byokBadge": "BYOK",
+        "label": "Key storage",
+        "persistent": "Persistent",
+        "persistentDesc": "Keep this key on this browser until you clear it manually.",
+        "session": "Session only",
+        "sessionDesc": "Forget this key when the browser session closes. Better for shared or temporary machines.",
+        "sessionNote": "Session-only mode stores AI settings in session storage and clears them when the browser session ends.",
+        "persistentNote": "Persistent mode stores AI settings in local browser storage until you remove them or clear site data.",
+        "forgetHint": "Clear the saved API key from this browser without resetting the selected provider or model.",
+        "forgetKey": "Forget key",
+        "goToConsole": "Go to {{console}}"
+      },
+      "customModelPlaceholder": "e.g. llama3-70b-8192 or gpt-4o",
+      "temperature": {
+        "label": "Generation temperature",
+        "hint": "Lower = more precise and consistent. Higher = more creative and varied. Default: 0.2"
+      },
+      "customBaseUrlPlaceholder": "https://localhost:11434/v1",
+      "customBaseUrlHelper": "Use a full http:// or https:// base URL.",
+      "privacySessionFooter": "AI settings stay only for this browser session. Close the browser to clear them, or clear the key manually if you are handing the machine to someone else.",
+      "privacyPersistentFooter": "AI settings stay on this browser and device until you remove them. Treat shared browsers as untrusted and clear or rotate keys when needed."
     },
     "brand": {
       "title": "Kits de marca",
@@ -1309,7 +1361,8 @@
       "browseTemplates": "Explorar plantillas",
       "addBlankNode": "Agregar forma en blanco"
     },
-    "dslExportSkippedEdges": "Se omitieron {{count}} arista(s) no válidas en la exportación DSL."
+    "dslExportSkippedEdges": "Se omitieron {{count}} arista(s) no válidas en la exportación DSL.",
+    "viewShortcuts": "View keyboard shortcuts"
   },
   "annotationNode": {
     "placeholder": "*Doble clic para editar la nota*"
@@ -1540,7 +1593,8 @@
     "testPromptHint": "Pega en cualquier cliente conectado",
     "copyInstallPrompt": "Copiar prompt de instalación",
     "copyTestPrompt": "Copiar prompt de prueba",
-    "comingSoon": "La integración MCP está en la hoja de ruta. Esta versión se centra en generación con IA, edición y exportación en el lienzo."
+    "comingSoon": "La integración MCP está en la hoja de ruta. Esta versión se centra en generación con IA, edición y exportación en el lienzo.",
+    "toolCount": "{{count}} tool"
   },
   "mcp": {
     "pageTitle": "Connect AI tools",
@@ -1548,5 +1602,57 @@
     "visualAlt": "Your AI client connects to the Weft MCP server over stdio, which provides local diagramming tools.",
     "visualClient": "Your AI client",
     "visualCaption": "Local · stdio · no API key"
+  },
+  "shareEmbed": {
+    "title": "Share and embed diagram",
+    "description": "Viewer links are read-only and encode the diagram directly in the URL.",
+    "closeAria": "Close share dialog",
+    "viewerLink": "Viewer link",
+    "copy": "Copy",
+    "copied": "Copied",
+    "markdownLink": "Markdown link",
+    "readmeLink": "README link",
+    "embedIframe": "Embed iframe",
+    "openCardViewer": "Open card viewer",
+    "footer": "GitHub README usage should prefer the Markdown link. Blog posts and docs can use the iframe snippet with `size=card` or `size=badge`."
+  },
+  "studioPlayback": {
+    "title": "Playback Studio",
+    "description": "Build a guided walkthrough with ordered scenes, stable step timing, and on-canvas preview.",
+    "scenesTitle": "Scenes",
+    "scenesDescription": "Scenes control which steps belong together and what order they preview in.",
+    "addScene": "Add scene",
+    "timelineTitle": "Timeline",
+    "timelineDescription": "Use the scrubber to preview step order, then fine-tune the selected scene.",
+    "preview": "Preview",
+    "stepOf": "Step {{current}} of {{total}}",
+    "readyToPreview": "Ready to preview",
+    "previousStepAria": "Previous step",
+    "pause": "Pause",
+    "play": "Play",
+    "previewAction": "Preview",
+    "nextStepAria": "Next step",
+    "stopPreviewAria": "Stop preview",
+    "defaultStepDuration": "Default step duration",
+    "defaultStepDurationHint": "Used for new presets and fallback timing",
+    "noTimeline": "No playback timeline yet",
+    "noTimelineHint": "Generate a preset to create scenes and stable step order from the current graph.",
+    "generateSmartTimeline": "Generate smart timeline"
+  },
+  "lintRules": {
+    "title": "Architecture Linting",
+    "subtitle": "Enforce architecture constraints in real time — like ESLint for diagrams.",
+    "ruleFileError": "Rule file error",
+    "allPass": "All rules pass",
+    "nodesChecked": "{{count}} node checked, no violations found.",
+    "violationCount": "{{count}} violation",
+    "export": "Export",
+    "diagramRules": "Diagram rules",
+    "noDiagramRules": "No diagram-level rules yet.",
+    "workspaceRules": "Workspace rules",
+    "workspaceRulesEmpty": "Workspace rules apply to all diagrams. Good for org-wide standards.",
+    "noRulesTitle": "No rules defined yet",
+    "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
+    "browseTemplates": "Browse templates"
   }
 }

@@ -23,12 +23,12 @@ function getRiskStyles(providerRisk: 'browser_friendly' | 'proxy_likely' | 'mixe
 
 function getRiskLabel(t: (key: string, options?: Record<string, unknown>) => string, providerRisk: 'browser_friendly' | 'proxy_likely' | 'mixed'): string {
     if (providerRisk === 'browser_friendly') {
-        return t('settingsModal.ai.risk.browserFriendly', { defaultValue: 'Browser-ready' });
+        return t('settingsModal.ai.risk.browserFriendly.label');
     }
     if (providerRisk === 'proxy_likely') {
-        return t('settingsModal.ai.risk.proxyLikely', { defaultValue: 'Proxy likely' });
+        return t('settingsModal.ai.risk.proxyLikely.label');
     }
-    return t('settingsModal.ai.risk.mixed', { defaultValue: 'Depends on endpoint' });
+    return t('settingsModal.ai.risk.mixed');
 }
 
 export function ProviderSection({
@@ -60,7 +60,7 @@ export function ProviderSection({
                             key={provider.id}
                             onClick={() => onSelectProvider(provider.id)}
                             title={provider.name}
-                            aria-label={`Select ${provider.name} as AI provider`}
+                            aria-label={t('settingsModal.ai.selectProviderAria', { name: provider.name })}
                             className={`group relative flex h-[72px] w-[72px] shrink-0 flex-col items-center justify-center rounded-[var(--radius-xl)] border transition-all duration-200 ${buttonClass}`}
                         >
                             <div className={`pointer-events-none transition-transform duration-200 ${iconWrapperClass}`}>
@@ -90,7 +90,7 @@ export function ProviderSection({
                 >
                     {getRiskLabel(t, providerRisk)}
                 </span>
-                {providerMeta.id === 'custom' && <span className="rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-1.5 py-0.5 text-[9px] font-medium text-[var(--brand-secondary)]">BYOK</span>}
+                {providerMeta.id === 'custom' && <span className="rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-1.5 py-0.5 text-[9px] font-medium text-[var(--brand-secondary)]">{t('settingsModal.ai.keyStorage.byokBadge')}</span>}
             </div>
         </div>
     );
