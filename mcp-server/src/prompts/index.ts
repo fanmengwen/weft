@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 
 /**
  * Prompts are reusable templates that MCP clients can offer users as
- * starting points. They steer the model toward the right OpenFlowKit tool
+ * starting points. They steer the model toward the right Weft tool
  * with the right arguments.
  */
 export function registerPrompts(server: McpServer): void {
@@ -26,7 +26,7 @@ export function registerPrompts(server: McpServer): void {
           content: {
             type: 'text' as const,
             text:
-              `Read \`openflowkit://docs/dsl-cheatsheet\`, then write OpenFlow DSL yourself for this flowchart.\n\n` +
+              `Read \`weft://docs/dsl-cheatsheet\`, then write OpenFlow DSL yourself for this flowchart.\n\n` +
               `Description:\n${description}\n\n` +
               `Call \`validate_openflow_dsl\` on your DSL. Fix any errors. Then call \`create_viewer_url\` and return the final DSL, lint status, and viewer URL.`,
           },
@@ -51,7 +51,7 @@ export function registerPrompts(server: McpServer): void {
           content: {
             type: 'text' as const,
             text:
-              `Read \`openflowkit://docs/dsl-cheatsheet\`, then convert this Mermaid source into OpenFlow DSL yourself.\n\n` +
+              `Read \`weft://docs/dsl-cheatsheet\`, then convert this Mermaid source into OpenFlow DSL yourself.\n\n` +
               `Mermaid source:\n\`\`\`mermaid\n${mermaidSource}\n\`\`\`\n\n` +
               `Preserve direction, node labels, edge labels, and edge emphasis where possible. Call \`validate_openflow_dsl\`, fix any errors, then call \`create_viewer_url\`. Return the final DSL, lint status, and viewer URL.`,
           },
@@ -76,7 +76,7 @@ export function registerPrompts(server: McpServer): void {
           content: {
             type: 'text' as const,
             text:
-              `Call \`analyze_codebase\` on rootPath=\`${rootPath}\`, then read \`openflowkit://docs/dsl-cheatsheet\`.\n\n` +
+              `Call \`analyze_codebase\` on rootPath=\`${rootPath}\`, then read \`weft://docs/dsl-cheatsheet\`.\n\n` +
               `Write an OpenFlow DSL architecture diagram yourself from the scan. Use \`find_icon\` before assigning architecture icon slugs. Call \`validate_openflow_dsl\`, fix any errors, then call \`create_viewer_url\`.\n\n` +
               `Return the final DSL, lint status, viewer URL, and a short architecture summary.`,
           },
