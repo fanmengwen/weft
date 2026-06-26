@@ -141,6 +141,7 @@ export interface FlowEditorChromeProps {
     onAddNode: () => void;
     onSuggestionClick?: (prompt: string) => void;
   };
+  elementRail?: React.ReactNode;
 }
 
 export function FlowEditorChrome({
@@ -158,6 +159,7 @@ export function FlowEditorChrome({
   playback,
   toolbar,
   emptyState,
+  elementRail,
 }: FlowEditorChromeProps): React.ReactElement {
   const topNavProps = {
     pages,
@@ -247,6 +249,7 @@ export function FlowEditorChrome({
       <div className="flex min-h-0 flex-1 min-w-0 pt-14">
         <div className="relative min-w-0 flex-1">
           <ErrorBoundary className="h-full">{canvas}</ErrorBoundary>
+          {toolbar.isVisible ? elementRail : null}
           <Suspense fallback={null}>
             <LazyDiffModeBanner />
           </Suspense>

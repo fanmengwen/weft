@@ -1453,6 +1453,10 @@
     "closeAriaLabel": "关闭快捷键窗口",
     "proTip": "提示：按住 <key>Shift</key> 可加入选择或拖出选择框。"
   },
+  "elementPalette": {
+    "shapes": "形状",
+    "dragHint": "拖到画布添加，或点击居中添加"
+  },
   "toolbar": {
     "selectMode": "选择模式 (V)",
     "panMode": "平移模式 (H)",

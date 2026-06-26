@@ -1509,6 +1509,10 @@
     "closeAriaLabel": "Close shortcuts modal",
     "proTip": "Pro tip: Hold <key>Shift</key> to add to selection or drag a selection box."
   },
+  "elementPalette": {
+    "shapes": "Shapes",
+    "dragHint": "Drag onto canvas, or click to add at center"
+  },
   "toolbar": {
     "selectMode": "Select Mode (V)",
     "panMode": "Pan Mode (H)",

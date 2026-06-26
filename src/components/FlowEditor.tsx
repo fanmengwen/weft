@@ -23,6 +23,8 @@ import { resolveLayoutDirection } from '@/components/flow-canvas/pasteHelpers';
 import { buildMermaidDiagnosticsSnapshot } from '@/services/mermaid/diagnosticsSnapshot';
 import { normalizeParseDiagnostics } from '@/services/mermaid/diagnosticFormatting';
 import { useMermaidDiagnosticsActions } from '@/store/selectionHooks';
+import { ElementRail } from '@/components/element-palette/ElementRail';
+import { buildAddItemActionsFromToolbar } from '@/components/add-items/buildAddItemActions';
 
 interface FlowEditorProps {
   onGoHome: () => void;
@@ -59,6 +61,15 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
     flowEditorController,
     t,
   } = useFlowEditorScreenModel({ onGoHome });
+  const toolbar = flowEditorController.chrome.toolbar;
+  const elementRail = (
+    <ElementRail
+      addItemActions={buildAddItemActionsFromToolbar(toolbar)}
+      getCenter={toolbar.getCenter}
+      isVisible={toolbar.isVisible}
+      isInteractive={!toolbar.isCommandBarOpen && !toolbar.isStudioOpen}
+    />
+  );
   const cinematicExportTheme = resolveCinematicExportTheme(cinematicExportState.backgroundMode);
   const mermaidRecoverySource = importRecoveryState?.report.source === 'mermaid'
     ? (importRecoveryState.report.originalSource ?? mermaidDiagnostics?.originalSource)
@@ -212,6 +223,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
             isLayouting={isLayouting}
             playback={flowEditorController.chrome.playback}
             toolbar={flowEditorController.chrome.toolbar}
+            elementRail={elementRail}
             emptyState={flowEditorController.chrome.emptyState}
           />
 
