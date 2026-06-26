@@ -15,7 +15,7 @@ import {
   createFlowEditorImportRouteState,
   type FlowEditorRouteState,
 } from '@/app/routeState';
-import { DocsSiteRedirect } from '@/components/app/DocsSiteRedirect';
+
 import { RouteLoadingFallback } from '@/components/app/RouteLoadingFallback';
 import { MobileWorkspaceGate } from '@/components/app/MobileWorkspaceGate';
 import { CinematicExportProvider } from '@/context/CinematicExportContext';
@@ -165,7 +165,7 @@ function EditorRouteGate({ children }: { children: React.ReactNode }): React.JSX
   const navigate = useNavigate();
 
   return (
-    <MobileWorkspaceGate onOpenDocs={() => navigate('/docs')} onGoHome={() => navigate('/home')}>
+    <MobileWorkspaceGate onGoHome={() => navigate('/home')}>
       {children}
     </MobileWorkspaceGate>
   );
@@ -241,9 +241,8 @@ function App(): React.JSX.Element {
               </EditorRouteGate>
             }
           />
-          <Route path="/docs" element={<DocsSiteRedirect />} />
-          <Route path="/docs/:slug" element={<DocsSiteRedirect />} />
-          <Route path="/docs/:lang/:slug" element={<DocsSiteRedirect />} />
+          <Route path="/docs" element={<Navigate to="/home" replace />} />
+          <Route path="/docs/*" element={<Navigate to="/home" replace />} />
         </Routes>
 
         {isShortcutsHelpOpen ? (

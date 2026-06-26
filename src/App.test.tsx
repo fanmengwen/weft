@@ -35,10 +35,6 @@ vi.mock('@/components/app/MobileWorkspaceGate', () => ({
   MobileWorkspaceGate: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-vi.mock('@/components/app/DocsSiteRedirect', () => ({
-  DocsSiteRedirect: () => <div data-testid="docs-redirect" />,
-}));
-
 function resetEmptyWorkspace(): void {
   useFlowStore.setState({
     ...useFlowStore.getInitialState(),
