@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/Button';
 import { Tooltip } from '../Tooltip';
 import type { WorkspaceDocumentPreview } from '@/store/workspaceDocumentModel';
+import { getFlowDisplayName } from '@/lib/flowDisplayName';
 import { recordOnboardingEvent } from '@/services/onboarding/events';
 
 const AUTOSAVED_LABEL = 'Autosaved';
@@ -243,7 +244,7 @@ export function HomeDashboard({
                 </div>
                 <div className="flex flex-col p-4 bg-[var(--brand-surface)] transition-colors group-hover:bg-[color-mix(in_srgb,var(--brand-surface),white_2%)]">
                   <h3 className="font-semibold text-[13.5px] text-[var(--brand-text)] tracking-tight truncate mb-1.5 group-hover:text-[var(--brand-primary)] transition-colors">
-                    {flow.name}
+                    {getFlowDisplayName(flow.name, t)}
                   </h3>
                   <div className="flex items-center gap-2 text-[12px] font-medium text-[var(--brand-secondary)]">
                     <span>{formatUpdatedAt(flow.updatedAt)}</span>

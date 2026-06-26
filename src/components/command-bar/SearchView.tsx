@@ -3,6 +3,7 @@ import { useReactFlow } from '@/lib/reactflowCompat';
 import type { FlowNode } from '@/lib/types';
 import { Search, Filter } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { getFlowDisplayName } from '@/lib/flowDisplayName';
 import { useNavigate } from 'react-router-dom';
 import { SearchField } from '../ui/SearchField';
 import { SegmentedTabs } from '../ui/SegmentedTabs';
@@ -307,7 +308,7 @@ export const SearchView = ({
                         </div>
                         {scope === 'all' && (
                             <div className="rounded bg-[var(--brand-surface)] px-1.5 py-0.5 text-[10px] text-[var(--brand-secondary)]">
-                                {tabName}
+                                {getFlowDisplayName(tabName, t)}
                             </div>
                         )}
                     </div>
