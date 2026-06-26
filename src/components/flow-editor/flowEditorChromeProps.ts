@@ -143,13 +143,15 @@ export function buildFlowEditorPlaybackProps({
 
 export function buildFlowEditorEmptyStateProps({
   nodes,
+  editorMode,
+  isCommandBarOpen,
   t,
   openStudioPanel,
   openCommandBar,
   handleAddNode,
   setPendingAIPrompt,
 }: BuildEmptyStateParams): FlowEditorChromeProps['emptyState'] | undefined {
-  if (nodes.length > 0) {
+  if (nodes.length > 0 || editorMode === 'studio' || isCommandBarOpen) {
     return undefined;
   }
 
@@ -376,13 +378,15 @@ export function useFlowEditorChromeProps(
     () =>
       buildFlowEditorEmptyStateProps({
         nodes,
+        editorMode,
+        isCommandBarOpen,
         t,
         openStudioPanel,
         openCommandBar,
         handleAddNode,
         setPendingAIPrompt,
       }),
-    [nodes, t, openStudioPanel, openCommandBar, handleAddNode, setPendingAIPrompt]
+    [nodes, editorMode, isCommandBarOpen, t, openStudioPanel, openCommandBar, handleAddNode, setPendingAIPrompt]
   );
 
   return {
