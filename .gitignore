@@ -47,3 +47,8 @@ docs-site/.astro/
 .claude/skills/
 .codex-skill-edits/
 .playwright-mcp/
+
+# Worktree local dev (see weft-private/docs/WORKTREE-VERIFY.md)
+.weft-dev-port
+.weft-dev.pid
+.weft-dev.log
