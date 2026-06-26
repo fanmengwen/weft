@@ -3,8 +3,6 @@ import type { FlowEdge, FlowNode, FlowSnapshot } from '@/lib/types';
 import type {
   CommandBarView,
   FlowEditorMode,
-  StudioCodeMode,
-  StudioTab,
 } from '@/hooks/useFlowEditorUIState';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { FlowTemplate } from '@/services/templates';
@@ -30,7 +28,6 @@ export interface CommandBarPanelBuilderParams {
   ) => Promise<void>;
   handleInsertTemplate: (template: FlowTemplate) => void;
   openStudioAI: () => void;
-  openStudioCode: (codeMode: StudioCodeMode) => void;
   openStudioPlayback: () => void;
   openArchitectureRulesPanel: () => void;
   commandBarView: CommandBarView;
@@ -98,7 +95,6 @@ export interface PropertiesRailBuilderParams {
   handleGenerateEntityFields: FlowEditorPanelsProps['properties']['onGenerateEntityFields'];
   handleSuggestArchitectureNode: FlowEditorPanelsProps['properties']['onSuggestArchitectureNode'];
   handleConvertEntitySelectionToClassDiagram: FlowEditorPanelsProps['properties']['onConvertEntitySelectionToClassDiagram'];
-  handleOpenMermaidCodeEditor: FlowEditorPanelsProps['properties']['onOpenMermaidCodeEditor'];
   clearSelection: () => void;
 }
 
@@ -122,10 +118,6 @@ export interface StudioRailBuilderParams {
   selectedNode: FlowNode | null;
   selectedNodeCount: number;
   setCanvasMode: () => void;
-  studioTab: StudioTab;
-  setStudioTab: (tab: StudioTab) => void;
-  studioCodeMode: StudioCodeMode;
-  setStudioCodeMode: (mode: StudioCodeMode) => void;
   playback: FlowEditorPanelsProps['studio']['playback'];
   initialPrompt?: string;
   onInitialPromptConsumed?: () => void;
@@ -166,7 +158,6 @@ export function buildCommandBarPanelProps({
   onLayout,
   handleInsertTemplate,
   openStudioAI,
-  openStudioCode,
   openStudioPlayback,
   openArchitectureRulesPanel,
   commandBarView,
@@ -203,8 +194,6 @@ export function buildCommandBarPanelProps({
     onLayout,
     onSelectTemplate: handleInsertTemplate,
     onOpenStudioAI: openStudioAI,
-    onOpenStudioOpenFlow: () => openStudioCode('openflow'),
-    onOpenStudioMermaid: () => openStudioCode('mermaid'),
     onOpenStudioPlayback: openStudioPlayback,
     onOpenArchitectureRules: openArchitectureRulesPanel,
     initialView: commandBarView,
@@ -289,7 +278,6 @@ export function buildPropertiesRailProps({
   handleGenerateEntityFields,
   handleSuggestArchitectureNode,
   handleConvertEntitySelectionToClassDiagram,
-  handleOpenMermaidCodeEditor,
   clearSelection,
 }: PropertiesRailBuilderParams): FlowEditorPanelsProps['properties'] {
   return {
@@ -315,7 +303,6 @@ export function buildPropertiesRailProps({
     onGenerateEntityFields: handleGenerateEntityFields,
     onSuggestArchitectureNode: handleSuggestArchitectureNode,
     onConvertEntitySelectionToClassDiagram: handleConvertEntitySelectionToClassDiagram,
-    onOpenMermaidCodeEditor: handleOpenMermaidCodeEditor,
     onClose: clearSelection,
   };
 }
@@ -340,10 +327,6 @@ export function buildStudioRailProps({
   selectedNode,
   selectedNodeCount,
   setCanvasMode,
-  studioTab,
-  setStudioTab,
-  studioCodeMode,
-  setStudioCodeMode,
   playback,
   initialPrompt,
   onInitialPromptConsumed,
@@ -368,10 +351,6 @@ export function buildStudioRailProps({
     selectedNode,
     selectedNodeCount,
     onViewProperties: setCanvasMode,
-    activeTab: studioTab,
-    onTabChange: setStudioTab,
-    codeMode: studioCodeMode,
-    onCodeModeChange: setStudioCodeMode,
     playback,
     initialPrompt,
     onInitialPromptConsumed,

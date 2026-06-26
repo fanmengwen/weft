@@ -1,7 +1,7 @@
 import React, { useMemo, useEffect, useId } from 'react';
 import { X, ChevronRight } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { FLOWPILOT_NAME } from '@/lib/brand';
+import { AI_ASSISTANT_NAME } from '@/lib/brand';
 import { Button } from '../ui/Button';
 import { CommandItem, CommandView } from './types';
 import { SearchField } from '../ui/SearchField';
@@ -201,8 +201,8 @@ export const RootView = ({
           aria-autocomplete="list"
           aria-label={t('commandBar.root.searchAria', 'Search command bar actions')}
           placeholder={t('commandBar.root.searchPlaceholder', {
-            appName: FLOWPILOT_NAME,
-            defaultValue: `Search actions, ${FLOWPILOT_NAME}, code, or canvas tools...`,
+            appName: AI_ASSISTANT_NAME,
+            defaultValue: `Search actions, ${AI_ASSISTANT_NAME}, or canvas tools...`,
           })}
           autoFocus
           trailingContent={

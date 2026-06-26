@@ -5,8 +5,6 @@ import { useCommandBarCommands } from './useCommandBarCommands';
 describe('useCommandBarCommands', () => {
     it('exposes Studio launcher actions from the root command list', () => {
         const onOpenStudioAI = vi.fn();
-        const onOpenStudioOpenFlow = vi.fn();
-        const onOpenStudioMermaid = vi.fn();
         const onOpenArchitectureRules = vi.fn();
 
         const { result } = renderHook(() =>
@@ -20,8 +18,6 @@ describe('useCommandBarCommands', () => {
                 onUndo: vi.fn(),
                 onRedo: vi.fn(),
                 onOpenStudioAI,
-                onOpenStudioOpenFlow,
-                onOpenStudioMermaid,
                 onOpenArchitectureRules,
                 hasImport: true,
             })
@@ -36,7 +32,6 @@ describe('useCommandBarCommands', () => {
             'search-nodes',
             'layout',
             'architecture-rules',
-            'studio-mermaid',
             'toggle-grid',
             'toggle-snap',
             'undo',
@@ -52,11 +47,8 @@ describe('useCommandBarCommands', () => {
 
         result.current.find((command) => command.id === 'studio-ai')?.action?.();
         result.current.find((command) => command.id === 'architecture-rules')?.action?.();
-        result.current.find((command) => command.id === 'studio-mermaid')?.action?.();
 
         expect(onOpenStudioAI).toHaveBeenCalledTimes(1);
         expect(onOpenArchitectureRules).toHaveBeenCalledTimes(1);
-        expect(onOpenStudioOpenFlow).toHaveBeenCalledTimes(0);
-        expect(onOpenStudioMermaid).toHaveBeenCalledTimes(1);
     });
 });

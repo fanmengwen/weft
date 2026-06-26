@@ -1,5 +1,5 @@
 export const APP_NAME = 'Weft';
-export const FLOWPILOT_NAME = 'Flowpilot';
+export const AI_ASSISTANT_NAME = 'AI Assistant';
 export const APP_DOCS_NAME = `${APP_NAME} Docs`;
 export const APP_ONE_LINE_DESCRIPTION = 'Local-first diagramming with AI-assisted generation, structured editing, and export built in.';
 export const FAVICON_URL = '/logo-weft.svg';

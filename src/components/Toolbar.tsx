@@ -172,7 +172,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           />
         </Tooltip>
 
-        <Tooltip text={t('toolbar.flowpilot', 'Flowpilot (Cmd+K)')}>
+        <Tooltip text={t('toolbar.flowpilot', 'AI Assistant (Cmd+K)')}>
           <Button
             onClick={onToggleStudio}
             disabled={!isInteractive}
