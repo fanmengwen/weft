@@ -1,4 +1,60 @@
 {
+  "workflowMode": {
+    "chart": "Chart",
+    "workflow": "Workflow",
+    "modeSwitcher": "Mode switcher",
+    "switchToChart": "Switch to chart mode",
+    "switchToWorkflow": "Switch to workflow mode",
+    "home": "Back to home",
+    "run": "Run",
+    "runDisabledHint": "Running unlocks in the next phase",
+    "library": {
+      "title": "Nodes",
+      "hint": "Drag onto the canvas to add a node"
+    },
+    "nodes": {
+      "textInput": {
+        "name": "Text Input",
+        "desc": "Provide initial text"
+      },
+      "llm": {
+        "name": "LLM Call",
+        "desc": "Process with an LLM"
+      },
+      "webSearch": {
+        "name": "Web Search",
+        "desc": "Search the web (degradable)"
+      },
+      "output": {
+        "name": "Output",
+        "desc": "Show the final result"
+      }
+    },
+    "properties": {
+      "title": "Properties",
+      "empty": "Select a node on the canvas to edit",
+      "labelField": "Display name",
+      "textField": "Initial text",
+      "textPlaceholder": "Enter the starting text…",
+      "modelField": "Model",
+      "promptField": "Prompt",
+      "promptPlaceholder": "Describe what the LLM should do…",
+      "queryField": "Search query",
+      "queryPlaceholder": "What should we search for?",
+      "outputHint": "The final result will appear here after you run the workflow."
+    },
+    "canvas": {
+      "emptyTitle": "Drag a node from the left to start building",
+      "emptyHint": "Workflow mode · connect nodes after placing"
+    },
+    "log": {
+      "title": "Run Log",
+      "empty": "Logs will appear here after running"
+    },
+    "connect": {
+      "invalid": "This connection is not allowed in a linear workflow"
+    }
+  },
   "common": {
     "save": "Save",
     "cancel": "Cancel",
