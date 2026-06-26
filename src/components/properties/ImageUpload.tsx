@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { Upload } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface ImageUploadProps {
     imageUrl?: string;
@@ -7,6 +8,7 @@ interface ImageUploadProps {
 }
 
 export const ImageUpload: React.FC<ImageUploadProps> = ({ imageUrl, onChange }) => {
+    const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,7 +35,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ imageUrl, onChange }) 
                                 onClick={() => onChange(undefined)}
                                 className="rounded-[var(--radius-sm)] border border-red-500/20 bg-red-500/90 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-red-500"
                             >
-                                Remove
+                                {t('properties.remove')}
                             </button>
                         </div>
                     </div>
@@ -43,7 +45,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({ imageUrl, onChange }) 
                         className="flex w-full flex-col items-center gap-2 rounded-[var(--radius-lg)] border-2 border-dashed border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-4 py-6 text-sm text-[var(--brand-secondary)] transition-all hover:border-[var(--brand-primary-300)] hover:bg-[var(--brand-background)] hover:text-[var(--brand-primary)]"
                     >
                         <Upload className="w-5 h-5" />
-                        <span>Click to Upload Image</span>
+                        <span>{t('properties.uploadImage')}</span>
                     </button>
                 )}
 

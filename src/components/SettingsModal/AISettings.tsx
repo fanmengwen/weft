@@ -49,7 +49,10 @@ function Step({ n, text }: { n: number; text: string }): React.ReactElement {
     );
 }
 
-function getProviderRiskPresentation(provider: AIProvider): {
+function getProviderRiskPresentation(
+    provider: AIProvider,
+    t: (key: string) => string,
+): {
     tone: 'info' | 'warning';
     label: string;
     title: string;
@@ -60,30 +63,32 @@ function getProviderRiskPresentation(provider: AIProvider): {
     if (provider === 'custom') {
         return {
             tone: 'info',
-            label: 'Custom setup',
-            title: 'You control the gateway behavior',
-            detail: 'Use the exact model ID and base URL exposed by your endpoint. Local tools often work without an API key, but hosted gateways may still require one.',
+            label: t('settingsModal.ai.risk.custom.label'),
+            title: t('settingsModal.ai.risk.custom.title'),
+            detail: t('settingsModal.ai.risk.custom.detail'),
         };
     }
 
     if (risk === 'browser_friendly') {
         return {
             tone: 'info',
-            label: 'Browser-friendly',
-            title: 'Usually works well from a local browser session',
-            detail: 'Good default for a local-first app. You still need a valid key and should expect the model to work best on targeted changes, not magic rewrites.',
+            label: t('settingsModal.ai.risk.browserFriendly.label'),
+            title: t('settingsModal.ai.risk.browserFriendly.title'),
+            detail: t('settingsModal.ai.risk.browserFriendly.detail'),
         };
     }
 
     return {
         tone: 'warning',
-        label: risk === 'proxy_likely' ? 'Proxy likely' : 'Setup varies',
+        label: risk === 'proxy_likely'
+            ? t('settingsModal.ai.risk.proxyLikely.label')
+            : t('settingsModal.ai.risk.setupVaries.label'),
         title: risk === 'proxy_likely'
-            ? 'Often needs a server-side proxy'
-            : 'May require a proxy or account-specific setup',
+            ? t('settingsModal.ai.risk.proxyLikely.title')
+            : t('settingsModal.ai.risk.setupVaries.title'),
         detail: risk === 'proxy_likely'
-            ? 'Browser-originated requests are commonly blocked or rate-limited. Plan to route this provider through your own backend if requests fail immediately.'
-            : 'Some accounts work directly in the browser, while others need a proxy, allowlist, or custom gateway.',
+            ? t('settingsModal.ai.risk.proxyLikely.detail')
+            : t('settingsModal.ai.risk.setupVaries.detail'),
     };
 }
 
@@ -96,7 +101,7 @@ export function AISettings(): React.ReactElement {
     const models = PROVIDER_MODELS[currentProvider] ?? [];
     const currentModel = aiSettings.model ?? providerMeta.defaultModel;
     const readiness = getAIReadinessState(aiSettings);
-    const providerRisk = getProviderRiskPresentation(currentProvider);
+    const providerRisk = getProviderRiskPresentation(currentProvider, t);
     const providerRiskIcon = providerRisk.tone === 'warning' ? AlertCircle : Info;
     const providerRiskClassName = providerRisk.tone === 'warning'
         ? 'border-amber-500/25 bg-amber-500/10 text-amber-100'
@@ -125,7 +130,7 @@ export function AISettings(): React.ReactElement {
         <div className="space-y-8 pb-4 animate-in fade-in duration-200 w-full min-w-0">
             {/* Header Text */}
             <div className="space-y-1">
-                <h3 className="text-base font-semibold text-[var(--brand-text)]">{t('settingsModal.flowpilotConfigurations', { defaultValue: 'Flowpilot Configuration' })}</h3>
+                <h3 className="text-base font-semibold text-[var(--brand-text)]">{t('settingsModal.flowpilotConfigurations')}</h3>
                 <p className="text-xs text-[var(--brand-secondary)]">{t('ai.settingsSubtitle')}</p>
             </div>
 
@@ -154,7 +159,7 @@ export function AISettings(): React.ReactElement {
                                 key={p.id}
                                 onClick={() => selectProvider(p.id)}
                                 title={p.name}
-                                aria-label={`Select ${p.name} as AI provider`}
+                                aria-label={t('settingsModal.ai.selectProviderAria', { name: p.name })}
                                 className={`group relative flex h-[72px] w-[72px] shrink-0 flex-col items-center justify-center rounded-[var(--radius-xl)] border transition-all duration-200 ${buttonClass}`}
                             >
                                 <div className={`pointer-events-none transition-transform duration-200 ${iconWrapperClass}`}>
@@ -175,7 +180,7 @@ export function AISettings(): React.ReactElement {
                         <p className="text-xs font-semibold text-[var(--brand-text)]">{providerMeta.name}</p>
                         <p className="text-[10px] text-[var(--brand-secondary)] truncate">{t(`settingsModal.ai.providers.${currentProvider}.hint`)}</p>
                     </div>
-                    {providerMeta.id === 'custom' && <span className="rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-1.5 py-0.5 text-[9px] font-medium text-[var(--brand-secondary)]">BYOK</span>}
+                    {providerMeta.id === 'custom' && <span className="rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-1.5 py-0.5 text-[9px] font-medium text-[var(--brand-secondary)]">{t('settingsModal.ai.keyStorage.byokBadge')}</span>}
                 </div>
                 <div className={`rounded-[var(--radius-lg)] border px-3 py-3 ${providerRiskClassName}`}>
                     <div className="flex items-start gap-2">
@@ -206,7 +211,7 @@ export function AISettings(): React.ReactElement {
                             <Input
                                 value={currentModel === 'custom' ? '' : currentModel}
                                 onChange={e => setAISettings({ model: e.target.value })}
-                                placeholder="e.g. llama3-70b-8192 or gpt-4o"
+                                placeholder={t('settingsModal.ai.customModelPlaceholder')}
                                 error={customModelError}
                                 helperText={t('settingsModal.ai.customModelHint')}
                             />
@@ -230,7 +235,7 @@ export function AISettings(): React.ReactElement {
                 {/* Temperature */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <Label>Generation temperature</Label>
+                    <Label>{t('settingsModal.ai.temperature.label')}</Label>
                     <span className="text-xs font-mono text-[var(--brand-secondary)]">
                       {(aiSettings.temperature ?? 0.2).toFixed(1)}
                     </span>
@@ -245,7 +250,7 @@ export function AISettings(): React.ReactElement {
                     className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-[var(--brand-background)] accent-[var(--brand-primary)]"
                   />
                   <p className="text-[11px] leading-5 text-[var(--brand-secondary)]">
-                    Lower = more precise and consistent. Higher = more creative and varied. Default: 0.2
+                    {t('settingsModal.ai.temperature.hint')}
                   </p>
                 </div>
 
@@ -265,7 +270,7 @@ export function AISettings(): React.ReactElement {
                         />
                     </div>
                     <div className="space-y-2">
-                        <Label>Key storage</Label>
+                        <Label>{t('settingsModal.ai.keyStorage.label')}</Label>
                         <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
                             <button
                                 type="button"
@@ -276,9 +281,9 @@ export function AISettings(): React.ReactElement {
                                         : 'border-[var(--color-brand-border)] bg-[var(--brand-surface)] hover:border-[var(--brand-secondary)]'
                                 }`}
                             >
-                                <p className="text-xs font-semibold text-[var(--brand-text)]">Persistent</p>
+                                <p className="text-xs font-semibold text-[var(--brand-text)]">{t('settingsModal.ai.keyStorage.persistent')}</p>
                                 <p className="mt-1 text-[11px] leading-5 text-[var(--brand-secondary)]">
-                                    Keep this key on this browser until you clear it manually.
+                                    {t('settingsModal.ai.keyStorage.persistentDesc')}
                                 </p>
                             </button>
                             <button
@@ -290,29 +295,29 @@ export function AISettings(): React.ReactElement {
                                         : 'border-[var(--color-brand-border)] bg-[var(--brand-surface)] hover:border-[var(--brand-secondary)]'
                                 }`}
                             >
-                                <p className="text-xs font-semibold text-[var(--brand-text)]">Session only</p>
+                                <p className="text-xs font-semibold text-[var(--brand-text)]">{t('settingsModal.ai.keyStorage.session')}</p>
                                 <p className="mt-1 text-[11px] leading-5 text-[var(--brand-secondary)]">
-                                    Forget this key when the browser session closes. Better for shared or temporary machines.
+                                    {t('settingsModal.ai.keyStorage.sessionDesc')}
                                 </p>
                             </button>
                         </div>
                         <p className="text-[11px] leading-5 text-[var(--brand-secondary)]">
                             {storageMode === 'session'
-                                ? 'Session-only mode stores AI settings in session storage and clears them when the browser session ends.'
-                                : 'Persistent mode stores AI settings in local browser storage until you remove them or clear site data.'}
+                                ? t('settingsModal.ai.keyStorage.sessionNote')
+                                : t('settingsModal.ai.keyStorage.persistentNote')}
                         </p>
                     </div>
                     {aiSettings.apiKey && (
                         <div className="flex items-center justify-between rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-3 py-2.5">
                             <p className="text-[11px] leading-5 text-[var(--brand-secondary)]">
-                                Clear the saved API key from this browser without resetting the selected provider or model.
+                                {t('settingsModal.ai.keyStorage.forgetHint')}
                             </p>
                             <button
                                 type="button"
                                 onClick={() => setAISettings({ apiKey: undefined })}
                                 className="shrink-0 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-2.5 py-1.5 text-[11px] font-semibold text-[var(--brand-text)] transition-colors hover:border-[var(--brand-secondary)] hover:bg-[var(--brand-background)]"
                             >
-                                Forget key
+                                {t('settingsModal.ai.keyStorage.forgetKey')}
                             </button>
                         </div>
                     )}
@@ -332,7 +337,7 @@ export function AISettings(): React.ReactElement {
                                 </a>
                             </div>
                             <div className="px-3 py-2.5 space-y-2">
-                                <Step n={1} text={`Go to ${providerMeta.consoleName}`} />
+                                <Step n={1} text={t('settingsModal.ai.keyStorage.goToConsole', { console: providerMeta.consoleName })} />
                                 <Step n={2} text={t(`settingsModal.ai.providers.${currentProvider}.keySetupNote`)} />
                                 <Step n={3} text={t('settingsModal.ai.pasteKeyStep')} />
                             </div>
@@ -368,9 +373,9 @@ export function AISettings(): React.ReactElement {
                         <Input
                             value={aiSettings.customBaseUrl ?? ''}
                             onChange={e => setAISettings({ customBaseUrl: e.target.value })}
-                            placeholder="https://localhost:11434/v1"
+                            placeholder={t('settingsModal.ai.customBaseUrlPlaceholder')}
                             error={customBaseUrlError}
-                            helperText="Use a full http:// or https:// base URL."
+                            helperText={t('settingsModal.ai.customBaseUrlHelper')}
                         />
                         <p className="text-[11px] text-[var(--brand-secondary)]">
                             <Trans i18nKey="settingsModal.ai.customEndpointMustSupport">
@@ -398,8 +403,8 @@ export function AISettings(): React.ReactElement {
                     </ul>
                     <p className="mt-3 text-[11px] leading-5 text-[var(--brand-secondary)]">
                         {storageMode === 'session'
-                            ? 'AI settings stay only for this browser session. Close the browser to clear them, or clear the key manually if you are handing the machine to someone else.'
-                            : 'AI settings stay on this browser and device until you remove them. Treat shared browsers as untrusted and clear or rotate keys when needed.'}
+                            ? t('settingsModal.ai.privacySessionFooter')
+                            : t('settingsModal.ai.privacyPersistentFooter')}
                     </p>
                 </div>
             </div>

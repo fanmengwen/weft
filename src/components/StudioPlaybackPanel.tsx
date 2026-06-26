@@ -1,5 +1,6 @@
 import React from 'react';
 import { CheckCircle2, Eye, Film, ListOrdered, MoveDown, MoveUp, Plus, RefreshCw, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useEditorPageActions, useEditorPagesState } from '@/store/editorPageHooks';
 import type { FlowEdge, FlowNode, PlaybackState } from '@/lib/types';
 import { createEmptyPlaybackState } from '@/services/playback/model';
@@ -33,11 +34,11 @@ interface StudioPlaybackPanelProps {
     onPlaybackSpeedChange: (durationMs: number) => void;
 }
 
-const PRESET_LABELS: Record<PlaybackGenerationPreset, { label: string; description: string }> = {
-    smart: { label: 'Smart', description: 'Topology first, then layout tie-breaks' },
-    'top-to-bottom': { label: 'Top to bottom', description: 'Best for vertical flows and runbooks' },
-    'left-to-right': { label: 'Left to right', description: 'Best for pipelines and timelines' },
-    reverse: { label: 'Reverse', description: 'Flip the current visual reading order' },
+const PRESET_KEYS: Record<PlaybackGenerationPreset, { labelKey: string; descriptionKey: string }> = {
+    smart: { labelKey: 'studioPlayback.presets.smart.label', descriptionKey: 'studioPlayback.presets.smart.description' },
+    'top-to-bottom': { labelKey: 'studioPlayback.presets.topToBottom.label', descriptionKey: 'studioPlayback.presets.topToBottom.description' },
+    'left-to-right': { labelKey: 'studioPlayback.presets.leftToRight.label', descriptionKey: 'studioPlayback.presets.leftToRight.description' },
+    reverse: { labelKey: 'studioPlayback.presets.reverse.label', descriptionKey: 'studioPlayback.presets.reverse.description' },
 };
 
 function PlaybackPanelSection({
@@ -75,6 +76,7 @@ export function StudioPlaybackPanel({
     playbackSpeed,
     onPlaybackSpeedChange,
 }: StudioPlaybackPanelProps): React.ReactElement {
+    const { t } = useTranslation();
     const { pages, activePageId } = useEditorPagesState();
     const { updatePage } = useEditorPageActions();
     const activePage = pages.find((page) => page.id === activePageId);
@@ -107,27 +109,27 @@ export function StudioPlaybackPanel({
     return (
         <div className="flex h-full min-h-0 flex-col gap-4">
             <PlaybackPanelSection
-                title="Playback Studio"
-                description="Build a guided walkthrough with ordered scenes, stable step timing, and on-canvas preview."
+                title={t('studioPlayback.title')}
+                description={t('studioPlayback.description')}
             >
                 <div className="grid grid-cols-2 gap-2">
-                    {(Object.keys(PRESET_LABELS) as PlaybackGenerationPreset[]).map((preset) => (
+                    {(Object.keys(PRESET_KEYS) as PlaybackGenerationPreset[]).map((preset) => (
                         <button
                             key={preset}
                             type="button"
                             onClick={() => applyPreset(preset)}
                             className="rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-3 py-2 text-left transition-colors hover:border-[var(--brand-primary-200)] hover:bg-[var(--brand-primary-50)]"
                         >
-                            <div className="text-sm font-semibold text-[var(--brand-text)]">{PRESET_LABELS[preset].label}</div>
-                            <div className="mt-1 text-[11px] leading-5 text-[var(--brand-secondary)]">{PRESET_LABELS[preset].description}</div>
+                            <div className="text-sm font-semibold text-[var(--brand-text)]">{t(PRESET_KEYS[preset].labelKey)}</div>
+                            <div className="mt-1 text-[11px] leading-5 text-[var(--brand-secondary)]">{t(PRESET_KEYS[preset].descriptionKey)}</div>
                         </button>
                     ))}
                 </div>
             </PlaybackPanelSection>
 
             <PlaybackPanelSection
-                title="Scenes"
-                description="Scenes control which steps belong together and what order they preview in."
+                title={t('studioPlayback.scenesTitle')}
+                description={t('studioPlayback.scenesDescription')}
             >
                 <div className="space-y-2">
                     {playback.scenes.map((scene) => {
@@ -175,22 +177,24 @@ export function StudioPlaybackPanel({
                     className="mt-3 inline-flex items-center gap-2 rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-3 py-2 text-xs font-semibold text-[var(--brand-text)] transition-colors hover:border-[var(--brand-primary-200)] hover:text-[var(--brand-primary)]"
                 >
                     <Plus className="h-3.5 w-3.5" />
-                    Add scene
+                    {t('studioPlayback.addScene')}
                 </button>
             </PlaybackPanelSection>
 
             <PlaybackPanelSection
-                title="Timeline"
-                description="Use the scrubber to preview step order, then fine-tune the selected scene."
+                title={t('studioPlayback.timelineTitle')}
+                description={t('studioPlayback.timelineDescription')}
             >
                 {hasPlayback ? (
                     <div className="space-y-4">
                         <div className="rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-3 py-3">
                             <div className="flex items-center justify-between gap-3">
                                 <div>
-                                    <div className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">Preview</div>
+                                    <div className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">{t('studioPlayback.preview')}</div>
                                     <div className="mt-1 text-sm font-medium text-[var(--brand-text)]">
-                                        {currentStepIndex >= 0 ? `Step ${scrubValue + 1} of ${Math.max(totalSteps, sceneSteps.length)}` : 'Ready to preview'}
+                                        {currentStepIndex >= 0
+                                            ? t('studioPlayback.stepOf', { current: scrubValue + 1, total: Math.max(totalSteps, sceneSteps.length) })
+                                            : t('studioPlayback.readyToPreview')}
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -198,7 +202,7 @@ export function StudioPlaybackPanel({
                                         type="button"
                                         onClick={onPrev}
                                         className="rounded-full border border-[var(--color-brand-border)] bg-[var(--brand-surface)] p-2 text-[var(--brand-secondary)] hover:text-[var(--brand-text)]"
-                                        aria-label="Previous step"
+                                        aria-label={t('studioPlayback.previousStepAria')}
                                     >
                                         <MoveUp className="h-3.5 w-3.5 rotate-90" />
                                     </button>
@@ -208,13 +212,13 @@ export function StudioPlaybackPanel({
                                         className="inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary)] px-3 py-2 text-xs font-semibold text-white hover:bg-[var(--brand-primary-600)]"
                                     >
                                         <Eye className="h-3.5 w-3.5" />
-                                        {currentStepIndex >= 0 ? (isPlaying ? 'Pause' : 'Play') : 'Preview'}
+                                        {currentStepIndex >= 0 ? (isPlaying ? t('studioPlayback.pause') : t('studioPlayback.play')) : t('studioPlayback.previewAction')}
                                     </button>
                                     <button
                                         type="button"
                                         onClick={onNext}
                                         className="rounded-full border border-[var(--color-brand-border)] bg-[var(--brand-surface)] p-2 text-[var(--brand-secondary)] hover:text-[var(--brand-text)]"
-                                        aria-label="Next step"
+                                        aria-label={t('studioPlayback.nextStepAria')}
                                     >
                                         <MoveDown className="h-3.5 w-3.5 rotate-90" />
                                     </button>
@@ -223,7 +227,7 @@ export function StudioPlaybackPanel({
                                             type="button"
                                             onClick={onStop}
                                             className="rounded-full border border-[var(--color-brand-border)] bg-[var(--brand-surface)] p-2 text-[var(--brand-secondary)] hover:text-red-600"
-                                            aria-label="Stop preview"
+                                            aria-label={t('studioPlayback.stopPreviewAria')}
                                         >
                                             <Film className="h-3.5 w-3.5" />
                                         </button>
@@ -243,8 +247,8 @@ export function StudioPlaybackPanel({
 
                         <div className="flex items-center justify-between gap-3 rounded-[var(--radius-xs)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-3 py-2">
                             <div>
-                                <div className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">Default step duration</div>
-                                <div className="mt-1 text-[11px] text-[var(--brand-secondary)]">Used for new presets and fallback timing</div>
+                                <div className="text-xs font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">{t('studioPlayback.defaultStepDuration')}</div>
+                                <div className="mt-1 text-[11px] text-[var(--brand-secondary)]">{t('studioPlayback.defaultStepDurationHint')}</div>
                             </div>
                             <input
                                 type="number"
@@ -325,15 +329,15 @@ export function StudioPlaybackPanel({
                 ) : (
                     <div className="rounded-[var(--radius-xs)] border border-dashed border-[var(--color-brand-border)] bg-[var(--brand-background)] px-4 py-8 text-center">
                         <ListOrdered className="mx-auto h-6 w-6 text-[var(--brand-secondary)]" />
-                        <div className="mt-3 text-sm font-medium text-[var(--brand-text)]">No playback timeline yet</div>
-                        <div className="mt-1 text-xs text-[var(--brand-secondary)]">Generate a preset to create scenes and stable step order from the current graph.</div>
+                        <div className="mt-3 text-sm font-medium text-[var(--brand-text)]">{t('studioPlayback.noTimeline')}</div>
+                        <div className="mt-1 text-xs text-[var(--brand-secondary)]">{t('studioPlayback.noTimelineHint')}</div>
                         <button
                             type="button"
                             onClick={() => applyPreset('smart')}
                             className="mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--brand-primary)] px-3 py-2 text-xs font-semibold text-white hover:bg-[var(--brand-primary-600)]"
                         >
                             <RefreshCw className="h-3.5 w-3.5" />
-                            Generate smart timeline
+                            {t('studioPlayback.generateSmartTimeline')}
                         </button>
                     </div>
                 )}
