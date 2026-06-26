@@ -1,4 +1,60 @@
 {
+  "workflowMode": {
+    "chart": "图表",
+    "workflow": "工作流",
+    "modeSwitcher": "模式切换",
+    "switchToChart": "切换到图表模式",
+    "switchToWorkflow": "切换到工作流模式",
+    "home": "返回首页",
+    "run": "运行",
+    "runDisabledHint": "运行将在下一阶段开放",
+    "library": {
+      "title": "节点库",
+      "hint": "拖拽到画布添加节点"
+    },
+    "nodes": {
+      "textInput": {
+        "name": "文本输入",
+        "desc": "提供初始文本"
+      },
+      "llm": {
+        "name": "LLM 调用",
+        "desc": "调用大模型处理"
+      },
+      "webSearch": {
+        "name": "Web 搜索",
+        "desc": "联网检索(可降级)"
+      },
+      "output": {
+        "name": "输出",
+        "desc": "展示最终结果"
+      }
+    },
+    "properties": {
+      "title": "属性",
+      "empty": "选中画布上的节点进行编辑",
+      "labelField": "显示名称",
+      "textField": "初始文本",
+      "textPlaceholder": "输入起始文本…",
+      "modelField": "模型",
+      "promptField": "提示词",
+      "promptPlaceholder": "描述希望大模型执行的任务…",
+      "queryField": "搜索关键词",
+      "queryPlaceholder": "输入要检索的内容…",
+      "outputHint": "运行工作流后，最终结果将在此展示。"
+    },
+    "canvas": {
+      "emptyTitle": "从左侧拖入节点开始搭建工作流",
+      "emptyHint": "工作流模式 · 放置后可连线"
+    },
+    "log": {
+      "title": "运行日志",
+      "empty": "运行后将在此显示日志"
+    },
+    "connect": {
+      "invalid": "线性工作流不允许此连接"
+    }
+  },
   "common": {
     "save": "保存",
     "cancel": "取消",

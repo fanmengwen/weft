@@ -24,6 +24,7 @@ import { useFlowStore } from './store';
 import { useEditorPageActions } from '@/store/editorPageHooks';
 import { useWorkspaceDocumentActions, useWorkspaceRouteResolver } from '@/store/documentHooks';
 import { useShortcutHelpOpen } from '@/store/viewHooks';
+import { useWorkflowStore } from '@/workflow/store/workflowStore';
 
 // Import i18n configuration
 import './i18n/config';
@@ -34,6 +35,11 @@ async function loadFlowEditorModule() {
 }
 
 const FlowEditor = lazy(loadFlowEditorModule);
+
+const WorkflowEditor = lazy(async () => {
+  const module = await import('./workflow/WorkflowEditor');
+  return { default: module.WorkflowEditor };
+});
 
 const LazyHomePage = lazy(async () => {
   const module = await import('./components/HomePage');
@@ -75,6 +81,7 @@ function FlowCanvasRoute(): React.JSX.Element {
   const { setActiveDocumentId } = useWorkspaceDocumentActions();
   const { setActivePageId } = useEditorPageActions();
   const { documents, resolveTarget } = useWorkspaceRouteResolver();
+  const mode = useWorkflowStore((state) => state.mode);
 
   useEffect(() => {
     if (!flowId) {
@@ -95,9 +102,13 @@ function FlowCanvasRoute(): React.JSX.Element {
   return (
     <Suspense fallback={<RouteLoadingFallback />}>
       <ReactFlowProvider>
-        <CinematicExportProvider>
-          <FlowEditor onGoHome={() => navigate('/home')} />
-        </CinematicExportProvider>
+        {mode === 'workflow' ? (
+          <WorkflowEditor onGoHome={() => navigate('/home')} />
+        ) : (
+          <CinematicExportProvider>
+            <FlowEditor onGoHome={() => navigate('/home')} />
+          </CinematicExportProvider>
+        )}
       </ReactFlowProvider>
     </Suspense>
   );

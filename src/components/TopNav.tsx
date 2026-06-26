@@ -4,6 +4,7 @@ import type { CinematicExportRequest } from '@/services/export/cinematicExport';
 import { FlowTabs } from './FlowTabs';
 import { TopNavMenu } from './top-nav/TopNavMenu';
 import { TopNavBrand } from './top-nav/TopNavBrand';
+import { ModeSelector } from './top-nav/ModeSelector';
 import { TopNavActions } from './top-nav/TopNavActions';
 import { useTopNavState } from './top-nav/useTopNavState';
 import { APP_NAME, IS_BEVELED } from '@/lib/brand';
@@ -131,6 +132,7 @@ export function TopNav({
                     logoStyle="text"
                     ui={{ showBeta: true }}
                 />
+                <ModeSelector />
             </div>
 
             {/* Center: Tabs */}
