@@ -10,6 +10,7 @@ import { useEdgeInteractions } from '../hooks/useEdgeInteractions';
 import { FlowCanvasSurface } from './flow-canvas/FlowCanvasSurface';
 import { useFlowCanvasMenusAndActions } from './flow-canvas/useFlowCanvasMenusAndActions';
 import { useFlowCanvasDragDrop } from './flow-canvas/useFlowCanvasDragDrop';
+import { buildAddItemActions } from '@/components/add-items/buildAddItemActions';
 import { useFlowCanvasConnectionState } from './flow-canvas/useFlowCanvasConnectionState';
 import { useFlowCanvasPaste } from './flow-canvas/useFlowCanvasPaste';
 import { useFlowCanvasInteractionLod } from './flow-canvas/useFlowCanvasInteractionLod';
@@ -120,6 +121,17 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     onReconnect,
     onNodeDrag,
     handleAddImage,
+    handleAddShape,
+    handleAddAnnotation,
+    handleAddSection,
+    handleAddTextNode,
+    handleAddClassNode,
+    handleAddEntityNode,
+    handleAddMindmapNode,
+    handleAddJourneyNode,
+    handleAddArchitectureNode,
+    handleAddSequenceParticipant,
+    handleAddWireframe,
   } = useFlowOperations(recordHistory, (position, sourceId, sourceHandle, sourceType) => {
     connectMenuSetterRef.current?.({ position, sourceId, sourceHandle, sourceType });
   });
@@ -158,9 +170,40 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     connectMenuSetterRef.current = setConnectMenu;
   }, [setConnectMenu]);
 
+  const addItemActions = useMemo(
+    () =>
+      buildAddItemActions({
+        handleAddShape,
+        handleAddAnnotation,
+        handleAddSection,
+        handleAddTextNode,
+        handleAddClassNode,
+        handleAddEntityNode,
+        handleAddMindmapNode,
+        handleAddJourneyNode,
+        handleAddArchitectureNode,
+        handleAddSequenceParticipant,
+        handleAddWireframe,
+      }),
+    [
+      handleAddShape,
+      handleAddAnnotation,
+      handleAddSection,
+      handleAddTextNode,
+      handleAddClassNode,
+      handleAddEntityNode,
+      handleAddMindmapNode,
+      handleAddJourneyNode,
+      handleAddArchitectureNode,
+      handleAddSequenceParticipant,
+      handleAddWireframe,
+    ]
+  );
+
   const { onDragOver, onDrop } = useFlowCanvasDragDrop({
     screenToFlowPosition,
     handleAddImage,
+    addItemActions,
   });
 
   // --- Keyboard Shortcuts ---
