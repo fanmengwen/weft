@@ -24,7 +24,7 @@ export function WorkflowNodeShell(props: LegacyNodeProps<WorkflowNodeData>): Rea
           id="in"
           type="target"
           position={Position.Left}
-          className="!h-3 !w-3 !border-2 !border-white !bg-[var(--brand-primary)]"
+          className="workflow-handle !h-3 !w-3 !border-2 !border-white !bg-[var(--brand-primary)]"
         />
       ) : null}
       {showSource ? (
@@ -32,7 +32,7 @@ export function WorkflowNodeShell(props: LegacyNodeProps<WorkflowNodeData>): Rea
           id="out"
           type="source"
           position={Position.Right}
-          className="!h-3 !w-3 !border-2 !border-white !bg-[var(--brand-primary)]"
+          className="workflow-handle !h-3 !w-3 !border-2 !border-white !bg-[var(--brand-primary)]"
         />
       ) : null}
       <div className="flex items-center gap-2">

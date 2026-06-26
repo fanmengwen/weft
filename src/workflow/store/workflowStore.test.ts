@@ -49,4 +49,32 @@ describe('useWorkflowStore', () => {
     expect(useWorkflowStore.getState().workflowEdges).toHaveLength(1);
     expect(useFlowStore.getState().edges).toEqual([]);
   });
+
+  it('deletes a node, its edges, and clears selection', () => {
+    const a = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const b = createWorkflowNode('llm', { x: 200, y: 0 });
+    const c = createWorkflowNode('output', { x: 400, y: 0 });
+    useWorkflowStore.getState().setWorkflowNodes([a, b, c]);
+    useWorkflowStore.getState().onWorkflowConnect({
+      source: a.id,
+      target: b.id,
+      sourceHandle: 'out',
+      targetHandle: 'in',
+    });
+    useWorkflowStore.getState().onWorkflowConnect({
+      source: b.id,
+      target: c.id,
+      sourceHandle: 'out',
+      targetHandle: 'in',
+    });
+    useWorkflowStore.getState().setSelectedNodeId(b.id);
+
+    useWorkflowStore.getState().deleteWorkflowNode(b.id);
+
+    expect(useWorkflowStore.getState().workflowNodes).toHaveLength(2);
+    expect(useWorkflowStore.getState().workflowNodes.map((n) => n.id)).toEqual([a.id, c.id]);
+    expect(useWorkflowStore.getState().workflowEdges).toHaveLength(0);
+    expect(useWorkflowStore.getState().selectedNodeId).toBeNull();
+    expect(useFlowStore.getState().nodes).toEqual([]);
+  });
 });

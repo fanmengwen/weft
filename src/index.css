@@ -440,6 +440,19 @@ body {
   transform: translate(-50%, -50%) scale(1.2) !important;
 }
 
+/* Workflow mode: stable handles, no hover scale jitter */
+.react-flow__handle.workflow-handle {
+  transition: opacity 0.15s !important;
+}
+
+.react-flow__handle.workflow-handle:hover {
+  transform: translate(-50%, -50%) !important;
+}
+
+.is-connecting .react-flow__handle.workflow-handle {
+  transform: translate(-50%, -50%) !important;
+}
+
 /* ===== Node Resizer Bounding Box (Miro/Figma style) ===== */
 .flow-node-resizer-line {
   border-color: var(--brand-primary) !important;
