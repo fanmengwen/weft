@@ -1,27 +1,25 @@
 <div align="center">
 
-# OpenFlowKit MCP Server
+# Weft MCP Server
 
 **Give Claude Desktop, Cursor, Windsurf, or any MCP client first-class diagramming tools.**
 
 [![npm](https://img.shields.io/npm/v/@vrun-design/openflowkit-mcp?style=flat-square&color=f97316)](https://www.npmjs.com/package/@vrun-design/openflowkit-mcp)
-[![MIT License](https://img.shields.io/badge/License-MIT-f97316.svg?style=flat-square)](https://github.com/Vrun-design/openflowkit/blob/main/LICENSE)
+[![MIT License](https://img.shields.io/badge/License-MIT-f97316.svg?style=flat-square)](LICENSE)
 [![Node 18+](https://img.shields.io/badge/Node-18%2B-339933.svg?style=flat-square)](https://nodejs.org/)
 
 </div>
 
 ---
 
-OpenFlowKit MCP is **local-first by design** — it runs on your machine over stdio with no API key and no cloud round-trip, and its tools return deterministic output. Your MCP client already has an LLM; this server just gives it diagram-specific tools.
-
-Instead, it gives the agent diagram-specific powers:
+The Weft MCP server is **local-first by design** — it runs on your machine over stdio with no API key and no cloud round-trip, and its tools return deterministic output. Your MCP client already has an LLM; this server gives it diagram-specific powers:
 
 - read the OpenFlow DSL reference
 - inspect starter templates
 - analyze local codebases
 - find exact cloud and developer icon slugs
 - validate agent-authored DSL
-- create shareable OpenFlowKit viewer URLs
+- create shareable diagram viewer URLs
 
 No API keys, no telemetry, no account, no server-side storage.
 
