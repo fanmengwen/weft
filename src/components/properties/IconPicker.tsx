@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Ban, Image as ImageIcon, Upload } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { DomainLibraryCategory, DomainLibraryItem } from '@/services/domainLibrary';
 import { getAssetCategoryDisplayName } from '@/services/assetPresentation';
 import {
@@ -88,6 +89,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
     onSelectProviderIcon,
     onCustomIconChange,
 }) => {
+    const { t } = useTranslation();
     const [iconSearch, setIconSearch] = useState('');
     const [userIconSource, setUserIconSource] = useState<IconSource | null>(null);
     const [userProvider, setUserProvider] = useState<DomainLibraryCategory | null>(null);
@@ -329,20 +331,20 @@ export const IconPicker: React.FC<IconPickerProps> = ({
                             <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-[var(--color-brand-border)] bg-[var(--brand-background)]">
                                 <img src={customIconUrl} alt="custom" className="h-5 w-5 object-contain" />
                             </div>
-                            <span className="flex-1 text-xs text-[var(--brand-secondary)]">Uploaded icon</span>
+                            <span className="flex-1 text-xs text-[var(--brand-secondary)]">{t('properties.uploadedIcon')}</span>
                             <button
                                 type="button"
                                 onClick={() => onCustomIconChange(undefined)}
                                 className="rounded-full border border-red-500/20 bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400 transition-colors hover:bg-red-500/15"
                             >
-                                Remove
+                                {t('properties.remove')}
                             </button>
                         </div>
                     ) : null}
 
                     <label className="flex w-full cursor-pointer items-center gap-2 rounded-[var(--brand-radius)] border border-dashed border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-3 py-2 text-xs text-[var(--brand-secondary)] transition-all hover:border-[var(--brand-primary-400)] hover:bg-[var(--brand-background)] hover:text-[var(--brand-primary)]">
                         <Upload className="h-3.5 w-3.5" />
-                        <span>{customIconUrl ? 'Replace uploaded icon' : 'Upload custom icon'}</span>
+                        <span>{customIconUrl ? t('properties.replaceUploadedIcon') : t('properties.uploadCustomIcon')}</span>
                         <input
                             type="file"
                             accept="image/svg+xml,image/png,image/jpeg,image/webp"
