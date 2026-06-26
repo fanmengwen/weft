@@ -19,7 +19,14 @@ import {
   createPreviewThreadItem,
   createUserThreadItem,
 } from '@/services/flowpilot/thread';
-import type { AssistantThreadItem, AssetGroundingMatch } from '@/services/flowpilot/types';
+import i18n from '@/i18n/config';
+import { threadKey } from '@/services/flowpilot/flowpilotThreadCopy';
+import type {
+  AssistantThreadItem,
+  AssetGroundingMatch,
+  FlowpilotCopyKey,
+  FlowpilotPreviewDetailKey,
+} from '@/services/flowpilot/types';
 import { useFlowStore } from '@/store';
 import { useToast } from '@/components/ui/ToastContext';
 import { toErrorMessage } from './ai-generation/graphComposer';
@@ -54,11 +61,21 @@ export interface ImportDiff {
   addedCount: number;
   removedCount: number;
   updatedCount: number;
-  previewTitle: string;
+  copyKey: FlowpilotCopyKey;
+  previewTitle?: string;
+  previewDetailKey?: FlowpilotPreviewDetailKey;
   previewDetail?: string;
   previewStats?: string[];
   assetMatches?: AssetGroundingMatch[];
   result: GenerateAIFlowResult;
+}
+
+function tThread(copyKey: FlowpilotCopyKey): string {
+  return i18n.t(threadKey(copyKey));
+}
+
+function tPreviewDetail(detailKey: FlowpilotPreviewDetailKey): string {
+  return i18n.t(threadKey('previewDetail', detailKey));
 }
 
 type PreviewRequestKind =
@@ -80,9 +97,10 @@ function buildPreviewCopy(
   addedCount: number,
   updatedCount: number,
   previewDescriptor?: PreviewDescriptor
-): Pick<ImportDiff, 'previewTitle' | 'previewDetail' | 'previewStats'> {
+): Pick<ImportDiff, 'copyKey' | 'previewTitle' | 'previewDetailKey' | 'previewDetail' | 'previewStats'> {
   if (previewDescriptor) {
     return {
+      copyKey: 'importReady',
       previewTitle: previewDescriptor.title,
       previewDetail: previewDescriptor.detail,
       previewStats: previewDescriptor.stats,
@@ -90,18 +108,16 @@ function buildPreviewCopy(
   }
 
   if (requestKind === 'code-import') {
+    const hasChanges = addedCount > 0 || updatedCount > 0;
     return {
-      previewTitle: 'Codebase enhancement ready — review the upgraded diagram.',
-      previewDetail:
-        addedCount > 0 || updatedCount > 0
-          ? 'Started from the native repository map and layered in AI architecture improvements.'
-          : 'The native repository map is ready and no additional AI upgrades were needed.',
+      copyKey: 'codeEnhancementReady',
+      previewDetailKey: hasChanges ? 'codeEnhancementWithChanges' : 'codeEnhancementNoChanges',
       previewStats: undefined,
     };
   }
 
   return {
-    previewTitle: 'Import ready — review changes before applying.',
+    copyKey: 'importReady',
     previewStats: undefined,
   };
 }
@@ -250,8 +266,8 @@ export function useAIGeneration(
     if (!pendingDiff) return;
     recordHistory();
     applyComposedGraph(pendingDiff.result.layoutedNodes, pendingDiff.result.layoutedEdges);
-    appendThreadItem(createAppliedThreadItem('Applied the preview to the canvas.'));
-    notifyOperationOutcome(addToast, { status: 'success', summary: 'Import applied to canvas.' });
+    appendThreadItem(createAppliedThreadItem('appliedToCanvas'));
+    notifyOperationOutcome(addToast, { status: 'success', summary: tThread('importApplied') });
     setPendingDiff(null);
   }, [pendingDiff, applyComposedGraph, addToast, recordHistory, appendThreadItem]);
 
@@ -305,7 +321,7 @@ export function useAIGeneration(
         appendThreadItem(createAnswerThreadItem(response, mode, assetMatches));
         notifyOperationOutcome(addToast, {
           status: 'success',
-          summary: mode === 'plan' ? 'Plan ready.' : 'Flowpilot answered in chat.',
+          summary: mode === 'plan' ? tThread('planReady') : tThread('answeredInChat'),
         });
         return true;
       } catch (error) {
@@ -317,7 +333,7 @@ export function useAIGeneration(
         appendThreadItem(createErrorThreadItem(errorMessage));
         notifyOperationOutcome(addToast, {
           status: 'error',
-          summary: 'Flowpilot could not finish the response.',
+          summary: tThread('generationFailed'),
           detail: errorMessage,
         });
         return false;
@@ -435,18 +451,21 @@ export function useAIGeneration(
           );
           setPendingDiff(previewDiff);
           appendThreadItem(
-            createPreviewThreadItem(
-              dslText,
-              previewDiff.previewTitle,
-              previewDiff.previewDetail,
-              previewDiff.previewStats,
-              assetMatches
-            )
+            createPreviewThreadItem(dslText, {
+              copyKey: previewDiff.copyKey,
+              previewTitle: previewDiff.previewTitle,
+              previewDetailKey: previewDiff.previewDetailKey,
+              previewDetail: previewDiff.previewDetail,
+              previewStats: previewDiff.previewStats,
+              assetMatches,
+            })
           );
           notifyOperationOutcome(addToast, {
             status: 'success',
-            summary: previewDiff.previewTitle,
-            detail: previewDiff.previewDetail,
+            summary: tThread(previewDiff.copyKey),
+            detail: previewDiff.previewDetailKey
+              ? tPreviewDetail(previewDiff.previewDetailKey)
+              : previewDiff.previewDetail,
           });
           captureAnalyticsEvent('import_preview_ready', {
             provider: aiSettings.provider || 'gemini',
@@ -454,10 +473,12 @@ export function useAIGeneration(
           });
         } else {
           applyComposedGraph(layoutedNodes, layoutedEdges);
-          appendThreadItem(createAppliedThreadItem(getSuccessSummary(nodes.length, focusedNodeIds)));
+          appendThreadItem(
+            createAppliedThreadItem('appliedToCanvas', getSuccessSummary(nodes.length, focusedNodeIds))
+          );
           notifyOperationOutcome(addToast, {
             status: 'success',
-            summary: getSuccessSummary(nodes.length, focusedNodeIds),
+            summary: tThread('appliedToCanvas'),
           });
         }
         captureAnalyticsEvent('ai_generation_succeeded', {
@@ -528,6 +549,7 @@ export function useAIGeneration(
         nodeCount: nodes.length,
         selectedNodeCount: selectedNodeIds.length,
         hasImage: Boolean(imageBase64),
+        preferDiagram: true,
       });
       appendThreadItem(createPlanThreadItem(plan));
 
@@ -538,8 +560,8 @@ export function useAIGeneration(
 
       if (plan.mode === 'asset_suggestions') {
         const assetSummary = assetMatches.length > 0
-          ? `I found these strong local matches: ${summarizeAssetGrounding(assetMatches)}.`
-          : 'I could not find a strong local asset match yet. Try naming the cloud provider or exact service.';
+          ? `${tThread('assetMatchesFound')}: ${summarizeAssetGrounding(assetMatches)}.`
+          : tThread('assetMatchesNone');
         appendThreadItem(createAnswerThreadItem(assetSummary, 'asset_suggestions', assetMatches));
         return true;
       }
@@ -569,6 +591,7 @@ export function useAIGeneration(
             nodeCount: nodes.length,
             selectedNodeCount: focusedNodeIds.length,
             hasImage: Boolean(imageBase64),
+            preferDiagram: true,
           })
         )
       );

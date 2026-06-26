@@ -70,6 +70,21 @@ export interface FlowpilotSkillDefinition {
   fallbackBehavior: 'ask_clarifying_question' | 'return_plan' | 'return_answer';
 }
 
+export type FlowpilotCopyKey =
+  | 'importReady'
+  | 'codeEnhancementReady'
+  | 'appliedToCanvas'
+  | 'importApplied'
+  | 'planReady'
+  | 'answeredInChat'
+  | 'generationFailed'
+  | 'assetMatchesFound'
+  | 'assetMatchesNone';
+
+export type FlowpilotPreviewDetailKey =
+  | 'codeEnhancementWithChanges'
+  | 'codeEnhancementNoChanges';
+
 export interface AssistantThreadItem {
   id: string;
   role: 'user' | 'model';
@@ -81,6 +96,8 @@ export interface AssistantThreadItem {
   summary?: string;
   plan?: AgentPlan;
   assetMatches?: AssetGroundingMatch[];
+  copyKey?: FlowpilotCopyKey;
+  previewDetailKey?: FlowpilotPreviewDetailKey;
   previewTitle?: string;
   previewDetail?: string;
   previewStats?: string[];
@@ -92,4 +109,6 @@ export interface FlowpilotPolicyContext {
   nodeCount: number;
   selectedNodeCount: number;
   hasImage?: boolean;
+  /** Studio submissions set this so ambiguous prompts default to diagram generation. */
+  preferDiagram?: boolean;
 }

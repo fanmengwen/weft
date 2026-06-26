@@ -19,6 +19,17 @@ import {
 import { Tooltip } from './Tooltip';
 import { FLOWPILOT_NAME } from '@/lib/brand';
 import type { ChatMessage } from '@/services/aiService';
+import {
+  getPlanCardVariant,
+  getPlanStepKeys,
+  getPlanSummaryKey,
+  getPlanTitleKey,
+  getResponseModeLabelKey,
+  resolvePreviewDetailCopy,
+  resolvePreviewTitleCopy,
+  resolveThreadCopy,
+  type TranslateFn as FlowpilotTranslateFn,
+} from '@/services/flowpilot/flowpilotThreadCopy';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
 import type { ImportDiff } from '@/hooks/useAIGeneration';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
@@ -46,12 +57,19 @@ export function PendingDiffBanner({
       <div className="flex items-center gap-2 mb-2">
         <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--color-surface-success-text)]" />
         <p className="text-xs font-semibold text-[var(--brand-text)]">
-          {pendingDiff.previewTitle}
+          {resolvePreviewTitleCopy(t as FlowpilotTranslateFn, {
+            copyKey: pendingDiff.copyKey,
+            previewTitle: pendingDiff.previewTitle,
+          })}
         </p>
       </div>
-      {pendingDiff.previewDetail ? (
+      {pendingDiff.previewDetailKey || pendingDiff.previewDetail ? (
         <p className="mb-3 text-[11px] leading-4 text-[var(--color-surface-success-text)]">
-          {pendingDiff.previewDetail}
+          {resolvePreviewDetailCopy(
+            t as FlowpilotTranslateFn,
+            pendingDiff.previewDetailKey,
+            pendingDiff.previewDetail
+          )}
         </p>
       ) : null}
       {pendingDiff.previewStats && pendingDiff.previewStats.length > 0 ? (
@@ -128,6 +146,7 @@ interface ChatHistoryViewProps {
   onOpenAISettings: () => void;
   onClearChat: () => void;
   scrollRef: RefObject<HTMLDivElement | null>;
+  selectedNodeCount: number;
   t: TranslateFn;
 }
 
@@ -139,8 +158,19 @@ function getThreadBubbleClassName(isUser: boolean): string {
   return 'rounded-bl-sm border border-[var(--color-brand-border)]/70 bg-[var(--brand-surface)] text-[var(--brand-text)] shadow-sm';
 }
 
+function shouldShowThreadAssetMatches(item: AssistantThreadItem): boolean {
+  return (
+    item.responseMode === 'asset_suggestions' ||
+    item.type === 'assistant_recommendation'
+  );
+}
+
 function renderThreadAssetMatches(item: AssistantThreadItem): ReactElement | null {
-  if (!item.assetMatches || item.assetMatches.length === 0) {
+  if (
+    !shouldShowThreadAssetMatches(item) ||
+    !item.assetMatches ||
+    item.assetMatches.length === 0
+  ) {
     return null;
   }
 
@@ -158,17 +188,29 @@ function renderThreadAssetMatches(item: AssistantThreadItem): ReactElement | nul
   );
 }
 
-function renderThreadPreview(item: AssistantThreadItem): ReactElement | null {
-  if (!item.previewTitle) {
+function renderThreadPreview(item: AssistantThreadItem, t: TranslateFn): ReactElement | null {
+  const previewTitle = resolvePreviewTitleCopy(t as FlowpilotTranslateFn, {
+    copyKey: item.copyKey,
+    previewTitle: item.previewTitle,
+  });
+  const previewDetail = resolvePreviewDetailCopy(
+    t as FlowpilotTranslateFn,
+    item.previewDetailKey,
+    item.previewDetail
+  );
+
+  if (!previewTitle && !previewDetail) {
     return null;
   }
 
   return (
     <div className="mt-3 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)]/70 bg-[var(--brand-background)] px-2.5 py-2">
-      <div className="text-[11px] font-semibold text-[var(--brand-text)]">{item.previewTitle}</div>
-      {item.previewDetail ? (
+      {previewTitle ? (
+        <div className="text-[11px] font-semibold text-[var(--brand-text)]">{previewTitle}</div>
+      ) : null}
+      {previewDetail ? (
         <div className="mt-1 text-[11px] leading-4 text-[var(--brand-secondary)]">
-          {item.previewDetail}
+          {previewDetail}
         </div>
       ) : null}
       {item.previewStats && item.previewStats.length > 0 ? (
@@ -187,34 +229,81 @@ function renderThreadPreview(item: AssistantThreadItem): ReactElement | null {
   );
 }
 
-function renderPlanContent(item: AssistantThreadItem): ReactElement {
+function renderPlanContent(
+  item: AssistantThreadItem,
+  t: TranslateFn,
+  selectedNodeCount: number
+): ReactElement {
+  const plan = item.plan;
+  if (!plan) {
+    return <div className="leading-relaxed">{item.content}</div>;
+  }
+
+  const variant = getPlanCardVariant(plan.mode);
+  const summary =
+    t(getPlanSummaryKey(plan.mode, plan.skillId), {
+      defaultValue: plan.reasoningSummary,
+    }) || plan.reasoningSummary;
+
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">
         <WandSparkles className="h-3.5 w-3.5" />
-        Plan
+        {t(getPlanTitleKey(plan.mode), { defaultValue: 'Plan' })}
       </div>
-      <div className="leading-relaxed">{item.plan?.reasoningSummary}</div>
-      <div className="flex flex-wrap gap-1.5">
-        <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}>
-          Mode: {item.plan?.mode.replaceAll('_', ' ')}
-        </span>
-        <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}>
-          Confidence: {Math.round((item.plan?.confidence ?? 0) * 100)}%
-        </span>
-      </div>
-      <div className="space-y-1 text-[12px] leading-relaxed text-[var(--brand-secondary)]">
-        {item.plan?.steps.map((step, index) => (
-          <div key={`${item.id}-step-${index}`}>{index + 1}. {step}</div>
-        ))}
-      </div>
+      <div className="leading-relaxed">{summary}</div>
+      {variant === 'full' ? (
+        <>
+          <div className="flex flex-wrap gap-1.5">
+            {getResponseModeLabelKey(plan.mode) ? (
+              <span
+                className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}
+              >
+                {t('commandBar.aiStudio.thread.modeLabel', { defaultValue: 'Mode' })}:{' '}
+                {t(getResponseModeLabelKey(plan.mode)!, {
+                  defaultValue: plan.mode.replaceAll('_', ' '),
+                })}
+              </span>
+            ) : null}
+            <span
+              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}
+            >
+              {t('commandBar.aiStudio.thread.confidenceLabel', { defaultValue: 'Confidence' })}:{' '}
+              {Math.round((plan.confidence ?? 0) * 100)}%
+            </span>
+          </div>
+          <div className="space-y-1 text-[12px] leading-relaxed text-[var(--brand-secondary)]">
+            {getPlanStepKeys(plan.skillId, selectedNodeCount).map((step, index) => (
+              <div key={`${item.id}-step-${index}`}>
+                {index + 1}.{' '}
+                {t(step.key, {
+                  count: step.count,
+                  defaultValue: plan.steps[index] ?? '',
+                })}
+              </div>
+            ))}
+          </div>
+        </>
+      ) : null}
     </div>
   );
 }
 
-function renderThreadContent(item: AssistantThreadItem): ReactElement {
+function renderThreadContent(
+  item: AssistantThreadItem,
+  t: TranslateFn,
+  selectedNodeCount: number
+): ReactElement {
   if (item.role !== 'user' && item.type === 'assistant_plan' && item.plan) {
-    return renderPlanContent(item);
+    return renderPlanContent(item, t, selectedNodeCount);
+  }
+
+  if (item.type === 'assistant_applied_result') {
+    return (
+      <div className="leading-relaxed">
+        {resolveThreadCopy(t as FlowpilotTranslateFn, item.copyKey ?? 'appliedToCanvas', item.content)}
+      </div>
+    );
   }
 
   return <div className="leading-relaxed">{item.content}</div>;
@@ -234,17 +323,27 @@ function getStreamingStatusCopy(
   }
 
   if (chatMessageCount > 0) {
-    return 'Inspecting the canvas, grounding assets, and preparing the next step.';
+    return t('commandBar.aiStudio.thread.streaming.inspectCanvas', {
+      defaultValue: 'Inspecting the canvas, grounding assets, and preparing the next step.',
+    });
   }
 
   if (streamingText) {
-    return 'Understanding the request and drafting the response.';
+    return t('commandBar.aiStudio.thread.streaming.draftingResponse', {
+      defaultValue: 'Understanding the request and drafting the response.',
+    });
   }
 
-  return 'Understanding the request and deciding whether to answer in chat or prepare a canvas preview.';
+  return t('commandBar.aiStudio.thread.streaming.decidingRoute', {
+    defaultValue: 'Understanding the request and preparing a diagram preview.',
+  });
 }
 
-function renderThreadItem(item: AssistantThreadItem): ReactElement {
+function renderThreadItem(
+  item: AssistantThreadItem,
+  t: TranslateFn,
+  selectedNodeCount: number
+): ReactElement {
   const isUser = item.role === 'user';
 
   return (
@@ -252,9 +351,9 @@ function renderThreadItem(item: AssistantThreadItem): ReactElement {
       <div
         className={`max-w-[88%] rounded-[var(--radius-md)] px-3.5 py-2.5 text-sm whitespace-pre-wrap ${getThreadBubbleClassName(isUser)}`}
       >
-        {renderThreadContent(item)}
+        {renderThreadContent(item, t, selectedNodeCount)}
         {isUser ? null : renderThreadAssetMatches(item)}
-        {isUser ? null : renderThreadPreview(item)}
+        {isUser ? null : renderThreadPreview(item, t)}
       </div>
     </div>
   );
@@ -275,6 +374,7 @@ export function ChatHistoryView({
   onOpenAISettings,
   onClearChat,
   scrollRef,
+  selectedNodeCount,
   t,
 }: ChatHistoryViewProps): ReactElement {
   if (hasHistory) {
@@ -293,13 +393,15 @@ export function ChatHistoryView({
           ref={scrollRef}
           className="min-h-0 flex-1 space-y-4 overflow-y-auto px-1 py-4 custom-scrollbar"
         >
-          {assistantThread.map((item) => renderThreadItem(item))}
+          {assistantThread.map((item) => renderThreadItem(item, t, selectedNodeCount))}
           {isGenerating ? (
             <div className="flex justify-start">
               <div className="max-w-[88%] rounded-[var(--radius-md)] rounded-bl-sm border border-[var(--color-brand-border)]/70 bg-[var(--brand-surface)] px-3.5 py-2.5 text-sm text-[var(--brand-text)] shadow-sm">
                 <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  {streamingText ? 'Drafting response' : 'Thinking'}
+                  {streamingText
+                    ? t('commandBar.aiStudio.thread.drafting', { defaultValue: 'Drafting' })
+                    : t('commandBar.aiStudio.thread.thinking', { defaultValue: 'Thinking' })}
                 </div>
                 <div className="mt-2 text-[12px] leading-relaxed text-[var(--brand-secondary)]">
                   {getStreamingStatusCopy(streamingText, retryCount, chatMessages.length, t)}

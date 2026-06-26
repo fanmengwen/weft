@@ -74,6 +74,8 @@ export interface PersistedChatMessage {
   responseMode?: AgentResponseMode;
   thinkingState?: AgentThinkingState;
   summary?: string;
+  copyKey?: string;
+  previewDetailKey?: string;
   previewTitle?: string;
   previewDetail?: string;
   previewStats?: string[];

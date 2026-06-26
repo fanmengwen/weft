@@ -22,20 +22,29 @@ const EXPLANATION_PATTERNS = [
   /比较/,
 ];
 
-const PLANNING_PATTERNS = [
-  /\bplan\b/i,
-  /\bstrategy\b/i,
-  /\boptions\b/i,
+const CHAT_ONLY_PATTERNS = [
+  /\bjust answer\b/i,
+  /\bdon'?t draw\b/i,
+  /\bdo not draw\b/i,
+  /\bno diagram\b/i,
+  /先别画/,
+  /不要画/,
+  /别画/,
+  /不要生成图/,
+  /不用画图/,
+  /只回答/,
+  /只聊天/,
+  /只说说/,
+];
+
+const EXPLICIT_PLAN_PATTERNS = [
   /\bbefore drawing\b/i,
-  /\boutline\b/i,
-  // Plan-request words. These also occur as subject nouns inside draw requests
-  // ("画项目计划流程图"), but the plan branch is gated on !hasDiagramIntent, so an
-  // explicit diagram keyword wins and only diagram-free prompts plan here.
-  /计划/,
-  /思路/,
-  /步骤/,
-  /大纲/,
-  /提纲/,
+  /\bgive me a plan\b/i,
+  /\bplan first\b/i,
+  /先给/,
+  /先不要画/,
+  /思路和步骤/,
+  /大纲再画/,
 ];
 
 const ASSET_PATTERNS = [
@@ -58,8 +67,17 @@ const DIAGRAM_PATTERNS = [
   /\bcreate\b/i,
   /\bshow\b/i,
   /\bmap\b/i,
+  /\badd\b/i,
+  /\bmake\b/i,
+  /\bbuild\b/i,
   /画/,
   /绘制/,
+  /生成图/,
+  /做图/,
+  /生成/,
+  /做一个/,
+  /加一个/,
+  /添加/,
   /流程图/,
   /架构图/,
   /思维导图/,
@@ -77,6 +95,28 @@ const DIAGRAM_PATTERNS = [
   /示意图/,
   /拓扑图/,
   /框图/,
+];
+
+const STRUCTURAL_DIAGRAM_PATTERNS = [
+  /\bnode\b/i,
+  /\bedge\b/i,
+  /\bconnect\b/i,
+  /\bconnection\b/i,
+  /\barrow\b/i,
+  /\blink\b/i,
+  /\bflow from\b/i,
+  /\bstart\b/i,
+  /\bend\b/i,
+  /方块/,
+  /节点/,
+  /连线/,
+  /连接/,
+  /指向/,
+  /箭头/,
+  /从开始/,
+  /到结束/,
+  /开始/,
+  /结束/,
 ];
 
 const EDIT_PATTERNS = [
@@ -125,23 +165,33 @@ function clampConfidence(value: number): number {
   return Math.max(0.1, Math.min(0.98, Math.round(value * 100) / 100));
 }
 
-// CJK Unified (incl. Ext-A) + Japanese kana + Hangul syllables.
-const CJK_CHAR = /[㐀-鿿぀-ヿ가-힯]/g;
+function hasCanvasMutationIntent(
+  hasDiagramIntent: boolean,
+  hasStructuralIntent: boolean,
+  hasArchitectureIntent: boolean
+): boolean {
+  return hasDiagramIntent || hasStructuralIntent || hasArchitectureIntent;
+}
 
-// CJK has no inter-word spaces, so split(/\s+/) collapses an entire Chinese
-// sentence into a single "word" and the underspecified-prompt heuristic would
-// fire on every Chinese request. Count CJK characters individually and
-// whitespace-delimited runs for everything else. Intentionally not
-// Intl.Segmenter: its word boundaries vary by ICU version across runtimes,
-// which would make the < 10 threshold non-deterministic across environments.
-function estimateWordCount(text: string): number {
-  const trimmed = text.trim();
-  if (trimmed.length === 0) {
-    return 0;
-  }
-  const cjkCount = trimmed.match(CJK_CHAR)?.length ?? 0;
-  const nonCjkCount = trimmed.replace(CJK_CHAR, ' ').split(/\s+/).filter(Boolean).length;
-  return cjkCount + nonCjkCount;
+function buildDiagramPreviewPolicy(
+  hasArchitectureIntent: boolean,
+  skillId: FlowpilotSkillId = 'plan_diagram'
+): {
+  mode: AgentResponseMode;
+  confidence: number;
+  requiresApproval: boolean;
+  reasoningSummary: string;
+  skillId: FlowpilotSkillId;
+} {
+  return {
+    mode: 'diagram_preview',
+    confidence: clampConfidence(hasArchitectureIntent ? 0.92 : 0.84),
+    requiresApproval: true,
+    reasoningSummary: hasArchitectureIntent
+      ? 'The request is architecture-oriented and should ground itself in provider assets before drafting.'
+      : 'The request should produce a diagram preview for review before applying to the canvas.',
+    skillId: hasArchitectureIntent ? 'create_architecture' : skillId,
+  };
 }
 
 export function chooseFlowpilotResponseMode(
@@ -154,14 +204,31 @@ export function chooseFlowpilotResponseMode(
   skillId: FlowpilotSkillId;
 } {
   const normalizedPrompt = context.prompt.trim();
+  const hasChatOnlyIntent = matchesAny(normalizedPrompt, CHAT_ONLY_PATTERNS);
   const hasExplanationIntent = matchesAny(normalizedPrompt, EXPLANATION_PATTERNS);
-  const hasPlanningIntent = matchesAny(normalizedPrompt, PLANNING_PATTERNS);
+  const hasExplicitPlanIntent = matchesAny(normalizedPrompt, EXPLICIT_PLAN_PATTERNS);
   const hasAssetIntent = matchesAny(normalizedPrompt, ASSET_PATTERNS);
   const hasDiagramIntent = matchesAny(normalizedPrompt, DIAGRAM_PATTERNS);
+  const hasStructuralIntent = matchesAny(normalizedPrompt, STRUCTURAL_DIAGRAM_PATTERNS);
   const hasEditIntent = matchesAny(normalizedPrompt, EDIT_PATTERNS);
   const hasArchitectureIntent = matchesAny(normalizedPrompt, ARCHITECTURE_PATTERNS);
+  const wantsCanvasMutation = hasCanvasMutationIntent(
+    hasDiagramIntent,
+    hasStructuralIntent,
+    hasArchitectureIntent
+  );
 
-  if (hasAssetIntent && !hasDiagramIntent) {
+  if (hasChatOnlyIntent) {
+    return {
+      mode: 'answer',
+      confidence: 0.86,
+      requiresApproval: false,
+      reasoningSummary: 'The request explicitly asks for chat-only guidance without changing the canvas.',
+      skillId: 'answer_question',
+    };
+  }
+
+  if (hasAssetIntent && !hasDiagramIntent && !hasStructuralIntent) {
     return {
       mode: 'asset_suggestions',
       confidence: 0.9,
@@ -171,7 +238,7 @@ export function chooseFlowpilotResponseMode(
     };
   }
 
-  if (hasExplanationIntent && !hasDiagramIntent && context.nodeCount > 0) {
+  if (hasExplanationIntent && !hasDiagramIntent && !hasStructuralIntent && context.nodeCount > 0) {
     return {
       mode: 'answer',
       confidence: 0.87,
@@ -181,10 +248,16 @@ export function chooseFlowpilotResponseMode(
     };
   }
 
-  // A scoped edit on a selection is checked BEFORE the plan branch: an explicit
-  // edit verb on selected nodes ("改成蓝色") is a concrete edit, not an
-  // underspecified request, so it must reach a preview rather than be hijacked
-  // into plan mode by its short length or an incidental planning word.
+  if (hasExplicitPlanIntent && !hasDiagramIntent && !hasStructuralIntent) {
+    return {
+      mode: 'plan',
+      confidence: 0.88,
+      requiresApproval: false,
+      reasoningSummary: 'The request explicitly asks for a plan before drafting.',
+      skillId: 'plan_diagram',
+    };
+  }
+
   if (context.selectedNodeCount > 0 && hasEditIntent) {
     return {
       mode: 'diagram_preview',
@@ -195,40 +268,19 @@ export function chooseFlowpilotResponseMode(
     };
   }
 
-  // An explicit diagram keyword is authoritative: it overrides planning- and
-  // explanation-intent words so a draw request that merely *mentions* 计划/步骤/
-  // 说明 as its subject ("生成项目计划流程图") still routes to a diagram instead of
-  // being hijacked into plan/answer. Only genuinely diagram-free prompts reach
-  // plan mode — either explicit planning intent or an underspecified short one.
-  if (!hasDiagramIntent && (hasPlanningIntent || estimateWordCount(normalizedPrompt) < 10)) {
-    return {
-      mode: 'plan',
-      confidence: clampConfidence(hasPlanningIntent ? 0.88 : 0.66),
-      requiresApproval: false,
-      reasoningSummary: 'The request is underspecified or explicitly asks for a plan before drafting.',
-      skillId: 'plan_diagram',
-    };
+  if (hasEditIntent) {
+    return buildDiagramPreviewPolicy(false, 'plan_diagram');
   }
 
-  if (hasArchitectureIntent || hasDiagramIntent) {
-    return {
-      mode: 'diagram_preview',
-      confidence: clampConfidence(hasArchitectureIntent ? 0.92 : 0.84),
-      requiresApproval: true,
-      reasoningSummary: hasArchitectureIntent
-        ? 'The request is architecture-oriented and should ground itself in provider assets before drafting.'
-        : 'The request clearly asks for a diagram draft, so a preview is the right next step.',
-      skillId: hasArchitectureIntent ? 'create_architecture' : 'plan_diagram',
-    };
+  if (wantsCanvasMutation) {
+    return buildDiagramPreviewPolicy(hasArchitectureIntent);
   }
 
-  return {
-    mode: 'answer',
-    confidence: 0.62,
-    requiresApproval: false,
-    reasoningSummary: 'The safest next step is to answer in chat first instead of changing the canvas.',
-    skillId: 'answer_question',
-  };
+  if (context.preferDiagram) {
+    return buildDiagramPreviewPolicy(false);
+  }
+
+  return buildDiagramPreviewPolicy(false);
 }
 
 export function buildFlowpilotPlan(context: FlowpilotPolicyContext): AgentPlan {

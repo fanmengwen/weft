@@ -3,22 +3,13 @@ import { createRef } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { StudioAIPanel } from './StudioAIPanel';
+import { createStudioAIPanelTestT } from './studioAIPanelTestI18n';
 
 const handleGenerateMock = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
-    t: (
-      key: string,
-      fallbackOrOptions?: string | { defaultValue?: string },
-      maybeOptions?: { defaultValue?: string }
-    ) => {
-      if (typeof fallbackOrOptions === 'string') {
-        return fallbackOrOptions;
-      }
-
-      return fallbackOrOptions?.defaultValue ?? maybeOptions?.defaultValue ?? key;
-    },
+    t: createStudioAIPanelTestT,
   }),
 }));
 
@@ -303,9 +294,8 @@ describe('StudioAIPanel', () => {
           addedCount: 4,
           updatedCount: 6,
           removedCount: 0,
-          previewTitle: 'Codebase enhancement ready — review the upgraded diagram.',
-          previewDetail:
-            'Started from the native repository map and layered in AI architecture improvements.',
+          copyKey: 'codeEnhancementReady',
+          previewDetailKey: 'codeEnhancementWithChanges',
           previewStats: ['Platform: aws', '4 native sections', '3 platform services'],
           result: {
             dslText: '',
@@ -331,14 +321,8 @@ describe('StudioAIPanel', () => {
       />
     );
 
-    expect(
-      screen.getByText('Codebase enhancement ready — review the upgraded diagram.')
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(
-        'Started from the native repository map and layered in AI architecture improvements.'
-      )
-    ).toBeInTheDocument();
+    expect(screen.getByText('代码库增强预览已就绪，请检查升级后的图表')).toBeInTheDocument();
+    expect(screen.getByText('已基于原生仓库结构图叠加 AI 架构增强。')).toBeInTheDocument();
     expect(screen.getByText('Platform: aws')).toBeInTheDocument();
     expect(screen.getByText('4 native sections')).toBeInTheDocument();
   });
@@ -389,8 +373,113 @@ describe('StudioAIPanel', () => {
       />
     );
 
-    expect(screen.getByText('Plan')).toBeInTheDocument();
-    expect(screen.getByText('Mode: plan')).toBeInTheDocument();
-    expect(screen.getByText('1. Inspect the current diagram')).toBeInTheDocument();
+    expect(screen.getByText('处理步骤')).toBeInTheDocument();
+    expect(screen.getByText('模式: 计划')).toBeInTheDocument();
+    expect(screen.getByText('1. 检查当前画布上下文')).toBeInTheDocument();
+  });
+
+  it('renders a minimal localized plan card for diagram preview routes', () => {
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[
+          {
+            id: 'plan-diagram',
+            role: 'model',
+            type: 'assistant_plan',
+            content: 'The request should produce a diagram preview for review before applying to the canvas.',
+            createdAt: '2026-03-31T00:00:00.000Z',
+            responseMode: 'diagram_preview',
+            thinkingState: 'planning',
+            plan: {
+              goal: 'Draw two boxes',
+              mode: 'diagram_preview',
+              steps: ['Inspect the current canvas context', 'Outline the recommended structure'],
+              requiresApproval: true,
+              intendedOutput: 'Canvas preview with review/apply controls',
+              confidence: 0.84,
+              reasoningSummary:
+                'The request should produce a diagram preview for review before applying to the canvas.',
+              skillId: 'plan_diagram',
+            },
+          },
+        ]}
+        onClearChat={vi.fn()}
+        nodeCount={0}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.getByText('图表生成')).toBeInTheDocument();
+    expect(
+      screen.getByText('图表草稿已就绪，请在上方确认后应用到画布。')
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Mode:/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Confidence:/)).not.toBeInTheDocument();
+  });
+
+  it('hides asset grounding labels on diagram preview messages', () => {
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[
+          {
+            id: 'preview-1',
+            role: 'model',
+            type: 'assistant_canvas_preview',
+            content: 'flow: "Untitled Flow"',
+            createdAt: '2026-03-31T00:00:00.000Z',
+            responseMode: 'diagram_preview',
+            copyKey: 'importReady',
+            assetMatches: [
+              {
+                id: 'aws-datacenter',
+                label: 'Architecture Group Corporate Data Center',
+                description: 'AWS grouping icon',
+                category: 'aws',
+                confidence: 0.82,
+                reasoning: 'Matched local asset',
+              },
+            ],
+          },
+        ]}
+        onClearChat={vi.fn()}
+        nodeCount={0}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.queryByText('Architecture Group Corporate Data Center')).not.toBeInTheDocument();
+    expect(screen.getByText('导入已就绪，请检查变更后再应用')).toBeInTheDocument();
   });
 });
