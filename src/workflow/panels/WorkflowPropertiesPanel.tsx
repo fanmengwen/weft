@@ -12,6 +12,7 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const workflowNodes = useWorkflowStore((state) => state.workflowNodes);
   const selectedNodeId = useWorkflowStore((state) => state.selectedNodeId);
   const updateWorkflowNodeData = useWorkflowStore((state) => state.updateWorkflowNodeData);
+  const deleteWorkflowNode = useWorkflowStore((state) => state.deleteWorkflowNode);
 
   const selectedNode = workflowNodes.find((node) => node.id === selectedNodeId);
   const data = selectedNode?.data as unknown as WorkflowNodeData | undefined;
@@ -124,6 +125,15 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
               {t('workflowMode.properties.outputHint')}
             </p>
           ) : null}
+
+          <button
+            type="button"
+            onClick={() => deleteWorkflowNode(selectedNode.id)}
+            aria-label={t('workflowMode.properties.deleteAria')}
+            className="mt-auto rounded-[var(--brand-radius)] border border-[var(--brand-danger,#ef4444)] px-3 py-2 text-sm font-medium text-[var(--brand-danger,#ef4444)] transition-colors hover:bg-[var(--brand-danger,#ef4444)]/10"
+          >
+            {t('workflowMode.properties.delete')}
+          </button>
         </div>
       )}
     </aside>

@@ -41,7 +41,9 @@
       "promptPlaceholder": "Describe what the LLM should do…",
       "queryField": "Search query",
       "queryPlaceholder": "What should we search for?",
-      "outputHint": "The final result will appear here after you run the workflow."
+      "outputHint": "The final result will appear here after you run the workflow.",
+      "delete": "Delete node",
+      "deleteAria": "Delete selected node"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
