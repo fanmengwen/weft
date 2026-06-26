@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
 import { IS_BEVELED } from '@/lib/brand';
+import { getFlowDisplayName } from '@/lib/flowDisplayName';
 import { useTranslation } from 'react-i18next';
 import { getSegmentedTabButtonClass } from './ui/SegmentedTabs';
 import type { EditorPage } from '@/store/editorPageHooks';
@@ -115,7 +116,7 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
                 onSwitchPage(page.id);
               }
             }}
-            title={page.name}
+            title={getFlowDisplayName(page.name, t)}
           >
             {editingTabId === page.id ? (
               <input
@@ -129,7 +130,9 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
                 onClick={(e) => e.stopPropagation()}
               />
             ) : (
-              <span className="max-w-[96px] truncate text-xs sm:max-w-[120px]">{page.name}</span>
+              <span className="max-w-[96px] truncate text-xs sm:max-w-[120px]">
+                {getFlowDisplayName(page.name, t)}
+              </span>
             )}
 
             <button

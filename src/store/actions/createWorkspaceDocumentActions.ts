@@ -1,5 +1,6 @@
 import type { FlowTab } from '@/lib/types';
 import { nowIso } from '@/lib/date';
+import { DEFAULT_FLOW_NAME } from '@/lib/flowDisplayName';
 import { createId } from '@/lib/id';
 import { DEFAULT_DIAGRAM_TYPE } from '@/services/diagramDocument';
 import type { FlowDocument } from '@/services/storage/flowDocumentModel';
@@ -20,7 +21,7 @@ function createEmptyPage(documentId: string, pageName = 'Page 1'): FlowTab {
     };
 }
 
-function createEmptyDocument(name = 'Untitled Flow'): FlowDocument {
+function createEmptyDocument(name = DEFAULT_FLOW_NAME): FlowDocument {
     const documentId = createId('doc');
     const primaryPage = createEmptyPage(documentId);
     return {
