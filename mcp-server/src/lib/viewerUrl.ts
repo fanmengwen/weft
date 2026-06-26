@@ -1,22 +1,22 @@
 /**
- * Build a shareable URL that opens the OpenFlowKit viewer with the given DSL
+ * Build a shareable URL that opens the Weft viewer with the given DSL
  * pre-loaded. Matches `encodeDslForViewer` in the web app.
  *
  * Encoding: deflate(utf8(dsl)) → base64url, prefixed with `~` to mark the
  * compressed format. The viewer falls back to legacy `btoa(encodeURIComponent(...))`
  * when the prefix is absent, so old links keep working.
  *
- * Override the base origin with OPENFLOWKIT_APP_URL (e.g. http://localhost:5173
- * for local dev). Defaults to https://app.openflowkit.com. The app currently
+ * Override the base origin with WEFT_APP_URL (e.g. http://localhost:5173
+ * for local dev). Defaults to http://localhost:3000. The app currently
  * uses hash routing, so the viewer path must live after `#/`.
  */
 import { deflate } from 'pako';
 
-const DEFAULT_APP_URL = 'https://app.openflowkit.com';
+const DEFAULT_APP_URL = 'http://localhost:3000';
 const PAKO_PREFIX = '~';
 
 function getAppBaseUrl(): string {
-  const fromEnv = process.env.OPENFLOWKIT_APP_URL?.trim();
+  const fromEnv = process.env.WEFT_APP_URL?.trim();
   if (fromEnv && fromEnv.length > 0) {
     return fromEnv.replace(/\/+$/, '');
   }
@@ -36,7 +36,7 @@ export function encodeDslForViewer(dsl: string): string {
   return PAKO_PREFIX + toBase64Url(compressed);
 }
 
-/** URL that opens the DSL in OpenFlowKit's read-only viewer. */
+/** URL that opens the DSL in Weft's read-only viewer. */
 export function buildViewerUrl(dsl: string): string {
   return `${getAppBaseUrl()}/#/view?flow=${encodeDslForViewer(dsl)}`;
 }
