@@ -1,23 +1,23 @@
-# @vrun-design/openflowkit-core
+# Weft core library
 
-Framework-agnostic parsers, types, and brand utilities used by Weft. Usable standalone in other React apps that need diagram DSL parsing.
+Framework-agnostic parsers, types, and brand utilities used by the Weft diagramming canvas.
 
 ## What's included
 
 | Export | Description |
 |--------|-------------|
-| `parseMermaid(dsl)` | Parse Mermaid flowchart / state diagram DSL into React Flow–compatible nodes and edges |
-| `parseOpenFlowDSL(dsl)` | Parse diagram DSL V2 (explicit IDs, groups, edge styling) |
+| `parseMermaid(dsl)` | Parse Mermaid.js flowchart / state diagram DSL into React Flow–compatible `nodes` and `edges` |
+| `parseOpenFlowDSL(dsl)` | Parse OpenFlow DSL V2 (type-safe, explicit IDs, groups, edge styling) |
 | `generatePalette(primaryColor)` | Generate harmonious brand palettes from a single hex color |
 | Type exports | `FlowNode`, `FlowEdge`, `NodeData`, `EdgeData`, `DesignSystem`, `NodeType`, and more |
 
-## Install
+## Usage
 
-```bash
-npm install @vrun-design/openflowkit-core
+Built as part of the Weft monorepo root app. See `vite.lib.config.ts` for the library build entry.
+
+```ts
+import { parseOpenFlowDSL } from '@/lib';
 ```
-
-> **Peer dependencies:** `react >=18`, `react-dom >=18`, `reactflow >=11`
 
 ## License
 
