@@ -7,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 const OUTPUT_FILE = path.resolve(__dirname, '../public/sitemap.xml');
 const PAGES_DIR = path.resolve(__dirname, '../web/src/pages');
-const SITE_URL = 'https://openflowkit.com';
+const SITE_URL = 'https://weft.app';
 
 const ROUTE_SUFFIXES = new Set(['.astro', '.md', '.mdx']);
 
