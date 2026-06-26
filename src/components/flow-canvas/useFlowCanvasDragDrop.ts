@@ -1,8 +1,14 @@
 import { useCallback } from 'react';
+import {
+  executeAddItem,
+  type AddItemActions,
+} from '@/components/add-items/addItemRegistry';
+import { getAddItemDragData } from '@/components/element-palette/elementPaletteDnD';
 
 interface UseFlowCanvasDragDropParams {
   screenToFlowPosition: (position: { x: number; y: number }) => { x: number; y: number };
   handleAddImage: (imageUrl: string, position: { x: number; y: number }) => void;
+  addItemActions: AddItemActions;
   onFileDrop?: (file: File, content: string) => void;
 }
 
@@ -38,6 +44,7 @@ const CODE_EXTENSIONS = new Set([
 export function useFlowCanvasDragDrop({
   screenToFlowPosition,
   handleAddImage,
+  addItemActions,
   onFileDrop,
 }: UseFlowCanvasDragDropParams): UseFlowCanvasDragDropResult {
   const onDragOver = useCallback((event: React.DragEvent) => {
@@ -48,6 +55,17 @@ export function useFlowCanvasDragDrop({
   const onDrop = useCallback(
     (event: React.DragEvent) => {
       event.preventDefault();
+
+      const addItemId = getAddItemDragData(event.dataTransfer);
+      if (addItemId) {
+        const position = screenToFlowPosition({
+          x: event.clientX,
+          y: event.clientY,
+        });
+        executeAddItem(addItemId, addItemActions, position);
+        return;
+      }
+
       const file = event.dataTransfer.files?.[0];
       if (!file) return;
 
@@ -78,7 +96,7 @@ export function useFlowCanvasDragDrop({
         reader.readAsText(file);
       }
     },
-    [handleAddImage, screenToFlowPosition, onFileDrop]
+    [addItemActions, handleAddImage, onFileDrop, screenToFlowPosition]
   );
 
   return { onDragOver, onDrop };

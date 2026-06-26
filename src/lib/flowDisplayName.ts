@@ -14,11 +14,11 @@ export function getFlowDisplayName(
   t: TranslateFlowName
 ): string {
   if (!name?.trim()) {
-    return t('editor.untitled', DEFAULT_FLOW_NAME);
+    return t('editor.untitled', { defaultValue: DEFAULT_FLOW_NAME });
   }
 
   if (isDefaultFlowName(name)) {
-    return t('editor.untitled', DEFAULT_FLOW_NAME);
+    return t('editor.untitled', { defaultValue: DEFAULT_FLOW_NAME });
   }
 
   return name;
