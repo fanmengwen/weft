@@ -191,7 +191,7 @@
       "figma": "Figma",
       "useCases": "Anwendungsfälle",
       "pricing": "Preise",
-      "viewGithub": "Auf GitHub ansehen"
+      "viewGithub": "Funktionen entdecken"
     },
     "hero": {
       "title": "Schöne Flussdiagramme,",
@@ -202,8 +202,8 @@
       "description1": "Die Diagramm-Engine",
       "description2": "die",
       "description3": "wie Sie denkt.",
-      "description4": "100% kostenlos, Open-Source-Diagrammwerkzeug für Entwickler.",
-      "forkOnGithub": "Auf GitHub forken",
+      "description4": "Ein ausgereiftes Diagramm-Tool für Builder. Code schreiben oder per Drag-and-drop — schöne Ergebnisse auf beiden Wegen.",
+      "forkOnGithub": "Loslegen",
       "licence": "MIT-Lizenz",
       "localFirst": "Lokal zuerst",
       "noAuth": "Keine Anmeldung",
@@ -218,7 +218,7 @@
     },
     "solution": {
       "title": "Die Lösung",
-      "description": "OpenFlowKit vereint das Beste aus beiden Welten."
+      "description": "Weft vereint das Beste aus beiden Welten."
     },
     "demo": {
       "title": "Einfach zum Skizzieren.",
@@ -243,11 +243,11 @@
     },
     "footer": {
       "rights": "Alle Rechte vorbehalten.",
-      "madeWith": "Mit ❤️ vom OpenFlowKit-Team"
+      "madeWith": "Mit ❤️ vom Weft-Team"
     }
   },
   "home": {
-    "appName": "OpenFlowKit",
+    "appName": "Weft",
     "title": "Dashboard",
     "description": "Verwalten Sie Ihre Flüsse und Diagramme.",
     "recentFiles": "Letzte Dateien",
@@ -385,7 +385,7 @@
     "importFailed": "Import fehlgeschlagen"
   },
   "welcome": {
-    "title": "OpenFlowKit",
+    "title": "Weft",
     "description": "Entwerfen Sie schöne, strukturierte Diagramme mit einem entwicklerorientierten Canvas.",
     "press": "Drücken Sie",
     "shortcuts": "für Tastaturkürzel",
@@ -420,7 +420,7 @@
   "pricing": {
     "title": "Premium-Funktionen.",
     "subtitle": "Zum Nulltarif.",
-    "description": "OpenFlowKit ist 100% Open Source. Keine versteckte Enterprise Edition.",
+    "description": "Weft ist kostenlos nutzbar. Voller Zugang zur Kern-Engine — überall hosten, frei anpassen.",
     "mitLicense": "MIT-Lizenz",
     "freeForever": "Für immer kostenlos.",
     "fullAccess": "Voller Zugriff auf die Core-Engine.",
@@ -438,18 +438,18 @@
       "mermaidSupport": "Mermaid.js-Unterstützung",
       "aiGeneration": "KI-Diagrammgenerierung (eigenen API-Schlüssel)"
     },
-    "supportDevelopment": "Entwicklung auf GitHub unterstützen"
+    "supportDevelopment": "Feedback und Ideen teilen"
   },
   "cta": {
     "readyToUse": "Einsatzbereit",
     "buildDiagrams": "Erstelle Diagramme, die",
     "dontLookGeneric": "nicht generisch aussehen.",
-    "joinUs": "Helfen Sie uns beim Aufbau der nächsten Generation visueller Werkzeuge.",
+    "joinUs": "Gestalten Sie mit uns die nächste Generation visueller Werkzeuge. Lokal zuerst, ausgereift und bereit, wenn Sie es sind.",
     "getStartedNow": "Jetzt loslegen",
     "copied": "Kopiert",
     "copy": "Kopieren",
     "documentation": "Dokumentation",
-    "github": "GitHub",
+    "github": "Mehr erfahren",
     "roadmap": "Roadmap"
   },
   "problem": {
@@ -491,7 +491,7 @@
     "badge": "Arbeitsabläufe",
     "title": "Eine Engine.",
     "subtitle": "Drei native Arbeitsabläufe.",
-    "description": "OpenFlowKit passt sich Ihrem Werkzeug an.",
+    "description": "Weft passt sich Ihrem Werkzeug an.",
     "engineering": "Entwicklung",
     "diagramAsCode": "DIAGRAMM ALS CODE",
     "engineeringDesc": "Diagramme in DSL oder Mermaid.js schreiben.",
@@ -520,13 +520,13 @@
     "badge": "Im Aufbau",
     "title": "Öffentlich bauen.",
     "subtitle": "Die Engine mitgestalten.",
-    "description": "OpenFlowKit fängt gerade erst an. Machen Sie von Tag 1 an mit.",
-    "starTheRepo": "Repository mit Stern markieren",
-    "openSource": "Open Source",
-    "openSourceDesc": "MIT-lizenziert. Quellcode lesen, PRs einreichen.",
-    "prsWelcome": "PRs willkommen",
+    "description": "Weft steht noch am Anfang. Helfen Sie mit, was als Nächstes kommt.",
+    "starTheRepo": "Updates erhalten",
+    "openSource": "Für Macher gebaut",
+    "openSourceDesc": "Eine fokussierte Diagramm-Canvas mit KI-Workflows und Export.",
+    "prsWelcome": "Feedback willkommen",
     "community": "Community",
-    "communityDesc": "Entwickler treffen, die auf OpenFlowKit aufbauen.",
+    "communityDesc": "Entwickler treffen, die auf Weft aufbauen.",
     "roadmap": "Roadmap",
     "coreRenderer": "Core-Renderer",
     "flowpilotAI": "Flowpilot"
@@ -572,7 +572,7 @@
       },
       "dslSyntax": {
         "title": "DSL-Syntax",
-        "description": "Zeigen Sie ein Beispiel der OpenFlowKit DSL.",
+        "description": "Zeigen Sie ein Beispiel der Weft DSL.",
         "icon": "{}"
       }
     }
@@ -1510,7 +1510,7 @@
   },
   "mcpSettings": {
     "title": "KI-Tools verbinden (MCP)",
-    "intro": "Füge den OpenFlowKit MCP-Server zu Claude Desktop, Cursor, Windsurf oder einem beliebigen MCP-Client hinzu. Dein Assistent erhält Diagramm-Tools, die lokal laufen, keine API-Schlüssel erforderlich, keine Daten verlassen deine Maschine.",
+    "intro": "Füge den Weft MCP-Server zu Claude Desktop, Cursor, Windsurf oder einem beliebigen MCP-Client hinzu. Dein Assistent erhält Diagramm-Tools, die lokal laufen, keine API-Schlüssel erforderlich, keine Daten verlassen deine Maschine.",
     "installHeading": "Server installieren",
     "installNote": "Erfordert Node 18+. Keine globale Installation nötig, npx lädt bei Bedarf.",
     "configHeading": "Zu deinem KI-Assistenten hinzufügen",
@@ -1539,12 +1539,13 @@
     "testPromptLabel": "Test-Prompt",
     "testPromptHint": "In jeden verbundenen Client einfügen",
     "copyInstallPrompt": "Installations-Prompt kopieren",
-    "copyTestPrompt": "Test-Prompt kopieren"
+    "copyTestPrompt": "Test-Prompt kopieren",
+    "comingSoon": "MCP-Integration ist für die Roadmap geplant. Diese Version konzentriert sich auf KI-Generierung, Bearbeitung und Export im Canvas."
   },
   "mcp": {
     "pageTitle": "Connect AI tools",
     "pageSubtitle": "Give any MCP client first-class diagramming tools. Local-first, no API key.",
-    "visualAlt": "Your AI client connects to the OpenFlowKit MCP server over stdio, which provides local diagramming tools.",
+    "visualAlt": "Your AI client connects to the Weft MCP server over stdio, which provides local diagramming tools.",
     "visualClient": "Your AI client",
     "visualCaption": "Local · stdio · no API key"
   }
