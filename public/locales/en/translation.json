@@ -775,6 +775,63 @@
         "selectedEdit": "Describe what to change about the {{count}} selected node...",
         "edit": "Describe a change, for example 'add Redis between API and DB'",
         "empty": "Describe a diagram to generate from scratch..."
+      },
+      "thread": {
+        "planTitle": "Processing steps",
+        "planTitleDiagram": "Diagram generation",
+        "planSummary": {
+          "diagramPreview": "Diagram draft is ready. Review it above, then apply to the canvas.",
+          "plan": "Outline the approach first, then generate the diagram.",
+          "answer": "This request will be answered in chat without changing the canvas.",
+          "assetSuggestions": "Recommending local asset matches.",
+          "editSelected": "Preparing an edit preview for the selected nodes.",
+          "explainDiagram": "Analyzing the current diagram and preparing feedback."
+        },
+        "modeLabel": "Mode",
+        "confidenceLabel": "Confidence",
+        "mode": {
+          "diagram_preview": "Diagram preview",
+          "plan": "Plan",
+          "answer": "Chat",
+          "asset_suggestions": "Asset suggestions"
+        },
+        "thinking": "Thinking",
+        "drafting": "Drafting",
+        "streaming": {
+          "inspectCanvas": "Inspecting the canvas, grounding assets, and preparing the next step…",
+          "draftingResponse": "Understanding the request and drafting the response…",
+          "decidingRoute": "Understanding the request and preparing a diagram preview…"
+        },
+        "importReady": "Import ready — review changes before applying",
+        "codeEnhancementReady": "Codebase enhancement ready — review the upgraded diagram",
+        "appliedToCanvas": "Applied to the canvas",
+        "importApplied": "Applied to the canvas",
+        "planReady": "Plan ready",
+        "answeredInChat": "Answered in chat",
+        "generationFailed": "FlowPilot could not finish the response",
+        "assetMatchesFound": "Found strong local asset matches",
+        "assetMatchesNone": "No strong local asset match yet. Try naming the cloud provider or exact service.",
+        "previewDetail": {
+          "codeEnhancementWithChanges": "Started from the native repository map and layered in AI architecture improvements.",
+          "codeEnhancementNoChanges": "The native repository map is ready and no additional AI upgrades were needed."
+        },
+        "step": {
+          "inspectCanvas": "Inspect the current canvas context",
+          "outlineStructure": "Outline the recommended structure",
+          "draftAnswer": "Draft a concise answer",
+          "searchAssets": "Search the local asset libraries",
+          "draftPreview": "Prepare a diagram preview",
+          "inspectSelection": "Inspect the {{count}} selected node(s)",
+          "planScopedEdit": "Plan the scoped edit",
+          "inspectImport": "Inspect imported structure",
+          "groundServices": "Ground platform services",
+          "prepareUpgradePreview": "Prepare an upgraded preview",
+          "rankMatches": "Rank the best matches",
+          "inspectDiagram": "Inspect the current diagram",
+          "explainFindings": "Explain strengths, risks, and missing pieces",
+          "inspectRequest": "Inspect the current request",
+          "draftResponse": "Draft the response"
+        }
       }
     },
     "import": {

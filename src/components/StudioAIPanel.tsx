@@ -227,6 +227,7 @@ export function StudioAIPanel({
         onOpenAISettings={openAISettings}
         onClearChat={onClearChat}
         scrollRef={scrollRef}
+        selectedNodeCount={selectedNodeCount}
         t={t}
       />
       <ComposerSection

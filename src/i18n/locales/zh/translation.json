@@ -727,7 +727,64 @@
       "editingSelectedNodes": "正在编辑 {{count}} 个已选节点",
       "uploadPreviewAlt": "上传预览",
       "attachImage": "附加图片",
-      "cancelGeneration": "取消生成"
+      "cancelGeneration": "取消生成",
+      "thread": {
+        "planTitle": "处理步骤",
+        "planTitleDiagram": "图表生成",
+        "planSummary": {
+          "diagramPreview": "图表草稿已就绪，请在上方确认后应用到画布。",
+          "plan": "先整理实现思路，确认后再生成图表。",
+          "answer": "本次仅在对话中回答，不会修改画布。",
+          "assetSuggestions": "正在推荐本地素材匹配结果。",
+          "editSelected": "将对选中节点生成编辑预览。",
+          "explainDiagram": "将分析当前图表并给出建议。"
+        },
+        "modeLabel": "模式",
+        "confidenceLabel": "置信度",
+        "mode": {
+          "diagram_preview": "图表预览",
+          "plan": "计划",
+          "answer": "对话",
+          "asset_suggestions": "素材建议"
+        },
+        "thinking": "思考中",
+        "drafting": "正在生成",
+        "streaming": {
+          "inspectCanvas": "正在检查画布、匹配素材并准备下一步…",
+          "draftingResponse": "正在理解需求并起草回复…",
+          "decidingRoute": "正在理解需求并准备图表预览…"
+        },
+        "importReady": "导入已就绪，请检查变更后再应用",
+        "codeEnhancementReady": "代码库增强预览已就绪，请检查升级后的图表",
+        "appliedToCanvas": "已应用到画布",
+        "importApplied": "已应用到画布",
+        "planReady": "计划已就绪",
+        "answeredInChat": "已在对话中回复",
+        "generationFailed": "FlowPilot 未能完成响应",
+        "assetMatchesFound": "已找到以下本地素材匹配",
+        "assetMatchesNone": "暂未找到合适的本地素材，请尝试指定云厂商或具体服务名",
+        "previewDetail": {
+          "codeEnhancementWithChanges": "已基于原生仓库结构图叠加 AI 架构增强。",
+          "codeEnhancementNoChanges": "原生仓库结构图已就绪，无需额外 AI 升级。"
+        },
+        "step": {
+          "inspectCanvas": "检查当前画布上下文",
+          "outlineStructure": "梳理推荐结构",
+          "draftAnswer": "起草简洁回答",
+          "searchAssets": "搜索本地素材库",
+          "draftPreview": "准备图表预览",
+          "inspectSelection": "检查已选中的 {{count}} 个节点",
+          "planScopedEdit": "规划局部编辑方案",
+          "inspectImport": "检查导入结构",
+          "groundServices": "匹配平台服务素材",
+          "prepareUpgradePreview": "准备升级预览",
+          "rankMatches": "排序最佳匹配结果",
+          "inspectDiagram": "检查当前图表",
+          "explainFindings": "说明优势、风险与缺失项",
+          "inspectRequest": "理解当前请求",
+          "draftResponse": "起草回复"
+        }
+      }
     },
     "figmaImport": {
       "invalidUrl": "无效的 Figma URL。请使用 figma.com/file/... 或 figma.com/design/... 链接。",

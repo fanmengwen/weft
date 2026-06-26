@@ -5,6 +5,8 @@ import type {
   AssistantThreadItem,
   AssistantThreadItemType,
   AssetGroundingMatch,
+  FlowpilotCopyKey,
+  FlowpilotPreviewDetailKey,
 } from './types';
 
 function nowIso(): string {
@@ -59,26 +61,36 @@ export function createAnswerThreadItem(
 
 export function createPreviewThreadItem(
   content: string,
-  previewTitle: string,
-  previewDetail?: string,
-  previewStats?: string[],
-  assetMatches?: AssetGroundingMatch[]
+  options: {
+    copyKey: FlowpilotCopyKey;
+    previewTitle?: string;
+    previewDetailKey?: FlowpilotPreviewDetailKey;
+    previewDetail?: string;
+    previewStats?: string[];
+    assetMatches?: AssetGroundingMatch[];
+  }
 ): AssistantThreadItem {
   return createAssistantThreadItem('assistant_canvas_preview', 'model', content, {
     responseMode: 'diagram_preview',
     thinkingState: 'ready',
-    previewTitle,
-    previewDetail,
-    previewStats,
-    assetMatches,
+    copyKey: options.copyKey,
+    previewTitle: options.previewTitle,
+    previewDetailKey: options.previewDetailKey,
+    previewDetail: options.previewDetail,
+    previewStats: options.previewStats,
+    assetMatches: options.assetMatches,
   });
 }
 
-export function createAppliedThreadItem(summary: string): AssistantThreadItem {
-  return createAssistantThreadItem('assistant_applied_result', 'model', summary, {
+export function createAppliedThreadItem(
+  copyKey: FlowpilotCopyKey = 'appliedToCanvas',
+  content = ''
+): AssistantThreadItem {
+  return createAssistantThreadItem('assistant_applied_result', 'model', content, {
     responseMode: 'diagram_apply_ready',
     thinkingState: 'ready',
     applied: true,
+    copyKey,
   });
 }
 
