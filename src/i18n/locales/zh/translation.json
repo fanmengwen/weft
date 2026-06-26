@@ -41,7 +41,9 @@
       "promptPlaceholder": "描述希望大模型执行的任务…",
       "queryField": "搜索关键词",
       "queryPlaceholder": "输入要检索的内容…",
-      "outputHint": "运行工作流后，最终结果将在此展示。"
+      "outputHint": "运行工作流后，最终结果将在此展示。",
+      "delete": "删除节点",
+      "deleteAria": "删除选中的节点"
     },
     "canvas": {
       "emptyTitle": "从左侧拖入节点开始搭建工作流",

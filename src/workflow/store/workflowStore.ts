@@ -24,6 +24,7 @@ interface WorkflowState {
   setSelectedNodeId: (nodeId: string | null) => void;
   addWorkflowNode: (node: FlowNode) => void;
   updateWorkflowNodeData: (nodeId: string, patch: Partial<WorkflowNodeData>) => void;
+  deleteWorkflowNode: (nodeId: string) => void;
   onWorkflowNodesChange: (changes: NodeChange[]) => void;
   onWorkflowEdgesChange: (changes: EdgeChange[]) => void;
   onWorkflowConnect: (connection: Connection) => boolean;
@@ -55,6 +56,14 @@ export const useWorkflowStore = create<WorkflowState>()(
               ? { ...node, data: { ...(node.data as unknown as WorkflowNodeData), ...patch } as NodeData }
               : node
           ),
+        })),
+      deleteWorkflowNode: (nodeId) =>
+        set((state) => ({
+          workflowNodes: state.workflowNodes.filter((node) => node.id !== nodeId),
+          workflowEdges: state.workflowEdges.filter(
+            (edge) => edge.source !== nodeId && edge.target !== nodeId
+          ),
+          selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
         })),
       onWorkflowNodesChange: (changes) =>
         set((state) => {
