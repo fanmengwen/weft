@@ -9,6 +9,7 @@ import {
   Shield,
   ShieldCheck,
 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useFlowStore } from '@/store';
 import { useCanvasState } from '@/store/canvasHooks';
 import { Button } from '@/components/ui/Button';
@@ -21,6 +22,7 @@ import { VisualEditor } from './VisualEditor';
 type PanelView = 'overview' | 'diagram-rules' | 'workspace-rules';
 
 export function LintRulesPanel(): React.ReactElement {
+  const { t } = useTranslation();
   const { viewSettings, setViewSettings } = useFlowStore();
   const { nodes } = useCanvasState();
   const { violations, parseError } = useArchitectureLint();
@@ -95,10 +97,10 @@ export function LintRulesPanel(): React.ReactElement {
       <div className="rounded-[var(--radius-md)] border border-[var(--color-brand-border)] bg-[var(--brand-primary-50)] p-3">
         <div className="flex items-center gap-2">
           <Shield className="h-4 w-4 text-[var(--brand-primary)]" />
-          <p className="text-xs font-medium text-[var(--brand-primary)]">Architecture Linting</p>
+          <p className="text-xs font-medium text-[var(--brand-primary)]">{t('lintRules.title')}</p>
         </div>
         <p className="mt-1 text-[11px] leading-5 text-[var(--brand-secondary)]">
-          Enforce architecture constraints in real time — like ESLint for diagrams.
+          {t('lintRules.subtitle')}
         </p>
       </div>
 
@@ -108,7 +110,7 @@ export function LintRulesPanel(): React.ReactElement {
             <div className="flex items-start gap-2 rounded border border-red-200 bg-red-50 p-3">
               <AlertCircle className="h-4 w-4 shrink-0 text-red-500 mt-0.5" />
               <div>
-                <p className="text-[11px] font-medium text-red-700">Rule file error</p>
+                <p className="text-[11px] font-medium text-red-700">{t('lintRules.ruleFileError')}</p>
                 <p className="text-[11px] text-red-600 mt-0.5 font-mono">{parseError}</p>
               </div>
             </div>
@@ -116,9 +118,9 @@ export function LintRulesPanel(): React.ReactElement {
             <div className="flex items-center gap-2.5 rounded border border-emerald-200 bg-emerald-50/50 p-3">
               <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
               <div>
-                <p className="text-xs font-medium text-[var(--brand-text)]">All rules pass</p>
+                <p className="text-xs font-medium text-[var(--brand-text)]">{t('lintRules.allPass')}</p>
                 <p className="text-[11px] text-[var(--brand-secondary)]">
-                  {nodes.length} node{nodes.length !== 1 ? 's' : ''} checked, no violations found.
+                  {t('lintRules.nodesChecked', { count: nodes.length })}
                 </p>
               </div>
             </div>
@@ -126,7 +128,7 @@ export function LintRulesPanel(): React.ReactElement {
             <div className="rounded border border-red-100 bg-red-50/30">
               <div className="flex items-center justify-between border-b border-red-100 px-3 py-2">
                 <span className="text-xs font-medium text-[var(--brand-text)]">
-                  {violations.length} violation{violations.length !== 1 ? 's' : ''}
+                  {t('lintRules.violationCount', { count: violations.length })}
                 </span>
                 <div className="flex items-center gap-2 text-[11px]">
                   {errorCount > 0 && (
@@ -147,7 +149,7 @@ export function LintRulesPanel(): React.ReactElement {
                     className="h-7 px-2 text-[10px]"
                     icon={<Download className="h-2.5 w-2.5" />}
                   >
-                    Export
+                    {t('lintRules.export')}
                   </Button>
                 </div>
               </div>
@@ -172,20 +174,20 @@ export function LintRulesPanel(): React.ReactElement {
       )}
 
       <RulesSection
-        title="Diagram rules"
+        title={t('lintRules.diagramRules')}
         icon={<Shield className="h-3.5 w-3.5 text-[var(--brand-secondary)]" />}
         hasRules={hasRules}
         rules={diagramRules}
-        emptyMessage="No diagram-level rules yet."
+        emptyMessage={t('lintRules.noDiagramRules')}
         onOpenEditor={handleDiagramRulesOpen}
       />
 
       <RulesSection
-        title="Workspace rules"
+        title={t('lintRules.workspaceRules')}
         icon={<Globe className="h-3.5 w-3.5 text-[var(--brand-secondary)]" />}
         hasRules={hasWorkspaceRules}
         rules={workspaceRules}
-        emptyMessage="Workspace rules apply to all diagrams. Good for org-wide standards."
+        emptyMessage={t('lintRules.workspaceRulesEmpty')}
         onOpenEditor={handleWorkspaceRulesOpen}
       />
 
@@ -193,9 +195,9 @@ export function LintRulesPanel(): React.ReactElement {
         <div className="flex flex-col items-center gap-4 py-4 text-center">
           <ShieldCheck className="h-10 w-10 text-[var(--color-brand-border)]" />
           <div>
-            <p className="text-sm font-medium text-[var(--brand-text)]">No rules defined yet</p>
+            <p className="text-sm font-medium text-[var(--brand-text)]">{t('lintRules.noRulesTitle')}</p>
             <p className="mt-1 text-[11px] text-[var(--brand-secondary)]">
-              Add rules to automatically detect architecture violations as you draw.
+              {t('lintRules.noRulesHint')}
             </p>
           </div>
           <Button
@@ -205,7 +207,7 @@ export function LintRulesPanel(): React.ReactElement {
             className="h-9 border-[var(--brand-primary)] text-sm font-medium text-[var(--brand-primary)] hover:bg-[var(--brand-primary-50)]"
             icon={<BookOpen className="h-4 w-4" />}
           >
-            Browse templates
+            {t('lintRules.browseTemplates')}
           </Button>
         </div>
       )}

@@ -10,13 +10,10 @@ export function HomeMCPView(): React.ReactElement {
         <div className="flex-1 animate-in overflow-y-auto px-4 py-6 duration-300 fade-in sm:px-6 md:px-10 md:py-12">
             <div className="mb-8 max-w-3xl">
                 <h1 className="mb-1 text-2xl font-semibold tracking-tight text-[var(--brand-text)]">
-                    {t('mcp.pageTitle', 'Connect AI tools')}
+                    {t('mcp.pageTitle')}
                 </h1>
                 <p className="text-sm text-[var(--brand-secondary)]">
-                    {t(
-                        'mcp.pageSubtitle',
-                        'Give Claude, Cursor, Windsurf, or any MCP client first-class diagramming tools. Local-first, no API key, no cloud round-trip.'
-                    )}
+                    {t('mcp.pageSubtitle')}
                 </p>
             </div>
 

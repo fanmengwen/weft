@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { NodeData } from '@/lib/types';
 import type { DomainLibraryCategory, DomainLibraryItem } from '@/services/domainLibrary';
 import { loadProviderCatalog } from '@/services/shapeLibrary/providerCatalog';
@@ -44,6 +45,7 @@ export function ArchitectureNodeSection({
   data,
   onChange,
 }: ArchitectureNodeSectionProps): React.ReactElement {
+  const { t } = useTranslation();
   const provider = (data.archProvider || 'custom') as DomainLibraryCategory | 'custom';
   const providerLabel = provider.toUpperCase();
   const customProviderLabel =
@@ -186,7 +188,7 @@ export function ArchitectureNodeSection({
             ) : (
               <label className="flex cursor-pointer items-center justify-center gap-2 rounded-[var(--brand-radius)] border border-dashed border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-3 py-2 text-xs font-medium text-[var(--brand-secondary)] transition-all hover:border-[var(--brand-primary-400)] hover:bg-[var(--brand-background)] hover:text-[var(--brand-primary)]">
                 <Upload className="h-3.5 w-3.5" />
-                <span>Add provider icon</span>
+                <span>{t('properties.addProviderIcon')}</span>
                 <input
                   type="file"
                   accept="image/svg+xml,image/png,image/jpeg,image/webp"

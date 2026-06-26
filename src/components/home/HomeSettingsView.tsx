@@ -21,11 +21,11 @@ export function HomeSettingsView({
 }: HomeSettingsViewProps): React.ReactElement {
     const { t } = useTranslation();
     const settingsTabs: Array<{ key: HomeSettingsTab; label: string }> = [
-        { key: 'general', label: t('settings.general', 'General') },
-        { key: 'canvas', label: t('settings.canvas', 'Canvas') },
+        { key: 'general', label: t('settings.general') },
+        { key: 'canvas', label: t('settings.canvas') },
         { key: 'ai', label: t('settings.ai', FLOWPILOT_NAME) },
-        { key: 'mcp', label: t('settings.mcp', 'MCP') },
-        { key: 'shortcuts', label: t('settings.shortcuts', 'Shortcuts') },
+        { key: 'mcp', label: t('settings.mcp') },
+        { key: 'shortcuts', label: t('settings.shortcuts') },
     ];
 
     function renderSettingsPanel(): React.ReactElement {
@@ -46,7 +46,7 @@ export function HomeSettingsView({
     return (
         <div className="flex min-h-screen flex-1 flex-col overflow-hidden animate-in fade-in duration-300">
             <header className="border-b border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-4 py-4 sm:px-6 md:px-8 md:py-6">
-                <h1 className="text-xl font-bold text-[var(--brand-text)] tracking-tight">{t('settings.title', 'Settings')}</h1>
+                <h1 className="text-xl font-bold text-[var(--brand-text)] tracking-tight">{t('settings.title')}</h1>
             </header>
 
             <div className="flex min-h-0 flex-1 flex-col bg-[var(--brand-surface)] md:flex-row">

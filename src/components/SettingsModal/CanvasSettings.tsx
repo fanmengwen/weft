@@ -275,13 +275,13 @@ export function CanvasSettings(): React.ReactElement {
               ))}
             </div>
             <label className="mb-2 mt-3 block text-[11px] font-semibold uppercase tracking-wider text-[var(--brand-secondary)]">
-              Safety Profile (100 / 300 / 500)
+              {t('settingsModal.canvas.safetyProfileLabel')}
             </label>
             <div className="grid grid-cols-3 gap-2">
               {[
-                { profile: 'performance', label: 'Performance' },
-                { profile: 'balanced', label: 'Balanced' },
-                { profile: 'quality', label: 'Quality' },
+                { profile: 'performance', label: t('settingsModal.canvas.safetyProfilePerformance') },
+                { profile: 'balanced', label: t('settingsModal.canvas.safetyProfileBalanced') },
+                { profile: 'quality', label: t('settingsModal.canvas.safetyProfileQuality') },
               ].map((option) => (
                 <button
                   key={option.profile}
@@ -301,7 +301,7 @@ export function CanvasSettings(): React.ReactElement {
               ))}
             </div>
             <p className="mt-2 text-[11px] text-[var(--brand-secondary)]">
-              Performance starts safety at 100 nodes, Balanced at 300, Quality at 500.
+              {t('settingsModal.canvas.safetyProfileHint')}
             </p>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { Check, Code2, Copy, ExternalLink, FileCode2, Link, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { MODAL_PANEL_CLASS, SECTION_CARD_CLASS } from '@/lib/designTokens';
 
 interface ShareEmbedModalProps {
@@ -7,7 +8,19 @@ interface ShareEmbedModalProps {
     onClose: () => void;
 }
 
-function CopyRow({ label, value, icon: Icon }: { label: string; value: string; icon: React.ComponentType<{ className?: string }> }): React.ReactElement {
+function CopyRow({
+    label,
+    value,
+    icon: Icon,
+    copyLabel,
+    copiedLabel,
+}: {
+    label: string;
+    value: string;
+    icon: React.ComponentType<{ className?: string }>;
+    copyLabel: string;
+    copiedLabel: string;
+}): React.ReactElement {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = useCallback(async () => {
@@ -27,12 +40,12 @@ function CopyRow({ label, value, icon: Icon }: { label: string; value: string; i
                     type="button"
                     onClick={() => void handleCopy()}
                     className="flex items-center gap-1 rounded-[var(--radius-xs)] px-2 py-0.5 text-[11px] font-medium text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-surface)] hover:text-[var(--brand-text)]"
-                    aria-label={`Copy ${label.toLowerCase()}`}
+                    aria-label={copyLabel}
                 >
                     {copied ? (
-                        <><Check className="h-3 w-3 text-emerald-500" /><span className="text-emerald-600">Copied</span></>
+                        <><Check className="h-3 w-3 text-emerald-500" /><span className="text-emerald-600">{copiedLabel}</span></>
                     ) : (
-                        <><Copy className="h-3 w-3" />Copy</>
+                        <><Copy className="h-3 w-3" />{copyLabel}</>
                     )}
                 </button>
             </div>
@@ -42,6 +55,7 @@ function CopyRow({ label, value, icon: Icon }: { label: string; value: string; i
 }
 
 export function ShareEmbedModal({ viewerUrl, onClose }: ShareEmbedModalProps): React.ReactElement {
+    const { t } = useTranslation();
     const viewer = new URL(viewerUrl);
     const cardViewerUrl = (() => {
         const next = new URL(viewer.toString());
@@ -69,19 +83,19 @@ export function ShareEmbedModal({ viewerUrl, onClose }: ShareEmbedModalProps): R
             >
                 <div className="flex items-center justify-between border-b border-[var(--color-brand-border)] px-5 py-4">
                     <div>
-                        <h2 id="share-embed-title" className="text-sm font-semibold text-[var(--brand-text)]">Share and embed diagram</h2>
-                        <p id="share-embed-description" className="mt-0.5 text-[11px] text-[var(--brand-secondary-light)]">Viewer links are read-only and encode the diagram directly in the URL.</p>
+                        <h2 id="share-embed-title" className="text-sm font-semibold text-[var(--brand-text)]">{t('shareEmbed.title')}</h2>
+                        <p id="share-embed-description" className="mt-0.5 text-[11px] text-[var(--brand-secondary-light)]">{t('shareEmbed.description')}</p>
                     </div>
-                    <button type="button" onClick={onClose} className="rounded-full p-1 text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)]" aria-label="Close share dialog">
+                    <button type="button" onClick={onClose} className="rounded-full p-1 text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)]" aria-label={t('shareEmbed.closeAria')}>
                         <X className="h-4 w-4" />
                     </button>
                 </div>
 
                 <div className="space-y-3 p-5">
-                    <CopyRow label="Viewer link" value={viewerUrl} icon={Link} />
-                    <CopyRow label="Markdown link" value={markdownLink} icon={Code2} />
-                    <CopyRow label="README link" value={readmeLink} icon={Code2} />
-                    <CopyRow label="Embed iframe" value={iframeSnippet} icon={FileCode2} />
+                    <CopyRow label={t('shareEmbed.viewerLink')} value={viewerUrl} icon={Link} copyLabel={t('shareEmbed.copy')} copiedLabel={t('shareEmbed.copied')} />
+                    <CopyRow label={t('shareEmbed.markdownLink')} value={markdownLink} icon={Code2} copyLabel={t('shareEmbed.copy')} copiedLabel={t('shareEmbed.copied')} />
+                    <CopyRow label={t('shareEmbed.readmeLink')} value={readmeLink} icon={Code2} copyLabel={t('shareEmbed.copy')} copiedLabel={t('shareEmbed.copied')} />
+                    <CopyRow label={t('shareEmbed.embedIframe')} value={iframeSnippet} icon={FileCode2} copyLabel={t('shareEmbed.copy')} copiedLabel={t('shareEmbed.copied')} />
 
                     <a
                         href={cardViewerUrl}
@@ -90,13 +104,13 @@ export function ShareEmbedModal({ viewerUrl, onClose }: ShareEmbedModalProps): R
                         className="flex items-center justify-center gap-2 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] py-2 text-xs font-medium text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-background)] hover:text-[var(--brand-primary)]"
                     >
                         <ExternalLink className="h-3.5 w-3.5" />
-                        Open card viewer
+                        {t('shareEmbed.openCardViewer')}
                     </a>
                 </div>
 
                 <div className="border-t border-[var(--color-brand-border)] px-5 py-3">
                     <p className="text-[10px] leading-relaxed text-[var(--brand-secondary-light)]">
-                        GitHub README usage should prefer the Markdown link. Blog posts and docs can use the iframe snippet with `size=card` or `size=badge`.
+                        {t('shareEmbed.footer')}
                     </p>
                 </div>
             </div>
