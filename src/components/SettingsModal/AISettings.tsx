@@ -13,7 +13,6 @@ import {
     ProviderMeta,
 } from '@/config/aiProviders';
 import { getAIReadinessState } from '@/hooks/ai-generation/readiness';
-import { buildDocsSiteUrl } from '@/docs/docsRoutes';
 
 // Helper for logo with fallback
 function ProviderIcon({ p, isSelected }: { p: ProviderMeta; isSelected: boolean }): React.ReactElement {
@@ -126,12 +125,7 @@ export function AISettings(): React.ReactElement {
         <div className="space-y-8 pb-4 animate-in fade-in duration-200 w-full min-w-0">
             {/* Header Text */}
             <div className="space-y-1">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-base font-semibold text-[var(--brand-text)]">{t('settingsModal.flowpilotConfigurations', { defaultValue: 'Flowpilot Configuration' })}</h3>
-                    <a href={buildDocsSiteUrl('prompting-agents')} target="_blank" rel="noopener noreferrer" className="text-[10px] font-semibold text-[var(--brand-primary)] hover:underline flex items-center gap-1">
-                        Prompting Guide <ExternalLink className="w-3 h-3" />
-                    </a>
-                </div>
+                <h3 className="text-base font-semibold text-[var(--brand-text)]">{t('settingsModal.flowpilotConfigurations', { defaultValue: 'Flowpilot Configuration' })}</h3>
                 <p className="text-xs text-[var(--brand-secondary)]">{t('ai.settingsSubtitle')}</p>
             </div>
 
