@@ -1,8 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { useTranslation } from 'react-i18next';
 import App from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { RouteLoadingFallback } from './components/app/RouteLoadingFallback';
+import { BOOTSTRAP_LOADING_I18N_KEYS } from './components/app/routeLoadingCopy';
+import './i18n/config';
 import { ToastProvider } from './components/ui/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
 import {
@@ -30,6 +33,7 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 
 function BootstrapApp(): React.ReactElement {
+  const { t } = useTranslation();
   const [isReady, setIsReady] = React.useState(false);
 
   React.useEffect(() => {
@@ -61,8 +65,8 @@ function BootstrapApp(): React.ReactElement {
   if (!isReady) {
     return (
       <RouteLoadingFallback
-        title="Restoring your workspace"
-        description="Loading your diagrams, chat history, and local settings."
+        title={t(BOOTSTRAP_LOADING_I18N_KEYS.title)}
+        description={t(BOOTSTRAP_LOADING_I18N_KEYS.description)}
       />
     );
   }

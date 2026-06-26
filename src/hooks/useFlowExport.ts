@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createLogger } from '@/lib/logger';
 import { useReactFlow } from '@/lib/reactflowCompat';
 import { toJpeg } from 'html-to-image';
@@ -44,6 +45,7 @@ export const useFlowExport = (
   const { updateTab } = useTabActions();
   const { fitView } = useReactFlow();
   const { addToast } = useToast();
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importRecoveryState, setImportRecoveryState] = useState<ImportRecoveryState | null>(null);
   const activeTab = tabs.find((tab) => tab.id === activeTabId);
@@ -72,7 +74,7 @@ export const useFlowExport = (
     }
 
     reactFlowWrapper.current.classList.add('exporting');
-    addToast('Preparing PDF download…', 'info');
+    addToast(t('export.progress.preparingPdfDownload'), 'info');
 
     setTimeout(() => {
       const { width, height, options } = createExportOptions(nodes, 'jpeg');
@@ -96,11 +98,11 @@ export const useFlowExport = (
           reactFlowWrapper.current?.classList.remove('exporting');
         });
     }, 300);
-  }, [nodes, reactFlowWrapper, addToast, exportBaseName]);
+  }, [nodes, reactFlowWrapper, addToast, exportBaseName, t]);
 
   // --- JSON Export ---
   const handleExportJSON = useCallback(() => {
-    addToast('Preparing JSON download…', 'info');
+    addToast(t('export.progress.preparingJsonDownload'), 'info');
     const documentJson = buildDiagramDocumentJson({
       nodes,
       edges,
@@ -115,10 +117,10 @@ export const useFlowExport = (
     link.click();
     URL.revokeObjectURL(url);
     addToast('Diagram JSON downloaded!', 'success');
-  }, [nodes, edges, viewSettings.exportSerializationMode, activeTab, addToast, exportBaseName]);
+  }, [nodes, edges, viewSettings.exportSerializationMode, activeTab, addToast, exportBaseName, t]);
 
   const handleCopyJSON = useCallback(async () => {
-    addToast('Preparing JSON copy…', 'info');
+    addToast(t('export.progress.preparingJsonCopy'), 'info');
     const documentJson = buildDiagramDocumentJson({
       nodes,
       edges,
@@ -133,7 +135,7 @@ export const useFlowExport = (
       logger.error('JSON clipboard export failed.', { error });
       addToast('Failed to copy JSON. Please try again.', 'error');
     }
-  }, [nodes, edges, viewSettings.exportSerializationMode, activeTab, addToast]);
+  }, [nodes, edges, viewSettings.exportSerializationMode, activeTab, addToast, t]);
 
   // --- JSON Import ---
   const handleImportJSON = useCallback(() => {
