@@ -73,6 +73,8 @@ export interface BuildPlaybackParams {
 
 export interface BuildEmptyStateParams {
   nodes: FlowNode[];
+  editorMode: 'canvas' | 'studio';
+  isCommandBarOpen: boolean;
   t: TFunction;
   openStudioPanel: (tab: 'ai' | 'playback' | 'infra') => void;
   openCommandBar: (
