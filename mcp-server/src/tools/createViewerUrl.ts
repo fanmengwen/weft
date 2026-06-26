@@ -7,9 +7,9 @@ export function registerCreateViewerUrl(server: McpServer): void {
   server.registerTool(
     'create_viewer_url',
     {
-      title: 'Create an OpenFlowKit viewer URL',
+      title: 'Create an Weft viewer URL',
       description:
-        'Build a shareable OpenFlowKit viewer URL for agent-authored OpenFlow DSL. ' +
+        'Build a shareable Weft viewer URL for agent-authored OpenFlow DSL. ' +
         'No AI provider, network call, account, or API key is required. Always validate ' +
         'the DSL first or inspect the returned lint report before showing the URL.',
       inputSchema: {
