@@ -5,6 +5,5 @@ export const MOBILE_WORKSPACE_GATE_COPY = {
     recommendedLabel: 'Quick tip',
     recommendedBody:
         'Open this link on a laptop or desktop and you\'ll land right in the editor with all tools ready.',
-    openDocs: 'Browse the Docs',
-    goHome: 'Go Home',
+    goHome: 'Go to Home',
 } as const;
