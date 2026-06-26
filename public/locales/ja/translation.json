@@ -169,7 +169,24 @@
     "speed": "速度",
     "resolution": "解像度",
     "transparentBackground": "透明な背景",
-    "headingFormat": "エクスポート形式"
+    "headingFormat": "エクスポート形式",
+    "progress": {
+      "preparingDownload": "{{format}} のダウンロードを準備中…",
+      "preparingCopy": "{{format}} のコピーを準備中…",
+      "preparingSvgDownload": "SVG のダウンロードを準備中…",
+      "preparingSvgCopy": "SVG のコピーを準備中…",
+      "preparingPdfDownload": "PDF のダウンロードを準備中…",
+      "preparingJsonDownload": "JSON のダウンロードを準備中…",
+      "preparingJsonCopy": "JSON のコピーを準備中…",
+      "preparingMermaidDownload": "Mermaid のダウンロードを準備中…",
+      "copyingMermaid": "Mermaid をコピー中…",
+      "preparingPlantUmlDownload": "PlantUML のダウンロードを準備中…",
+      "copyingPlantUml": "PlantUML をコピー中…",
+      "preparingDslDownload": "OpenFlow DSL のダウンロードを準備中…",
+      "copyingDsl": "OpenFlow DSL をコピー中…",
+      "preparingFigmaDownload": "Figma SVG のダウンロードを準備中…",
+      "copyingFigmaSvg": "Figma SVG をコピー中…"
+    }
   },
   "import": {
     "title": "インポート",
@@ -1678,5 +1695,31 @@
     "noRulesTitle": "No rules defined yet",
     "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
     "browseTemplates": "Browse templates"
+  },
+  "appLoading": {
+    "route": {
+      "title": "ワークスペースを開いています",
+      "description": "次の画面を読み込み、現在のワークスペースの状態を復元しています。"
+    },
+    "bootstrap": {
+      "title": "ワークスペースを復元しています",
+      "description": "ダイアグラム、チャット履歴、ローカル設定を読み込んでいます。"
+    },
+    "generatingDiagram": "ダイアグラムを生成中…",
+    "moreNodes": "あと {{count}} 件",
+    "nodeCount_one": "ノード {{count}} 件",
+    "nodeCount_other": "ノード {{count}} 件",
+    "edgeCount_one": "エッジ {{count}} 件",
+    "edgeCount_other": "エッジ {{count}} 件",
+    "cinematicExport": "シネマティック書き出しを準備中…",
+    "cancelCinematicExport": "シネマティック書き出しをキャンセル",
+    "loadingAssets": "{{label}} を読み込み中",
+    "cinematicCapturingFrames": "フレームをキャプチャ中…",
+    "cinematicEncodingVideo": "動画をエンコード中…",
+    "cinematicFinalizing": "書き出しを仕上げ中…",
+    "cinematicComplete": "書き出し完了",
+    "cinematicCancelled": "書き出しをキャンセルしました",
+    "nodeCount": "ノード {{count}} 件",
+    "edgeCount": "エッジ {{count}} 件"
   }
 }

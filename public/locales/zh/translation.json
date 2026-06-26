@@ -169,7 +169,24 @@
     "speed": "速度",
     "resolution": "分辨率",
     "transparentBackground": "透明背景",
-    "headingFormat": "导出格式"
+    "headingFormat": "导出格式",
+    "progress": {
+      "preparingDownload": "正在准备 {{format}} 下载…",
+      "preparingCopy": "正在准备 {{format}} 复制…",
+      "preparingSvgDownload": "正在准备 SVG 下载…",
+      "preparingSvgCopy": "正在准备 SVG 复制…",
+      "preparingPdfDownload": "正在准备 PDF 下载…",
+      "preparingJsonDownload": "正在准备 JSON 下载…",
+      "preparingJsonCopy": "正在准备 JSON 复制…",
+      "preparingMermaidDownload": "正在准备 Mermaid 下载…",
+      "copyingMermaid": "正在复制 Mermaid…",
+      "preparingPlantUmlDownload": "正在准备 PlantUML 下载…",
+      "copyingPlantUml": "正在复制 PlantUML…",
+      "preparingDslDownload": "正在准备 OpenFlow DSL 下载…",
+      "copyingDsl": "正在复制 OpenFlow DSL…",
+      "preparingFigmaDownload": "正在准备 Figma SVG 下载…",
+      "copyingFigmaSvg": "正在复制 Figma SVG…"
+    }
   },
   "import": {
     "title": "导入",
@@ -1746,5 +1763,31 @@
     "noRulesTitle": "尚未定义规则",
     "noRulesHint": "添加规则以在绘图时自动检测架构违规。",
     "browseTemplates": "浏览模板"
+  },
+  "appLoading": {
+    "route": {
+      "title": "正在打开工作区",
+      "description": "正在加载下一屏并恢复当前工作区状态。"
+    },
+    "bootstrap": {
+      "title": "正在恢复工作区",
+      "description": "正在加载图表、对话记录和本地设置。"
+    },
+    "generatingDiagram": "正在生成图表…",
+    "moreNodes": "还有 {{count}} 个",
+    "nodeCount_one": "{{count}} 个节点",
+    "nodeCount_other": "{{count}} 个节点",
+    "edgeCount_one": "{{count}} 条边",
+    "edgeCount_other": "{{count}} 条边",
+    "cinematicExport": "正在准备电影级导出…",
+    "cancelCinematicExport": "取消电影级导出",
+    "loadingAssets": "正在加载 {{label}}",
+    "cinematicCapturingFrames": "正在捕获帧…",
+    "cinematicEncodingVideo": "正在编码视频…",
+    "cinematicFinalizing": "正在完成导出…",
+    "cinematicComplete": "导出完成",
+    "cinematicCancelled": "导出已取消",
+    "nodeCount": "{{count}} 个节点",
+    "edgeCount": "{{count}} 条边"
   }
 }

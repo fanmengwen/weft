@@ -188,7 +188,9 @@ export function AssetsView({
                             <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-background)] text-[var(--brand-secondary)]">
                                 <Boxes className="h-4 w-4" />
                             </div>
-                            <div className="mt-3 text-sm font-medium text-[var(--brand-text)]">Loading {activeCloudTab.label}</div>
+                            <div className="mt-3 text-sm font-medium text-[var(--brand-text)]">
+                                {t('appLoading.loadingAssets', { label: activeCloudTab.label })}
+                            </div>
                         </div>
                     ) : tabCounts[activeCloudTab.id] > 0 ? (
                         <div className="space-y-3">
