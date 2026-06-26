@@ -22,7 +22,6 @@ export function ERDiagramNodeProperties({
   onDelete,
   onGenerateEntityFields,
   onConvertEntitySelectionToClassDiagram,
-  onOpenMermaidCodeEditor,
 }: DiagramNodePropertiesComponentProps): React.ReactElement {
   const [activeSection, setActiveSection] = React.useState('fields');
 
@@ -112,13 +111,6 @@ export function ERDiagramNodeProperties({
             onClick={() => onConvertEntitySelectionToClassDiagram?.()}
           >
             Convert to class diagram
-          </button>
-          <button
-            type="button"
-            className={`${INSPECTOR_BUTTON_CLASSNAME} w-full px-3 py-2 text-sm`}
-            onClick={() => onOpenMermaidCodeEditor?.()}
-          >
-            Open Mermaid code
           </button>
         </div>
       </CollapsibleSection>

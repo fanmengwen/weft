@@ -179,7 +179,7 @@ export function HomeDashboard({
                     className="w-full text-[14.5px] group"
                   >
                     <WandSparkles className={secondaryActionIconClass} strokeWidth={2} />{' '}
-                    {t('home.homeFlowpilotAI', 'Flowpilot AI')}
+                    {t('home.homeFlowpilotAI', 'AI Assistant')}
                   </Button>
 
                   <Button

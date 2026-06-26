@@ -6,8 +6,8 @@ import type { CommandItem } from './types';
 
 const commandItems: CommandItem[] = [
   {
-    id: 'flowpilot',
-    label: 'Open Flowpilot',
+    id: 'studio-ai',
+    label: 'Open AI Assistant',
     tier: 'core',
     type: 'action',
     icon: <span>AI</span>,
@@ -40,7 +40,7 @@ describe('RootView', () => {
       />
     );
 
-    expect(screen.getByText('Open Flowpilot')).toBeTruthy();
+    expect(screen.getByText('Open AI Assistant')).toBeTruthy();
     expect(screen.getByText('Edit Flow DSL')).toBeTruthy();
   });
 });

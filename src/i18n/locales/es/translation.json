@@ -276,10 +276,10 @@
     "homeEmptySubtitle": "Diseña arquitecturas de nivel empresarial al instante. Comienza con un lienzo en blanco, describe tu infraestructura con nuestro constructor de IA, o usa una plantilla adaptada.",
     "homeBlankCanvas": "Lienzo en blanco",
     "createNew": "Crear nuevo",
-    "homeFlowpilotAI": "Flowpilot IA",
+    "homeFlowpilotAI": "Asistente de IA",
     "homeTemplates": "Plantillas",
     "homeImportFile": "O importar un archivo existente",
-    "suggestionAI": "Flowpilot IA",
+    "suggestionAI": "Asistente de IA",
     "suggestionBlank": "Lienzo en blanco",
     "suggestionBlankDesc": "Saltar directamente al editor",
     "suggestionAIDesc": "Empezar desde un mensaje",
@@ -287,7 +287,8 @@
     "suggestionImportDesc": "Traer trabajo existente",
     "suggestionTemplates": "Plantillas",
     "suggestionTemplatesDesc": "Empezar desde un patrón probado",
-    "continueTitle": "Continuar con una acción reciente"
+    "continueTitle": "Continuar con una acción reciente",
+    "generateWithFlowpilot": "Generar con IA"
   },
   "settings": {
     "title": "Configuración",
@@ -307,7 +308,9 @@
     "themeLight": "Claro",
     "themeDark": "Oscuro",
     "themeSystem": "Sistema",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "flowpilotAI": "Asistente de IA",
+    "aiAssistant": "Asistente de IA"
   },
   "shortcuts": {
     "title": "Atajos de teclado",
@@ -360,7 +363,7 @@
     "apiKey": "Clave API",
     "placeholder": "Describe tu diagrama...",
     "settingsSubtitle": "Configura tu proveedor de IA, modelo y clave API preferidos a continuación.",
-    "generateWithFlowpilot": "Generar con Flowpilot",
+    "generateWithFlowpilot": "Generar con Asistente de IA",
     "howToGetKey": "Cómo obtener tu clave API",
     "openConsole": "Abrir consola",
     "pasteKeyStep": "Pégala en el campo de arriba; nunca se comparte con nosotros",
@@ -477,7 +480,7 @@
     "description": "El canvas white-label definitivo.",
     "diagramAsCode": "Diagrama como código",
     "diagramAsCodeDesc": "Soporte de Mermaid.js y DSL tipado.",
-    "flowpilotAI": "Flowpilot",
+    "flowpilotAI": "Asistente de IA",
     "aiAssistant": "Asistente IA",
     "flowpilotAIDesc": "Trabaja en tu diagrama con ediciones guiadas por IA.",
     "addRedisCache": "Agregar caché Redis frente a la BD.",
@@ -535,7 +538,7 @@
     "communityDesc": "Únete a desarrolladores que construyen con Weft.",
     "roadmap": "Hoja de ruta",
     "coreRenderer": "Motor principal",
-    "flowpilotAI": "Flowpilot"
+    "flowpilotAI": "Asistente de IA"
   },
   "demo": {
     "livePreview": "Vista previa en vivo",
@@ -544,7 +547,8 @@
     "description1": "Esboza tus ideas rápido.",
     "description2": "Expórtalas listas para producción.",
     "liveSync": "Sincronización en vivo",
-    "liveSyncDesc": "Edita código ↔ Ve los cambios al instante"
+    "liveSyncDesc": "Edita código ↔ Ve los cambios al instante",
+    "flowpilotAI": "Asistente de IA"
   },
   "docs": {
     "documentation": "Documentación",
@@ -589,7 +593,7 @@
   },
   "commandBar": {
     "ai": {
-      "title": "Preguntar a Flowpilot",
+      "title": "Preguntar al asistente de IA",
       "clearChat": "Borrar historial",
       "placeholder": "Describe lo que quieres crear...",
       "examples": {
@@ -721,8 +725,8 @@
       "removedCount": "{{count}} eliminados",
       "discard": "Descartar",
       "applyToCanvas": "Aplicar al lienzo",
-      "emptyDescription": "Describe el diagrama que quieres y {{appName}} preparará el primer borrador por ti.",
-      "editDescription": "Describe los cambios que quieres y {{appName}} actualizará el diagrama por ti.",
+      "emptyDescription": "Describa el diagrama que desea y el asistente de IA preparará la primera versión.",
+      "editDescription": "Describa los cambios que desea y el asistente de IA actualizará el diagrama.",
       "addKeyCta": "Añade una clave de IA para empezar",
       "retrying": "Reintentando ({{retryCount}} de 3)...",
       "generating": "Generando...",
@@ -766,7 +770,7 @@
         "importApplied": "Applied to the canvas",
         "planReady": "Plan ready",
         "answeredInChat": "Answered in chat",
-        "generationFailed": "FlowPilot could not finish the response",
+        "generationFailed": "El asistente de IA no pudo completar la respuesta",
         "assetMatchesFound": "Found strong local asset matches",
         "assetMatchesNone": "No strong local asset match yet. Try naming the cloud provider or exact service.",
         "previewDetail": {
@@ -790,6 +794,22 @@
           "inspectRequest": "Inspect the current request",
           "draftResponse": "Draft the response"
         }
+      },
+      "examples": {
+        "userRegistrationFlow": "Registro de usuario",
+        "userRegistrationFlowPrompt": "Genera un flujo de registro de usuario con verificación de correo, inicio de sesión y restablecimiento de contraseña",
+        "contentReviewWorkflow": "Revisión de contenido",
+        "contentReviewWorkflowPrompt": "Genera un flujo de revisión de contenido con envío, moderación, aprobación y publicación",
+        "dataProcessingPipeline": "Pipeline de datos",
+        "dataProcessingPipelinePrompt": "Genera un pipeline de procesamiento de datos con ingesta, validación, transformación y salida",
+        "approvalWorkflow": "Flujo de aprobación",
+        "approvalWorkflowPrompt": "Genera un flujo de aprobación con solicitud, revisión, aprobación del manager y notificación",
+        "iterationDatabase": "Base de datos",
+        "iterationDatabasePrompt": "Agrega una base de datos PostgreSQL a la arquitectura",
+        "iterationServer": "Servidor",
+        "iterationServerPrompt": "Agrega un servicio backend Node.js",
+        "iterationDeploy": "Despliegue",
+        "iterationDeployPrompt": "Agrega pasos de despliegue y hosting al diagrama"
       }
     },
     "figmaImport": {
@@ -893,16 +913,20 @@
       "quickActionsAria": "Acciones rápidas de la barra de comandos",
       "results": "Resultados",
       "noMatchingCommands": "No hay comandos que coincidan con \"{{query}}\""
+    },
+    "commands": {
+      "openAIAssistant": "Abrir asistente de IA",
+      "openAIAssistantDesc": "Abrir el asistente de IA en el panel derecho"
     }
   },
   "settingsModal": {
     "title": "Configuración",
     "general": "General",
-    "flowpilotAI": "Flowpilot",
+    "flowpilotAI": "Asistente de IA",
     "shortcuts": "Atajos",
     "running": "{appName} en ejecución",
     "generalSettings": "Configuración general",
-    "flowpilotConfigurations": "Configuración de Flowpilot",
+    "flowpilotConfigurations": "Configuración de IA",
     "keyboardShortcuts": "Atajos de teclado",
     "canvas": {
       "title": "Canvas",
@@ -1325,7 +1349,7 @@
   "toolbar": {
     "selectMode": "Modo selección (V)",
     "panMode": "Modo mover (H)",
-    "flowpilot": "Flowpilot",
+    "flowpilot": "Asistente de IA (Cmd+K)",
     "templates": "Plantillas",
     "addItem": "Agregar elemento",
     "addToCanvas": "Agregar al lienzo",
@@ -1356,8 +1380,8 @@
     "applyingLayout": "Aplicando diseño…",
     "emptyState": {
       "title": "Comenzar a construir",
-      "description": "Su lienzo está vacío. Genere un flujo con Flowpilot o comience desde cero.",
-      "generateWithFlowpilot": "Generar con Flowpilot",
+      "description": "Su lienzo está vacío. Genere un diagrama con IA o comience desde cero.",
+      "generateWithFlowpilot": "Generar con IA",
       "browseTemplates": "Explorar plantillas",
       "addBlankNode": "Agregar forma en blanco"
     },

@@ -1,41 +1,16 @@
 import React, { lazy, Suspense } from 'react';
-import { ArrowRight, Code2, WandSparkles } from 'lucide-react';
-import { FLOWPILOT_NAME } from '@/lib/brand';
+import { ArrowRight } from 'lucide-react';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { ChatMessage } from '@/services/aiService';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
-import type { StudioCodeMode, StudioTab } from '@/hooks/useFlowEditorUIState';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
 import type { ImportDiff } from '@/hooks/useAIGeneration';
-import { SidebarBody, SidebarHeader, SidebarSegmentedTabs, SidebarShell } from './SidebarShell';
+import { SidebarBody, SidebarHeader, SidebarShell } from './SidebarShell';
 
 const LazyStudioAIPanel = lazy(async () => {
     const module = await import('./StudioAIPanel');
     return { default: module.StudioAIPanel };
 });
-
-const LazyStudioCodePanel = lazy(async () => {
-    const module = await import('./StudioCodePanel');
-    return { default: module.StudioCodePanel };
-});
-
-const STUDIO_TABS: Array<{
-    id: StudioTab;
-    icon: typeof WandSparkles;
-    label: string;
-    badge?: string;
-}> = [
-    { id: 'ai', icon: WandSparkles, label: FLOWPILOT_NAME, badge: 'Beta' },
-    { id: 'code', icon: Code2, label: 'Code' },
-];
-
-function getEffectiveStudioTab(activeTab: StudioTab): 'ai' | 'code' {
-    if (activeTab === 'infra' || activeTab === 'playback') {
-        return 'ai';
-    }
-
-    return activeTab;
-}
 
 interface StudioPanelProps {
     onClose: () => void;
@@ -56,10 +31,6 @@ interface StudioPanelProps {
     chatMessages: ChatMessage[];
     assistantThread: AssistantThreadItem[];
     onClearChat: () => void;
-    activeTab: StudioTab;
-    onTabChange: (tab: StudioTab) => void;
-    codeMode: StudioCodeMode;
-    onCodeModeChange: (mode: StudioCodeMode) => void;
     selectedNode: FlowNode | null;
     selectedNodeCount: number;
     onViewProperties: () => void;
@@ -84,8 +55,7 @@ interface StudioPanelProps {
 export function StudioPanel({
     onClose,
     nodes,
-    edges,
-    onApply,
+    onApply: _onApply,
     onAIGenerate,
     isGenerating,
     streamingText,
@@ -100,10 +70,6 @@ export function StudioPanel({
     chatMessages,
     assistantThread,
     onClearChat,
-    activeTab,
-    onTabChange,
-    codeMode,
-    onCodeModeChange,
     selectedNode,
     selectedNodeCount,
     onViewProperties,
@@ -111,24 +77,9 @@ export function StudioPanel({
     initialPrompt,
     onInitialPromptConsumed,
 }: StudioPanelProps): React.ReactElement {
-    const effectiveTab = getEffectiveStudioTab(activeTab);
-
     return (
         <SidebarShell>
             <SidebarHeader title="Studio" onClose={onClose} />
-
-            <div className="border-b border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-4 py-2.5">
-                <SidebarSegmentedTabs
-                    tabs={STUDIO_TABS.map(({ id, icon: Icon, label, badge }) => ({
-                        id,
-                        label,
-                        icon: <Icon className="h-3.5 w-3.5" />,
-                        badge,
-                    }))}
-                    activeTab={effectiveTab}
-                    onTabChange={(tab) => onTabChange(tab as StudioTab)}
-                />
-            </div>
 
             {selectedNode && (
                 <button
@@ -145,40 +96,28 @@ export function StudioPanel({
             )}
 
             <SidebarBody scrollable={false} className="px-4 py-3">
-                {effectiveTab === 'ai' ? (
-                    <Suspense fallback={null}>
-                        <LazyStudioAIPanel
-                            onAIGenerate={onAIGenerate}
-                            isGenerating={isGenerating}
-                            streamingText={streamingText}
-                            retryCount={retryCount}
-                            onCancelGeneration={cancelGeneration}
-                            pendingDiff={pendingDiff}
-                            onConfirmDiff={onConfirmDiff}
-                            onDiscardDiff={onDiscardDiff}
-                            aiReadiness={aiReadiness}
-                            lastError={lastAIError}
-                            onClearError={onClearAIError}
-                            chatMessages={chatMessages}
-                            assistantThread={assistantThread}
-                            onClearChat={onClearChat}
-                            nodeCount={nodes.length}
-                            selectedNodeCount={selectedNodeCount}
-                            initialPrompt={initialPrompt}
-                            onInitialPromptConsumed={onInitialPromptConsumed}
-                        />
-                    </Suspense>
-                ) : effectiveTab === 'code' ? (
-                    <Suspense fallback={null}>
-                        <LazyStudioCodePanel
-                            nodes={nodes}
-                            edges={edges}
-                            onApply={onApply}
-                            mode={codeMode}
-                            onModeChange={onCodeModeChange}
-                        />
-                    </Suspense>
-                ) : null}
+                <Suspense fallback={null}>
+                    <LazyStudioAIPanel
+                        onAIGenerate={onAIGenerate}
+                        isGenerating={isGenerating}
+                        streamingText={streamingText}
+                        retryCount={retryCount}
+                        onCancelGeneration={cancelGeneration}
+                        pendingDiff={pendingDiff}
+                        onConfirmDiff={onConfirmDiff}
+                        onDiscardDiff={onDiscardDiff}
+                        aiReadiness={aiReadiness}
+                        lastError={lastAIError}
+                        onClearError={onClearAIError}
+                        chatMessages={chatMessages}
+                        assistantThread={assistantThread}
+                        onClearChat={onClearChat}
+                        nodeCount={nodes.length}
+                        selectedNodeCount={selectedNodeCount}
+                        initialPrompt={initialPrompt}
+                        onInitialPromptConsumed={onInitialPromptConsumed}
+                    />
+                </Suspense>
             </SidebarBody>
         </SidebarShell>
     );

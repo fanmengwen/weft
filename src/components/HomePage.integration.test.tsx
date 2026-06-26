@@ -83,7 +83,7 @@ describe('HomePage integration flows', () => {
 
         fireEvent.click(screen.getByTestId('sidebar-settings'));
         expect(screen.getByRole('heading', { name: 'Settings' })).toBeTruthy();
-        expect(screen.getByText('Flowpilot')).toBeTruthy();
+        expect(screen.getByText('AI Assistant')).toBeTruthy();
     });
 
     it('opens the selected template flow from the homepage templates tab', async () => {

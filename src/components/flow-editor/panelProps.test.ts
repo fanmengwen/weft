@@ -33,7 +33,7 @@ describe('buildFlowEditorPanelsProps', () => {
     const edges = [createEdge('e1', 'n1', 'n1')];
     const snapshots = [createSnapshot('s1')];
     const saveSnapshot = vi.fn();
-    const openStudioCode = vi.fn();
+    const openStudioAI = vi.fn();
     const clearSelection = vi.fn();
 
     const commandBar = {
@@ -45,8 +45,7 @@ describe('buildFlowEditorPanelsProps', () => {
       redo: vi.fn(),
       onLayout: vi.fn(async () => undefined),
       handleInsertTemplate: vi.fn(),
-      openStudioAI: vi.fn(),
-      openStudioCode,
+      openStudioAI,
       openStudioPlayback: vi.fn(),
       openArchitectureRulesPanel: vi.fn(),
       commandBarView: 'assets' as const,
@@ -105,7 +104,6 @@ describe('buildFlowEditorPanelsProps', () => {
       handleGenerateEntityFields: vi.fn(),
       handleSuggestArchitectureNode: vi.fn(),
       handleConvertEntitySelectionToClassDiagram: vi.fn(),
-      handleOpenMermaidCodeEditor: vi.fn(),
       clearSelection,
     };
     const studio = {
@@ -136,10 +134,6 @@ describe('buildFlowEditorPanelsProps', () => {
       clearChat: vi.fn(),
       selectedNode: nodes[0],
       selectedNodeCount: nodes.length,
-      studioTab: 'ai' as const,
-      setStudioTab: vi.fn(),
-      studioCodeMode: 'openflow' as const,
-      setStudioCodeMode: vi.fn(),
       playback: {
         currentStepIndex: -1,
         totalSteps: 0,
@@ -171,10 +165,9 @@ describe('buildFlowEditorPanelsProps', () => {
     expect(result.commandBar.initialView).toBe('assets');
     expect(result.snapshots.isOpen).toBe(true);
     expect(result.properties.selectedNode?.id).toBe('n1');
-    expect(result.studio.activeTab).toBe('ai');
 
-    result.commandBar.onOpenStudioOpenFlow();
-    expect(openStudioCode).toHaveBeenCalledWith('openflow');
+    result.commandBar.onOpenStudioAI();
+    expect(openStudioAI).toHaveBeenCalledTimes(1);
 
     result.snapshots.onSaveSnapshot('Snapshot 1');
     expect(saveSnapshot).toHaveBeenCalledWith('Snapshot 1', nodes, edges);

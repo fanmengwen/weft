@@ -11,9 +11,10 @@ import type { ImportDiff } from '@/hooks/useAIGeneration';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
 import { useAIViewState } from './command-bar/useAIViewState';
 import {
-  EMPTY_CANVAS_EXAMPLES,
-  ITERATION_EXAMPLES,
+  EMPTY_CANVAS_EXAMPLE_DEFINITIONS,
+  ITERATION_EXAMPLE_DEFINITIONS,
   EXAMPLE_ICON_COLORS,
+  type AIStudioExample,
 } from './studioAiPanelExamples';
 import {
   type AIGenerationMode,
@@ -167,7 +168,14 @@ export function StudioAIPanel({
   const hasHistory = assistantThread.length > 0;
   const isCanvasEmpty = nodeCount === 0;
   const effectiveGenerationMode: AIGenerationMode = nodeCount === 0 ? 'create' : generationMode;
-  const examplePrompts = isCanvasEmpty ? EMPTY_CANVAS_EXAMPLES : ITERATION_EXAMPLES;
+  const exampleDefinitions = isCanvasEmpty
+    ? EMPTY_CANVAS_EXAMPLE_DEFINITIONS
+    : ITERATION_EXAMPLE_DEFINITIONS;
+  const examplePrompts: AIStudioExample[] = exampleDefinitions.map((example) => ({
+    label: t(example.labelKey),
+    prompt: t(example.promptKey),
+    icon: example.icon,
+  }));
   const isEditMode = effectiveGenerationMode === 'edit' && !isCanvasEmpty;
   const sendButtonLabel = isEditMode
     ? t('commandBar.aiStudio.applyEdit', 'Apply AI edit')
