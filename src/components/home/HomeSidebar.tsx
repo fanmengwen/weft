@@ -2,7 +2,6 @@ import React from 'react';
 import { Book, Home, LayoutTemplate, Plug, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { WeftLogo } from '../icons/WeftLogo';
-import { SidebarFooter } from './SidebarFooter';
 import { GithubCard } from './GithubCard';
 import { SidebarItem } from '../ui/SidebarItem';
 import { APP_NAME } from '@/lib/brand';
@@ -97,7 +96,6 @@ export function HomeSidebar({
 
       <div className="hidden md:mt-auto md:block">
         <GithubCard />
-        <SidebarFooter />
       </div>
     </aside>
   );
