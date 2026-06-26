@@ -276,10 +276,10 @@
     "homeEmptySubtitle": "エンタープライズグレードのアーキテクチャを即座に設計。空白のキャンバスから始めるか、AIビルダーでインフラを描述するか、カスタマイズテンプレートを使用してください。",
     "homeBlankCanvas": "空白のキャンバス",
     "createNew": "新規作成",
-    "homeFlowpilotAI": "フローパイロット人工知能",
+    "homeFlowpilotAI": "AIアシスタント",
     "homeTemplates": "テンプレート",
     "homeImportFile": "または既存のファイルをインポート",
-    "suggestionAI": "フローパイロット人工知能",
+    "suggestionAI": "AIアシスタント",
     "suggestionBlank": "空白のキャンバス",
     "suggestionBlankDesc": "エディタに直接ジャンプ",
     "suggestionAIDesc": "プロンプトから始める",
@@ -287,7 +287,8 @@
     "suggestionImportDesc": "既存の作品を持ち込む",
     "suggestionTemplates": "テンプレート",
     "suggestionTemplatesDesc": "実証済みのパターンから始める",
-    "continueTitle": "最近の操作を続ける"
+    "continueTitle": "最近の操作を続ける",
+    "generateWithFlowpilot": "AIで生成"
   },
   "settings": {
     "title": "設定",
@@ -307,7 +308,9 @@
     "themeLight": "ライト",
     "themeDark": "ダーク",
     "themeSystem": "システム",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "flowpilotAI": "AIアシスタント",
+    "aiAssistant": "AIアシスタント"
   },
   "shortcuts": {
     "title": "キーボードショートカット",
@@ -360,7 +363,7 @@
     "apiKey": "APIキー",
     "placeholder": "フローチャートを説明してください...",
     "settingsSubtitle": "以下で希望の AI プロバイダー、モデル、API キーを設定してください。",
-    "generateWithFlowpilot": "Flowpilotで生成",
+    "generateWithFlowpilot": "AIアシスタントで生成",
     "howToGetKey": "APIキーの取得方法",
     "openConsole": "コンソールを開く",
     "pasteKeyStep": "上の入力欄に貼り付けてください。こちらには共有されません",
@@ -477,7 +480,7 @@
     "description": "究極のホワイトラベルキャンバス。",
     "diagramAsCode": "コードとしての図",
     "diagramAsCodeDesc": "Mermaid.jsとDSLをサポート。",
-    "flowpilotAI": "Flowpilot 人工知能",
+    "flowpilotAI": "AIアシスタント 人工知能",
     "aiAssistant": "AIアシスタント",
     "flowpilotAIDesc": "ガイド付きAI編集で図を調整します。",
     "addRedisCache": "DBの前にRedisキャッシュを追加する。",
@@ -535,7 +538,7 @@
     "communityDesc": "Weftを活用している開発者に参加しましょう。",
     "roadmap": "ロードマップ",
     "coreRenderer": "コアレンダラー",
-    "flowpilotAI": "Flowpilot 人工知能"
+    "flowpilotAI": "AIアシスタント 人工知能"
   },
   "demo": {
     "livePreview": "ライブプレビュー",
@@ -544,7 +547,8 @@
     "description1": "アイデアをすばやくスケッチ。",
     "description2": "本番対応の図としてエクスポート。",
     "liveSync": "ライブ同期",
-    "liveSyncDesc": "コードを編集 ↔ 変更を即座に確認"
+    "liveSyncDesc": "コードを編集 ↔ 変更を即座に確認",
+    "flowpilotAI": "AIアシスタント"
   },
   "docs": {
     "documentation": "ドキュメント",
@@ -589,7 +593,7 @@
   },
   "commandBar": {
     "ai": {
-      "title": "Flowpilotに聞く",
+      "title": "AIアシスタントに聞く",
       "clearChat": "チャット履歴をクリア",
       "placeholder": "作成したいものを記述してください...",
       "examples": {
@@ -721,8 +725,8 @@
       "removedCount": "{{count}} 件削除",
       "discard": "破棄",
       "applyToCanvas": "キャンバスに適用",
-      "emptyDescription": "必要な図を説明すると、{{appName}} が最初のグラフ案を作成します。",
-      "editDescription": "必要な変更を説明すると、{{appName}} が図を更新します。",
+      "emptyDescription": "作成したい図を説明すると、AIアシスタントが最初の草案を作成します。",
+      "editDescription": "変更内容を説明すると、AIアシスタントが図を更新します。",
       "addKeyCta": "開始するには AI キーを追加",
       "retrying": "再試行中 ({{retryCount}} / 3)...",
       "generating": "生成中...",
@@ -766,7 +770,7 @@
         "importApplied": "Applied to the canvas",
         "planReady": "Plan ready",
         "answeredInChat": "Answered in chat",
-        "generationFailed": "FlowPilot could not finish the response",
+        "generationFailed": "AIアシスタントが応答を完了できませんでした",
         "assetMatchesFound": "Found strong local asset matches",
         "assetMatchesNone": "No strong local asset match yet. Try naming the cloud provider or exact service.",
         "previewDetail": {
@@ -790,6 +794,22 @@
           "inspectRequest": "Inspect the current request",
           "draftResponse": "Draft the response"
         }
+      },
+      "examples": {
+        "userRegistrationFlow": "ユーザー登録フロー",
+        "userRegistrationFlowPrompt": "メール確認、ログイン、パスワードリセットを含むユーザー登録フローを生成",
+        "contentReviewWorkflow": "コンテンツ審査",
+        "contentReviewWorkflowPrompt": "投稿、審査、承認、公開のステップを含むコンテンツ審査ワークフローを生成",
+        "dataProcessingPipeline": "データ処理パイプライン",
+        "dataProcessingPipelinePrompt": "取り込み、検証、変換、出力の段階を含むデータ処理パイプラインを生成",
+        "approvalWorkflow": "承認フロー",
+        "approvalWorkflowPrompt": "申請、審査、管理者承認、通知のステップを含む承認フローを生成",
+        "iterationDatabase": "データベース",
+        "iterationDatabasePrompt": "アーキテクチャにPostgreSQLデータベースを追加",
+        "iterationServer": "サーバー",
+        "iterationServerPrompt": "Node.jsバックエンドサービスを追加",
+        "iterationDeploy": "デプロイ",
+        "iterationDeployPrompt": "デプロイとホスティングのステップを図に追加"
       }
     },
     "figmaImport": {
@@ -893,16 +913,20 @@
       "quickActionsAria": "コマンドのクイックアクション",
       "results": "結果",
       "noMatchingCommands": "\"{{query}}\" に一致するコマンドはありません"
+    },
+    "commands": {
+      "openAIAssistant": "AIアシスタントを開く",
+      "openAIAssistantDesc": "右側パネルでAIアシスタントを開く"
     }
   },
   "settingsModal": {
     "title": "設定",
     "general": "一般",
-    "flowpilotAI": "Flowpilot 人工知能",
+    "flowpilotAI": "AIアシスタント",
     "shortcuts": "ショートカット",
     "running": "{appName} 実行中",
     "generalSettings": "一般設定",
-    "flowpilotConfigurations": "Flowpilot設定",
+    "flowpilotConfigurations": "AI設定",
     "keyboardShortcuts": "キーボードショートカット",
     "canvas": {
       "title": "Canvas",
@@ -1325,7 +1349,7 @@
   "toolbar": {
     "selectMode": "選択モード (V)",
     "panMode": "パンモード (H)",
-    "flowpilot": "Flowpilot",
+    "flowpilot": "AIアシスタント (Cmd+K)",
     "templates": "テンプレート",
     "addItem": "アイテムを追加",
     "addToCanvas": "キャンバスに追加",
@@ -1356,8 +1380,8 @@
     "applyingLayout": "レイアウトを適用中…",
     "emptyState": {
       "title": "構築を開始",
-      "description": "キャンバスが空です。Flowpilotでフローを生成するか、一から始めてください。",
-      "generateWithFlowpilot": "Flowpilotで生成",
+      "description": "キャンバスが空です。AIで図を生成するか、一から始めてください。",
+      "generateWithFlowpilot": "AIで生成",
       "browseTemplates": "テンプレートを閲覧",
       "addBlankNode": "空の図形を追加"
     },

@@ -7,8 +7,6 @@ import type { AssistantThreadItem } from '@/services/flowpilot/types';
 import type {
   CommandBarView,
   FlowEditorMode,
-  StudioCodeMode,
-  StudioTab,
 } from '@/hooks/useFlowEditorUIState';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { FlowTemplate } from '@/services/templates';
@@ -134,8 +132,6 @@ export interface CommandBarPanelProps {
   ) => Promise<void>;
   onSelectTemplate: (template: FlowTemplate) => void;
   onOpenStudioAI: () => void;
-  onOpenStudioOpenFlow: () => void;
-  onOpenStudioMermaid: () => void;
   onOpenStudioPlayback: () => void;
   onOpenArchitectureRules: () => void;
   initialView: CommandBarView;
@@ -214,9 +210,6 @@ export interface PropertiesRailProps {
   onConvertEntitySelectionToClassDiagram: React.ComponentProps<
     typeof PropertiesPanelComponent
   >['onConvertEntitySelectionToClassDiagram'];
-  onOpenMermaidCodeEditor: React.ComponentProps<
-    typeof PropertiesPanelComponent
-  >['onOpenMermaidCodeEditor'];
   onClose: () => void;
 }
 
@@ -240,10 +233,6 @@ export interface StudioRailProps {
   chatMessages: ChatMessage[];
   assistantThread: AssistantThreadItem[];
   onClearChat: () => void;
-  activeTab: StudioTab;
-  onTabChange: (tab: StudioTab) => void;
-  codeMode: StudioCodeMode;
-  onCodeModeChange: (mode: StudioCodeMode) => void;
   playback: {
     currentStepIndex: number;
     totalSteps: number;
@@ -313,8 +302,6 @@ export function FlowEditorPanels({
               onLayout={commandBar.onLayout}
               onSelectTemplate={commandBar.onSelectTemplate}
               onOpenStudioAI={commandBar.onOpenStudioAI}
-              onOpenStudioOpenFlow={commandBar.onOpenStudioOpenFlow}
-              onOpenStudioMermaid={commandBar.onOpenStudioMermaid}
               onOpenStudioPlayback={commandBar.onOpenStudioPlayback}
               onOpenArchitectureRules={commandBar.onOpenArchitectureRules}
               initialView={commandBar.initialView}
@@ -415,10 +402,6 @@ export function FlowEditorPanels({
                 chatMessages={studio.chatMessages}
                 assistantThread={studio.assistantThread}
                 onClearChat={studio.onClearChat}
-                activeTab={studio.activeTab}
-                onTabChange={studio.onTabChange}
-                codeMode={studio.codeMode}
-                onCodeModeChange={studio.onCodeModeChange}
                 playback={studio.playback}
                 initialPrompt={studio.initialPrompt}
                 onInitialPromptConsumed={studio.onInitialPromptConsumed}
@@ -487,7 +470,6 @@ export function FlowEditorPanels({
                 onGenerateEntityFields={properties.onGenerateEntityFields}
                 onSuggestArchitectureNode={properties.onSuggestArchitectureNode}
                 onConvertEntitySelectionToClassDiagram={properties.onConvertEntitySelectionToClassDiagram}
-                onOpenMermaidCodeEditor={properties.onOpenMermaidCodeEditor}
                 onClose={properties.onClose}
               />
             </Suspense>

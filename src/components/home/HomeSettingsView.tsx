@@ -1,5 +1,5 @@
 import React from 'react';
-import { FLOWPILOT_NAME } from '@/lib/brand';
+import { AI_ASSISTANT_NAME } from '@/lib/brand';
 import { useTranslation } from 'react-i18next';
 import { AISettings } from '../SettingsModal/AISettings';
 import { CanvasSettings } from '../SettingsModal/CanvasSettings';
@@ -23,7 +23,7 @@ export function HomeSettingsView({
     const settingsTabs: Array<{ key: HomeSettingsTab; label: string }> = [
         { key: 'general', label: t('settings.general') },
         { key: 'canvas', label: t('settings.canvas') },
-        { key: 'ai', label: t('settings.ai', FLOWPILOT_NAME) },
+        { key: 'ai', label: t('settings.aiAssistant', AI_ASSISTANT_NAME) },
         { key: 'mcp', label: t('settings.mcp') },
         { key: 'shortcuts', label: t('settings.shortcuts') },
     ];

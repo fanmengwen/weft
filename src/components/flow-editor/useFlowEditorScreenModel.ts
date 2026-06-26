@@ -95,13 +95,9 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
   const {
     handleGenerateEntityFields,
     handleSuggestArchitectureNode,
-    handleOpenMermaidCodeEditor,
     applyArchitectureTemplate,
   } = useFlowEditorPanelActions({
     handleFocusedAIRequest,
-    setStudioTab: screenState.setStudioTab,
-    setStudioCodeMode: screenState.setStudioCodeMode,
-    setStudioMode: screenState.setStudioMode,
     handleApplyArchitectureTemplate: operations.handleApplyArchitectureTemplate,
   });
 
@@ -195,7 +191,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       selectedNodeId: screenState.selectedNodeId,
       selectedEdgeId: screenState.selectedEdgeId,
       setStudioTab: screenState.setStudioTab,
-      setStudioCodeMode: screenState.setStudioCodeMode,
       setStudioMode: screenState.setStudioMode,
       openArchitectureRulesPanel: screenState.openArchitectureRulesPanel,
       closeCommandBar: screenState.closeCommandBar,
@@ -253,7 +248,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
         handleSuggestArchitectureNode,
         handleConvertEntitySelectionToClassDiagram:
           operations.handleConvertEntitySelectionToClassDiagram,
-        handleOpenMermaidCodeEditor,
       },
       studio: {
         handleCommandBarApply: callbacks.handleCommandBarApply,
@@ -271,7 +265,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
         chatMessages,
         assistantThread,
         clearChat,
-        studioCodeMode: screenState.studioCodeMode,
         playback: {
           currentStepIndex,
           totalSteps,

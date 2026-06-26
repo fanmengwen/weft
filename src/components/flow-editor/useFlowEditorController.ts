@@ -7,7 +7,7 @@ import {
 import { getFlowTemplates } from '@/services/templates';
 import type { FlowEdge, FlowNode, FlowSnapshot } from '@/lib/types';
 import type { CinematicExportRequest } from '@/services/export/cinematicExport';
-import type { FlowEditorMode, StudioCodeMode, StudioTab } from '@/hooks/useFlowEditorUIState';
+import type { FlowEditorMode, StudioTab } from '@/hooks/useFlowEditorUIState';
 import type { DomainLibraryItem } from '@/services/domainLibrary';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { Location, NavigateFunction } from 'react-router-dom';
@@ -54,7 +54,6 @@ export interface UseFlowEditorStudioParams {
     selectedNodeId: string | null;
     selectedEdgeId: string | null;
     setStudioTab: (tab: StudioTab) => void;
-    setStudioCodeMode: (mode: StudioCodeMode) => void;
     setStudioMode: () => void;
     openArchitectureRulesPanel: () => void;
     closeCommandBar: () => void;
@@ -71,7 +70,6 @@ type FlowEditorCommandBarConfig = Omit<
     | 'edges'
     | 'onLayout'
     | 'openStudioAI'
-    | 'openStudioCode'
     | 'openStudioPlayback'
     | 'handleAddAnnotation'
     | 'handleAddSection'
@@ -106,9 +104,6 @@ type FlowEditorStudioConfig = Omit<
     | 'selectedNode'
     | 'selectedNodeCount'
     | 'setCanvasMode'
-    | 'studioTab'
-    | 'setStudioTab'
-    | 'setStudioCodeMode'
     | 'playback'
     | 'initialPrompt'
     | 'onInitialPromptConsumed'
@@ -226,7 +221,6 @@ export function useFlowEditorController({
     const {
         openStudioPanel,
         openStudioAI,
-        openStudioCode,
         openStudioPlayback,
         openArchitectureRulesPanel,
         toggleStudioPanel,
@@ -248,7 +242,6 @@ export function useFlowEditorController({
             edges: shell.edges,
             onLayout: shell.onLayout,
             openStudioAI,
-            openStudioCode,
             openStudioPlayback,
             openArchitectureRulesPanel,
             handleAddAnnotation: chromeParams.handleAddAnnotation,
@@ -285,9 +278,6 @@ export function useFlowEditorController({
             selectedNode,
             selectedNodeCount: selectedNodes.length,
             setCanvasMode: studio.setCanvasMode,
-            studioTab: studio.studioTab,
-            setStudioTab: studio.setStudioTab,
-            setStudioCodeMode: studio.setStudioCodeMode,
             playback: {
                 currentStepIndex: panelParams.studio.playback.currentStepIndex,
                 totalSteps: panelParams.studio.playback.totalSteps,
@@ -370,7 +360,6 @@ export function useFlowEditorController({
     return {
         shouldRenderPanels,
         handleCanvasEntityIntent,
-        openStudioCode,
         panels,
         chrome,
     };

@@ -30,7 +30,7 @@ describe('shouldExitStudioOnSelection', () => {
         expect(
             shouldExitStudioOnSelection({
                 editorMode: 'studio',
-                studioTab: 'code',
+                studioTab: 'playback',
                 studioSelectionSnapshot: { selectedNodeId: null, selectedEdgeId: null },
                 selectedNodeId: null,
                 selectedEdgeId: 'edge-1',

@@ -7,10 +7,6 @@ vi.mock('./StudioAIPanel', () => ({
   StudioAIPanel: () => <div data-testid="studio-ai-panel" />,
 }));
 
-vi.mock('./StudioCodePanel', () => ({
-  StudioCodePanel: () => <div data-testid="studio-code-panel" />,
-}));
-
 function createProps(): React.ComponentProps<typeof StudioPanel> {
   return {
     onClose: vi.fn(),
@@ -35,10 +31,6 @@ function createProps(): React.ComponentProps<typeof StudioPanel> {
     chatMessages: [],
     assistantThread: [],
     onClearChat: vi.fn(),
-    activeTab: 'ai',
-    onTabChange: vi.fn(),
-    codeMode: 'openflow',
-    onCodeModeChange: vi.fn(),
     selectedNode: null,
     selectedNodeCount: 0,
     onViewProperties: vi.fn(),
@@ -59,11 +51,11 @@ function createProps(): React.ComponentProps<typeof StudioPanel> {
 }
 
 describe('StudioPanel', () => {
-  it('shows the studio tabs in the shared segmented control and keeps AI as the primary workspace', async () => {
+  it('renders the AI workspace without studio tabs', async () => {
     render(<StudioPanel {...createProps()} />);
 
-    expect(screen.getByText('Flowpilot')).toBeTruthy();
-    expect(screen.getByText('Code')).toBeTruthy();
+    expect(screen.getByText('Studio')).toBeTruthy();
+    expect(screen.queryByText('Code')).toBeNull();
     expect(await screen.findByTestId('studio-ai-panel')).toBeTruthy();
   });
 });

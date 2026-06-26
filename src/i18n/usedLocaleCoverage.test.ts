@@ -13,7 +13,7 @@ const PUBLIC_LOCALES_DIR = path.join(ROOT_DIR, 'public', 'locales');
 const SOURCE_DIR = path.join(ROOT_DIR, 'src');
 
 const LOCALES = ['en', 'de', 'es', 'fr', 'ja', 'tr', 'zh'] as const;
-const FLOWPILOT_LOCALIZED_KEY_PATHS = [
+const AI_ASSISTANT_LOCALIZED_KEY_PATHS = [
   'home.homeFlowpilotAI',
   'home.suggestionAI',
 ] as const;
@@ -109,7 +109,7 @@ describe('used locale coverage', () => {
     }
   });
 
-  it('keeps Flowpilot AI labels localized outside English', () => {
+  it('keeps AI assistant labels localized outside English', () => {
     const enDict = readJson(path.join(SRC_LOCALES_DIR, 'en', 'translation.json'));
 
     for (const locale of LOCALES) {
@@ -117,12 +117,13 @@ describe('used locale coverage', () => {
 
       const dict = readJson(path.join(SRC_LOCALES_DIR, locale, 'translation.json'));
 
-      for (const keyPath of FLOWPILOT_LOCALIZED_KEY_PATHS) {
+      for (const keyPath of AI_ASSISTANT_LOCALIZED_KEY_PATHS) {
         const enValue = getByPath(enDict, keyPath);
         const localeValue = getByPath(dict, keyPath);
 
         expect(typeof localeValue, `${locale}.${keyPath} should be a string`).toBe('string');
         expect(localeValue, `${locale}.${keyPath} should differ from English`).not.toBe(enValue);
+        expect(String(localeValue), `${locale}.${keyPath} should not mention Flowpilot`).not.toMatch(/flowpilot/i);
       }
     }
   });

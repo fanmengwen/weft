@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { shouldExitStudioOnSelection, type SelectionSnapshot } from './shouldExitStudioOnSelection';
-import type { FlowEditorMode, StudioCodeMode, StudioTab } from '@/hooks/useFlowEditorUIState';
+import type { FlowEditorMode, StudioTab } from '@/hooks/useFlowEditorUIState';
 
 interface UseFlowEditorStudioControllerParams {
     editorMode: FlowEditorMode;
@@ -8,7 +8,6 @@ interface UseFlowEditorStudioControllerParams {
     selectedNodeId: string | null;
     selectedEdgeId: string | null;
     setStudioTab: (tab: StudioTab) => void;
-    setStudioCodeMode: (mode: StudioCodeMode) => void;
     setStudioMode: () => void;
     openArchitectureRulesPanel: () => void;
     closeCommandBar: () => void;
@@ -18,14 +17,12 @@ interface UseFlowEditorStudioControllerParams {
 }
 
 interface OpenStudioPanelOptions {
-    codeMode?: StudioCodeMode;
     closeLauncher?: boolean;
 }
 
 interface UseFlowEditorStudioControllerResult {
     openStudioPanel: (tab: StudioTab, options?: OpenStudioPanelOptions) => void;
     openStudioAI: () => void;
-    openStudioCode: (codeMode: StudioCodeMode) => void;
     openStudioPlayback: () => void;
     openArchitectureRulesPanel: () => void;
     toggleStudioPanel: () => void;
@@ -39,7 +36,6 @@ export function useFlowEditorStudioController({
     selectedNodeId,
     selectedEdgeId,
     setStudioTab,
-    setStudioCodeMode,
     setStudioMode,
     openArchitectureRulesPanel: handleOpenArchitectureRulesPanel,
     closeCommandBar,
@@ -71,21 +67,14 @@ export function useFlowEditorStudioController({
     ) => {
         captureStudioSelectionSnapshot();
         setStudioTab(tab);
-        if (options?.codeMode) {
-            setStudioCodeMode(options.codeMode);
-        }
         setStudioMode();
         if (options?.closeLauncher) {
             closeCommandBar();
         }
-    }, [captureStudioSelectionSnapshot, closeCommandBar, setStudioCodeMode, setStudioMode, setStudioTab]);
+    }, [captureStudioSelectionSnapshot, closeCommandBar, setStudioMode, setStudioTab]);
 
     const openStudioAI = useCallback(() => {
         openStudioPanel('ai', { closeLauncher: true });
-    }, [openStudioPanel]);
-
-    const openStudioCode = useCallback((codeMode: StudioCodeMode) => {
-        openStudioPanel('code', { codeMode, closeLauncher: true });
     }, [openStudioPanel]);
 
     const openStudioPlayback = useCallback(() => {
@@ -111,8 +100,6 @@ export function useFlowEditorStudioController({
         clearSelectionAndSetCanvasMode();
     }, [clearSelectionAndSetCanvasMode]);
 
-    // Clicking a node/edge while in studio keeps the studio open.
-    // The user explicitly switches via "View Properties" in the studio header.
     const handleCanvasEntityIntent = useCallback(() => undefined, []);
 
     useEffect(() => {
@@ -132,7 +119,6 @@ export function useFlowEditorStudioController({
     return {
         openStudioPanel,
         openStudioAI,
-        openStudioCode,
         openStudioPlayback,
         openArchitectureRulesPanel,
         toggleStudioPanel,

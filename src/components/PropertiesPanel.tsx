@@ -36,7 +36,6 @@ interface PropertiesPanelProps {
   onGenerateEntityFields: (nodeId: string) => Promise<void> | void;
   onSuggestArchitectureNode: (nodeId: string) => Promise<void> | void;
   onConvertEntitySelectionToClassDiagram: () => void;
-  onOpenMermaidCodeEditor: () => void;
   onClose: () => void;
 }
 
@@ -61,7 +60,6 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   onGenerateEntityFields,
   onSuggestArchitectureNode,
   onConvertEntitySelectionToClassDiagram,
-  onOpenMermaidCodeEditor,
   onClose,
 }) => {
   const { t } = useTranslation();
@@ -118,7 +116,6 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
             onGenerateEntityFields={onGenerateEntityFields}
             onSuggestArchitectureNode={onSuggestArchitectureNode}
             onConvertEntitySelectionToClassDiagram={onConvertEntitySelectionToClassDiagram}
-            onOpenMermaidCodeEditor={onOpenMermaidCodeEditor}
           />
         )}
 

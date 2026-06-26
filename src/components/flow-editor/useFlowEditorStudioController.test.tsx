@@ -9,7 +9,6 @@ function createBaseProps(overrides: Partial<Parameters<typeof useFlowEditorStudi
         selectedNodeId: null,
         selectedEdgeId: null,
         setStudioTab: vi.fn(),
-        setStudioCodeMode: vi.fn(),
         setStudioMode: vi.fn(),
         openArchitectureRulesPanel: vi.fn(),
         closeCommandBar: vi.fn(),
@@ -30,20 +29,6 @@ describe('useFlowEditorStudioController', () => {
         });
 
         expect(props.setStudioTab).toHaveBeenCalledWith('ai');
-        expect(props.setStudioMode).toHaveBeenCalled();
-        expect(props.closeCommandBar).toHaveBeenCalled();
-    });
-
-    it('opens the code studio panel with the requested code mode', () => {
-        const props = createBaseProps();
-        const { result } = renderHook(() => useFlowEditorStudioController(props));
-
-        act(() => {
-            result.current.openStudioCode('mermaid');
-        });
-
-        expect(props.setStudioTab).toHaveBeenCalledWith('code');
-        expect(props.setStudioCodeMode).toHaveBeenCalledWith('mermaid');
         expect(props.setStudioMode).toHaveBeenCalled();
         expect(props.closeCommandBar).toHaveBeenCalled();
     });

@@ -8,8 +8,7 @@ export type CommandBarView =
     | 'assets';
 
 export type FlowEditorMode = 'canvas' | 'studio';
-export type StudioTab = 'ai' | 'code' | 'playback' | 'infra';
-export type StudioCodeMode = 'openflow' | 'mermaid';
+export type StudioTab = 'ai' | 'playback' | 'infra';
 
 interface UseFlowEditorUIStateResult {
     isHistoryOpen: boolean;
@@ -17,7 +16,6 @@ interface UseFlowEditorUIStateResult {
     commandBarView: CommandBarView;
     editorMode: FlowEditorMode;
     studioTab: StudioTab;
-    studioCodeMode: StudioCodeMode;
     isSelectMode: boolean;
     isDesignSystemPanelOpen: boolean;
     isArchitectureRulesOpen: boolean;
@@ -31,7 +29,6 @@ interface UseFlowEditorUIStateResult {
     setCanvasMode: () => void;
     setStudioMode: () => void;
     setStudioTab: (tab: StudioTab) => void;
-    setStudioCodeMode: (mode: StudioCodeMode) => void;
     enableSelectMode: () => void;
     enablePanMode: () => void;
 }
@@ -42,7 +39,6 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
     const [commandBarView, setCommandBarView] = useState<CommandBarView>('root');
     const [editorMode, setEditorMode] = useState<FlowEditorMode>('canvas');
     const [studioTab, setStudioTab] = useState<StudioTab>('ai');
-    const [studioCodeMode, setStudioCodeMode] = useState<StudioCodeMode>('mermaid');
     const [isSelectMode, setIsSelectMode] = useState(true);
     const [isArchitectureRulesOpen, setIsArchitectureRulesOpen] = useState(false);
 
@@ -100,7 +96,6 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
         commandBarView,
         editorMode,
         studioTab,
-        studioCodeMode,
         isSelectMode,
         isDesignSystemPanelOpen: isCommandBarOpen && commandBarView === 'design-system',
         isArchitectureRulesOpen,
@@ -114,7 +109,6 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
         setCanvasMode,
         setStudioMode,
         setStudioTab,
-        setStudioCodeMode,
         enableSelectMode,
         enablePanMode,
     };

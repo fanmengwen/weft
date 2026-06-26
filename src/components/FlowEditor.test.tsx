@@ -1,10 +1,9 @@
 import type { ReactNode } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { FlowEditor } from './FlowEditor';
 import type { ImportFidelityReport } from '@/services/importFidelity';
 
-const openStudioCode = vi.fn();
 const importRecoveryDialogMock = vi.fn();
 const useMermaidDiagnosticsMock = vi.fn();
 const useFlowEditorScreenModelMock = vi.fn();
@@ -133,7 +132,6 @@ function createFlowEditorScreenModel(
     flowEditorController: {
       shouldRenderPanels: true,
       handleCanvasEntityIntent: vi.fn(),
-      openStudioCode,
       panels: {},
       chrome: {
         topNav: {},
@@ -148,7 +146,6 @@ function createFlowEditorScreenModel(
 
 describe('FlowEditor', () => {
   beforeEach(() => {
-    openStudioCode.mockReset();
     importRecoveryDialogMock.mockReset();
     setNodesMock.mockReset();
     setEdgesMock.mockReset();
@@ -159,14 +156,13 @@ describe('FlowEditor', () => {
     useFlowEditorScreenModelMock.mockReturnValue(createFlowEditorScreenModel());
   });
 
-  it('opens Mermaid code recovery from the shell diagnostics banner', () => {
+  it('does not offer Mermaid code recovery from the shell diagnostics banner', () => {
     render(<FlowEditor onGoHome={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open Mermaid code' }));
-    expect(openStudioCode).toHaveBeenCalledWith('mermaid');
+    expect(screen.queryByRole('button', { name: 'Open Mermaid code' })).toBeNull();
   });
 
-  it('passes Mermaid recovery action into the import recovery dialog when source is preserved', () => {
+  it('does not pass Mermaid code recovery into the import recovery dialog', () => {
     useMermaidDiagnosticsMock.mockReturnValue(null);
     useFlowEditorScreenModelMock.mockReturnValue(
       createFlowEditorScreenModel({
@@ -186,45 +182,15 @@ describe('FlowEditor', () => {
       actionLabel?: string;
       onAction?: () => void;
     };
-    expect(props.actionLabel).toBe('Open Mermaid code');
-
-    props.onAction?.();
-    expect(openStudioCode).toHaveBeenCalledWith('mermaid');
+    expect(props.actionLabel).toBeUndefined();
+    expect(props.onAction).toBeUndefined();
   });
 
-  it('passes Mermaid recovery action into the import recovery dialog when parsing is editable_full but report layout degraded', () => {
-    useMermaidDiagnosticsMock.mockReturnValue(null);
-    useFlowEditorScreenModelMock.mockReturnValue(
-      createFlowEditorScreenModel({
-        fileName: 'layout-warning.mmd',
-        report: {
-          source: 'mermaid',
-          importState: 'editable_full',
-          layoutMode: 'mermaid_preserved_partial',
-          originalSource: 'flowchart LR\nA-->B',
-        },
-      })
-    );
-
-    render(<FlowEditor onGoHome={vi.fn()} />);
-
-    expect(importRecoveryDialogMock).toHaveBeenCalled();
-    const props = importRecoveryDialogMock.mock.calls[0][0] as {
-      actionLabel?: string;
-      onAction?: () => void;
-    };
-    expect(props.actionLabel).toBe('Open Mermaid code');
-
-    props.onAction?.();
-    expect(openStudioCode).toHaveBeenCalledWith('mermaid');
-  });
-
-  it('still offers Mermaid code recovery when parsing is editable_full but layout fidelity degraded', () => {
+  it('does not offer Mermaid code recovery when layout fidelity degraded', () => {
     useMermaidDiagnosticsMock.mockReturnValue(createMermaidLayoutWarningDiagnostics());
 
     render(<FlowEditor onGoHome={vi.fn()} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Open Mermaid code' }));
-    expect(openStudioCode).toHaveBeenCalledWith('mermaid');
+    expect(screen.queryByRole('button', { name: 'Open Mermaid code' })).toBeNull();
   });
 });
