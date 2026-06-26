@@ -211,7 +211,7 @@
       "figma": "Figma",
       "useCases": "Kullanım Alanları",
       "pricing": "Fiyatlandırma",
-      "viewGithub": "GitHub'da İncele"
+      "viewGithub": "Özellikleri keşfet"
     },
     "hero": {
       "title": "Güzel Akış Şemaları,",
@@ -222,8 +222,8 @@
       "description1": "Diyagram motoru",
       "description2": "Sizin gibi",
       "description3": "",
-      "description4": "Geliştiriciler için %100 ücretsiz ve açık kaynaklı diyagram aracı. Kod yazın ya da sürükle-bırak yapın — her iki yöntemde de etkileyici sonuçlar.",
-      "forkOnGithub": "GitHub'da Forklayın",
+      "description4": "Üreticiler için cilalı bir diyagram aracı. Kod yazın veya sürükleyin — her iki yolda da güzel sonuçlar.",
+      "forkOnGithub": "Başla",
       "licence": "MIT Lisanslı",
       "localFirst": "Yerel Öncelikli",
       "noAuth": "Hesap Gerektirmez",
@@ -238,7 +238,7 @@
     },
     "solution": {
       "title": "Çözüm",
-      "description": "OpenFlowKit her iki dünyanın en iyisini bir araya getirir."
+      "description": "Weft her iki dünyanın en iyisini bir araya getirir."
     },
     "demo": {
       "title": "Eskiz için sade.",
@@ -263,11 +263,11 @@
     },
     "footer": {
       "rights": "Tüm hakları saklıdır.",
-      "madeWith": "OpenFlowKit Ekibi tarafından ❤️ ile yapıldı"
+      "madeWith": "Weft Ekibi tarafından ❤️ ile yapıldı"
     }
   },
   "home": {
-    "appName": "OpenFlowKit",
+    "appName": "Weft",
     "title": "Gösterge Paneli",
     "description": "Akışlarınızı ve diyagramlarınızı yönetin.",
     "recentFiles": "Son Dosyalar",
@@ -405,7 +405,7 @@
     "importFailed": "İçe aktarma başarısız oldu"
   },
   "welcome": {
-    "title": "OpenFlowKit",
+    "title": "Weft",
     "description": "Geliştirici odaklı tuval üzerinde güzel, yapılandırılmış diyagramlar tasarlayın.",
     "getStarted": "Hemen Başla",
     "press": "Kısayollar için",
@@ -440,7 +440,7 @@
   "pricing": {
     "title": "Premium özellikler.",
     "subtitle": "Sıfır fiyat etiketi.",
-    "description": "OpenFlowKit %100 açık kaynak. Satış görüşmesi arkasına gizlenmiş \"Enterprise Edition\" yok.",
+    "description": "Weft ücretsiz kullanılabilir. Çekirdek motora tam erişim — istediğiniz yerde barındırın, özgürce değiştirin.",
     "mitLicense": "MIT Lisansı",
     "freeForever": "Sonsuza Kadar Ücretsiz.",
     "fullAccess": "Çekirdek motora tam erişim.",
@@ -458,18 +458,18 @@
       "mermaidSupport": "Mermaid.js Desteği",
       "aiGeneration": "Yapay zeka ile diyagram oluşturma (kendi API anahtarınızı getirin)"
     },
-    "supportDevelopment": "GitHub'da geliştirmeyi destekleyin"
+    "supportDevelopment": "Geri bildirim ve fikir paylaşın"
   },
   "cta": {
     "readyToUse": "Kullanıma hazır",
     "buildDiagrams": "Şu diyagramları oluşturun:",
     "dontLookGeneric": "sıradan görünmeyen.",
-    "joinUs": "Yeni nesil görsel araçları inşa etmemize katılın. Açık kaynak, yerel öncelikli ve sonsuza kadar ücretsiz.",
+    "joinUs": "Yeni nesil görsel araçları birlikte inşa edelim. Yerel öncelikli, cilalı ve hazır olduğunuzda.",
     "getStartedNow": "Hemen Başla",
     "copied": "Kopyalandı",
     "copy": "Kopyala",
     "documentation": "Dokümantasyon",
-    "github": "GitHub",
+    "github": "Daha fazla bilgi",
     "roadmap": "Yol Haritası"
   },
   "problem": {
@@ -511,7 +511,7 @@
     "badge": "İş Akışları",
     "title": "Bir motor.",
     "subtitle": "Üç yerel iş akışı.",
-    "description": "OpenFlowKit, zaten kullanmakta olduğunuz araca uyum sağlar. Açılacak yeni sekme yok. Bağlam değiştirme yok.",
+    "description": "Weft, zaten kullanmakta olduğunuz araca uyum sağlar. Açılacak yeni sekme yok. Bağlam değiştirme yok.",
     "engineering": "Mühendislik",
     "diagramAsCode": "KOD OLARAK DİYAGRAM",
     "engineeringDesc": "DSL'imizde veya Mermaid.js sözdiziminde diyagramlar yazın. Kodu yapıştırın, tamamen düzenlenmiş bir diyagram elde edin. Sürüm kontrolü için JSON olarak dışa aktarın.",
@@ -529,7 +529,7 @@
     "badge": "Eklenti Gerektirmez",
     "title": "Kodu kopyalayın.",
     "subtitle": "Tasarımı yapıştırın.",
-    "description": "OpenFlowKit'ten bir diyagram kopyalayın ve doğrudan Figma'ya yapıştırın — düz görüntü değil, düzenlenebilir metin ve temiz vektör şekiller elde edersiniz. Eklenti gerekmez.",
+    "description": "Weft'ten bir diyagram kopyalayın ve doğrudan Figma'ya yapıştırın — düz görüntü değil, düzenlenebilir metin ve temiz vektör şekiller elde edersiniz. Eklenti gerekmez.",
     "editableText": "Düzenlenebilir Metin",
     "vectorFidelity": "Vektör Sadakati",
     "selected": "Seçili",
@@ -540,13 +540,13 @@
     "badge": "Yapım Aşamasında",
     "title": "Açık geliştirin.",
     "subtitle": "Motoru şekillendirin.",
-    "description": "OpenFlowKit yeni başlıyor. Çekirdek motoru açık olarak inşa ediyoruz. İlk günden bize katılın.",
-    "starTheRepo": "Repoyu Yıldızlayın",
-    "openSource": "Açık Kaynak",
-    "openSourceDesc": "Çekirdek motor MIT lisanslıdır. Kaynak kodunu okuyun, PR gönderin veya dahili araçlarınız için forklayın.",
-    "prsWelcome": "PR'ler Hoş Geldiniz",
+    "description": "Weft yeni başlıyor. Sırada ne olacağını şekillendirmeye yardım edin.",
+    "starTheRepo": "Güncellemeleri al",
+    "openSource": "Üreticiler için",
+    "openSourceDesc": "Yapay zeka destekli iş akışları ve dışa aktarma ile odaklı bir diyagram tuvali.",
+    "prsWelcome": "Geri bildirimler hoş geldiniz",
     "community": "Topluluk",
-    "communityDesc": "OpenFlowKit üzerinde çalışan geliştiricilere katılın.",
+    "communityDesc": "Weft üzerinde çalışan geliştiricilere katılın.",
     "roadmap": "Yol Haritası",
     "coreRenderer": "Çekirdek Render",
     "flowpilotAI": "Flowpilot Yapay Zeka"
@@ -592,7 +592,7 @@
       },
       "dslSyntax": {
         "title": "DSL Sözdizimi",
-        "description": "OpenFlowKit DSL'den bir örnek göster.",
+        "description": "Weft DSL'den bir örnek göster.",
         "icon": "{}"
       }
     }
@@ -1510,7 +1510,7 @@
   },
   "mcpSettings": {
     "title": "AI araçlarını bağla (MCP)",
-    "intro": "OpenFlowKit MCP sunucusunu Claude Desktop, Cursor, Windsurf veya herhangi bir MCP istemcisine ekle. Asistanın yerel olarak çalışan diyagram araçları kazanır, API anahtarı gerekmez, veri makinenden çıkmaz.",
+    "intro": "Weft MCP sunucusunu Claude Desktop, Cursor, Windsurf veya herhangi bir MCP istemcisine ekle. Asistanın yerel olarak çalışan diyagram araçları kazanır, API anahtarı gerekmez, veri makinenden çıkmaz.",
     "installHeading": "Sunucuyu kur",
     "installNote": "Node 18+ gerekir. Global kurulum gerekmez, npx isteğe bağlı indirir.",
     "configHeading": "AI asistanına ekle",
@@ -1539,12 +1539,13 @@
     "testPromptLabel": "Test promptu",
     "testPromptHint": "Bağlı herhangi bir istemciye yapıştır",
     "copyInstallPrompt": "Kurulum promptunu kopyala",
-    "copyTestPrompt": "Test promptunu kopyala"
+    "copyTestPrompt": "Test promptunu kopyala",
+    "comingSoon": "MCP entegrasyonu yol haritasında. Bu sürüm tuval içi yapay zeka üretimi, düzenleme ve dışa aktarmaya odaklanır."
   },
   "mcp": {
     "pageTitle": "Connect AI tools",
     "pageSubtitle": "Give any MCP client first-class diagramming tools. Local-first, no API key.",
-    "visualAlt": "Your AI client connects to the OpenFlowKit MCP server over stdio, which provides local diagramming tools.",
+    "visualAlt": "Your AI client connects to the Weft MCP server over stdio, which provides local diagramming tools.",
     "visualClient": "Your AI client",
     "visualCaption": "Local · stdio · no API key"
   }
