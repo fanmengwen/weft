@@ -37,6 +37,8 @@ docs/en/codebase-audit-*.md
 docs/en/fix-log.md
 docs/en/next-level-roadmap-*.md
 docs/internal
+CLAUDE.md
+CLAUDE.local.md
 .claude/scheduled_tasks.lock
 docs-site/.astro/
 
@@ -44,3 +46,4 @@ docs-site/.astro/
 .agents/
 .claude/skills/
 .codex-skill-edits/
+.playwright-mcp/
