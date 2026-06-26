@@ -1,5 +1,6 @@
 import React from 'react';
 import { Loader2, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import {
   useCinematicExportActions,
   useCinematicExportJobState,
@@ -14,6 +15,7 @@ function getFrameCopy(completedFrames: number, totalFrames: number): string | nu
 }
 
 export function CinematicExportOverlay(): React.ReactElement | null {
+  const { t } = useTranslation();
   const { canCancel, completedFrames, progressPercent, request, stageLabel, status, totalFrames } =
     useCinematicExportJobState();
   const { cancelExport } = useCinematicExportActions();
@@ -22,7 +24,7 @@ export function CinematicExportOverlay(): React.ReactElement | null {
     return null;
   }
 
-  const resolvedStageLabel = stageLabel || 'Preparing cinematic export…';
+  const resolvedStageLabel = stageLabel || t('appLoading.cinematicExport');
   const frameCopy = getFrameCopy(completedFrames, totalFrames);
   const resolutionLabel = request?.resolution?.toUpperCase() ?? 'VIDEO';
   const progressWidth = `${Math.max(5, progressPercent)}%`;
@@ -70,7 +72,7 @@ export function CinematicExportOverlay(): React.ReactElement | null {
           type="button"
           onClick={cancelExport}
           disabled={!canCancel}
-          aria-label="Cancel cinematic export"
+          aria-label={t('appLoading.cancelCinematicExport')}
           className="relative z-10 ml-1 rounded-full p-1 text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)] disabled:cursor-not-allowed disabled:opacity-50"
         >
           <X className="h-3.5 w-3.5" />

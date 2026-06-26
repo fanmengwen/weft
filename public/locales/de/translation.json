@@ -169,7 +169,24 @@
     "speed": "Geschwindigkeit",
     "resolution": "Auflösung",
     "transparentBackground": "Transparenter Hintergrund",
-    "headingFormat": "Exportformat"
+    "headingFormat": "Exportformat",
+    "progress": {
+      "preparingDownload": "{{format}}-Download wird vorbereitet…",
+      "preparingCopy": "{{format}}-Kopie wird vorbereitet…",
+      "preparingSvgDownload": "SVG-Download wird vorbereitet…",
+      "preparingSvgCopy": "SVG-Kopie wird vorbereitet…",
+      "preparingPdfDownload": "PDF-Download wird vorbereitet…",
+      "preparingJsonDownload": "JSON-Download wird vorbereitet…",
+      "preparingJsonCopy": "JSON-Kopie wird vorbereitet…",
+      "preparingMermaidDownload": "Mermaid-Download wird vorbereitet…",
+      "copyingMermaid": "Mermaid wird kopiert…",
+      "preparingPlantUmlDownload": "PlantUML-Download wird vorbereitet…",
+      "copyingPlantUml": "PlantUML wird kopiert…",
+      "preparingDslDownload": "OpenFlow-DSL-Download wird vorbereitet…",
+      "copyingDsl": "OpenFlow DSL wird kopiert…",
+      "preparingFigmaDownload": "Figma-SVG-Download wird vorbereitet…",
+      "copyingFigmaSvg": "Figma-SVG wird kopiert…"
+    }
   },
   "import": {
     "title": "Importieren",
@@ -1678,5 +1695,31 @@
     "noRulesTitle": "No rules defined yet",
     "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
     "browseTemplates": "Browse templates"
+  },
+  "appLoading": {
+    "route": {
+      "title": "Arbeitsbereich wird geöffnet",
+      "description": "Der nächste Bildschirm wird geladen und der aktuelle Arbeitsbereichskontext wiederhergestellt."
+    },
+    "bootstrap": {
+      "title": "Arbeitsbereich wird wiederhergestellt",
+      "description": "Diagramme, Chatverlauf und lokale Einstellungen werden geladen."
+    },
+    "generatingDiagram": "Diagramm wird erstellt…",
+    "moreNodes": "+{{count}} weitere",
+    "nodeCount_one": "{{count}} Knoten",
+    "nodeCount_other": "{{count}} Knoten",
+    "edgeCount_one": "{{count}} Kante",
+    "edgeCount_other": "{{count}} Kanten",
+    "cinematicExport": "Cinematic-Export wird vorbereitet…",
+    "cancelCinematicExport": "Cinematic-Export abbrechen",
+    "loadingAssets": "{{label}} wird geladen",
+    "cinematicCapturingFrames": "Frames werden erfasst…",
+    "cinematicEncodingVideo": "Video wird kodiert…",
+    "cinematicFinalizing": "Export wird abgeschlossen…",
+    "cinematicComplete": "Export abgeschlossen",
+    "cinematicCancelled": "Export abgebrochen",
+    "nodeCount": "{{count}} Knoten",
+    "edgeCount": "{{count}} Kanten"
   }
 }

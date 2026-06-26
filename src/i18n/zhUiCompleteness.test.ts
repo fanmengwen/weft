@@ -27,6 +27,8 @@ const ZH_UI_KEY_PATHS = [
   'flowEditor.viewShortcuts',
   'common.clearSelection',
   'export.exportDiagram',
+  'appLoading.route.title',
+  'appLoading.bootstrap.title',
 ] as const;
 
 function loadLocale(locale: 'en' | 'zh'): JsonMap {

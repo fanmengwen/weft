@@ -68,9 +68,9 @@ describe('exportHandlers', () => {
 
     expect(navigator.clipboard.writeText).toHaveBeenNthCalledWith(1, 'mermaid-export');
     expect(navigator.clipboard.writeText).toHaveBeenNthCalledWith(2, 'plantuml-export');
-    expect(addToast).toHaveBeenCalledWith('Copying Mermaid…', 'info');
+    expect(addToast).toHaveBeenCalledWith('export.progress.copyingMermaid', 'info');
     expect(addToast).toHaveBeenCalledWith('flowEditor.mermaidCopied', 'success');
-    expect(addToast).toHaveBeenCalledWith('Copying PlantUML…', 'info');
+    expect(addToast).toHaveBeenCalledWith('export.progress.copyingPlantUml', 'info');
     expect(addToast).toHaveBeenCalledWith('flowEditor.plantUMLCopied', 'success');
   });
 
@@ -145,6 +145,7 @@ describe('exportHandlers', () => {
     downloadMermaidToFile({
       nodes: [createNode('n1')],
       edges: [createEdge('e1', 'n1', 'n1')],
+      t: createTranslator((key: string) => key),
       addToast,
       baseFileName: 'demo-flow',
     });
