@@ -169,7 +169,24 @@
     "chooseFormat": "Choose format",
     "speed": "Speed",
     "resolution": "Resolution",
-    "transparentBackground": "Transparent background"
+    "transparentBackground": "Transparent background",
+    "progress": {
+      "preparingDownload": "Preparing {{format}} download…",
+      "preparingCopy": "Preparing {{format}} copy…",
+      "preparingSvgDownload": "Preparing SVG download…",
+      "preparingSvgCopy": "Preparing SVG copy…",
+      "preparingPdfDownload": "Preparing PDF download…",
+      "preparingJsonDownload": "Preparing JSON download…",
+      "preparingJsonCopy": "Preparing JSON copy…",
+      "preparingMermaidDownload": "Preparing Mermaid download…",
+      "copyingMermaid": "Copying Mermaid…",
+      "preparingPlantUmlDownload": "Preparing PlantUML download…",
+      "copyingPlantUml": "Copying PlantUML…",
+      "preparingDslDownload": "Preparing OpenFlow DSL download…",
+      "copyingDsl": "Copying OpenFlow DSL…",
+      "preparingFigmaDownload": "Preparing Figma SVG download…",
+      "copyingFigmaSvg": "Copying Figma SVG…"
+    }
   },
   "import": {
     "title": "Import",
@@ -1708,5 +1725,31 @@
     "noRulesTitle": "No rules defined yet",
     "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
     "browseTemplates": "Browse templates"
+  },
+  "appLoading": {
+    "route": {
+      "title": "Opening workspace",
+      "description": "Loading the next screen and restoring the current workspace context."
+    },
+    "bootstrap": {
+      "title": "Restoring your workspace",
+      "description": "Loading your diagrams, chat history, and local settings."
+    },
+    "generatingDiagram": "Generating diagram...",
+    "moreNodes": "+{{count}} more",
+    "nodeCount_one": "{{count}} node",
+    "nodeCount_other": "{{count}} nodes",
+    "edgeCount_one": "{{count}} edge",
+    "edgeCount_other": "{{count}} edges",
+    "cinematicExport": "Preparing cinematic export…",
+    "cancelCinematicExport": "Cancel cinematic export",
+    "loadingAssets": "Loading {{label}}",
+    "cinematicCapturingFrames": "Capturing frames…",
+    "cinematicEncodingVideo": "Encoding video…",
+    "cinematicFinalizing": "Finalizing export…",
+    "cinematicComplete": "Export complete",
+    "cinematicCancelled": "Export cancelled",
+    "nodeCount": "{{count}} nodes",
+    "edgeCount": "{{count}} edges"
   }
 }

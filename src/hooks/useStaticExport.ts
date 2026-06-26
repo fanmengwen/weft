@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { createLogger } from '@/lib/logger';
 import { toPng, toJpeg, toSvg } from 'html-to-image';
 import { buildExportFileName } from '@/lib/exportFileName';
@@ -18,6 +19,8 @@ export const useStaticExport = (
   addToast: (message: string, type: 'success' | 'error' | 'info' | 'warning') => void,
   exportBaseName: string | undefined
 ) => {
+  const { t } = useTranslation();
+
   const handleExport = useCallback(
     (format: 'png' | 'jpeg' = 'png', exportOptions?: StaticImageExportOptions) => {
       const { viewport: flowViewport, message } = resolveFlowExportViewport(
@@ -29,7 +32,7 @@ export const useStaticExport = (
       }
 
       reactFlowWrapper.current.classList.add('exporting');
-      addToast(`Preparing ${format.toUpperCase()} download…`, 'info');
+      addToast(t('export.progress.preparingDownload', { format: format.toUpperCase() }), 'info');
 
       setTimeout(() => {
         const { options } = createExportOptions(nodes, format, {
@@ -56,7 +59,7 @@ export const useStaticExport = (
           });
       }, 300);
     },
-    [nodes, reactFlowWrapper, addToast, exportBaseName]
+    [nodes, reactFlowWrapper, addToast, exportBaseName, t]
   );
 
   const handleCopyImage = useCallback(
@@ -70,7 +73,7 @@ export const useStaticExport = (
       }
 
       reactFlowWrapper.current.classList.add('exporting');
-      addToast(`Preparing ${format.toUpperCase()} copy…`, 'info');
+      addToast(t('export.progress.preparingCopy', { format: format.toUpperCase() }), 'info');
 
       setTimeout(() => {
         const { options } = createExportOptions(nodes, format, {
@@ -93,7 +96,7 @@ export const useStaticExport = (
           });
       }, 300);
     },
-    [nodes, reactFlowWrapper, addToast]
+    [nodes, reactFlowWrapper, addToast, t]
   );
 
   const handleSvgExport = useCallback(() => {
@@ -104,7 +107,7 @@ export const useStaticExport = (
     }
 
     reactFlowWrapper.current.classList.add('exporting');
-    addToast('Preparing SVG download…', 'info');
+    addToast(t('export.progress.preparingSvgDownload'), 'info');
 
     setTimeout(() => {
       const { options } = createExportOptions(nodes, 'png');
@@ -125,7 +128,7 @@ export const useStaticExport = (
           reactFlowWrapper.current?.classList.remove('exporting');
         });
     }, 300);
-  }, [nodes, reactFlowWrapper, addToast, exportBaseName]);
+  }, [nodes, reactFlowWrapper, addToast, exportBaseName, t]);
 
   const handleCopySvg = useCallback(() => {
     const { viewport: flowViewport, message } = resolveFlowExportViewport(reactFlowWrapper.current);
@@ -135,7 +138,7 @@ export const useStaticExport = (
     }
 
     reactFlowWrapper.current.classList.add('exporting');
-    addToast('Preparing SVG copy…', 'info');
+    addToast(t('export.progress.preparingSvgCopy'), 'info');
 
     setTimeout(() => {
       const { options } = createExportOptions(nodes, 'png');
@@ -153,7 +156,7 @@ export const useStaticExport = (
           reactFlowWrapper.current?.classList.remove('exporting');
         });
     }, 300);
-  }, [nodes, reactFlowWrapper, addToast]);
+  }, [nodes, reactFlowWrapper, addToast, t]);
 
   return { handleExport, handleCopyImage, handleSvgExport, handleCopySvg };
 };

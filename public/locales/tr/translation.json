@@ -169,7 +169,24 @@
     "speed": "Hız",
     "resolution": "Çözünürlük",
     "transparentBackground": "Şeffaf arka plan",
-    "headingFormat": "Dışa Aktarma Biçimi"
+    "headingFormat": "Dışa Aktarma Biçimi",
+    "progress": {
+      "preparingDownload": "{{format}} indirmesi hazırlanıyor…",
+      "preparingCopy": "{{format}} kopyası hazırlanıyor…",
+      "preparingSvgDownload": "SVG indirmesi hazırlanıyor…",
+      "preparingSvgCopy": "SVG kopyası hazırlanıyor…",
+      "preparingPdfDownload": "PDF indirmesi hazırlanıyor…",
+      "preparingJsonDownload": "JSON indirmesi hazırlanıyor…",
+      "preparingJsonCopy": "JSON kopyası hazırlanıyor…",
+      "preparingMermaidDownload": "Mermaid indirmesi hazırlanıyor…",
+      "copyingMermaid": "Mermaid kopyalanıyor…",
+      "preparingPlantUmlDownload": "PlantUML indirmesi hazırlanıyor…",
+      "copyingPlantUml": "PlantUML kopyalanıyor…",
+      "preparingDslDownload": "OpenFlow DSL indirmesi hazırlanıyor…",
+      "copyingDsl": "OpenFlow DSL kopyalanıyor…",
+      "preparingFigmaDownload": "Figma SVG indirmesi hazırlanıyor…",
+      "copyingFigmaSvg": "Figma SVG kopyalanıyor…"
+    }
   },
   "import": {
     "title": "İçe Aktar",
@@ -1678,5 +1695,31 @@
     "noRulesTitle": "No rules defined yet",
     "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
     "browseTemplates": "Browse templates"
+  },
+  "appLoading": {
+    "route": {
+      "title": "Çalışma alanı açılıyor",
+      "description": "Sonraki ekran yükleniyor ve mevcut çalışma alanı bağlamı geri yükleniyor."
+    },
+    "bootstrap": {
+      "title": "Çalışma alanınız geri yükleniyor",
+      "description": "Diyagramlarınız, sohbet geçmişiniz ve yerel ayarlarınız yükleniyor."
+    },
+    "generatingDiagram": "Diyagram oluşturuluyor…",
+    "moreNodes": "+{{count}} daha",
+    "nodeCount_one": "{{count}} düğüm",
+    "nodeCount_other": "{{count}} düğüm",
+    "edgeCount_one": "{{count}} kenar",
+    "edgeCount_other": "{{count}} kenar",
+    "cinematicExport": "Sinematik dışa aktarma hazırlanıyor…",
+    "cancelCinematicExport": "Sinematik dışa aktarmayı iptal et",
+    "loadingAssets": "{{label}} yükleniyor",
+    "cinematicCapturingFrames": "Kareler yakalanıyor…",
+    "cinematicEncodingVideo": "Video kodlanıyor…",
+    "cinematicFinalizing": "Dışa aktarma tamamlanıyor…",
+    "cinematicComplete": "Dışa aktarma tamamlandı",
+    "cinematicCancelled": "Dışa aktarma iptal edildi",
+    "nodeCount": "{{count}} düğüm",
+    "edgeCount": "{{count}} kenar"
   }
 }

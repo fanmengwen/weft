@@ -169,7 +169,24 @@
     "speed": "Vitesse",
     "resolution": "Résolution",
     "transparentBackground": "Arrière-plan transparent",
-    "headingFormat": "Format d'exportation"
+    "headingFormat": "Format d'exportation",
+    "progress": {
+      "preparingDownload": "Préparation du téléchargement {{format}}…",
+      "preparingCopy": "Préparation de la copie {{format}}…",
+      "preparingSvgDownload": "Préparation du téléchargement SVG…",
+      "preparingSvgCopy": "Préparation de la copie SVG…",
+      "preparingPdfDownload": "Préparation du téléchargement PDF…",
+      "preparingJsonDownload": "Préparation du téléchargement JSON…",
+      "preparingJsonCopy": "Préparation de la copie JSON…",
+      "preparingMermaidDownload": "Préparation du téléchargement Mermaid…",
+      "copyingMermaid": "Copie de Mermaid…",
+      "preparingPlantUmlDownload": "Préparation du téléchargement PlantUML…",
+      "copyingPlantUml": "Copie de PlantUML…",
+      "preparingDslDownload": "Préparation du téléchargement OpenFlow DSL…",
+      "copyingDsl": "Copie de OpenFlow DSL…",
+      "preparingFigmaDownload": "Préparation du téléchargement Figma SVG…",
+      "copyingFigmaSvg": "Copie de Figma SVG…"
+    }
   },
   "import": {
     "title": "Importer",
@@ -1678,5 +1695,31 @@
     "noRulesTitle": "No rules defined yet",
     "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
     "browseTemplates": "Browse templates"
+  },
+  "appLoading": {
+    "route": {
+      "title": "Ouverture de l’espace de travail",
+      "description": "Chargement de l’écran suivant et restauration du contexte de l’espace de travail actuel."
+    },
+    "bootstrap": {
+      "title": "Restauration de votre espace de travail",
+      "description": "Chargement de vos diagrammes, historique de chat et paramètres locaux."
+    },
+    "generatingDiagram": "Génération du diagramme…",
+    "moreNodes": "+{{count}} de plus",
+    "nodeCount_one": "{{count}} nœud",
+    "nodeCount_other": "{{count}} nœuds",
+    "edgeCount_one": "{{count}} arête",
+    "edgeCount_other": "{{count}} arêtes",
+    "cinematicExport": "Préparation de l’export cinématique…",
+    "cancelCinematicExport": "Annuler l’export cinématique",
+    "loadingAssets": "Chargement de {{label}}",
+    "cinematicCapturingFrames": "Capture des images…",
+    "cinematicEncodingVideo": "Encodage de la vidéo…",
+    "cinematicFinalizing": "Finalisation de l’export…",
+    "cinematicComplete": "Export terminé",
+    "cinematicCancelled": "Export annulé",
+    "nodeCount": "{{count}} nœuds",
+    "edgeCount": "{{count}} arêtes"
   }
 }

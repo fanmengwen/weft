@@ -129,7 +129,7 @@ export async function exportMermaidToClipboard({
     await exportFlowTextToClipboard({
         text: toMermaid(nodes, edges),
         successMessage: t('flowEditor.mermaidCopied'),
-        processingMessage: 'Copying Mermaid…',
+        processingMessage: t('export.progress.copyingMermaid'),
         errorMessage: 'Failed to copy Mermaid.',
         addToast,
     });
@@ -138,13 +138,14 @@ export async function exportMermaidToClipboard({
 export function downloadMermaidToFile({
     nodes,
     edges,
+    t,
     addToast,
     baseFileName,
-}: Omit<ExportFlowDiagramParams, 't'> & Pick<ExportOpenFlowDSLParams, 'addToast' | 'baseFileName'>): void {
+}: ExportFlowDiagramParams & Pick<ExportOpenFlowDSLParams, 'addToast' | 'baseFileName'>): void {
     downloadTextFile({
         text: toMermaid(nodes, edges),
         fileName: buildExportFileName(baseFileName, 'mmd'),
-        processingMessage: 'Preparing Mermaid download…',
+        processingMessage: t('export.progress.preparingMermaidDownload'),
         successMessage: 'Mermaid downloaded.',
         errorMessage: 'Failed to download Mermaid.',
         addToast,
@@ -160,7 +161,7 @@ export async function exportPlantUMLToClipboard({
     await exportFlowTextToClipboard({
         text: toPlantUML(nodes, edges),
         successMessage: t('flowEditor.plantUMLCopied'),
-        processingMessage: 'Copying PlantUML…',
+        processingMessage: t('export.progress.copyingPlantUml'),
         errorMessage: 'Failed to copy PlantUML.',
         addToast,
     });
@@ -169,13 +170,14 @@ export async function exportPlantUMLToClipboard({
 export function downloadPlantUMLToFile({
     nodes,
     edges,
+    t,
     addToast,
     baseFileName,
-}: Omit<ExportFlowDiagramParams, 't'> & Pick<ExportOpenFlowDSLParams, 'addToast' | 'baseFileName'>): void {
+}: ExportFlowDiagramParams & Pick<ExportOpenFlowDSLParams, 'addToast' | 'baseFileName'>): void {
     downloadTextFile({
         text: toPlantUML(nodes, edges),
         fileName: buildExportFileName(baseFileName, 'puml'),
-        processingMessage: 'Preparing PlantUML download…',
+        processingMessage: t('export.progress.preparingPlantUmlDownload'),
         successMessage: 'PlantUML downloaded.',
         errorMessage: 'Failed to download PlantUML.',
         addToast,
@@ -189,7 +191,7 @@ export async function exportOpenFlowDSLToClipboard({
     t,
     exportSerializationMode,
 }: ExportOpenFlowDSLParams): Promise<void> {
-    addToast('Copying OpenFlow DSL…', 'info');
+    addToast(t('export.progress.copyingDsl'), 'info');
     const exportDiagnostics = getOpenFlowDSLExportDiagnostics(nodes, edges);
     const text = toOpenFlowDSL(nodes, edges, { mode: exportSerializationMode });
     const copied = await copyTextToClipboard(text);
@@ -212,13 +214,14 @@ export function downloadOpenFlowDSLToFile({
     nodes,
     edges,
     exportSerializationMode,
+    t,
     addToast,
     baseFileName,
-}: Pick<ExportOpenFlowDSLParams, 'nodes' | 'edges' | 'exportSerializationMode' | 'addToast' | 'baseFileName'>): void {
+}: Pick<ExportOpenFlowDSLParams, 'nodes' | 'edges' | 'exportSerializationMode' | 't' | 'addToast' | 'baseFileName'>): void {
     downloadTextFile({
         text: toOpenFlowDSL(nodes, edges, { mode: exportSerializationMode }),
         fileName: buildExportFileName(baseFileName, 'ofk'),
-        processingMessage: 'Preparing OpenFlow DSL download…',
+        processingMessage: t('export.progress.preparingDslDownload'),
         successMessage: 'OpenFlow DSL downloaded.',
         errorMessage: 'Failed to download OpenFlow DSL.',
         addToast,
@@ -232,7 +235,7 @@ export async function exportFigmaToClipboard({
     t,
 }: ExportFigmaParams): Promise<void> {
     try {
-        addToast('Copying Figma SVG…', 'info');
+        addToast(t('export.progress.copyingFigmaSvg'), 'info');
         const svg = await toFigmaSVG(nodes, edges);
         const copied = await copySvgToClipboard(svg);
         if (!copied) {
@@ -260,7 +263,7 @@ export async function downloadFigmaToFile({
             text: svg,
             fileName: buildVariantExportFileName(baseFileName, 'figma', 'svg'),
             mimeType: 'image/svg+xml;charset=utf-8',
-            processingMessage: 'Preparing Figma SVG download…',
+            processingMessage: t('export.progress.preparingFigmaDownload'),
             successMessage: 'Figma SVG downloaded.',
             errorMessage: 'Failed to download Figma SVG.',
             addToast,

@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { toPng } from 'html-to-image';
 import {
   useCinematicExportActions,
@@ -103,6 +104,7 @@ export function useCinematicExport({
   handleCinematicExport: (request: CinematicExportRequest) => Promise<void>;
 } {
   const { resolvedTheme } = useTheme();
+  const { t } = useTranslation();
   const jobState = useCinematicExportJobState();
   const {
     setRenderState,
@@ -164,7 +166,7 @@ export function useCinematicExport({
         progressPercent: PREPARING_PROGRESS,
         completedFrames: 0,
         totalFrames: 0,
-        stageLabel: 'Preparing cinematic export…',
+        stageLabel: t('appLoading.cinematicExport'),
         canCancel: true,
         request,
       });
@@ -197,7 +199,7 @@ export function useCinematicExport({
           status: 'capturing',
           progressPercent: CAPTURING_PROGRESS_START,
           totalFrames: totalCaptureFrames,
-          stageLabel: 'Capturing frames…',
+          stageLabel: t('appLoading.cinematicCapturingFrames'),
         }));
 
         for (const [frameIndex, timeMs] of frameTimes.entries()) {
@@ -213,7 +215,7 @@ export function useCinematicExport({
             status: 'capturing',
             completedFrames,
             totalFrames: totalCaptureFrames,
-            stageLabel: 'Capturing frames…',
+            stageLabel: t('appLoading.cinematicCapturingFrames'),
             progressPercent: getProgressPercent(
               completedFrames,
               totalCaptureFrames,
@@ -247,7 +249,7 @@ export function useCinematicExport({
           status: 'encoding',
           completedFrames: 0,
           totalFrames: Math.max(1, decodedFrames.length),
-          stageLabel: 'Encoding video…',
+          stageLabel: t('appLoading.cinematicEncodingVideo'),
           progressPercent: ENCODING_PROGRESS_START,
         }));
 
@@ -274,7 +276,7 @@ export function useCinematicExport({
               status: 'encoding',
               completedFrames,
               totalFrames,
-              stageLabel: 'Encoding video…',
+              stageLabel: t('appLoading.cinematicEncodingVideo'),
               progressPercent: getProgressPercent(
                 completedFrames,
                 totalFrames,
@@ -289,7 +291,7 @@ export function useCinematicExport({
           ...current,
           status: 'finalizing',
           progressPercent: FINALIZING_PROGRESS,
-          stageLabel: 'Finalizing export…',
+          stageLabel: t('appLoading.cinematicFinalizing'),
         }));
 
         // Prefer the blob's actual MIME — when the encoder routes to WebCodecs
@@ -304,7 +306,7 @@ export function useCinematicExport({
           status: 'done',
           progressPercent: 100,
           canCancel: false,
-          stageLabel: 'Export complete',
+          stageLabel: t('appLoading.cinematicComplete'),
         }));
         addToast(`Cinematic build ${extension.toUpperCase()} exported.`, 'success');
       } catch (error) {
@@ -313,7 +315,7 @@ export function useCinematicExport({
             ...current,
             status: 'cancelled',
             canCancel: false,
-            stageLabel: 'Export cancelled',
+            stageLabel: t('appLoading.cinematicCancelled'),
           }));
           addToast('Cinematic export cancelled.', 'info');
           return;
@@ -351,6 +353,7 @@ export function useCinematicExport({
       resolvedTheme,
       setJobState,
       setRenderState,
+      t,
     ]
   );
 

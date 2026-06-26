@@ -169,7 +169,24 @@
     "speed": "Velocidad",
     "resolution": "Resolución",
     "transparentBackground": "Fondo transparente",
-    "headingFormat": "Formato de exportación"
+    "headingFormat": "Formato de exportación",
+    "progress": {
+      "preparingDownload": "Preparando descarga de {{format}}…",
+      "preparingCopy": "Preparando copia de {{format}}…",
+      "preparingSvgDownload": "Preparando descarga de SVG…",
+      "preparingSvgCopy": "Preparando copia de SVG…",
+      "preparingPdfDownload": "Preparando descarga de PDF…",
+      "preparingJsonDownload": "Preparando descarga de JSON…",
+      "preparingJsonCopy": "Preparando copia de JSON…",
+      "preparingMermaidDownload": "Preparando descarga de Mermaid…",
+      "copyingMermaid": "Copiando Mermaid…",
+      "preparingPlantUmlDownload": "Preparando descarga de PlantUML…",
+      "copyingPlantUml": "Copiando PlantUML…",
+      "preparingDslDownload": "Preparando descarga de OpenFlow DSL…",
+      "copyingDsl": "Copiando OpenFlow DSL…",
+      "preparingFigmaDownload": "Preparando descarga de Figma SVG…",
+      "copyingFigmaSvg": "Copiando Figma SVG…"
+    }
   },
   "import": {
     "title": "Importar",
@@ -1678,5 +1695,31 @@
     "noRulesTitle": "No rules defined yet",
     "noRulesHint": "Add rules to automatically detect architecture violations as you draw.",
     "browseTemplates": "Browse templates"
+  },
+  "appLoading": {
+    "route": {
+      "title": "Abriendo el espacio de trabajo",
+      "description": "Cargando la siguiente pantalla y restaurando el contexto del espacio de trabajo actual."
+    },
+    "bootstrap": {
+      "title": "Restaurando tu espacio de trabajo",
+      "description": "Cargando tus diagramas, historial de chat y ajustes locales."
+    },
+    "generatingDiagram": "Generando diagrama…",
+    "moreNodes": "+{{count}} más",
+    "nodeCount_one": "{{count}} nodo",
+    "nodeCount_other": "{{count}} nodos",
+    "edgeCount_one": "{{count}} arista",
+    "edgeCount_other": "{{count}} aristas",
+    "cinematicExport": "Preparando exportación cinematográfica…",
+    "cancelCinematicExport": "Cancelar exportación cinematográfica",
+    "loadingAssets": "Cargando {{label}}",
+    "cinematicCapturingFrames": "Capturando fotogramas…",
+    "cinematicEncodingVideo": "Codificando video…",
+    "cinematicFinalizing": "Finalizando exportación…",
+    "cinematicComplete": "Exportación completa",
+    "cinematicCancelled": "Exportación cancelada",
+    "nodeCount": "{{count}} nodos",
+    "edgeCount": "{{count}} aristas"
   }
 }
