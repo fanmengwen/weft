@@ -7,7 +7,6 @@
     "switchToWorkflow": "Switch to workflow mode",
     "home": "Back to home",
     "run": "Run",
-    "runDisabledHint": "Running unlocks in the next phase",
     "library": {
       "title": "Nodes",
       "hint": "Drag onto the canvas to add a node"
@@ -28,6 +27,18 @@
       "output": {
         "name": "Output",
         "desc": "Show the final result"
+      },
+      "knowledgeRetrieval": {
+        "name": "Wissensabruf",
+        "desc": "Aus Dokumenten abrufen"
+      },
+      "ifElse": {
+        "name": "Wenn / Sonst",
+        "desc": "Nach Bedingung verzweigen"
+      },
+      "code": {
+        "name": "Code",
+        "desc": "Mit JavaScript transformieren"
       }
     },
     "properties": {
@@ -43,7 +54,38 @@
       "queryPlaceholder": "What should we search for?",
       "outputHint": "The final result will appear here after you run the workflow.",
       "delete": "Delete node",
-      "deleteAria": "Delete selected node"
+      "deleteAria": "Delete selected node",
+      "systemPromptField": "System-Prompt",
+      "systemPromptPlaceholder": "Optional: Rolle oder Vorgaben für das Modell…",
+      "modelFollowGlobal": "Globalen KI-Einstellungen folgen",
+      "knowledgeDocField": "Wissensdokument",
+      "knowledgeTopKField": "Top-K-Abschnitte",
+      "knowledgeUpload": ".txt / .md hochladen",
+      "knowledgeUploadInvalid": "Nur .txt- oder .md-Dateien werden unterstützt",
+      "conditionsField": "Bedingungen",
+      "conditionVariable": "Variable",
+      "conditionOperator": "Operator",
+      "conditionValue": "Vergleichswert",
+      "addCondition": "Bedingung hinzufügen",
+      "removeCondition": "Entfernen",
+      "conditionOp": {
+        "contains": "enthält",
+        "notContains": "enthält nicht",
+        "equals": "ist gleich",
+        "regex": "entspricht Regex"
+      },
+      "logicAnd": "Alle erfüllen (UND)",
+      "logicOr": "Beliebige erfüllen (ODER)",
+      "ifElseHint": "TRUE verlässt den Knoten oben, FALSE unten.",
+      "codeField": "JavaScript-Code",
+      "codeHint": "Erhält `inputs` – Ausgaben der vorherigen Knoten nach Knoten-ID. Der Rückgabewert wird weitergereicht.",
+      "insertVariable": "Variable einfügen",
+      "noUpstreamVariables": "Noch keine vorgelagerten Ausgaben verfügbar",
+      "runNode": "Diesen Knoten ausführen",
+      "lastRun": "Letzter Lauf",
+      "lastRunInput": "Eingabe",
+      "lastRunOutput": "Ausgabe",
+      "lastRunEmpty": "Führe den Knoten aus, um Ein- und Ausgaben zu sehen."
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -51,10 +93,58 @@
     },
     "log": {
       "title": "Run Log",
-      "empty": "Logs will appear here after running"
+      "empty": "Logs will appear here after running",
+      "clear": "Leeren",
+      "runStarted": "Workflow-Lauf gestartet",
+      "runSucceeded": "Workflow erfolgreich abgeschlossen",
+      "runFailed": "Workflow mit Fehlern beendet",
+      "runAborted": "Workflow-Lauf gestoppt",
+      "nodeStarted": "{{label}} gestartet",
+      "nodeSucceeded": "{{label}} abgeschlossen",
+      "nodeSkippedBranch": "{{label}} übersprungen (Zweig nicht gewählt)",
+      "nodeSkippedUpstream": "{{label}} übersprungen (vorgelagerter Fehler)",
+      "emptyTextInput": "Texteingabe ist leer",
+      "emptyOutput": "Kein vorgelagerter Text erreicht diesen Ausgabeknoten",
+      "emptyPrompt": "Prompt ist leer und kein vorgelagerter Text verfügbar",
+      "emptyQuery": "Suchanfrage ist leer und kein vorgelagerter Text verfügbar",
+      "missingVariables": "Nicht aufgelöste Variablen: {{selectors}}",
+      "promptFromUpstream": "Prompt leer – vorgelagerter Text wird verwendet",
+      "searchDegraded": "Websuche nicht verfügbar ({{reason}}) – Anfrage wird durchgereicht",
+      "searchNoResults": "Keine Suchergebnisse – Anfrage wird durchgereicht",
+      "searchHits": "Wikipedia lieferte {{count}} Ergebnis(se)",
+      "knowledgeDegraded": "Kein Embedding-Endpunkt – Rückfall auf Schlüsselwortsuche",
+      "knowledgeHits": "{{count}} Abschnitt(e) abgerufen",
+      "codeTimeout": "Codeausführung nach {{seconds}} s abgebrochen",
+      "singleRunMissingUpstream": "Fehlende vorgelagerte Ausgaben: {{labels}} – zuerst den Workflow oder diese Knoten ausführen",
+      "validation": {
+        "emptyGraph": "Arbeitsfläche ist leer – nichts auszuführen",
+        "isolatedNode": "Nicht verbundene Knoten: {{labels}}",
+        "multipleIncoming": "Mehrere eingehende Verbindungen: {{labels}}",
+        "cycle": "Der Workflow enthält einen Zyklus",
+        "missingOutput": "Füge einen Ausgabeknoten hinzu"
+      }
     },
     "connect": {
-      "invalid": "This connection is not allowed in a linear workflow"
+      "invalid": "Diese Verbindung ist nicht erlaubt"
+    },
+    "stop": "Stopp",
+    "runNeedsNodes": "Füge zuerst Knoten zur Arbeitsfläche hinzu",
+    "runInvalid": "Der Workflow kann nicht ausgeführt werden – Details im Ausführungsprotokoll",
+    "status": {
+      "running": "Läuft",
+      "succeeded": "Erfolgreich",
+      "failed": "Fehlgeschlagen",
+      "aborted": "Gestoppt"
+    },
+    "outputModal": {
+      "title": "Ergebnis",
+      "close": "Schließen"
+    },
+    "io": {
+      "export": "JSON exportieren",
+      "import": "JSON importieren",
+      "importFailed": "Import fehlgeschlagen – keine gültige Workflow-Datei",
+      "importSucceeded": "Workflow importiert"
     }
   },
   "common": {

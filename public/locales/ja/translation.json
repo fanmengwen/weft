@@ -7,7 +7,6 @@
     "switchToWorkflow": "Switch to workflow mode",
     "home": "Back to home",
     "run": "Run",
-    "runDisabledHint": "Running unlocks in the next phase",
     "library": {
       "title": "Nodes",
       "hint": "Drag onto the canvas to add a node"
@@ -28,6 +27,18 @@
       "output": {
         "name": "Output",
         "desc": "Show the final result"
+      },
+      "knowledgeRetrieval": {
+        "name": "ナレッジ検索",
+        "desc": "ドキュメントから検索"
+      },
+      "ifElse": {
+        "name": "条件分岐",
+        "desc": "条件によって分岐"
+      },
+      "code": {
+        "name": "コード実行",
+        "desc": "JavaScript で加工"
       }
     },
     "properties": {
@@ -43,7 +54,38 @@
       "queryPlaceholder": "What should we search for?",
       "outputHint": "The final result will appear here after you run the workflow.",
       "delete": "Delete node",
-      "deleteAria": "Delete selected node"
+      "deleteAria": "Delete selected node",
+      "systemPromptField": "システムプロンプト",
+      "systemPromptPlaceholder": "任意:モデルの役割や制約を設定…",
+      "modelFollowGlobal": "グローバル AI 設定に従う",
+      "knowledgeDocField": "ナレッジドキュメント",
+      "knowledgeTopKField": "取得件数 (Top K)",
+      "knowledgeUpload": ".txt / .md をアップロード",
+      "knowledgeUploadInvalid": ".txt または .md ファイルのみ対応しています",
+      "conditionsField": "条件",
+      "conditionVariable": "変数",
+      "conditionOperator": "演算子",
+      "conditionValue": "比較値",
+      "addCondition": "条件を追加",
+      "removeCondition": "削除",
+      "conditionOp": {
+        "contains": "を含む",
+        "notContains": "を含まない",
+        "equals": "と等しい",
+        "regex": "正規表現に一致"
+      },
+      "logicAnd": "すべて満たす (AND)",
+      "logicOr": "いずれか満たす (OR)",
+      "ifElseHint": "TRUE は上のハンドル、FALSE は下のハンドルから出ます。",
+      "codeField": "JavaScript コード",
+      "codeHint": "`inputs`(ノード ID ごとの上流出力)を受け取り、戻り値が下流へ渡されます。",
+      "insertVariable": "変数を挿入",
+      "noUpstreamVariables": "利用可能な上流出力はまだありません",
+      "runNode": "このノードを実行",
+      "lastRun": "前回の実行",
+      "lastRunInput": "入力",
+      "lastRunOutput": "出力",
+      "lastRunEmpty": "ノードを実行すると入力と出力を確認できます。"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -51,10 +93,58 @@
     },
     "log": {
       "title": "Run Log",
-      "empty": "Logs will appear here after running"
+      "empty": "Logs will appear here after running",
+      "clear": "クリア",
+      "runStarted": "ワークフローの実行を開始しました",
+      "runSucceeded": "ワークフローが正常に完了しました",
+      "runFailed": "ワークフローがエラーで終了しました",
+      "runAborted": "ワークフローの実行を停止しました",
+      "nodeStarted": "{{label}} を開始",
+      "nodeSucceeded": "{{label}} が完了",
+      "nodeSkippedBranch": "{{label}} をスキップ(分岐対象外)",
+      "nodeSkippedUpstream": "{{label}} をスキップ(上流の失敗)",
+      "emptyTextInput": "テキスト入力が空です",
+      "emptyOutput": "この出力ノードに届くテキストがありません",
+      "emptyPrompt": "プロンプトが空で、利用できる上流テキストもありません",
+      "emptyQuery": "検索クエリが空で、利用できる上流テキストもありません",
+      "missingVariables": "未解決の変数:{{selectors}}",
+      "promptFromUpstream": "プロンプトが空のため上流テキストを使用します",
+      "searchDegraded": "Web 検索を利用できません({{reason}})。クエリをそのまま渡します",
+      "searchNoResults": "検索結果なし。クエリをそのまま渡します",
+      "searchHits": "Wikipedia から {{count}} 件の結果",
+      "knowledgeDegraded": "Embedding エンドポイントがないためキーワード一致にフォールバック",
+      "knowledgeHits": "{{count}} 件のチャンクを取得",
+      "codeTimeout": "コード実行が {{seconds}} 秒でタイムアウトしました",
+      "singleRunMissingUpstream": "上流出力がありません:{{labels}}。先にワークフローまたは該当ノードを実行してください",
+      "validation": {
+        "emptyGraph": "キャンバスが空です。実行する内容がありません",
+        "isolatedNode": "接続されていないノード:{{labels}}",
+        "multipleIncoming": "複数の入力接続があります:{{labels}}",
+        "cycle": "ワークフローに循環があります",
+        "missingOutput": "出力ノードを追加してください"
+      }
     },
     "connect": {
-      "invalid": "This connection is not allowed in a linear workflow"
+      "invalid": "この接続は許可されていません"
+    },
+    "stop": "停止",
+    "runNeedsNodes": "先にキャンバスへノードを追加してください",
+    "runInvalid": "ワークフローを実行できません。実行ログを確認してください",
+    "status": {
+      "running": "実行中",
+      "succeeded": "成功",
+      "failed": "失敗",
+      "aborted": "停止済み"
+    },
+    "outputModal": {
+      "title": "実行結果",
+      "close": "閉じる"
+    },
+    "io": {
+      "export": "JSON をエクスポート",
+      "import": "JSON をインポート",
+      "importFailed": "インポート失敗:有効なワークフローファイルではありません",
+      "importSucceeded": "ワークフローをインポートしました"
     }
   },
   "common": {

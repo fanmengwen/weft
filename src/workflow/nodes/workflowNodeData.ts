@@ -5,6 +5,7 @@ export interface WorkflowNodeData extends Record<string, unknown> {
   label: string;
   text?: string;
   prompt?: string;
+  systemPrompt?: string;
   model?: string;
   query?: string;
 }

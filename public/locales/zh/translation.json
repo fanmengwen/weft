@@ -7,7 +7,6 @@
     "switchToWorkflow": "切换到工作流模式",
     "home": "返回首页",
     "run": "运行",
-    "runDisabledHint": "运行将在下一阶段开放",
     "library": {
       "title": "节点库",
       "hint": "拖拽到画布添加节点"
@@ -28,6 +27,18 @@
       "output": {
         "name": "输出",
         "desc": "展示最终结果"
+      },
+      "knowledgeRetrieval": {
+        "name": "知识库检索",
+        "desc": "从文档中检索相关内容"
+      },
+      "ifElse": {
+        "name": "条件判断",
+        "desc": "按条件走不同分支"
+      },
+      "code": {
+        "name": "代码执行",
+        "desc": "用 JavaScript 加工数据"
       }
     },
     "properties": {
@@ -43,7 +54,38 @@
       "queryPlaceholder": "输入要检索的内容…",
       "outputHint": "运行工作流后，最终结果将在此展示。",
       "delete": "删除节点",
-      "deleteAria": "删除选中的节点"
+      "deleteAria": "删除选中的节点",
+      "systemPromptField": "系统提示词",
+      "systemPromptPlaceholder": "可选:为模型设定角色或约束…",
+      "modelFollowGlobal": "跟随全局 AI 设置",
+      "knowledgeDocField": "知识文档",
+      "knowledgeTopKField": "召回条数 (Top K)",
+      "knowledgeUpload": "上传 .txt / .md",
+      "knowledgeUploadInvalid": "仅支持 .txt 或 .md 文件",
+      "conditionsField": "条件",
+      "conditionVariable": "变量",
+      "conditionOperator": "运算符",
+      "conditionValue": "比较值",
+      "addCondition": "添加条件",
+      "removeCondition": "删除",
+      "conditionOp": {
+        "contains": "包含",
+        "notContains": "不包含",
+        "equals": "等于",
+        "regex": "匹配正则"
+      },
+      "logicAnd": "全部满足 (AND)",
+      "logicOr": "任一满足 (OR)",
+      "ifElseHint": "TRUE 从上方出口流出,FALSE 从下方出口流出。",
+      "codeField": "JavaScript 代码",
+      "codeHint": "入参 `inputs` 为上游输出(按节点 ID 组织),返回值将传给下游。",
+      "insertVariable": "插入变量",
+      "noUpstreamVariables": "暂无可用的上游输出",
+      "runNode": "运行此节点",
+      "lastRun": "上次运行",
+      "lastRunInput": "输入",
+      "lastRunOutput": "输出",
+      "lastRunEmpty": "运行该节点后可查看输入与输出。"
     },
     "canvas": {
       "emptyTitle": "从左侧拖入节点开始搭建工作流",
@@ -51,10 +93,58 @@
     },
     "log": {
       "title": "运行日志",
-      "empty": "运行后将在此显示日志"
+      "empty": "运行后将在此显示日志",
+      "clear": "清空",
+      "runStarted": "工作流开始运行",
+      "runSucceeded": "工作流运行完成",
+      "runFailed": "工作流运行出错",
+      "runAborted": "工作流已停止",
+      "nodeStarted": "{{label}} 开始执行",
+      "nodeSucceeded": "{{label}} 执行完成",
+      "nodeSkippedBranch": "{{label}} 已跳过(分支未命中)",
+      "nodeSkippedUpstream": "{{label}} 已跳过(上游失败或被跳过)",
+      "emptyTextInput": "文本输入为空",
+      "emptyOutput": "没有上游文本到达此输出节点",
+      "emptyPrompt": "提示词为空,且没有可用的上游文本",
+      "emptyQuery": "搜索词为空,且没有可用的上游文本",
+      "missingVariables": "未解析的变量:{{selectors}}",
+      "promptFromUpstream": "提示词为空,已改用上游文本",
+      "searchDegraded": "网络搜索不可用({{reason}}),已降级为透传查询词",
+      "searchNoResults": "无搜索结果,已降级为透传查询词",
+      "searchHits": "Wikipedia 返回 {{count}} 条结果",
+      "knowledgeDegraded": "无 embedding 端点,已降级为关键词匹配",
+      "knowledgeHits": "检索到 {{count}} 个片段",
+      "codeTimeout": "代码执行超时({{seconds}} 秒)",
+      "singleRunMissingUpstream": "缺少上游输出:{{labels}},请先运行工作流或上游节点",
+      "validation": {
+        "emptyGraph": "画布为空,没有可运行的内容",
+        "isolatedNode": "存在未连接的孤立节点:{{labels}}",
+        "multipleIncoming": "节点有多条入边:{{labels}}",
+        "cycle": "工作流中存在环",
+        "missingOutput": "请添加一个输出节点"
+      }
     },
     "connect": {
-      "invalid": "线性工作流不允许此连接"
+      "invalid": "此连接不被允许"
+    },
+    "stop": "停止",
+    "runNeedsNodes": "请先在画布上添加节点",
+    "runInvalid": "工作流无法运行,请查看运行日志",
+    "status": {
+      "running": "运行中",
+      "succeeded": "已完成",
+      "failed": "失败",
+      "aborted": "已停止"
+    },
+    "outputModal": {
+      "title": "运行结果",
+      "close": "关闭"
+    },
+    "io": {
+      "export": "导出 JSON",
+      "import": "导入 JSON",
+      "importFailed": "导入失败:不是有效的工作流文件",
+      "importSucceeded": "工作流已导入"
     }
   },
   "common": {
