@@ -3,7 +3,9 @@ import type { FlowNode } from '@/lib/types';
 import { createWorkflowNode } from '../dnd/createWorkflowNode';
 import type { WorkflowLogMessage, WorkflowRunContext } from '../engine/types';
 import { VariablePool } from '../engine/variablePool';
-import type { WorkflowNodeData } from '../nodes/workflowNodeData';
+import type { WorkflowCondition, WorkflowNodeData } from '../nodes/workflowNodeData';
+import { buildCodeInputs, normalizeCodeResult } from './code';
+import { ifElseHandler } from './ifElse';
 import { llmHandler } from './llm';
 import { outputHandler } from './output';
 import { textInputHandler } from './textInput';
@@ -133,5 +135,103 @@ describe('webSearchHandler', () => {
     await expect(webSearchHandler.run(context)).rejects.toMatchObject({
       messageKey: 'workflowMode.log.emptyQuery',
     });
+  });
+});
+
+describe('ifElseHandler', () => {
+  function makeIfElseNode(
+    conditions: WorkflowCondition[],
+    logic: 'and' | 'or' = 'and'
+  ): ReturnType<typeof createWorkflowNode> {
+    const node = createWorkflowNode('ifElse', { x: 0, y: 0 });
+    const data = node.data as unknown as WorkflowNodeData;
+    data.conditions = conditions;
+    data.conditionLogic = logic;
+    return node;
+  }
+
+  it('routes to the true branch when a contains condition matches', async () => {
+    const upstream = createWorkflowNode('knowledgeRetrieval', { x: 0, y: 0 });
+    const node = makeIfElseNode([
+      { id: 'c1', variable: '', operator: 'contains', value: '产品' },
+    ]);
+    const pool = new VariablePool({ [upstream.id]: { text: 'Weft 产品说明文档' } });
+    const { context, logs } = makeContext(node, { pool, incomers: [upstream] });
+
+    const result = await ifElseHandler.run(context);
+
+    expect(result.branch).toBe('true');
+    expect(result.outputs.result).toBe(true);
+    expect(result.outputs.text).toBe('Weft 产品说明文档');
+    expect(logs).toContainEqual({
+      level: 'info',
+      messageKey: 'workflowMode.log.ifElseResult',
+      messageParams: { result: 'true' },
+    });
+  });
+
+  it('combines conditions with OR and explicit variable selectors', async () => {
+    const upstream = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const node = makeIfElseNode(
+      [
+        { id: 'c1', variable: `${upstream.id}.text`, operator: 'equals', value: 'nope' },
+        { id: 'c2', variable: `${upstream.id}.text`, operator: 'regex', value: '^he' },
+      ],
+      'or'
+    );
+    const pool = new VariablePool({ [upstream.id]: { text: 'hello' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    const result = await ifElseHandler.run(context);
+    expect(result.branch).toBe('true');
+  });
+
+  it('routes to the false branch when conditions fail', async () => {
+    const upstream = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const node = makeIfElseNode([
+      { id: 'c1', variable: '', operator: 'notContains', value: 'hello' },
+    ]);
+    const pool = new VariablePool({ [upstream.id]: { text: 'hello world' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    const result = await ifElseHandler.run(context);
+    expect(result.branch).toBe('false');
+    expect(result.outputs.result).toBe(false);
+  });
+
+  it('defaults to the true branch with a warning when no conditions exist', async () => {
+    const node = makeIfElseNode([]);
+    const { context, logs } = makeContext(node);
+
+    const result = await ifElseHandler.run(context);
+    expect(result.branch).toBe('true');
+    expect(logs.some((log) => log.messageKey === 'workflowMode.log.ifElseNoConditions')).toBe(true);
+  });
+
+  it('fails the node on an invalid regex', async () => {
+    const upstream = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const node = makeIfElseNode([{ id: 'c1', variable: '', operator: 'regex', value: '(' }]);
+    const pool = new VariablePool({ [upstream.id]: { text: 'anything' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    await expect(ifElseHandler.run(context)).rejects.toThrow();
+  });
+});
+
+describe('code handler helpers', () => {
+  it('builds inputs from direct incomers plus the text convenience key', () => {
+    const upstream = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const pool = new VariablePool({ [upstream.id]: { text: 'payload' } });
+
+    const inputs = buildCodeInputs(pool, [upstream]);
+
+    expect(inputs[upstream.id]).toEqual({ text: 'payload' });
+    expect(inputs.text).toBe('payload');
+  });
+
+  it('normalizes code results into text plus raw value', () => {
+    expect(normalizeCodeResult('plain')).toEqual({ text: 'plain', value: 'plain' });
+    expect(normalizeCodeResult({ a: 1 })).toEqual({ text: '{"a":1}', value: { a: 1 } });
+    expect(normalizeCodeResult(undefined)).toEqual({ text: '', value: null });
   });
 });

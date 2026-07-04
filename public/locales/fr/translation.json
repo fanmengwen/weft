@@ -85,7 +85,8 @@
       "lastRun": "Dernière exécution",
       "lastRunInput": "Entrée",
       "lastRunOutput": "Sortie",
-      "lastRunEmpty": "Exécutez le nœud pour inspecter ses entrées et sorties."
+      "lastRunEmpty": "Exécutez le nœud pour inspecter ses entrées et sorties.",
+      "conditionUpstream": "Texte amont"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -122,7 +123,11 @@
         "multipleIncoming": "Plusieurs connexions entrantes : {{labels}}",
         "cycle": "Le workflow contient un cycle",
         "missingOutput": "Ajoutez un nœud de sortie"
-      }
+      },
+      "ifElseNoConditions": "Aucune condition configurée — branche TRUE choisie",
+      "ifElseResult": "Condition évaluée à {{result}}",
+      "codeWorkerUnavailable": "Les Web Workers sont indisponibles dans cet environnement — le nœud de code ne peut pas s'exécuter",
+      "knowledgeNoDocument": "Aucun document de connaissances disponible"
     },
     "connect": {
       "invalid": "Cette connexion n'est pas autorisée"
