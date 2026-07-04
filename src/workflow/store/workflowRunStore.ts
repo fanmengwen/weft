@@ -1,13 +1,16 @@
 import { create } from 'zustand';
 import { createId } from '@/lib/id';
-import type {
-  NodeRunStatus,
-  WorkflowLogMessage,
-  WorkflowRunEvent,
-  WorkflowRunStatus,
+import {
+  WorkflowHandlerError,
+  type NodeRunStatus,
+  type WorkflowLogMessage,
+  type WorkflowRunEvent,
+  type WorkflowRunStatus,
 } from '../engine/types';
 import { validateWorkflowGraph } from '../engine/graphValidator';
+import { VariablePool } from '../engine/variablePool';
 import { runWorkflow } from '../engine/workflowEngine';
+import { getWorkflowHandler } from '../handlers/registry';
 import type { WorkflowNodeData } from '../nodes/workflowNodeData';
 import { useWorkflowStore } from './workflowStore';
 
@@ -31,10 +34,15 @@ interface WorkflowRunState {
   isOutputModalOpen: boolean;
   isLogOpen: boolean;
   startRun: () => Promise<boolean>;
+  // Dify's one-step run: executes a single handler against variables cached
+  // from previous runs instead of re-running the whole graph.
+  runSingleNode: (nodeId: string) => Promise<void>;
   stopRun: () => void;
   closeOutputModal: () => void;
   toggleLogOpen: () => void;
   clearLog: () => void;
+  // Drops per-node state after the graph itself changes (e.g. JSON import).
+  clearRunState: () => void;
 }
 
 // The controller lives outside zustand state: it is not renderable data and
@@ -63,6 +71,28 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
   const setNodeState = (nodeId: string, status: NodeRunStatus) =>
     set((state) => ({ nodeRunStates: { ...state.nodeRunStates, [nodeId]: status } }));
 
+  const appendStreamDelta = (nodeId: string, delta: string) =>
+    set((state) => {
+      const entries = [...state.logEntries];
+      let index = -1;
+      for (let i = entries.length - 1; i >= 0; i -= 1) {
+        if (entries[i].stream && entries[i].nodeId === nodeId) {
+          index = i;
+          break;
+        }
+      }
+      if (index >= 0) {
+        entries[index] = { ...entries[index], raw: (entries[index].raw ?? '') + delta };
+        return { logEntries: entries };
+      }
+      return {
+        logEntries: [
+          ...entries,
+          { ...makeEntry({ level: 'info', raw: delta }, nodeId), stream: true },
+        ],
+      };
+    });
+
   const applyEvent = (event: WorkflowRunEvent) => {
     switch (event.type) {
       case 'runStarted':
@@ -86,26 +116,7 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
         );
         break;
       case 'nodeStream':
-        set((state) => {
-          const entries = [...state.logEntries];
-          let index = -1;
-          for (let i = entries.length - 1; i >= 0; i -= 1) {
-            if (entries[i].stream && entries[i].nodeId === event.nodeId) {
-              index = i;
-              break;
-            }
-          }
-          if (index >= 0) {
-            entries[index] = { ...entries[index], raw: (entries[index].raw ?? '') + event.delta };
-            return { logEntries: entries };
-          }
-          return {
-            logEntries: [
-              ...entries,
-              { ...makeEntry({ level: 'info', raw: event.delta }, event.nodeId), stream: true },
-            ],
-          };
-        });
+        appendStreamDelta(event.nodeId, event.delta);
         break;
       case 'nodeLog':
         appendLog(event.log, event.nodeId);
@@ -229,6 +240,84 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
       return true;
     },
 
+    runSingleNode: async (nodeId) => {
+      if (get().runStatus === 'running' || get().nodeRunStates[nodeId] === 'running') {
+        return;
+      }
+      const { workflowNodes, workflowEdges } = useWorkflowStore.getState();
+      const node = workflowNodes.find((entry) => entry.id === nodeId);
+      if (!node) {
+        return;
+      }
+      const data = node.data as unknown as WorkflowNodeData;
+      const incomers = workflowEdges
+        .filter((edge) => edge.target === nodeId)
+        .map((edge) => workflowNodes.find((entry) => entry.id === edge.source))
+        .filter((incomer): incomer is (typeof workflowNodes)[number] => Boolean(incomer));
+
+      set({ isLogOpen: true });
+      setNodeState(nodeId, 'running');
+      appendLog(
+        {
+          level: 'info',
+          messageKey: 'workflowMode.log.nodeStarted',
+          messageParams: { label: nodeLabel(nodeId) },
+        },
+        nodeId
+      );
+
+      const missingUpstream = incomers.filter((incomer) => !get().lastRunOutputs[incomer.id]);
+      if (missingUpstream.length > 0) {
+        appendLog(
+          {
+            level: 'warn',
+            messageKey: 'workflowMode.log.singleRunMissingUpstream',
+            messageParams: {
+              labels: missingUpstream.map((incomer) => nodeLabel(incomer.id)).join(', '),
+            },
+          },
+          nodeId
+        );
+      }
+
+      const controller = new AbortController();
+      try {
+        const handler = getWorkflowHandler(data.kind);
+        const result = await handler.run({
+          node,
+          data,
+          pool: new VariablePool(get().lastRunOutputs),
+          incomers,
+          signal: controller.signal,
+          emitStream: (delta) => appendStreamDelta(nodeId, delta),
+          log: (log) => appendLog(log, nodeId),
+        });
+        set((state) => ({
+          lastRunOutputs: { ...state.lastRunOutputs, [nodeId]: result.outputs },
+        }));
+        setNodeState(nodeId, 'succeeded');
+        appendLog(
+          {
+            level: 'info',
+            messageKey: 'workflowMode.log.nodeSucceeded',
+            messageParams: { label: nodeLabel(nodeId) },
+          },
+          nodeId
+        );
+      } catch (error) {
+        setNodeState(nodeId, 'failed');
+        appendLog(
+          {
+            level: 'error',
+            ...(error instanceof WorkflowHandlerError
+              ? { messageKey: error.messageKey, messageParams: error.messageParams }
+              : { raw: error instanceof Error ? error.message : String(error) }),
+          },
+          nodeId
+        );
+      }
+    },
+
     stopRun: () => {
       activeController?.abort();
     },
@@ -238,5 +327,13 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
     toggleLogOpen: () => set((state) => ({ isLogOpen: !state.isLogOpen })),
 
     clearLog: () => set({ logEntries: [] }),
+
+    clearRunState: () =>
+      set({
+        runStatus: 'idle',
+        nodeRunStates: {},
+        finalOutput: null,
+        isOutputModalOpen: false,
+      }),
   };
 });

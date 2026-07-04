@@ -50,6 +50,23 @@ describe('useWorkflowStore', () => {
     expect(useFlowStore.getState().edges).toEqual([]);
   });
 
+  it('persists graph content with runtime selection stripped', () => {
+    const node = { ...createWorkflowNode('textInput', { x: 0, y: 0 }), selected: true };
+    const options = useWorkflowStore.persist.getOptions();
+    const partial = options.partialize!({
+      ...useWorkflowStore.getState(),
+      mode: 'workflow',
+      workflowNodes: [node],
+      workflowEdges: [],
+    }) as { mode: string; workflowNodes: FlowNode[]; workflowEdges: unknown[] };
+
+    expect(partial.mode).toBe('workflow');
+    expect(partial.workflowNodes).toHaveLength(1);
+    expect(partial.workflowNodes[0].selected).toBe(false);
+    expect(partial.workflowEdges).toEqual([]);
+    expect('selectedNodeId' in partial).toBe(false);
+  });
+
   it('deletes a node, its edges, and clears selection', () => {
     const a = createWorkflowNode('textInput', { x: 0, y: 0 });
     const b = createWorkflowNode('llm', { x: 200, y: 0 });

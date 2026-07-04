@@ -10,6 +10,7 @@ import type {
 } from '../nodes/workflowNodeData';
 import { listUpstreamVariables } from '../graph/upstreamVariables';
 import { BUILTIN_DOC_ID, useKnowledgeStore } from '../rag/documentStore';
+import { useWorkflowRunStore } from '../store/workflowRunStore';
 import { useWorkflowStore } from '../store/workflowStore';
 import { WorkflowVariablePicker } from './WorkflowVariablePicker';
 
@@ -37,6 +38,10 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const deleteWorkflowNode = useWorkflowStore((state) => state.deleteWorkflowNode);
   const documents = useKnowledgeStore((state) => state.documents);
   const addDocument = useKnowledgeStore((state) => state.addDocument);
+  const runStatus = useWorkflowRunStore((state) => state.runStatus);
+  const nodeRunStates = useWorkflowRunStore((state) => state.nodeRunStates);
+  const lastRunOutputs = useWorkflowRunStore((state) => state.lastRunOutputs);
+  const runSingleNode = useWorkflowRunStore((state) => state.runSingleNode);
   const uploadInputRef = useRef<HTMLInputElement>(null);
 
   const selectedNode = workflowNodes.find((node) => node.id === selectedNodeId);
@@ -52,6 +57,22 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const patchConditions = (conditions: WorkflowCondition[]) => {
     patchNode({ conditions });
   };
+
+  const isBusy =
+    runStatus === 'running' ||
+    (selectedNode ? nodeRunStates[selectedNode.id] === 'running' : false);
+
+  // The one-step-run input view mirrors what the handler will see: cached
+  // outputs of the direct upstream nodes.
+  const lastRunInputs: Record<string, unknown> = {};
+  if (selectedNode) {
+    for (const edge of workflowEdges) {
+      if (edge.target === selectedNode.id && lastRunOutputs[edge.source]) {
+        lastRunInputs[edge.source] = lastRunOutputs[edge.source];
+      }
+    }
+  }
+  const lastRunOutput = selectedNode ? lastRunOutputs[selectedNode.id] : undefined;
 
   const handleUpload = async (file: File) => {
     if (!/\.(txt|md)$/i.test(file.name)) {
@@ -89,6 +110,15 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
               <div className="text-xs text-[var(--brand-secondary)]">{data.label}</div>
             </div>
           </div>
+
+          <button
+            type="button"
+            onClick={() => void runSingleNode(selectedNode.id)}
+            disabled={isBusy}
+            className="rounded-[var(--brand-radius)] border border-[var(--brand-primary)] px-3 py-2 text-sm font-medium text-[var(--brand-primary)] transition-colors hover:bg-[var(--brand-primary)]/10 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            ▶ {t('workflowMode.properties.runNode')}
+          </button>
 
           <label className="flex flex-col gap-1.5 text-sm">
             <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.labelField')}</span>
@@ -358,6 +388,38 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
               {t('workflowMode.properties.outputHint')}
             </p>
           ) : null}
+
+          <div className="flex flex-col gap-1.5 text-sm">
+            <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.lastRun')}</span>
+            {lastRunOutput === undefined && Object.keys(lastRunInputs).length === 0 ? (
+              <p className="text-xs text-[var(--brand-secondary)]">
+                {t('workflowMode.properties.lastRunEmpty')}
+              </p>
+            ) : (
+              <>
+                {Object.keys(lastRunInputs).length > 0 ? (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--brand-secondary)]">
+                      {t('workflowMode.properties.lastRunInput')}
+                    </span>
+                    <pre className="max-h-32 overflow-auto rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-2 text-[11px] leading-relaxed text-[var(--brand-text)]">
+                      {JSON.stringify(lastRunInputs, null, 2)}
+                    </pre>
+                  </div>
+                ) : null}
+                {lastRunOutput !== undefined ? (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs font-medium text-[var(--brand-secondary)]">
+                      {t('workflowMode.properties.lastRunOutput')}
+                    </span>
+                    <pre className="max-h-32 overflow-auto rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-2 text-[11px] leading-relaxed text-[var(--brand-text)]">
+                      {JSON.stringify(lastRunOutput, null, 2)}
+                    </pre>
+                  </div>
+                ) : null}
+              </>
+            )}
+          </div>
 
           <button
             type="button"

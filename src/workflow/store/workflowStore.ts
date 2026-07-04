@@ -98,7 +98,15 @@ export const useWorkflowStore = create<WorkflowState>()(
     {
       name: 'weft-workflow',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state): Pick<WorkflowState, 'mode'> => ({ mode: state.mode }),
+      // Runtime-only props (selection) stay out of storage; run state lives
+      // in the separate, unpersisted run store.
+      partialize: (
+        state
+      ): Pick<WorkflowState, 'mode' | 'workflowNodes' | 'workflowEdges'> => ({
+        mode: state.mode,
+        workflowNodes: state.workflowNodes.map((node) => ({ ...node, selected: false })),
+        workflowEdges: state.workflowEdges,
+      }),
     }
   )
 );
