@@ -26,7 +26,7 @@ export function WorkflowNodeShell(props: LegacyNodeProps<WorkflowNodeData>): Rea
   const runState = useWorkflowRunStore((state) => state.nodeRunStates[id] ?? 'idle');
 
   const showTarget = data.kind !== 'textInput';
-  const showSource = data.kind !== 'output';
+  const showSource = data.kind !== 'output' && data.kind !== 'ifElse';
 
   return (
     <div
@@ -53,6 +53,26 @@ export function WorkflowNodeShell(props: LegacyNodeProps<WorkflowNodeData>): Rea
           position={Position.Right}
           className="workflow-handle !h-3 !w-3 !border-2 !border-white !bg-[var(--brand-primary)]"
         />
+      ) : null}
+      {data.kind === 'ifElse' ? (
+        <>
+          <Handle
+            id="true"
+            type="source"
+            position={Position.Right}
+            style={{ top: '30%' }}
+            title="TRUE"
+            className="workflow-handle !h-3 !w-3 !border-2 !border-white !bg-emerald-500"
+          />
+          <Handle
+            id="false"
+            type="source"
+            position={Position.Right}
+            style={{ top: '70%' }}
+            title="FALSE"
+            className="workflow-handle !h-3 !w-3 !border-2 !border-white !bg-[var(--brand-danger,#ef4444)]"
+          />
+        </>
       ) : null}
       <div className="flex items-center gap-2">
         <span

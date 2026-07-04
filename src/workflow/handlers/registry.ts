@@ -1,5 +1,8 @@
 import type { WorkflowNodeKind } from '../nodes/nodeCatalog';
 import type { WorkflowNodeHandler } from '../engine/types';
+import { codeHandler } from './code';
+import { ifElseHandler } from './ifElse';
+import { knowledgeHandler } from './knowledge';
 import { llmHandler } from './llm';
 import { outputHandler } from './output';
 import { textInputHandler } from './textInput';
@@ -11,6 +14,9 @@ const WORKFLOW_HANDLERS: Record<WorkflowNodeKind, WorkflowNodeHandler> = {
   textInput: textInputHandler,
   llm: llmHandler,
   webSearch: webSearchHandler,
+  knowledgeRetrieval: knowledgeHandler,
+  ifElse: ifElseHandler,
+  code: codeHandler,
   output: outputHandler,
 };
 

@@ -85,7 +85,8 @@
       "lastRun": "Last run",
       "lastRunInput": "Input",
       "lastRunOutput": "Output",
-      "lastRunEmpty": "Run the node to inspect its inputs and outputs."
+      "lastRunEmpty": "Run the node to inspect its inputs and outputs.",
+      "conditionUpstream": "Upstream text"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -122,7 +123,11 @@
         "multipleIncoming": "More than one incoming connection: {{labels}}",
         "cycle": "The workflow contains a cycle",
         "missingOutput": "Add an Output node to finish the workflow"
-      }
+      },
+      "ifElseNoConditions": "No conditions configured — taking the TRUE branch",
+      "ifElseResult": "Condition evaluated to {{result}}",
+      "codeWorkerUnavailable": "Web Workers are unavailable in this environment — the code node cannot run",
+      "knowledgeNoDocument": "No knowledge document available"
     },
     "connect": {
       "invalid": "This connection is not allowed"

@@ -85,7 +85,8 @@
       "lastRun": "Son çalıştırma",
       "lastRunInput": "Girdi",
       "lastRunOutput": "Çıktı",
-      "lastRunEmpty": "Girdi ve çıktıları görmek için düğümü çalıştırın."
+      "lastRunEmpty": "Girdi ve çıktıları görmek için düğümü çalıştırın.",
+      "conditionUpstream": "Önceki metin"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -122,7 +123,11 @@
         "multipleIncoming": "Birden fazla gelen bağlantı: {{labels}}",
         "cycle": "İş akışında döngü var",
         "missingOutput": "Bir çıktı düğümü ekleyin"
-      }
+      },
+      "ifElseNoConditions": "Koşul yapılandırılmadı — TRUE dalı seçiliyor",
+      "ifElseResult": "Koşul sonucu: {{result}}",
+      "codeWorkerUnavailable": "Bu ortamda Web Worker kullanılamıyor — kod düğümü çalıştırılamaz",
+      "knowledgeNoDocument": "Kullanılabilir bilgi belgesi yok"
     },
     "connect": {
       "invalid": "Bu bağlantıya izin verilmiyor"

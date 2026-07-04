@@ -20,7 +20,7 @@ describe('WorkflowEditor', () => {
     } as typeof ResizeObserver;
   });
 
-  it('renders the shell: mode selector + 4 node library cards', () => {
+  it('renders the shell: mode selector + 7 node library cards', () => {
     render(
       <ToastProvider>
         <ReactFlowProvider>
@@ -29,7 +29,7 @@ describe('WorkflowEditor', () => {
       </ToastProvider>
     );
     expect(screen.getAllByRole('tab')).toHaveLength(2);
-    const icons = ['📝', '🤖', '🔍', '📤'];
+    const icons = ['📝', '🤖', '🔍', '📚', '🔀', '💻', '📤'];
     for (const icon of icons) {
       expect(screen.getByText(icon)).toBeInTheDocument();
     }

@@ -85,7 +85,8 @@
       "lastRun": "前回の実行",
       "lastRunInput": "入力",
       "lastRunOutput": "出力",
-      "lastRunEmpty": "ノードを実行すると入力と出力を確認できます。"
+      "lastRunEmpty": "ノードを実行すると入力と出力を確認できます。",
+      "conditionUpstream": "上流テキスト"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -122,7 +123,11 @@
         "multipleIncoming": "複数の入力接続があります:{{labels}}",
         "cycle": "ワークフローに循環があります",
         "missingOutput": "出力ノードを追加してください"
-      }
+      },
+      "ifElseNoConditions": "条件が未設定のため TRUE 分岐に進みます",
+      "ifElseResult": "条件の評価結果:{{result}}",
+      "codeWorkerUnavailable": "この環境では Web Worker を利用できないため、コードノードを実行できません",
+      "knowledgeNoDocument": "利用可能なナレッジドキュメントがありません"
     },
     "connect": {
       "invalid": "この接続は許可されていません"

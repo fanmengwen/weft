@@ -85,7 +85,8 @@
       "lastRun": "上次运行",
       "lastRunInput": "输入",
       "lastRunOutput": "输出",
-      "lastRunEmpty": "运行该节点后可查看输入与输出。"
+      "lastRunEmpty": "运行该节点后可查看输入与输出。",
+      "conditionUpstream": "上游文本"
     },
     "canvas": {
       "emptyTitle": "从左侧拖入节点开始搭建工作流",
@@ -122,7 +123,11 @@
         "multipleIncoming": "节点有多条入边:{{labels}}",
         "cycle": "工作流中存在环",
         "missingOutput": "请添加一个输出节点"
-      }
+      },
+      "ifElseNoConditions": "未配置条件,默认走 TRUE 分支",
+      "ifElseResult": "条件判断结果:{{result}}",
+      "codeWorkerUnavailable": "当前环境不支持 Web Worker,代码节点无法运行",
+      "knowledgeNoDocument": "没有可用的知识文档"
     },
     "connect": {
       "invalid": "此连接不被允许"

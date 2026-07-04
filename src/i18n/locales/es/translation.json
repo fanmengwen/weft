@@ -85,7 +85,8 @@
       "lastRun": "Última ejecución",
       "lastRunInput": "Entrada",
       "lastRunOutput": "Salida",
-      "lastRunEmpty": "Ejecuta el nodo para ver sus entradas y salidas."
+      "lastRunEmpty": "Ejecuta el nodo para ver sus entradas y salidas.",
+      "conditionUpstream": "Texto anterior"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -122,7 +123,11 @@
         "multipleIncoming": "Más de una conexión entrante: {{labels}}",
         "cycle": "El flujo contiene un ciclo",
         "missingOutput": "Añade un nodo de salida"
-      }
+      },
+      "ifElseNoConditions": "Sin condiciones configuradas: se toma la rama TRUE",
+      "ifElseResult": "La condición se evaluó como {{result}}",
+      "codeWorkerUnavailable": "Los Web Workers no están disponibles en este entorno: el nodo de código no puede ejecutarse",
+      "knowledgeNoDocument": "No hay documento de conocimiento disponible"
     },
     "connect": {
       "invalid": "Esta conexión no está permitida"

@@ -5,5 +5,8 @@ export const workflowNodeTypes: NodeTypes = {
   textInput: WorkflowNodeShell,
   llm: WorkflowNodeShell,
   webSearch: WorkflowNodeShell,
+  knowledgeRetrieval: WorkflowNodeShell,
+  ifElse: WorkflowNodeShell,
+  code: WorkflowNodeShell,
   output: WorkflowNodeShell,
 };

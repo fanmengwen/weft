@@ -85,7 +85,8 @@
       "lastRun": "Letzter Lauf",
       "lastRunInput": "Eingabe",
       "lastRunOutput": "Ausgabe",
-      "lastRunEmpty": "Führe den Knoten aus, um Ein- und Ausgaben zu sehen."
+      "lastRunEmpty": "Führe den Knoten aus, um Ein- und Ausgaben zu sehen.",
+      "conditionUpstream": "Vorgelagerter Text"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -122,7 +123,11 @@
         "multipleIncoming": "Mehrere eingehende Verbindungen: {{labels}}",
         "cycle": "Der Workflow enthält einen Zyklus",
         "missingOutput": "Füge einen Ausgabeknoten hinzu"
-      }
+      },
+      "ifElseNoConditions": "Keine Bedingungen konfiguriert – TRUE-Zweig wird gewählt",
+      "ifElseResult": "Bedingung ergab {{result}}",
+      "codeWorkerUnavailable": "Web Worker sind in dieser Umgebung nicht verfügbar – Code-Knoten kann nicht laufen",
+      "knowledgeNoDocument": "Kein Wissensdokument verfügbar"
     },
     "connect": {
       "invalid": "Diese Verbindung ist nicht erlaubt"
