@@ -64,6 +64,54 @@ describe('useWorkflowRunStore', () => {
     ).toBe(true);
   });
 
+  it('runs a single node against cached upstream outputs', async () => {
+    const input = createWorkflowNode('textInput', { x: 0, y: 0 });
+    (input.data as { text?: string }).text = 'cached upstream';
+    const output = createWorkflowNode('output', { x: 1, y: 0 });
+    useWorkflowStore.getState().setWorkflowNodes([input, output]);
+    useWorkflowStore.getState().onWorkflowConnect({
+      source: input.id,
+      target: output.id,
+      sourceHandle: 'out',
+      targetHandle: 'in',
+    });
+
+    // First run the entry node alone, then replay the output node from cache.
+    await useWorkflowRunStore.getState().runSingleNode(input.id);
+    expect(useWorkflowRunStore.getState().lastRunOutputs[input.id]).toEqual({
+      text: 'cached upstream',
+    });
+
+    await useWorkflowRunStore.getState().runSingleNode(output.id);
+
+    const state = useWorkflowRunStore.getState();
+    expect(state.nodeRunStates[output.id]).toBe('succeeded');
+    expect(state.lastRunOutputs[output.id]).toEqual({ text: 'cached upstream' });
+    expect(state.runStatus).toBe('idle');
+  });
+
+  it('warns when single-node upstream outputs are missing', async () => {
+    const input = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const output = createWorkflowNode('output', { x: 1, y: 0 });
+    useWorkflowStore.getState().setWorkflowNodes([input, output]);
+    useWorkflowStore.getState().onWorkflowConnect({
+      source: input.id,
+      target: output.id,
+      sourceHandle: 'out',
+      targetHandle: 'in',
+    });
+
+    await useWorkflowRunStore.getState().runSingleNode(output.id);
+
+    const state = useWorkflowRunStore.getState();
+    expect(
+      state.logEntries.some(
+        (entry) => entry.messageKey === 'workflowMode.log.singleRunMissingUpstream'
+      )
+    ).toBe(true);
+    expect(state.nodeRunStates[output.id]).toBe('succeeded');
+  });
+
   it('keeps lastRunOutputs across runs but clears the log', async () => {
     const input = createWorkflowNode('textInput', { x: 0, y: 0 });
     (input.data as { text?: string }).text = 'first';
