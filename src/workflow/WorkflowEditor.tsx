@@ -5,6 +5,7 @@ import { WorkflowCanvas } from './WorkflowCanvas';
 import { WorkflowNodeLibrary } from './panels/WorkflowNodeLibrary';
 import { WorkflowPropertiesPanel } from './panels/WorkflowPropertiesPanel';
 import { WorkflowLogPanel } from './panels/WorkflowLogPanel';
+import { WorkflowOutputModal } from './panels/WorkflowOutputModal';
 import { WorkflowDnDProvider } from './dnd/useWorkflowDnD';
 import { WorkflowDragGhost } from './dnd/WorkflowDragGhost';
 
@@ -32,6 +33,7 @@ export function WorkflowEditor({ onGoHome }: WorkflowEditorProps): React.ReactEl
           <WorkflowPropertiesPanel />
         </div>
         <WorkflowDragGhost />
+        <WorkflowOutputModal />
       </div>
     </WorkflowDnDProvider>
   );

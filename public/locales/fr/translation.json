@@ -7,7 +7,6 @@
     "switchToWorkflow": "Switch to workflow mode",
     "home": "Back to home",
     "run": "Run",
-    "runDisabledHint": "Running unlocks in the next phase",
     "library": {
       "title": "Nodes",
       "hint": "Drag onto the canvas to add a node"
@@ -28,6 +27,18 @@
       "output": {
         "name": "Output",
         "desc": "Show the final result"
+      },
+      "knowledgeRetrieval": {
+        "name": "Récupération de connaissances",
+        "desc": "Récupérer depuis des documents"
+      },
+      "ifElse": {
+        "name": "Si / Sinon",
+        "desc": "Brancher selon une condition"
+      },
+      "code": {
+        "name": "Code",
+        "desc": "Transformer avec JavaScript"
       }
     },
     "properties": {
@@ -43,7 +54,38 @@
       "queryPlaceholder": "What should we search for?",
       "outputHint": "The final result will appear here after you run the workflow.",
       "delete": "Delete node",
-      "deleteAria": "Delete selected node"
+      "deleteAria": "Delete selected node",
+      "systemPromptField": "Prompt système",
+      "systemPromptPlaceholder": "Facultatif : rôle ou contraintes pour le modèle…",
+      "modelFollowGlobal": "Suivre les réglages IA globaux",
+      "knowledgeDocField": "Document de connaissances",
+      "knowledgeTopKField": "Fragments Top K",
+      "knowledgeUpload": "Importer .txt / .md",
+      "knowledgeUploadInvalid": "Seuls les fichiers .txt ou .md sont pris en charge",
+      "conditionsField": "Conditions",
+      "conditionVariable": "Variable",
+      "conditionOperator": "Opérateur",
+      "conditionValue": "Valeur de comparaison",
+      "addCondition": "Ajouter une condition",
+      "removeCondition": "Supprimer",
+      "conditionOp": {
+        "contains": "contient",
+        "notContains": "ne contient pas",
+        "equals": "est égal à",
+        "regex": "correspond à la regex"
+      },
+      "logicAnd": "Toutes les conditions (ET)",
+      "logicOr": "Au moins une (OU)",
+      "ifElseHint": "TRUE sort par le connecteur du haut, FALSE par celui du bas.",
+      "codeField": "Code JavaScript",
+      "codeHint": "Reçoit `inputs` : les sorties des nœuds précédents par ID. La valeur renvoyée est transmise.",
+      "insertVariable": "Insérer une variable",
+      "noUpstreamVariables": "Aucune sortie amont disponible pour l'instant",
+      "runNode": "Exécuter ce nœud",
+      "lastRun": "Dernière exécution",
+      "lastRunInput": "Entrée",
+      "lastRunOutput": "Sortie",
+      "lastRunEmpty": "Exécutez le nœud pour inspecter ses entrées et sorties."
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -51,10 +93,58 @@
     },
     "log": {
       "title": "Run Log",
-      "empty": "Logs will appear here after running"
+      "empty": "Logs will appear here after running",
+      "clear": "Effacer",
+      "runStarted": "Exécution du workflow démarrée",
+      "runSucceeded": "Workflow terminé avec succès",
+      "runFailed": "Workflow terminé avec des erreurs",
+      "runAborted": "Exécution arrêtée",
+      "nodeStarted": "{{label}} démarré",
+      "nodeSucceeded": "{{label}} terminé",
+      "nodeSkippedBranch": "{{label}} ignoré (branche non prise)",
+      "nodeSkippedUpstream": "{{label}} ignoré (échec en amont)",
+      "emptyTextInput": "L'entrée de texte est vide",
+      "emptyOutput": "Aucun texte n'atteint ce nœud de sortie",
+      "emptyPrompt": "Le prompt est vide et aucun texte amont n'est disponible",
+      "emptyQuery": "La requête est vide et aucun texte amont n'est disponible",
+      "missingVariables": "Variables non résolues : {{selectors}}",
+      "promptFromUpstream": "Prompt vide — utilisation du texte amont",
+      "searchDegraded": "Recherche web indisponible ({{reason}}) — la requête est transmise telle quelle",
+      "searchNoResults": "Aucun résultat — la requête est transmise telle quelle",
+      "searchHits": "Wikipédia a renvoyé {{count}} résultat(s)",
+      "knowledgeDegraded": "Pas d'endpoint d'embeddings — repli sur la recherche par mots-clés",
+      "knowledgeHits": "{{count}} fragment(s) récupéré(s)",
+      "codeTimeout": "Exécution du code interrompue après {{seconds}} s",
+      "singleRunMissingUpstream": "Sorties amont manquantes : {{labels}} — exécutez d'abord le workflow ou ces nœuds",
+      "validation": {
+        "emptyGraph": "Le canevas est vide — rien à exécuter",
+        "isolatedNode": "Nœuds isolés non connectés : {{labels}}",
+        "multipleIncoming": "Plusieurs connexions entrantes : {{labels}}",
+        "cycle": "Le workflow contient un cycle",
+        "missingOutput": "Ajoutez un nœud de sortie"
+      }
     },
     "connect": {
-      "invalid": "This connection is not allowed in a linear workflow"
+      "invalid": "Cette connexion n'est pas autorisée"
+    },
+    "stop": "Arrêter",
+    "runNeedsNodes": "Ajoutez d'abord des nœuds au canevas",
+    "runInvalid": "Le workflow ne peut pas s'exécuter — consultez le journal d'exécution",
+    "status": {
+      "running": "En cours",
+      "succeeded": "Terminé",
+      "failed": "Échec",
+      "aborted": "Arrêté"
+    },
+    "outputModal": {
+      "title": "Résultat",
+      "close": "Fermer"
+    },
+    "io": {
+      "export": "Exporter JSON",
+      "import": "Importer JSON",
+      "importFailed": "Échec de l'import : fichier de workflow invalide",
+      "importSucceeded": "Workflow importé"
     }
   },
   "common": {

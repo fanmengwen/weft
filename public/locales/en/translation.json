@@ -7,7 +7,6 @@
     "switchToWorkflow": "Switch to workflow mode",
     "home": "Back to home",
     "run": "Run",
-    "runDisabledHint": "Running unlocks in the next phase",
     "library": {
       "title": "Nodes",
       "hint": "Drag onto the canvas to add a node"
@@ -28,6 +27,18 @@
       "output": {
         "name": "Output",
         "desc": "Show the final result"
+      },
+      "knowledgeRetrieval": {
+        "name": "Knowledge Retrieval",
+        "desc": "Retrieve from documents"
+      },
+      "ifElse": {
+        "name": "If / Else",
+        "desc": "Branch on a condition"
+      },
+      "code": {
+        "name": "Code",
+        "desc": "Transform with JavaScript"
       }
     },
     "properties": {
@@ -43,7 +54,38 @@
       "queryPlaceholder": "What should we search for?",
       "outputHint": "The final result will appear here after you run the workflow.",
       "delete": "Delete node",
-      "deleteAria": "Delete selected node"
+      "deleteAria": "Delete selected node",
+      "systemPromptField": "System prompt",
+      "systemPromptPlaceholder": "Optional role or constraints for the model…",
+      "modelFollowGlobal": "Follow global AI settings",
+      "knowledgeDocField": "Knowledge document",
+      "knowledgeTopKField": "Top K chunks",
+      "knowledgeUpload": "Upload .txt / .md",
+      "knowledgeUploadInvalid": "Only .txt or .md files are supported",
+      "conditionsField": "Conditions",
+      "conditionVariable": "Variable",
+      "conditionOperator": "Operator",
+      "conditionValue": "Compare value",
+      "addCondition": "Add condition",
+      "removeCondition": "Remove",
+      "conditionOp": {
+        "contains": "contains",
+        "notContains": "does not contain",
+        "equals": "equals",
+        "regex": "matches regex"
+      },
+      "logicAnd": "Match all (AND)",
+      "logicOr": "Match any (OR)",
+      "ifElseHint": "TRUE exits from the top handle, FALSE from the bottom one.",
+      "codeField": "JavaScript code",
+      "codeHint": "Receives `inputs` — upstream outputs keyed by node id. The returned value is passed on.",
+      "insertVariable": "Insert variable",
+      "noUpstreamVariables": "No upstream outputs available yet",
+      "runNode": "Run this node",
+      "lastRun": "Last run",
+      "lastRunInput": "Input",
+      "lastRunOutput": "Output",
+      "lastRunEmpty": "Run the node to inspect its inputs and outputs."
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -51,10 +93,58 @@
     },
     "log": {
       "title": "Run Log",
-      "empty": "Logs will appear here after running"
+      "empty": "Logs will appear here after running",
+      "clear": "Clear",
+      "runStarted": "Workflow run started",
+      "runSucceeded": "Workflow finished successfully",
+      "runFailed": "Workflow finished with errors",
+      "runAborted": "Workflow run stopped",
+      "nodeStarted": "{{label}} started",
+      "nodeSucceeded": "{{label}} finished",
+      "nodeSkippedBranch": "{{label}} skipped (branch not taken)",
+      "nodeSkippedUpstream": "{{label}} skipped (upstream failed or skipped)",
+      "emptyTextInput": "Text input is empty",
+      "emptyOutput": "No upstream text reached this output",
+      "emptyPrompt": "Prompt is empty and no upstream text is available",
+      "emptyQuery": "Search query is empty and no upstream text is available",
+      "missingVariables": "Unresolved variables: {{selectors}}",
+      "promptFromUpstream": "Prompt is empty — using upstream text instead",
+      "searchDegraded": "Web search unavailable ({{reason}}) — passing the query through",
+      "searchNoResults": "No search results — passing the query through",
+      "searchHits": "Wikipedia returned {{count}} result(s)",
+      "knowledgeDegraded": "No embedding endpoint — falling back to keyword matching",
+      "knowledgeHits": "Retrieved {{count}} chunk(s)",
+      "codeTimeout": "Code execution timed out after {{seconds}}s",
+      "singleRunMissingUpstream": "Upstream outputs missing for: {{labels}} — run the workflow or those nodes first",
+      "validation": {
+        "emptyGraph": "Canvas is empty — nothing to run",
+        "isolatedNode": "Isolated nodes not connected to anything: {{labels}}",
+        "multipleIncoming": "More than one incoming connection: {{labels}}",
+        "cycle": "The workflow contains a cycle",
+        "missingOutput": "Add an Output node to finish the workflow"
+      }
     },
     "connect": {
-      "invalid": "This connection is not allowed in a linear workflow"
+      "invalid": "This connection is not allowed"
+    },
+    "stop": "Stop",
+    "runNeedsNodes": "Add nodes to the canvas first",
+    "runInvalid": "The workflow cannot run — check the run log for details",
+    "status": {
+      "running": "Running",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "aborted": "Stopped"
+    },
+    "outputModal": {
+      "title": "Run result",
+      "close": "Close"
+    },
+    "io": {
+      "export": "Export JSON",
+      "import": "Import JSON",
+      "importFailed": "Import failed — not a valid workflow file",
+      "importSucceeded": "Workflow imported"
     }
   },
   "common": {
