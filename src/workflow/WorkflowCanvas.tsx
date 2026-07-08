@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import ReactFlow, {
   Background,
+  ReactFlowProvider,
   useReactFlow,
   type Connection,
   type NodeMouseHandler,
@@ -131,6 +132,13 @@ function WorkflowCanvasInner(): React.ReactElement {
   );
 }
 
+// Own provider so the workflow canvas keeps a React Flow store separate from
+// the chart editor's; with a shared one, whichever canvas mounts next briefly
+// renders the other mode's nodes against the wrong nodeTypes registry.
 export function WorkflowCanvas(): React.ReactElement {
-  return <WorkflowCanvasInner />;
+  return (
+    <ReactFlowProvider>
+      <WorkflowCanvasInner />
+    </ReactFlowProvider>
+  );
 }

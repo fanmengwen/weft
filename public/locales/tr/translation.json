@@ -7,7 +7,6 @@
     "switchToWorkflow": "Switch to workflow mode",
     "home": "Back to home",
     "run": "Run",
-    "runDisabledHint": "Running unlocks in the next phase",
     "library": {
       "title": "Nodes",
       "hint": "Drag onto the canvas to add a node"
@@ -28,6 +27,18 @@
       "output": {
         "name": "Output",
         "desc": "Show the final result"
+      },
+      "knowledgeRetrieval": {
+        "name": "Bilgi Getirme",
+        "desc": "Belgelerden getir"
+      },
+      "ifElse": {
+        "name": "Eğer / Değilse",
+        "desc": "Koşula göre dallan"
+      },
+      "code": {
+        "name": "Kod",
+        "desc": "JavaScript ile dönüştür"
       }
     },
     "properties": {
@@ -43,7 +54,39 @@
       "queryPlaceholder": "What should we search for?",
       "outputHint": "The final result will appear here after you run the workflow.",
       "delete": "Delete node",
-      "deleteAria": "Delete selected node"
+      "deleteAria": "Delete selected node",
+      "systemPromptField": "Sistem istemi",
+      "systemPromptPlaceholder": "İsteğe bağlı: model için rol veya kısıtlar…",
+      "modelFollowGlobal": "Genel yapay zekâ ayarlarını izle",
+      "knowledgeDocField": "Bilgi belgesi",
+      "knowledgeTopKField": "En iyi K parça",
+      "knowledgeUpload": ".txt / .md yükle",
+      "knowledgeUploadInvalid": "Yalnızca .txt veya .md dosyaları desteklenir",
+      "conditionsField": "Koşullar",
+      "conditionVariable": "Değişken",
+      "conditionOperator": "Operatör",
+      "conditionValue": "Karşılaştırma değeri",
+      "addCondition": "Koşul ekle",
+      "removeCondition": "Kaldır",
+      "conditionOp": {
+        "contains": "içerir",
+        "notContains": "içermez",
+        "equals": "eşittir",
+        "regex": "regex ile eşleşir"
+      },
+      "logicAnd": "Tümü sağlansın (VE)",
+      "logicOr": "Herhangi biri (VEYA)",
+      "ifElseHint": "TRUE üstteki bağlantıdan, FALSE alttakinden çıkar.",
+      "codeField": "JavaScript kodu",
+      "codeHint": "`inputs` alır — düğüm kimliğine göre önceki çıktılar. Döndürülen değer sonraki düğüme aktarılır.",
+      "insertVariable": "Değişken ekle",
+      "noUpstreamVariables": "Henüz kullanılabilir önceki çıktı yok",
+      "runNode": "Bu düğümü çalıştır",
+      "lastRun": "Son çalıştırma",
+      "lastRunInput": "Girdi",
+      "lastRunOutput": "Çıktı",
+      "lastRunEmpty": "Girdi ve çıktıları görmek için düğümü çalıştırın.",
+      "conditionUpstream": "Önceki metin"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -51,10 +94,62 @@
     },
     "log": {
       "title": "Run Log",
-      "empty": "Logs will appear here after running"
+      "empty": "Logs will appear here after running",
+      "clear": "Temizle",
+      "runStarted": "İş akışı çalıştırması başladı",
+      "runSucceeded": "İş akışı başarıyla tamamlandı",
+      "runFailed": "İş akışı hatalarla bitti",
+      "runAborted": "İş akışı durduruldu",
+      "nodeStarted": "{{label}} başladı",
+      "nodeSucceeded": "{{label}} tamamlandı",
+      "nodeSkippedBranch": "{{label}} atlandı (dal seçilmedi)",
+      "nodeSkippedUpstream": "{{label}} atlandı (önceki düğüm başarısız)",
+      "emptyTextInput": "Metin girişi boş",
+      "emptyOutput": "Bu çıktı düğümüne ulaşan metin yok",
+      "emptyPrompt": "İstem boş ve kullanılabilir önceki metin yok",
+      "emptyQuery": "Arama sorgusu boş ve kullanılabilir önceki metin yok",
+      "missingVariables": "Çözümlenmemiş değişkenler: {{selectors}}",
+      "promptFromUpstream": "İstem boş — önceki metin kullanılıyor",
+      "searchDegraded": "Web araması kullanılamıyor ({{reason}}) — sorgu olduğu gibi aktarılıyor",
+      "searchNoResults": "Sonuç yok — sorgu olduğu gibi aktarılıyor",
+      "searchHits": "Wikipedia {{count}} sonuç döndürdü",
+      "knowledgeDegraded": "Embedding uç noktası yok — anahtar kelime eşleşmesine dönülüyor",
+      "knowledgeHits": "{{count}} parça getirildi",
+      "codeTimeout": "Kod çalıştırma {{seconds}} sn sonra zaman aşımına uğradı",
+      "singleRunMissingUpstream": "Eksik önceki çıktılar: {{labels}} — önce iş akışını veya bu düğümleri çalıştırın",
+      "validation": {
+        "emptyGraph": "Tuval boş — çalıştırılacak bir şey yok",
+        "isolatedNode": "Bağlantısız düğümler: {{labels}}",
+        "multipleIncoming": "Birden fazla gelen bağlantı: {{labels}}",
+        "cycle": "İş akışında döngü var",
+        "missingOutput": "Bir çıktı düğümü ekleyin"
+      },
+      "ifElseNoConditions": "Koşul yapılandırılmadı — TRUE dalı seçiliyor",
+      "ifElseResult": "Koşul sonucu: {{result}}",
+      "codeWorkerUnavailable": "Bu ortamda Web Worker kullanılamıyor — kod düğümü çalıştırılamaz",
+      "knowledgeNoDocument": "Kullanılabilir bilgi belgesi yok"
     },
     "connect": {
-      "invalid": "This connection is not allowed in a linear workflow"
+      "invalid": "Bu bağlantıya izin verilmiyor"
+    },
+    "stop": "Durdur",
+    "runNeedsNodes": "Önce tuvale düğüm ekleyin",
+    "runInvalid": "İş akışı çalıştırılamıyor — ayrıntılar için çalışma günlüğüne bakın",
+    "status": {
+      "running": "Çalışıyor",
+      "succeeded": "Başarılı",
+      "failed": "Başarısız",
+      "aborted": "Durduruldu"
+    },
+    "outputModal": {
+      "title": "Çalıştırma sonucu",
+      "close": "Kapat"
+    },
+    "io": {
+      "export": "JSON dışa aktar",
+      "import": "JSON içe aktar",
+      "importFailed": "İçe aktarma başarısız — geçerli bir iş akışı dosyası değil",
+      "importSucceeded": "İş akışı içe aktarıldı"
     }
   },
   "common": {

@@ -55,4 +55,49 @@ describe('isValidWorkflowConnection', () => {
       isValidWorkflowConnection({ source: 'b', target: 'a', sourceHandle: 'out', targetHandle: 'in' }, nodes, [])
     ).toBe(false);
   });
+
+  describe('ifElse branching', () => {
+    const branchNodes = [
+      node('a', 'textInput'),
+      node('cond', 'ifElse'),
+      node('x', 'output'),
+      node('y', 'output'),
+    ];
+
+    it('allows one edge per branch handle', () => {
+      const edges: FlowEdge[] = [
+        { id: 'e1', source: 'cond', target: 'x', sourceHandle: 'true', targetHandle: 'in' },
+      ];
+      expect(
+        isValidWorkflowConnection(
+          { source: 'cond', target: 'y', sourceHandle: 'false', targetHandle: 'in' },
+          branchNodes,
+          edges
+        )
+      ).toBe(true);
+    });
+
+    it('rejects a second edge on the same branch handle', () => {
+      const edges: FlowEdge[] = [
+        { id: 'e1', source: 'cond', target: 'x', sourceHandle: 'true', targetHandle: 'in' },
+      ];
+      expect(
+        isValidWorkflowConnection(
+          { source: 'cond', target: 'y', sourceHandle: 'true', targetHandle: 'in' },
+          branchNodes,
+          edges
+        )
+      ).toBe(false);
+    });
+
+    it('rejects ifElse connections from unnamed handles', () => {
+      expect(
+        isValidWorkflowConnection(
+          { source: 'cond', target: 'x', sourceHandle: 'out', targetHandle: 'in' },
+          branchNodes,
+          []
+        )
+      ).toBe(false);
+    });
+  });
 });

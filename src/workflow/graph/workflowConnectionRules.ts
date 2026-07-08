@@ -76,9 +76,24 @@ export function isValidWorkflowConnection(
     return false;
   }
 
-  const outgoingCount = edges.filter((edge) => edge.source === connection.source).length;
-  if (outgoingCount >= 1) {
-    return false;
+  // ifElse fans out through its named branch handles (one edge each);
+  // every other node keeps the single outgoing edge of a linear chain.
+  if (sourceKind === 'ifElse') {
+    const handle = connection.sourceHandle;
+    if (handle !== 'true' && handle !== 'false') {
+      return false;
+    }
+    const handleTaken = edges.some(
+      (edge) => edge.source === connection.source && edge.sourceHandle === handle
+    );
+    if (handleTaken) {
+      return false;
+    }
+  } else {
+    const outgoingCount = edges.filter((edge) => edge.source === connection.source).length;
+    if (outgoingCount >= 1) {
+      return false;
+    }
   }
 
   const incomingCount = edges.filter((edge) => edge.target === connection.target).length;

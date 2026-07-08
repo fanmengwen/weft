@@ -7,7 +7,6 @@
     "switchToWorkflow": "Switch to workflow mode",
     "home": "Back to home",
     "run": "Run",
-    "runDisabledHint": "Running unlocks in the next phase",
     "library": {
       "title": "Nodes",
       "hint": "Drag onto the canvas to add a node"
@@ -28,6 +27,18 @@
       "output": {
         "name": "Output",
         "desc": "Show the final result"
+      },
+      "knowledgeRetrieval": {
+        "name": "Recuperación de conocimiento",
+        "desc": "Recuperar desde documentos"
+      },
+      "ifElse": {
+        "name": "Si / Si no",
+        "desc": "Bifurcar según una condición"
+      },
+      "code": {
+        "name": "Código",
+        "desc": "Transformar con JavaScript"
       }
     },
     "properties": {
@@ -43,7 +54,39 @@
       "queryPlaceholder": "What should we search for?",
       "outputHint": "The final result will appear here after you run the workflow.",
       "delete": "Delete node",
-      "deleteAria": "Delete selected node"
+      "deleteAria": "Delete selected node",
+      "systemPromptField": "Prompt de sistema",
+      "systemPromptPlaceholder": "Opcional: rol o restricciones para el modelo…",
+      "modelFollowGlobal": "Seguir la configuración global de IA",
+      "knowledgeDocField": "Documento de conocimiento",
+      "knowledgeTopKField": "Fragmentos Top K",
+      "knowledgeUpload": "Subir .txt / .md",
+      "knowledgeUploadInvalid": "Solo se admiten archivos .txt o .md",
+      "conditionsField": "Condiciones",
+      "conditionVariable": "Variable",
+      "conditionOperator": "Operador",
+      "conditionValue": "Valor de comparación",
+      "addCondition": "Añadir condición",
+      "removeCondition": "Eliminar",
+      "conditionOp": {
+        "contains": "contiene",
+        "notContains": "no contiene",
+        "equals": "es igual a",
+        "regex": "coincide con regex"
+      },
+      "logicAnd": "Cumplir todas (Y)",
+      "logicOr": "Cumplir cualquiera (O)",
+      "ifElseHint": "TRUE sale por el conector superior, FALSE por el inferior.",
+      "codeField": "Código JavaScript",
+      "codeHint": "Recibe `inputs`: salidas de nodos anteriores por ID. El valor devuelto se pasa al siguiente nodo.",
+      "insertVariable": "Insertar variable",
+      "noUpstreamVariables": "Aún no hay salidas anteriores disponibles",
+      "runNode": "Ejecutar este nodo",
+      "lastRun": "Última ejecución",
+      "lastRunInput": "Entrada",
+      "lastRunOutput": "Salida",
+      "lastRunEmpty": "Ejecuta el nodo para ver sus entradas y salidas.",
+      "conditionUpstream": "Texto anterior"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
@@ -51,10 +94,62 @@
     },
     "log": {
       "title": "Run Log",
-      "empty": "Logs will appear here after running"
+      "empty": "Logs will appear here after running",
+      "clear": "Limpiar",
+      "runStarted": "Ejecución del flujo iniciada",
+      "runSucceeded": "Flujo completado correctamente",
+      "runFailed": "Flujo terminado con errores",
+      "runAborted": "Ejecución detenida",
+      "nodeStarted": "{{label}} iniciado",
+      "nodeSucceeded": "{{label}} completado",
+      "nodeSkippedBranch": "{{label}} omitido (rama no tomada)",
+      "nodeSkippedUpstream": "{{label}} omitido (fallo previo)",
+      "emptyTextInput": "La entrada de texto está vacía",
+      "emptyOutput": "Ningún texto llega a este nodo de salida",
+      "emptyPrompt": "El prompt está vacío y no hay texto previo disponible",
+      "emptyQuery": "La búsqueda está vacía y no hay texto previo disponible",
+      "missingVariables": "Variables sin resolver: {{selectors}}",
+      "promptFromUpstream": "Prompt vacío: se usa el texto del nodo anterior",
+      "searchDegraded": "Búsqueda web no disponible ({{reason}}): se pasa la consulta tal cual",
+      "searchNoResults": "Sin resultados: se pasa la consulta tal cual",
+      "searchHits": "Wikipedia devolvió {{count}} resultado(s)",
+      "knowledgeDegraded": "Sin endpoint de embeddings: se usa coincidencia por palabras clave",
+      "knowledgeHits": "{{count}} fragmento(s) recuperado(s)",
+      "codeTimeout": "Ejecución de código agotada tras {{seconds}} s",
+      "singleRunMissingUpstream": "Faltan salidas previas de: {{labels}}; ejecuta antes el flujo o esos nodos",
+      "validation": {
+        "emptyGraph": "El lienzo está vacío; nada que ejecutar",
+        "isolatedNode": "Nodos aislados sin conexión: {{labels}}",
+        "multipleIncoming": "Más de una conexión entrante: {{labels}}",
+        "cycle": "El flujo contiene un ciclo",
+        "missingOutput": "Añade un nodo de salida"
+      },
+      "ifElseNoConditions": "Sin condiciones configuradas: se toma la rama TRUE",
+      "ifElseResult": "La condición se evaluó como {{result}}",
+      "codeWorkerUnavailable": "Los Web Workers no están disponibles en este entorno: el nodo de código no puede ejecutarse",
+      "knowledgeNoDocument": "No hay documento de conocimiento disponible"
     },
     "connect": {
-      "invalid": "This connection is not allowed in a linear workflow"
+      "invalid": "Esta conexión no está permitida"
+    },
+    "stop": "Detener",
+    "runNeedsNodes": "Añade nodos al lienzo primero",
+    "runInvalid": "El flujo no puede ejecutarse; revisa el registro de ejecución",
+    "status": {
+      "running": "En ejecución",
+      "succeeded": "Completado",
+      "failed": "Fallido",
+      "aborted": "Detenido"
+    },
+    "outputModal": {
+      "title": "Resultado",
+      "close": "Cerrar"
+    },
+    "io": {
+      "export": "Exportar JSON",
+      "import": "Importar JSON",
+      "importFailed": "Error al importar: no es un archivo de flujo válido",
+      "importSucceeded": "Flujo importado"
     }
   },
   "common": {

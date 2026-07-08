@@ -1,13 +1,25 @@
 import type { FlowNode, NodeData } from '@/lib/types';
 import { createId } from '@/lib/id';
 import type { WorkflowNodeKind } from '../nodes/nodeCatalog';
-import { DEFAULT_LLM_MODEL, type WorkflowNodeData } from '../nodes/workflowNodeData';
+import { DEFAULT_CODE_SNIPPET, type WorkflowNodeData } from '../nodes/workflowNodeData';
 
 const DEFAULT_LABELS: Record<WorkflowNodeKind, string> = {
   textInput: 'Text Input',
   llm: 'LLM Call',
   webSearch: 'Web Search',
+  knowledgeRetrieval: 'Knowledge Retrieval',
+  ifElse: 'If / Else',
+  code: 'Code',
   output: 'Output',
+};
+
+const DEFAULT_DATA: Partial<Record<WorkflowNodeKind, Partial<WorkflowNodeData>>> = {
+  textInput: { text: '' },
+  llm: { prompt: '' },
+  webSearch: { query: '' },
+  knowledgeRetrieval: { knowledgeTopK: 3 },
+  ifElse: { conditionLogic: 'and', conditions: [] },
+  code: { code: DEFAULT_CODE_SNIPPET },
 };
 
 export function createWorkflowNode(
@@ -18,9 +30,7 @@ export function createWorkflowNode(
   const data: WorkflowNodeData = {
     kind,
     label: label ?? DEFAULT_LABELS[kind],
-    ...(kind === 'llm' ? { model: DEFAULT_LLM_MODEL, prompt: '' } : {}),
-    ...(kind === 'textInput' ? { text: '' } : {}),
-    ...(kind === 'webSearch' ? { query: '' } : {}),
+    ...DEFAULT_DATA[kind],
   };
 
   return {
