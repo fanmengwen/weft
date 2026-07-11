@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import type { DesignSystem } from '@/lib/types';
+import type { NodeShape } from './nodeHelpers';
 import { FONT_FAMILY_MAP, fontSizeClassFor } from './nodeHelpers';
 import { getMermaidImportedFontSize } from './customNodeMermaidHelpers';
 import type { NodeExportColor } from '@/theme/types';
@@ -21,6 +22,8 @@ interface BuildCustomNodeTypographyOptions {
   designSystem: DesignSystem;
   visualStyle: NodeExportColor;
   surfaceVariant: 'stadium' | 'rounded' | null;
+  activeShape: NodeShape;
+  isDivShape: boolean;
   isMermaidImportedLeaf: boolean;
   nodeHeightPx: number | undefined;
 }
@@ -40,6 +43,8 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
     designSystem,
     visualStyle,
     surfaceVariant,
+    activeShape,
+    isDivShape,
     isMermaidImportedLeaf,
     nodeHeightPx,
   } = options;
@@ -81,7 +86,18 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
         fontStyle: data.fontStyle || 'normal',
         lineHeight: 1.2,
       }
-    : {
+    : isDivShape && activeShape === 'diamond'
+      ? {
+          ...labelFontFamilyStyle,
+          ...importedFontFamilyStyle,
+          color: designSystem.colors.nodeText,
+          fontSize: '11px',
+          fontWeight: data.fontWeight || '600',
+          fontStyle: data.fontStyle || 'normal',
+          lineHeight: 1.2,
+          maxWidth: '92px',
+        }
+      : {
         ...fontSizeStyle,
         ...importedFontSizeStyle,
         ...labelFontFamilyStyle,
@@ -125,3 +141,4 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
     labelFontFamilyStyle,
   };
 }
+

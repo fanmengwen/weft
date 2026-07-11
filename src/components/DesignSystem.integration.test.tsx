@@ -270,10 +270,10 @@ describe('Design System integration', () => {
     it('honors imported Mermaid node geometry instead of generic canvas minimums', () => {
         const importedNodeData = attachMermaidImportedNodeMetadata(
             {
-                id: 'decision-1',
-                type: 'decision',
+                id: 'process-1',
+                type: 'process',
                 position: { x: 0, y: 0 },
-                data: { label: 'Approved?' },
+                data: { label: 'Imported step' },
             } as const,
             {
                 role: 'leaf',
@@ -284,8 +284,8 @@ describe('Design System integration', () => {
 
         const { container } = render(
             <CustomNode
-                id="decision-1"
-                type="decision"
+                id="process-1"
+                type="process"
                 selected={false}
                 dragging={false}
                 zIndex={1}
@@ -306,11 +306,11 @@ describe('Design System integration', () => {
         expect(diagnosticsNode?.style.width).toBe('150px');
         expect(diagnosticsNode?.style.height).toBe('70px');
         expect(diagnosticsNode?.getAttribute('data-transform-compact')).toBe('1');
-        const importedLabelStyle = screen.getByText('Approved?').parentElement?.getAttribute('style') ?? '';
+        const importedLabelStyle = screen.getByText('Imported step').parentElement?.getAttribute('style') ?? '';
         expect(importedLabelStyle).toContain('font-family:');
         // Imported nodes now use the design system font for visual consistency
         expect(importedLabelStyle).not.toContain('Trebuchet MS');
-        expect(importedLabelStyle).toContain('line-height: 1.1;');
+        expect(importedLabelStyle).toContain('line-height: 1.2;');
     });
 
     it('renders start nodes with stadium surface and out tone chip', () => {
@@ -495,3 +495,4 @@ describe('Design System integration', () => {
         expect(screen.getByText('Payments').parentElement?.getAttribute('style')).toContain('top: 8px;');
     });
 });
+

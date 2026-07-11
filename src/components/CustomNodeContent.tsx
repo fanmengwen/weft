@@ -35,7 +35,8 @@ interface CustomNodeContentProps {
   hasLabelSelection: boolean;
   hasSubLabelSelection: boolean;
   lodPreserveClassName: string;
-  isComplexShape: boolean;
+  isDivShape: boolean;
+  isSvgComplexShape: boolean;
   complexShapePaddingClassName: string;
   contentPadding: string;
 }
@@ -58,27 +59,29 @@ export function CustomNodeContent({
   hasLabelSelection,
   hasSubLabelSelection,
   lodPreserveClassName,
-  isComplexShape,
+  isDivShape,
+  isSvgComplexShape,
   complexShapePaddingClassName,
   contentPadding,
 }: CustomNodeContentProps): React.ReactElement {
   const isStadium = surfaceVariant === 'stadium';
-  const isCircularChip = isStadium || isComplexShape;
+  const isCircularChip = isStadium || isSvgComplexShape;
   const layoutClassName = isStadium
     ? 'flex-row items-center gap-[10px]'
-    : `flex-col items-center ${isComplexShape ? 'gap-1.5' : 'gap-2'}`;
+    : `flex-col items-center ${isDivShape || isSvgComplexShape ? 'gap-1.5' : 'gap-2'}`;
 
   return (
     <div
       data-chart-node-content="1"
-      className={`relative z-10 flex h-full w-full min-h-0 justify-center ${layoutClassName} ${isComplexShape ? complexShapePaddingClassName : ''}`}
-      style={!isComplexShape ? { padding: contentPadding } : undefined}
+      className={`relative z-10 flex h-full w-full min-h-0 justify-center ${layoutClassName} ${isSvgComplexShape ? complexShapePaddingClassName : ''}`}
+      style={!isDivShape && !isSvgComplexShape ? { padding: contentPadding } : undefined}
     >
       <ChartNodeToneChip
         tone={tone}
         chipIcon={chipIcon}
         resolvedAssetIconUrl={resolvedAssetIconUrl}
         isCircular={isCircularChip}
+        chipSize={isDivShape ? 'compact' : 'default'}
         lodPreserveClassName={lodPreserveClassName}
       />
 
@@ -131,3 +134,4 @@ export function CustomNodeContent({
     </div>
   );
 }
+

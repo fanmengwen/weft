@@ -2,14 +2,29 @@ import type { DesignSystem, FlowNode, NodeData } from '@/lib/types';
 
 export type NodeShape = NonNullable<NodeData['shape']>;
 
-export const COMPLEX_SHAPES: NodeShape[] = [
-  'diamond',
+export const DIV_SHAPES: NodeShape[] = ['diamond'];
+
+export const SVG_COMPLEX_SHAPES: NodeShape[] = ['parallelogram', 'cylinder'];
+
+export const LEGACY_SHAPE_FALLBACKS: NodeShape[] = [
   'hexagon',
-  'parallelogram',
-  'cylinder',
   'circle',
   'ellipse',
+  'rectangle',
+  'capsule',
 ];
+
+export function isDivShape(shape: NodeShape): boolean {
+  return DIV_SHAPES.includes(shape);
+}
+
+export function isSvgComplexShape(shape: NodeShape): boolean {
+  return SVG_COMPLEX_SHAPES.includes(shape);
+}
+
+export function isLegacyShapeFallback(shape: NodeShape): boolean {
+  return LEGACY_SHAPE_FALLBACKS.includes(shape);
+}
 
 export const FONT_FAMILY_MAP: Record<string, string> = {
   inter: 'font-inter',
@@ -52,6 +67,7 @@ export function getMinNodeSize(shape: NodeData['shape'] | undefined): {
     case 'ellipse':
       return { minWidth: 120, minHeight: 120 };
     case 'diamond':
+      return { minWidth: 148, minHeight: 148 };
     case 'hexagon':
       return { minWidth: 140, minHeight: 140 };
     case 'parallelogram':
@@ -136,16 +152,9 @@ export function fontSizeClassFor(fontSize: string | undefined): string {
   }
 }
 
-export const NEEDS_SQUARE_ASPECT: Set<NodeShape> = new Set([
-  'circle',
-  'ellipse',
-  'diamond',
-  'hexagon',
-]);
+export const NEEDS_SQUARE_ASPECT: Set<NodeShape> = new Set(['diamond']);
 
 export const COMPLEX_SHAPE_PADDING: Partial<Record<NodeShape, string>> = {
-  diamond: 'px-8 py-6',
-  hexagon: 'px-8',
   parallelogram: 'px-8',
   cylinder: 'pt-8 pb-4',
 };
@@ -159,9 +168,9 @@ export const CHART_NODE_SURFACE_GRADIENT =
 
 export function resolveChartNodeSurfaceVariant(
   nodeType: string,
-  isComplexShape: boolean
+  shape: NodeShape
 ): ChartNodeSurfaceVariant | null {
-  if (isComplexShape) {
+  if (isDivShape(shape) || isSvgComplexShape(shape)) {
     return null;
   }
   if (nodeType === 'start' || nodeType === 'end') {
@@ -245,3 +254,4 @@ export function chartNodeToneVars(tone: ChartNodeTone): { background: string; co
     color: `var(--wf-t-${tone}-fg)`,
   };
 }
+

@@ -18,22 +18,24 @@ import { DiffBadge, LintViolationBadge } from './NodeBadges';
 import { IconAssetNodeBody } from './IconAssetNodeBody';
 import { CustomNodeContent } from './CustomNodeContent';
 import { readMermaidImportedNodeMetadataFromData } from '@/services/mermaid/importProvenance';
+import { ChartDecisionSurface } from './ChartDecisionSurface';
 import { getMermaidImportedContentPadding } from './customNodeMermaidHelpers';
 import { buildCustomNodeTypography } from './customNodeTypography';
 import {
   type NodeShape,
-  COMPLEX_SHAPES,
-  NEEDS_SQUARE_ASPECT,
   COMPLEX_SHAPE_PADDING,
   buildChartNodeSurfaceStyle,
   getNodeDefaults,
   getNumericNodeDimension,
   getMinNodeSize,
+  isDivShape,
+  isSvgComplexShape,
   resolveChartNodeChipIcon,
   resolveChartNodeSurfaceVariant,
   resolveChartNodeTone,
   toCssSize,
   getNodeBorderRadius,
+  NEEDS_SQUARE_ASPECT,
 } from './nodeHelpers';
 
 function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
@@ -63,8 +65,9 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const iconName = resolvedAssetIconUrl || !activeIconKey ? null : activeIconKey;
   const mermaidImportedNodeMetadata = readMermaidImportedNodeMetadataFromData(data);
   const isMermaidImportedLeaf = mermaidImportedNodeMetadata?.role === 'leaf';
-  const isComplexShape = COMPLEX_SHAPES.includes(activeShape);
-  const surfaceVariant = resolveChartNodeSurfaceVariant(type || 'process', isComplexShape);
+  const nodeUsesDivShape = isDivShape(activeShape);
+  const usesSvgComplexShape = isSvgComplexShape(activeShape);
+  const surfaceVariant = resolveChartNodeSurfaceVariant(type || 'process', activeShape);
   const nodeTone = resolveChartNodeTone(type || 'process', activeShape);
   const chipIcon = resolveChartNodeChipIcon(type || 'process', activeShape, activeIconKey);
   const { minWidth: baseMinWidth, minHeight: baseMinHeight } = getMinNodeSize(activeShape);
@@ -74,7 +77,7 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const hasIcon = Boolean(iconName) || Boolean(data.customIconUrl) || hasProviderIcon;
   const contentMinHeight = surfaceVariant === 'stadium'
     ? 46
-    : !isComplexShape
+    : !nodeUsesDivShape && !usesSvgComplexShape
       ? hasSubLabel
         ? 128
         : 108
@@ -127,6 +130,8 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     designSystem,
     visualStyle,
     surfaceVariant,
+    activeShape,
+    isDivShape: nodeUsesDivShape,
     isMermaidImportedLeaf,
     nodeHeightPx,
   });
@@ -137,26 +142,24 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     height: toCssSize(explicitHeight),
     ...(needsSquareAspect ? { aspectRatio: '1/1' } : {}),
     ...typography.labelFontFamilyStyle,
-    boxShadow: repaintedSurface?.boxShadow ?? (isComplexShape ? 'none' : designSystem.components.node.boxShadow),
-    borderWidth: repaintedSurface?.borderWidth ?? (!isComplexShape ? designSystem.components.node.borderWidth : 0),
+    boxShadow: repaintedSurface?.boxShadow ?? (usesSvgComplexShape ? 'none' : designSystem.components.node.boxShadow),
+    borderWidth: repaintedSurface?.borderWidth ?? (!usesSvgComplexShape ? designSystem.components.node.borderWidth : 0),
     padding: 0,
     borderRadius: repaintedSurface?.borderRadius
-      ?? getNodeBorderRadius(isComplexShape, activeShape, designSystem.components.node.borderRadius),
+      ?? getNodeBorderRadius(usesSvgComplexShape, activeShape, designSystem.components.node.borderRadius),
     background: repaintedSurface?.background,
-    backgroundColor: repaintedSurface ? undefined : !isComplexShape ? visualStyle.bg : undefined,
-    borderColor: repaintedSurface?.borderColor ?? (!isComplexShape ? visualStyle.border : undefined),
+    backgroundColor: repaintedSurface ? undefined : !usesSvgComplexShape ? visualStyle.bg : undefined,
+    borderColor: repaintedSurface?.borderColor ?? (!usesSvgComplexShape ? visualStyle.border : undefined),
     ...(animateIn
       ? { animation: `nodeAnimateIn 180ms ease-out ${data.animateDelay ?? 0}ms both` }
       : {}),
   };
-  const surfaceClassName = surfaceVariant
-    ? [
-        'chart-node-surface',
-        `chart-node-surface--${surfaceVariant}`,
-        'chart-node-surface--hoverable',
-        isActiveSelected ? 'chart-node-surface--selected' : '',
-      ].filter(Boolean).join(' ')
-    : '';
+  const surfaceClassName = [
+    'chart-node-surface',
+    surfaceVariant ? `chart-node-surface--${surfaceVariant}` : '',
+    'chart-node-surface--hoverable',
+    isActiveSelected ? 'chart-node-surface--selected' : '',
+  ].filter(Boolean).join(' ');
   const ariaLabelParts = [
     `${type || 'process'} node`,
     hasLabel ? String(data.label).trim() : emptyLabelPrompt,
@@ -164,6 +167,15 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     isActiveSelected ? 'selected' : null,
   ].filter(Boolean);
   const nodeAriaLabel = ariaLabelParts.join(', ');
+  const diagnosticsAttrs = getTransformDiagnosticsAttrs({
+    nodeFamily: 'custom',
+    selected: Boolean(selected),
+    compact: isCompactNode,
+    minHeight: effectiveMinHeight,
+    actualHeight: nodeHeightPx,
+    hasIcon,
+    hasSubLabel,
+  });
 
   if (isIconAssetNode) {
     return (
@@ -183,6 +195,54 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     );
   }
 
+  const nodeContent = (
+    <>
+      <DiffBadge nodeId={id} />
+      <LintViolationBadge nodeId={id} />
+
+      {usesSvgComplexShape && (
+        <div className="absolute inset-0 w-full h-full z-0 flex items-center justify-center">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid meet"
+            className="w-full h-full overflow-visible drop-shadow-sm"
+          >
+            <NodeShapeSVG
+              shape={activeShape}
+              fill={visualStyle.bg}
+              stroke={visualStyle.border}
+              strokeWidth={designSystem.components.edge.strokeWidth || '2'}
+            />
+          </svg>
+        </div>
+      )}
+
+      <CustomNodeContent
+        data={data}
+        hasSubLabel={hasSubLabel}
+        resolvedAssetIconUrl={resolvedAssetIconUrl}
+        chipIcon={chipIcon}
+        tone={nodeTone}
+        surfaceVariant={surfaceVariant}
+        textAlignStyle={typography.textAlignStyle}
+        textClassName={`leading-tight block break-words markdown-content [&_p]:m-0 [&_p]:leading-tight ${surfaceVariant ? '' : typography.fSizeClass} ${typography.labelFontFamilyClass}`}
+        textStyle={typography.textProps}
+        subTextClassName={`${surfaceVariant ? 'mt-1' : 'text-slate-500 mt-1'} leading-snug markdown-content [&_p]:m-0 [&_p]:leading-snug break-words flow-lod-secondary ${lodPreserveClass} ${surfaceVariant ? '' : typography.subLabelSizeClass} ${typography.subLabelFontFamilyClass}`}
+        subTextStyle={typography.subTextProps}
+        displayLabel={labelDisplayValue}
+        labelEdit={labelEdit}
+        subLabelEdit={subLabelEdit}
+        hasLabelSelection={isActiveSelected}
+        hasSubLabelSelection={Boolean(selected)}
+        lodPreserveClassName={lodPreserveClass}
+        isDivShape={nodeUsesDivShape}
+        isSvgComplexShape={usesSvgComplexShape}
+        complexShapePaddingClassName={COMPLEX_SHAPE_PADDING[activeShape] ?? ''}
+        contentPadding={contentPadding}
+      />
+    </>
+  );
+
   return (
     <>
       <NodeTransformControls
@@ -199,65 +259,28 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         keepAspectRatio={shiftHeld || needsSquareAspect}
         handleClassName={connectionHandleClass}
       >
-        <div
-          role="group"
-          aria-roledescription="canvas node"
-          aria-label={nodeAriaLabel}
-          className={`relative group flex flex-col justify-center h-full border transition-all duration-200 flow-lod-shadow ${surfaceClassName} ${isComplexShape ? 'overflow-hidden' : 'overflow-visible'}`}
-          style={containerStyle}
-          {...getTransformDiagnosticsAttrs({
-            nodeFamily: 'custom',
-            selected: Boolean(selected),
-            compact: isCompactNode,
-            minHeight: effectiveMinHeight,
-            actualHeight: nodeHeightPx,
-            hasIcon,
-            hasSubLabel,
-          })}
-        >
-          <DiffBadge nodeId={id} />
-          <LintViolationBadge nodeId={id} />
-
-          {isComplexShape && (
-            <div className="absolute inset-0 w-full h-full z-0 flex items-center justify-center">
-              <svg
-                viewBox="0 0 100 100"
-                preserveAspectRatio="xMidYMid meet"
-                className="w-full h-full overflow-visible drop-shadow-sm"
-              >
-                <NodeShapeSVG
-                  shape={activeShape}
-                  fill={visualStyle.bg}
-                  stroke={visualStyle.border}
-                  strokeWidth={designSystem.components.edge.strokeWidth || '2'}
-                />
-              </svg>
-            </div>
-          )}
-
-          <CustomNodeContent
-            data={data}
-            hasSubLabel={hasSubLabel}
-            resolvedAssetIconUrl={resolvedAssetIconUrl}
-            chipIcon={chipIcon}
-            tone={nodeTone}
-            surfaceVariant={surfaceVariant}
-            textAlignStyle={typography.textAlignStyle}
-            textClassName={`leading-tight block break-words markdown-content [&_p]:m-0 [&_p]:leading-tight ${surfaceVariant ? '' : typography.fSizeClass} ${typography.labelFontFamilyClass}`}
-            textStyle={typography.textProps}
-            subTextClassName={`${surfaceVariant ? 'mt-1' : 'text-slate-500 mt-1'} leading-snug markdown-content [&_p]:m-0 [&_p]:leading-snug break-words flow-lod-secondary ${lodPreserveClass} ${surfaceVariant ? '' : typography.subLabelSizeClass} ${typography.subLabelFontFamilyClass}`}
-            subTextStyle={typography.subTextProps}
-            displayLabel={labelDisplayValue}
-            labelEdit={labelEdit}
-            subLabelEdit={subLabelEdit}
-            hasLabelSelection={isActiveSelected}
-            hasSubLabelSelection={Boolean(selected)}
-            lodPreserveClassName={lodPreserveClass}
-            isComplexShape={isComplexShape}
-            complexShapePaddingClassName={COMPLEX_SHAPE_PADDING[activeShape] ?? ''}
-            contentPadding={contentPadding}
-          />
-        </div>
+        {nodeUsesDivShape ? (
+          <ChartDecisionSurface
+            designSystem={designSystem}
+            isSelected={isActiveSelected}
+            surfaceClassName={surfaceClassName}
+            diagnosticsAttrs={diagnosticsAttrs}
+            ariaLabel={nodeAriaLabel}
+          >
+            {nodeContent}
+          </ChartDecisionSurface>
+        ) : (
+          <div
+            role="group"
+            aria-roledescription="canvas node"
+            aria-label={nodeAriaLabel}
+            className={`relative group flex flex-col justify-center h-full border transition-all duration-200 flow-lod-shadow ${surfaceClassName} ${usesSvgComplexShape ? 'overflow-hidden' : 'overflow-visible'}`}
+            style={containerStyle}
+            {...diagnosticsAttrs}
+          >
+            {nodeContent}
+          </div>
+        )}
       </NodeChrome>
     </>
   );
