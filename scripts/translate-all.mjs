@@ -131,7 +131,7 @@ const tr = {
   'ai.model': 'Model',
   'ai.settingsSubtitle':
     'Tercih ettiğiniz yapay zeka sağlayıcısını, modeli ve API anahtarını aşağıdan yapılandırın.',
-  'welcome.title': 'OpenFlowKit',
+  'welcome.title': 'Weft',
   'welcome.feature1Title': 'Harika diyagramlar oluşturun',
   'welcome.feature1Desc': 'Güzel, kurumsal düzeyde mimariyi görsel olarak tasarlayın.',
   'welcome.feature2Title': 'Yapay zeka kullanın',

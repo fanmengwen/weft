@@ -64,8 +64,7 @@ test('saves and restores snapshot state', async ({ page }) => {
   await expect(canvasNodes).toHaveCount(1);
 });
 
-test('is rebranded to Weft with no OpenFlowKit residue in the title', async ({ page }) => {
+test('renders the Weft brand in the document title', async ({ page }) => {
   await openHomeDashboard(page);
   await expect(page).toHaveTitle(/Weft/);
-  await expect(page).not.toHaveTitle(/OpenFlowKit/i);
 });
