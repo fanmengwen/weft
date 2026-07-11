@@ -96,9 +96,7 @@ describe('buildFlowEditorPanelsProps', () => {
       handleAddArchitectureService: vi.fn(),
       handleCreateArchitectureBoundary: vi.fn(),
       handleApplyArchitectureTemplate: vi.fn(),
-      handleGenerateEntityFields: vi.fn(),
       handleSuggestArchitectureNode: vi.fn(),
-      handleConvertEntitySelectionToClassDiagram: vi.fn(),
       clearSelection,
     };
     const studio = {

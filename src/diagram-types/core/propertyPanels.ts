@@ -10,9 +10,7 @@ export interface DiagramNodePropertiesComponentProps {
   onAddArchitectureService?: (sourceId: string) => void;
   onCreateArchitectureBoundary?: (sourceId: string) => void;
   onApplyArchitectureTemplate?: (sourceId: string, templateId: import('@/lib/architectureTemplates').ArchitectureTemplateId) => void;
-  onGenerateEntityFields?: (nodeId: string) => Promise<void> | void;
   onSuggestArchitectureNode?: (nodeId: string) => Promise<void> | void;
-  onConvertEntitySelectionToClassDiagram?: () => void;
 }
 
 export type DiagramNodePropertiesComponent = React.ComponentType<DiagramNodePropertiesComponentProps>;

@@ -114,9 +114,7 @@ const baseProps = {
     onAddArchitectureService: vi.fn(),
     onCreateArchitectureBoundary: vi.fn(),
     onApplyArchitectureTemplate: vi.fn(),
-    onGenerateEntityFields: vi.fn(),
     onSuggestArchitectureNode: vi.fn(),
-    onConvertEntitySelectionToClassDiagram: vi.fn(),
     onClose: vi.fn(),
   },
   studio: {
