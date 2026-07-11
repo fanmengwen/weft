@@ -224,7 +224,8 @@ export async function applyCodeChanges({
       const effectiveMermaidImportMode = mode === 'mermaid'
         ? resolveEffectiveMermaidImportMode(
             mermaidImportMode,
-            'diagramType' in res ? res.diagramType : undefined
+            'diagramType' in res ? res.diagramType : undefined,
+            'nativeParseUnavailable' in res ? res : undefined
           )
         : mermaidImportMode;
 

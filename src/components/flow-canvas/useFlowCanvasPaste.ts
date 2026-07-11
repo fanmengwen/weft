@@ -191,7 +191,8 @@ export function useFlowCanvasPaste({
               const layoutDirection = resolveLayoutDirection(result);
               const effectiveMermaidImportMode = resolveEffectiveMermaidImportMode(
                 mermaidImportMode,
-                result.diagramType
+                result.diagramType,
+                result
               );
               const enrichedNodes = effectiveMermaidImportMode === 'native_editable'
                 ? safelyEnrichImportedNodes(result.nodes, result.diagramType)

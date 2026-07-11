@@ -13,8 +13,12 @@ vi.mock('@/services/composeDiagramForDisplay', () => ({
 }));
 
 vi.mock('@/services/mermaid/rendererFirstImport', () => ({
-  resolveEffectiveMermaidImportMode: vi.fn((importMode, diagramType) =>
-    diagramType === 'flowchart' ? 'native_editable' : importMode
+  resolveEffectiveMermaidImportMode: vi.fn((importMode, diagramType, parsed) =>
+    parsed?.nativeParseUnavailable
+      ? 'renderer_first'
+      : diagramType === 'flowchart'
+        ? 'native_editable'
+        : importMode
   ),
   importMermaidToCanvas: vi.fn(async ({ parsed, importMode }) => ({
     nodes: parsed.nodes,
@@ -250,6 +254,45 @@ describe('applyCodeChanges', () => {
       expect(onApply).toHaveBeenCalledWith(
         [expect.objectContaining({ type: 'mermaid_svg' })],
         []
+      );
+    } finally {
+      resetDiagramTypeRuntimeForTests();
+      initializeDiagramTypeRuntime();
+    }
+  });
+
+  it('derives renderer-first mode from the parse result when the plugin is missing', async () => {
+    initializeDiagramTypeRuntime();
+    unregisterDiagramPluginForTests('classDiagram');
+    vi.mocked(importMermaidToCanvas).mockClear();
+
+    try {
+      const applied = await applyCodeChanges({
+        mode: 'mermaid',
+        code: 'classDiagram\nclass Animal',
+        architectureStrictMode: false,
+        mermaidImportMode: 'native_editable',
+        onApply: vi.fn(),
+        onClose: vi.fn(),
+        activeTabId: 'tab-1',
+        updateTab: vi.fn(),
+        setMermaidDiagnostics: vi.fn(),
+        clearMermaidDiagnostics: vi.fn(),
+        addToast: vi.fn(),
+        setError: vi.fn(),
+        setDiagnostics: vi.fn(),
+        setIsApplying: vi.fn(),
+        setLiveStatus: vi.fn(),
+        isLiveRequestStale: vi.fn(() => false),
+        options: {
+          closeOnSuccess: false,
+          source: 'manual',
+        },
+      });
+
+      expect(applied).toBe(true);
+      expect(importMermaidToCanvas).toHaveBeenCalledWith(
+        expect.objectContaining({ importMode: 'renderer_first' })
       );
     } finally {
       resetDiagramTypeRuntimeForTests();
