@@ -156,6 +156,36 @@ describe('flowDocumentModel', () => {
     expect(document.pages[0]?.edges[0]?.type).toBeUndefined();
   });
 
+  it('downgrades retired node families inside hydrated history snapshots', () => {
+    const document = createFlowDocumentFromPersistedDocument(
+      createPersistedDocument({
+        content: {
+          nodes: [],
+          edges: [],
+          history: {
+            past: [
+              {
+                nodes: [
+                  {
+                    id: 'n1',
+                    type: 'mindmap',
+                    position: { x: 0, y: 0 },
+                    data: { label: 'Idea' },
+                  },
+                ],
+                edges: [],
+              },
+            ],
+            future: [],
+          },
+          playback: undefined,
+        },
+      })
+    );
+
+    expect(document.pages[0]?.history.past[0]?.nodes[0]?.type).toBe('process');
+  });
+
   it('downgrades retired node families when hydrating legacy single-content documents', () => {
     const document = createFlowDocumentFromPersistedDocument(
       createPersistedDocument({

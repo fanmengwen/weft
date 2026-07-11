@@ -271,6 +271,23 @@ describe('store persistence helpers', () => {
         expect(sanitized.data.label).toBe('Lane A');
     });
 
+    it('flattens swimlane frames like legacy sections, keeping children unparented', () => {
+        const tab = createTab(
+            'tab-a',
+            'A',
+            [
+                { ...createNode('n-lane', 'Lane A'), type: 'swimlane' },
+                { ...createNode('n-child', 'Step 1'), parentId: 'n-lane' },
+            ],
+            []
+        );
+
+        const persistedTab = sanitizePersistedTab(tab);
+
+        expect(persistedTab.nodes.map((node) => node.id)).toEqual(['n-child']);
+        expect(persistedTab.nodes[0]?.parentId).toBeUndefined();
+    });
+
     it('drops the sequence_message type from persisted edges', () => {
         const tab = createTab(
             'tab-a',
@@ -296,12 +313,10 @@ describe('store persistence helpers', () => {
                 },
             ],
             activeTabId: 'tab-a',
-        }) as {
-            tabs: FlowTab[];
-        };
+        });
 
-        expect(migrated.tabs[0]?.nodes[0]?.type).toBe('process');
-        expect(migrated.tabs[0]?.nodes[0]?.data.shape).toBe('rounded');
+        expect(migrated.tabs?.[0]?.nodes[0]?.type).toBe('process');
+        expect(migrated.tabs?.[0]?.nodes[0]?.data.shape).toBe('rounded');
     });
 
     it('sanitizes persisted ai settings during migration', () => {
