@@ -305,7 +305,7 @@ export function useFlowEditorChromeProps(
         canRedo,
         isSelectMode,
         enableSelectMode,
-      isCommandBarOpen,
+        isCommandBarOpen,
         enablePanMode,
         getCenter,
       }),

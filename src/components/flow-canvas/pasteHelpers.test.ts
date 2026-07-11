@@ -26,6 +26,7 @@ describe('pasteHelpers', () => {
     expect(node.type).toBe('annotation');
     expect(node.position).toEqual({ x: 10, y: 20 });
     expect(node.data.label).toBe('hello');
+    expect(node.data.subLabel).toBe('');
     expect(node.data.layerId).toBe('default');
   });
 });

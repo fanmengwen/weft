@@ -1,5 +1,5 @@
+import { createId } from '@/lib/id';
 import type { FlowNode } from '@/lib/types';
-import { mapFigmaTextLayerToAnnotationNode } from '@/services/figmaImport/figmaNodeMapping';
 
 type ParseResultLike = {
   metadata?: { direction?: string };
@@ -28,9 +28,15 @@ export function createPastedAnnotationFromText(
   position: { x: number; y: number },
   activeLayerId: string
 ): FlowNode {
-  return mapFigmaTextLayerToAnnotationNode({
-    text,
+  return {
+    id: createId('annotation'),
+    type: 'annotation',
     position,
-    layerId: activeLayerId,
-  });
+    data: {
+      label: text,
+      subLabel: '',
+      color: 'yellow',
+      layerId: activeLayerId,
+    },
+  };
 }
