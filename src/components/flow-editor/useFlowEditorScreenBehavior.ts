@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useFlowOperations } from '@/hooks/useFlowOperations';
 import { useFlowEditorCallbacks } from '@/hooks/useFlowEditorCallbacks';
-import { useFlowEditorInteractionBindings } from './useFlowEditorInteractionBindings';
 import type { TFunction } from 'i18next';
 import type { useFlowEditorScreenState } from './useFlowEditorScreenState';
 
@@ -10,9 +9,8 @@ type ScreenState = ReturnType<typeof useFlowEditorScreenState>;
 export function useFlowEditorScreenBehavior(params: {
   screenState: ScreenState;
   t: TFunction;
-  addToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning', duration?: number) => void;
 }) {
-  const { screenState, t, addToast } = params;
+  const { screenState, t } = params;
   const operations = useFlowOperations(screenState.recordHistory);
   const selectedNodeType = useMemo(
     () => screenState.nodes.find((node) => node.id === screenState.selectedNodeId)?.type ?? null,
@@ -33,44 +31,6 @@ export function useFlowEditorScreenBehavior(params: {
     recordHistory: screenState.recordHistory,
     fitView: screenState.fitView,
     screenToFlowPosition: screenState.screenToFlowPosition,
-  });
-
-  useFlowEditorInteractionBindings({
-    selectedNodeId: screenState.selectedNodeId,
-    selectedEdgeId: screenState.selectedEdgeId,
-    selectedNodeType,
-    deleteNode: operations.deleteNode,
-    deleteEdge: operations.deleteEdge,
-    undo: screenState.undo,
-    redo: screenState.redo,
-    canUndo: screenState.canUndo,
-    canRedo: screenState.canRedo,
-    onUndoUnavailable: () => {
-      addToast(t('history.undoUnavailable', 'Nothing to undo yet.'), 'info', 2500);
-    },
-    onRedoUnavailable: () => {
-      addToast(t('history.redoUnavailable', 'Nothing to redo right now.'), 'info', 2500);
-    },
-    duplicateNode: operations.duplicateNode,
-    selectAll: callbacks.selectAll,
-    openCommandBar: screenState.openCommandBar,
-    setShortcutsHelpOpen: screenState.setShortcutsHelpOpen,
-    enableSelectMode: screenState.enableSelectMode,
-    enablePanMode: screenState.enablePanMode,
-    closeElementPalette: screenState.closeElementPalette,
-    fitView: screenState.fitView,
-    zoomIn: screenState.zoomIn,
-    zoomOut: screenState.zoomOut,
-    copySelection: operations.copySelection,
-    pasteSelection: operations.pasteSelection,
-    copyStyleSelection: operations.copyStyleSelection,
-    pasteStyleSelection: operations.pasteStyleSelection,
-    createConnectedNodeInDirection: operations.createConnectedNodeInDirection,
-    updateNodeData: operations.updateNodeData,
-    setSelectedNodeId: screenState.setSelectedNodeId,
-    setSelectedEdgeId: screenState.setSelectedEdgeId,
-    setNodes: screenState.setNodes,
-    setEdges: screenState.setEdges,
   });
 
   return {

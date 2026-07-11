@@ -136,6 +136,8 @@ export function getKeyboardShortcuts(isMacLike: boolean): ShortcutSection[] {
       items: [
         { label: 'common.selectTool', shortcuts: [['V']] },
         { label: 'common.handTool', shortcuts: [['H']] },
+        { label: 'common.elementPalette', shortcuts: [['N']] },
+        { label: 'common.autoLayout', shortcuts: [['Shift', 'L']] },
         { label: 'common.panCanvas', shortcuts: [['Space', 'Drag']] },
         { label: 'common.zoomIn', shortcuts: [[keyLabels.primary, '+']] },
         { label: 'common.zoomOut', shortcuts: [[keyLabels.primary, '-']] },

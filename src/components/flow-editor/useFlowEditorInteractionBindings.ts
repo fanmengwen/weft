@@ -22,6 +22,8 @@ interface UseFlowEditorInteractionBindingsParams {
     enableSelectMode: () => void;
     enablePanMode: () => void;
     closeElementPalette: () => void;
+    toggleElementPalette: () => void;
+    onAutoLayout: () => void;
     fitView: (options?: { duration?: number; padding?: number }) => void;
     zoomIn: (options?: { duration?: number }) => void;
     zoomOut: (options?: { duration?: number }) => void;
@@ -56,6 +58,8 @@ export function useFlowEditorInteractionBindings({
     enableSelectMode,
     enablePanMode,
     closeElementPalette,
+    toggleElementPalette,
+    onAutoLayout,
     fitView,
     zoomIn,
     zoomOut,
@@ -89,6 +93,8 @@ export function useFlowEditorInteractionBindings({
         onShortcutsHelp: () => setShortcutsHelpOpen(true),
         onSelectMode: enableSelectMode,
         onPanMode: enablePanMode,
+        onToggleElementPalette: toggleElementPalette,
+        onAutoLayout,
         onFitView: () => fitView({ duration: 600, padding: 0.2 }),
         onZoomIn: () => zoomIn({ duration: 300 }),
         onZoomOut: () => zoomOut({ duration: 300 }),

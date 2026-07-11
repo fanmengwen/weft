@@ -20,6 +20,8 @@ interface ShortcutHandlers {
   onShortcutsHelp: () => void;
   onSelectMode?: () => void;
   onPanMode?: () => void;
+  onToggleElementPalette?: () => void;
+  onAutoLayout?: () => void;
   onFitView?: () => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
@@ -53,6 +55,8 @@ export function useKeyboardShortcuts({
   onShortcutsHelp,
   onSelectMode,
   onPanMode,
+  onToggleElementPalette,
+  onAutoLayout,
   onFitView,
   onZoomIn,
   onZoomOut,
@@ -125,6 +129,10 @@ export function useKeyboardShortcuts({
           e.preventDefault();
           onPanMode?.();
         }
+        if (key === 'n' && onToggleElementPalette) {
+          e.preventDefault();
+          onToggleElementPalette();
+        }
         // Pin/unpin selected node positions so they survive auto-layout.
         if (key === 'p' && onTogglePinPositionShortcut) {
           e.preventDefault();
@@ -135,6 +143,12 @@ export function useKeyboardShortcuts({
       if (!isCmdOrCtrl && isShift && !isEditable && e.code === 'Digit1') {
         e.preventDefault();
         onFitView?.();
+        return;
+      }
+
+      if (!isCmdOrCtrl && isShift && !isEditable && key === 'l') {
+        e.preventDefault();
+        onAutoLayout?.();
         return;
       }
 
@@ -299,5 +313,5 @@ export function useKeyboardShortcuts({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedNodeId, selectedEdgeId, selectedNodeType, deleteNode, deleteEdge, undo, redo, canUndo, canRedo, onUndoUnavailable, onRedoUnavailable, duplicateNode, selectAll, onCommandBar, onSearch, onShortcutsHelp, onSelectMode, onPanMode, onFitView, onZoomIn, onZoomOut, onCopy, onPaste, onCopyStyle, onPasteStyle, onQuickCreateShortcut, onAnnotationColorShortcut, onClearSelection, onNudge, onTogglePinPositionShortcut]);
+  }, [selectedNodeId, selectedEdgeId, selectedNodeType, deleteNode, deleteEdge, undo, redo, canUndo, canRedo, onUndoUnavailable, onRedoUnavailable, duplicateNode, selectAll, onCommandBar, onSearch, onShortcutsHelp, onSelectMode, onPanMode, onToggleElementPalette, onAutoLayout, onFitView, onZoomIn, onZoomOut, onCopy, onPaste, onCopyStyle, onPasteStyle, onQuickCreateShortcut, onAnnotationColorShortcut, onClearSelection, onNudge, onTogglePinPositionShortcut]);
 }

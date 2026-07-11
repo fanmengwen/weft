@@ -219,6 +219,8 @@
     "help": "Help",
     "selectTool": "Select Tool",
     "handTool": "Hand Tool",
+    "elementPalette": "Element Palette",
+    "autoLayout": "Auto Layout",
     "getStarted": "Get Started",
     "bringToFront": "Bring to Front",
     "sendToBack": "Send to Back",

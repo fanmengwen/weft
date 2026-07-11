@@ -221,4 +221,79 @@ describe('useKeyboardShortcuts', () => {
 
     expect(onTogglePinPositionShortcut).not.toHaveBeenCalled();
   });
+
+  it('triggers select mode on V outside editable fields', () => {
+    const onSelectMode = vi.fn();
+    renderShortcuts({ onSelectMode });
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'v' }));
+
+    expect(onSelectMode).toHaveBeenCalledTimes(1);
+  });
+
+  it('triggers pan mode on H outside editable fields', () => {
+    const onPanMode = vi.fn();
+    renderShortcuts({ onPanMode });
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }));
+
+    expect(onPanMode).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not switch tools while focused in an editable field', () => {
+    const onSelectMode = vi.fn();
+    const onPanMode = vi.fn();
+    renderShortcuts({ onSelectMode, onPanMode });
+    const input = document.createElement('input');
+    document.body.appendChild(input);
+    input.focus();
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'v' }));
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'h' }));
+
+    expect(onSelectMode).not.toHaveBeenCalled();
+    expect(onPanMode).not.toHaveBeenCalled();
+  });
+
+  it('toggles the element palette on N outside editable fields', () => {
+    const onToggleElementPalette = vi.fn();
+    renderShortcuts({ onToggleElementPalette });
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'n' }));
+
+    expect(onToggleElementPalette).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not toggle the element palette while focused in an editable field', () => {
+    const onToggleElementPalette = vi.fn();
+    renderShortcuts({ onToggleElementPalette });
+    const input = document.createElement('input');
+    document.body.appendChild(input);
+    input.focus();
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'n' }));
+
+    expect(onToggleElementPalette).not.toHaveBeenCalled();
+  });
+
+  it('triggers auto layout on Shift+L outside editable fields', () => {
+    const onAutoLayout = vi.fn();
+    renderShortcuts({ onAutoLayout });
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'L', shiftKey: true }));
+
+    expect(onAutoLayout).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not trigger auto layout while focused in an editable field', () => {
+    const onAutoLayout = vi.fn();
+    renderShortcuts({ onAutoLayout });
+    const textarea = document.createElement('textarea');
+    document.body.appendChild(textarea);
+    textarea.focus();
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'L', shiftKey: true }));
+
+    expect(onAutoLayout).not.toHaveBeenCalled();
+  });
 });
