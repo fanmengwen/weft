@@ -12,7 +12,6 @@ interface UseFlowCanvasContextActionsParams {
   deleteNode: (id: string) => void;
   deleteEdge: (id: string) => void;
   updateNodeZIndex: (id: string, action: 'front' | 'back') => void;
-  updateNodeType: (id: string, type: string) => void;
   updateNodeData: (id: string, updates: Record<string, unknown>) => void;
   fitSectionToContents: (id: string) => void;
   releaseFromSection: (id: string) => void;
@@ -30,7 +29,6 @@ export interface UseFlowCanvasContextActionsResult {
   onDuplicate: () => void;
   onDelete: () => void;
   onSendToBack: () => void;
-  onChangeNodeType: (type: string) => void;
   onEditLabel: () => void;
   onFitSectionToContents: () => void;
   onBringContentsIntoSection: () => void;
@@ -55,7 +53,6 @@ export function useFlowCanvasContextActions({
   deleteNode,
   deleteEdge,
   updateNodeZIndex,
-  updateNodeType,
   updateNodeData,
   fitSectionToContents,
   releaseFromSection,
@@ -103,13 +100,6 @@ export function useFlowCanvasContextActions({
   function onSendToBack(): void {
     if (contextMenu.id) {
       updateNodeZIndex(contextMenu.id, 'back');
-    }
-    onCloseContextMenu();
-  }
-
-  function onChangeNodeType(type: string): void {
-    if (contextMenu.id) {
-      updateNodeType(contextMenu.id, type);
     }
     onCloseContextMenu();
   }
@@ -200,7 +190,6 @@ export function useFlowCanvasContextActions({
     onDuplicate,
     onDelete,
     onSendToBack,
-    onChangeNodeType,
     onEditLabel,
     onFitSectionToContents,
     onBringContentsIntoSection,

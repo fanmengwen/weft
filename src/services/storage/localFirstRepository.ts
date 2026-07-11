@@ -7,7 +7,6 @@ import type {
   AssetGroundingMatch,
 } from '@/services/flowpilot/types';
 import {
-  createFlowTabsFromPersistedDocuments,
   createPersistedDocumentFromFlowDocument,
   createPersistedDocumentsFromTabs,
 } from './persistedDocumentAdapters';
@@ -537,7 +536,3 @@ export {
   convertFlowDocumentsToTabs,
   createLoadedFlowWorkspace,
 } from './flowDocumentModel';
-
-export function convertPersistedDocumentsToTabs(documents: PersistedDocument[]): FlowTab[] {
-  return createFlowTabsFromPersistedDocuments(documents);
-}

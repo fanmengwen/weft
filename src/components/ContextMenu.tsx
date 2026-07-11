@@ -70,7 +70,6 @@ export interface ContextMenuProps {
   id: string | null;
   type: 'node' | 'pane' | 'edge' | 'multi';
   currentNodeType?: string | null;
-  onChangeNodeType?: (type: string) => void;
   isSectionLocked?: boolean;
   isSectionHidden?: boolean;
   hasParentSection?: boolean;
