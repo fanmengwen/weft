@@ -4,7 +4,6 @@ import { WorkflowTopBar } from './WorkflowTopBar';
 import { WorkflowCanvas } from './WorkflowCanvas';
 import { WorkflowNodeLibrary } from './panels/WorkflowNodeLibrary';
 import { WorkflowPropertiesPanel } from './panels/WorkflowPropertiesPanel';
-import { WorkflowLogPanel } from './panels/WorkflowLogPanel';
 import { WorkflowOutputModal } from './panels/WorkflowOutputModal';
 import { WorkflowDnDProvider } from './dnd/useWorkflowDnD';
 import { WorkflowDragGhost } from './dnd/WorkflowDragGhost';
@@ -18,18 +17,12 @@ export function WorkflowEditor({ onGoHome }: WorkflowEditorProps): React.ReactEl
     <WorkflowDnDProvider>
       <div
         id="main-content"
-        className="relative flex h-screen w-full flex-col"
-        style={{ background: 'var(--brand-bg-gradient)' }}
+        className="grid h-screen w-full grid-rows-[52px_1fr] bg-[var(--wf-bg)] text-[var(--wf-text)]"
       >
         <WorkflowTopBar onGoHome={onGoHome} />
-        <div className="flex min-h-0 flex-1 pt-16">
+        <div className="grid min-h-0 grid-cols-[264px_minmax(0,1fr)_320px]">
           <WorkflowNodeLibrary />
-          <div className="flex min-w-0 flex-1 flex-col">
-            <div className="relative min-h-0 flex-1">
-              <WorkflowCanvas />
-            </div>
-            <WorkflowLogPanel />
-          </div>
+          <WorkflowCanvas />
           <WorkflowPropertiesPanel />
         </div>
         <WorkflowDragGhost />
