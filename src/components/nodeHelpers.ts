@@ -1,4 +1,4 @@
-import type { FlowNode, NodeData } from '@/lib/types';
+import type { DesignSystem, FlowNode, NodeData } from '@/lib/types';
 
 export type NodeShape = NonNullable<NodeData['shape']>;
 
@@ -149,3 +149,102 @@ export const COMPLEX_SHAPE_PADDING: Partial<Record<NodeShape, string>> = {
   parallelogram: 'px-8',
   cylinder: 'pt-8 pb-4',
 };
+
+export type ChartNodeTone = 'out' | 'end' | 'web' | 'cond' | 'kb' | 'llm';
+
+export type ChartNodeSurfaceVariant = 'stadium' | 'rounded';
+
+export const CHART_NODE_SURFACE_GRADIENT =
+  'linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 100%)';
+
+export function resolveChartNodeSurfaceVariant(
+  nodeType: string,
+  isComplexShape: boolean
+): ChartNodeSurfaceVariant | null {
+  if (isComplexShape) {
+    return null;
+  }
+  if (nodeType === 'start' || nodeType === 'end') {
+    return 'stadium';
+  }
+  return 'rounded';
+}
+
+export function resolveChartNodeTone(nodeType: string, shape: NodeShape): ChartNodeTone {
+  if (nodeType === 'start') {
+    return 'out';
+  }
+  if (nodeType === 'end') {
+    return 'end';
+  }
+  if (nodeType === 'decision') {
+    return 'cond';
+  }
+  if (nodeType === 'custom' && shape === 'parallelogram') {
+    return 'kb';
+  }
+  if (nodeType === 'custom' && shape === 'cylinder') {
+    return 'llm';
+  }
+  return 'web';
+}
+
+export function resolveChartNodeChipIcon(
+  nodeType: string,
+  shape: NodeShape,
+  dataIcon: string | null
+): string {
+  if (dataIcon) {
+    return dataIcon;
+  }
+  if (nodeType === 'start') {
+    return 'Play';
+  }
+  if (nodeType === 'end') {
+    return 'CheckCircle';
+  }
+  if (nodeType === 'decision') {
+    return 'HelpCircle';
+  }
+  if (nodeType === 'custom' && shape === 'parallelogram') {
+    return 'Download';
+  }
+  if (nodeType === 'custom' && shape === 'cylinder') {
+    return 'Database';
+  }
+  if (nodeType === 'process') {
+    return 'Square';
+  }
+  return 'Square';
+}
+
+export function buildChartNodeSurfaceStyle(options: {
+  variant: ChartNodeSurfaceVariant;
+  designSystem: DesignSystem;
+  isSelected: boolean;
+}): {
+  background: string;
+  borderColor: string;
+  borderWidth: string;
+  boxShadow: string;
+  borderRadius: string | number;
+} {
+  const { variant, designSystem, isSelected } = options;
+  return {
+    background: CHART_NODE_SURFACE_GRADIENT,
+    borderColor: isSelected ? 'var(--wf-acc)' : designSystem.colors.nodeBorder,
+    borderWidth: isSelected ? '1.5px' : designSystem.components.node.borderWidth,
+    boxShadow: isSelected
+      ? 'var(--wf-shadow-node-selected)'
+      : designSystem.components.node.boxShadow,
+    borderRadius:
+      variant === 'stadium' ? '999px' : designSystem.components.node.borderRadius,
+  };
+}
+
+export function chartNodeToneVars(tone: ChartNodeTone): { background: string; color: string } {
+  return {
+    background: `var(--wf-t-${tone}-bg)`,
+    color: `var(--wf-t-${tone}-fg)`,
+  };
+}

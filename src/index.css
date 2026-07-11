@@ -350,6 +350,9 @@ html {
   --wf-shadow-node-selected:
     0 0 0 3px color-mix(in srgb, var(--wf-acc) 12%, transparent),
     0 6px 16px rgba(16, 24, 40, 0.08);
+  --wf-shadow-node-hover:
+    0 2px 4px rgba(16, 24, 40, 0.06),
+    0 8px 20px rgba(16, 24, 40, 0.09);
   /* Node tone pairs (bg/fg); mono swap pair would be #eef1f5 / #5a6472 */
   --wf-t-input-bg: #f6eedc;
   --wf-t-input-fg: #8a6410;
@@ -563,6 +566,17 @@ body {
 .react-flow__handle.workflow-handle.react-flow__handle-right:hover,
 .is-connecting .react-flow__handle.workflow-handle.react-flow__handle-right {
   transform: translate(50%, -50%) !important;
+}
+
+.chart-node-surface--hoverable:hover {
+  transform: translateY(-2px);
+  border-color: #d4d9e0 !important;
+  box-shadow: var(--wf-shadow-node-hover) !important;
+}
+
+.chart-node-surface--selected.chart-node-surface--hoverable:hover {
+  border-color: var(--wf-acc) !important;
+  box-shadow: var(--wf-shadow-node-selected) !important;
 }
 
 /* ===== Node Resizer Bounding Box (Miro/Figma style) ===== */

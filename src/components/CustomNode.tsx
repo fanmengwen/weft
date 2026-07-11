@@ -24,9 +24,13 @@ import {
   FONT_FAMILY_MAP,
   NEEDS_SQUARE_ASPECT,
   COMPLEX_SHAPE_PADDING,
+  buildChartNodeSurfaceStyle,
   getNodeDefaults,
   getNumericNodeDimension,
   getMinNodeSize,
+  resolveChartNodeChipIcon,
+  resolveChartNodeSurfaceVariant,
+  resolveChartNodeTone,
   toCssSize,
   getNodeBorderRadius,
   fontSizeClassFor,
@@ -113,27 +117,32 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const mermaidImportedNodeMetadata = readMermaidImportedNodeMetadataFromData(data);
   const isMermaidImportedLeaf = mermaidImportedNodeMetadata?.role === 'leaf';
   const isComplexShape = COMPLEX_SHAPES.includes(activeShape);
+  const surfaceVariant = resolveChartNodeSurfaceVariant(type || 'process', isComplexShape);
+  const nodeTone = resolveChartNodeTone(type || 'process', activeShape);
+  const chipIcon = resolveChartNodeChipIcon(type || 'process', activeShape, activeIconKey);
   const { minWidth: baseMinWidth, minHeight: baseMinHeight } = getMinNodeSize(activeShape);
-  const contentMinHeight = !isComplexShape
-    ? hasIcon && hasSubLabel
-      ? 128
-      : hasIcon
-        ? 108
-        : hasSubLabel
-          ? 96
-          : 84
-    : baseMinHeight;
+  const contentMinHeight = surfaceVariant === 'stadium'
+    ? 46
+    : !isComplexShape
+      ? hasSubLabel
+        ? 128
+        : 108
+      : baseMinHeight;
   const minWidth = isMermaidImportedLeaf ? explicitWidthPx ?? baseMinWidth : baseMinWidth;
   const effectiveMinHeight = isMermaidImportedLeaf
     ? explicitHeightPx ?? baseMinHeight
-    : Math.max(baseMinHeight, contentMinHeight);
+    : surfaceVariant === 'stadium'
+      ? 46
+      : Math.max(baseMinHeight, contentMinHeight);
   const nodeHeightPx = typeof measuredHeight === 'number' ? measuredHeight : explicitHeightPx;
   const isCompactNode = typeof nodeHeightPx === 'number' && nodeHeightPx < effectiveMinHeight + 8;
-  const contentPadding = isMermaidImportedLeaf
-    ? getMermaidImportedContentPadding(nodeHeightPx)
-    : isCompactNode
-      ? '0.5rem'
-      : designSystem.components.node.padding;
+  const contentPadding = surfaceVariant === 'stadium'
+    ? '0 18px 0 9px'
+    : isMermaidImportedLeaf
+      ? getMermaidImportedContentPadding(nodeHeightPx)
+      : isCompactNode
+        ? '0.5rem'
+        : designSystem.components.node.padding;
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '', { multiline: true });
   const subLabelEdit = useInlineNodeTextEdit(id, 'subLabel', data.subLabel || '');
   const connectionHandleClass =
@@ -154,9 +163,14 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
       : null;
 
   const needsSquareAspect = NEEDS_SQUARE_ASPECT.has(activeShape);
-  const selectionRing =
-    isActiveSelected && !isComplexShape ? `, 0 0 0 2px var(--brand-primary, #e95420)` : '';
   const animateIn = data.freshlyAdded === true;
+  const repaintedSurface = surfaceVariant
+    ? buildChartNodeSurfaceStyle({
+        variant: surfaceVariant,
+        designSystem,
+        isSelected: isActiveSelected,
+      })
+    : null;
   const containerStyle: React.CSSProperties = {
     minWidth,
     minHeight: effectiveMinHeight,
@@ -164,18 +178,14 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     height: toCssSize(explicitHeight),
     ...(needsSquareAspect ? { aspectRatio: '1/1' } : {}),
     ...labelFontFamilyStyle,
-    boxShadow: !isComplexShape
-      ? `${designSystem.components.node.boxShadow}${selectionRing}`
-      : 'none',
-    borderWidth: !isComplexShape ? designSystem.components.node.borderWidth : 0,
+    boxShadow: repaintedSurface?.boxShadow ?? (isComplexShape ? 'none' : designSystem.components.node.boxShadow),
+    borderWidth: repaintedSurface?.borderWidth ?? (!isComplexShape ? designSystem.components.node.borderWidth : 0),
     padding: 0,
-    borderRadius: getNodeBorderRadius(
-      isComplexShape,
-      activeShape,
-      designSystem.components.node.borderRadius
-    ),
-    backgroundColor: !isComplexShape ? visualStyle.bg : undefined,
-    borderColor: !isComplexShape ? visualStyle.border : undefined,
+    borderRadius: repaintedSurface?.borderRadius
+      ?? getNodeBorderRadius(isComplexShape, activeShape, designSystem.components.node.borderRadius),
+    background: repaintedSurface?.background,
+    backgroundColor: repaintedSurface ? undefined : !isComplexShape ? visualStyle.bg : undefined,
+    borderColor: repaintedSurface?.borderColor ?? (!isComplexShape ? visualStyle.border : undefined),
     ...(animateIn
       ? { animation: `nodeAnimateIn 180ms ease-out ${data.animateDelay ?? 0}ms both` }
       : {}),
@@ -207,32 +217,58 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     !data.fontSize && isMermaidImportedLeaf
       ? { fontSize: `${getMermaidImportedFontSize(nodeHeightPx)}px` }
       : {};
-  const textProps = {
-    ...fontSizeStyle,
-    ...importedFontSizeStyle,
-    ...labelFontFamilyStyle,
-    ...importedFontFamilyStyle,
-    color: visualStyle.text,
-    fontWeight: data.fontWeight || (isMermaidImportedLeaf ? '500' : '600'),
-    fontStyle: data.fontStyle || 'normal',
-    lineHeight: isMermaidImportedLeaf ? 1.1 : 1.2,
-  };
-  const subTextProps = {
-    ...subLabelFontSizeStyle,
-    ...subLabelFontFamilyStyle,
-    color: visualStyle.subText,
-    fontWeight: data.subLabelFontWeight || 'normal',
-    fontStyle: data.subLabelFontStyle || 'normal',
-    textAlign: (data.align || 'center') as React.CSSProperties['textAlign'],
-    opacity: 0.85,
-    lineHeight: 1.25,
-  };
+  const textProps = surfaceVariant
+    ? {
+        ...labelFontFamilyStyle,
+        ...importedFontFamilyStyle,
+        color: designSystem.colors.nodeText,
+        fontSize: surfaceVariant === 'stadium' ? '13px' : '13.5px',
+        fontWeight: data.fontWeight || '600',
+        fontStyle: data.fontStyle || 'normal',
+        lineHeight: 1.2,
+      }
+    : {
+        ...fontSizeStyle,
+        ...importedFontSizeStyle,
+        ...labelFontFamilyStyle,
+        ...importedFontFamilyStyle,
+        color: visualStyle.text,
+        fontWeight: data.fontWeight || (isMermaidImportedLeaf ? '500' : '600'),
+        fontStyle: data.fontStyle || 'normal',
+        lineHeight: isMermaidImportedLeaf ? 1.1 : 1.2,
+      };
+  const labelTextAlign = (data.align || 'center') as React.CSSProperties['textAlign'];
+  const subTextProps = surfaceVariant
+    ? {
+        ...subLabelFontFamilyStyle,
+        color: '#8B93A0',
+        fontSize: '11px',
+        fontWeight: data.subLabelFontWeight || 'normal',
+        fontStyle: data.subLabelFontStyle || 'normal',
+        textAlign: labelTextAlign,
+        lineHeight: 1.25,
+      }
+    : {
+        ...subLabelFontSizeStyle,
+        ...subLabelFontFamilyStyle,
+        color: visualStyle.subText,
+        fontWeight: data.subLabelFontWeight || 'normal',
+        fontStyle: data.subLabelFontStyle || 'normal',
+        textAlign: labelTextAlign,
+        opacity: 0.85,
+        lineHeight: 1.25,
+      };
   const textAlignStyle = {
-    textAlign: (data.align || 'center') as React.CSSProperties['textAlign'],
+    textAlign: labelTextAlign,
   };
-  const iconSize = isCompactNode ? 'w-7 h-7' : 'w-8 h-8';
-  const iconImgSize = isCompactNode ? 'w-4 h-4' : 'w-5 h-5';
-  const namedIconSize = isCompactNode ? 'w-3.5 h-3.5' : 'w-4 h-4';
+  const surfaceClassName = surfaceVariant
+    ? [
+        'chart-node-surface',
+        `chart-node-surface--${surfaceVariant}`,
+        'chart-node-surface--hoverable',
+        isActiveSelected ? 'chart-node-surface--selected' : '',
+      ].filter(Boolean).join(' ')
+    : '';
   const ariaLabelParts = [
     `${type || 'process'} node`,
     hasLabel ? String(data.label).trim() : emptyLabelPrompt,
@@ -261,7 +297,7 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
           role="group"
           aria-roledescription="canvas node"
           aria-label={nodeAriaLabel}
-          className={`relative group flex flex-col justify-center h-full border transition-all duration-200 flow-lod-shadow ${isComplexShape ? 'overflow-hidden' : 'overflow-visible'}`}
+          className={`relative group flex flex-col justify-center h-full border transition-all duration-200 flow-lod-shadow ${surfaceClassName} ${isComplexShape ? 'overflow-hidden' : 'overflow-visible'}`}
           style={containerStyle}
           {...getTransformDiagnosticsAttrs({
             nodeFamily: 'custom',
@@ -295,19 +331,15 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
 
           <CustomNodeContent
             data={data}
-            hasIcon={hasIcon}
             hasSubLabel={hasSubLabel}
             resolvedAssetIconUrl={resolvedAssetIconUrl}
-            iconName={iconName}
-            iconSizeClassName={iconSize}
-            iconImageSizeClassName={iconImgSize}
-            namedIconSizeClassName={namedIconSize}
-            iconBackgroundColor={visualStyle.iconBg}
-            iconColor={visualStyle.iconColor}
+            chipIcon={chipIcon}
+            tone={nodeTone}
+            surfaceVariant={surfaceVariant}
             textAlignStyle={textAlignStyle}
-            textClassName={`leading-tight block break-words markdown-content [&_p]:m-0 [&_p]:leading-tight ${fSizeClass} ${labelFontFamilyClass}`}
+            textClassName={`leading-tight block break-words markdown-content [&_p]:m-0 [&_p]:leading-tight ${surfaceVariant ? '' : fSizeClass} ${labelFontFamilyClass}`}
             textStyle={textProps}
-            subTextClassName={`text-slate-500 mt-1 leading-snug markdown-content [&_p]:m-0 [&_p]:leading-snug break-words flow-lod-secondary ${lodPreserveClass} ${subLabelSizeClass} ${subLabelFontFamilyClass}`}
+            subTextClassName={`${surfaceVariant ? 'mt-1' : 'text-slate-500 mt-1'} leading-snug markdown-content [&_p]:m-0 [&_p]:leading-snug break-words flow-lod-secondary ${lodPreserveClass} ${surfaceVariant ? '' : subLabelSizeClass} ${subLabelFontFamilyClass}`}
             subTextStyle={subTextProps}
             displayLabel={labelDisplayValue}
             labelEdit={labelEdit}
@@ -315,7 +347,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
             hasLabelSelection={isActiveSelected}
             hasSubLabelSelection={Boolean(selected)}
             lodPreserveClassName={lodPreserveClass}
-            isCompactNode={isCompactNode}
             isComplexShape={isComplexShape}
             complexShapePaddingClassName={COMPLEX_SHAPE_PADDING[activeShape] ?? ''}
             contentPadding={contentPadding}

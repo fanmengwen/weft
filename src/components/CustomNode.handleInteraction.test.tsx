@@ -159,7 +159,8 @@ describe('CustomNode handle interaction policy', () => {
       />
     );
 
-    expect(screen.getByRole('img', { name: 'icon' })).toHaveAttribute(
+    const chipImage = document.querySelector('[data-chart-node-tone-chip="1"] img');
+    expect(chipImage).toHaveAttribute(
       'src',
       '/provider-icons/aws-official-starter-v1/compute-lambda.svg'
     );
@@ -209,7 +210,7 @@ describe('CustomNode handle interaction policy', () => {
     ).toBeTruthy();
   });
 
-  it('applies richer V2 fills for preset colors', () => {
+  it('applies repainted surface tokens instead of preset color fills', () => {
     currentNodeId = 'n-fill';
     const { container } = render(
       <CustomNode
@@ -228,11 +229,13 @@ describe('CustomNode handle interaction policy', () => {
     );
 
     const diagnosticsNode = container.querySelector('[data-transform-diagnostics="1"]') as HTMLElement | null;
-    expect(diagnosticsNode?.style.backgroundColor).toBe('rgb(239, 246, 255)');
-    expect(diagnosticsNode?.style.borderColor).toBe('rgb(96, 165, 250)');
+    expect(diagnosticsNode?.style.background).toContain('linear-gradient');
+    expect(diagnosticsNode?.style.borderColor).toBe('var(--wf-acc)');
+    expect(diagnosticsNode?.style.borderWidth).toBe('1.5px');
+    expect(diagnosticsNode?.className).toContain('chart-node-surface--selected');
   });
 
-  it('renders custom filled colors for generic shapes', () => {
+  it('keeps repainted gradient surface for custom filled colors on generic shapes', () => {
     currentNodeId = 'n-custom-fill';
     const { container } = render(
       <CustomNode
@@ -251,8 +254,8 @@ describe('CustomNode handle interaction policy', () => {
     );
 
     const diagnosticsNode = container.querySelector('[data-transform-diagnostics="1"]') as HTMLElement | null;
-    expect(diagnosticsNode?.style.backgroundColor).toBe('rgb(20, 184, 166)');
-    expect(diagnosticsNode?.style.borderColor).toBe('rgb(16, 151, 136)');
+    expect(diagnosticsNode?.style.background).toContain('linear-gradient');
+    expect(diagnosticsNode?.style.borderColor).toBe('var(--wf-acc)');
   });
 
   it('keeps empty shapes visually blank when they are not selected', () => {
@@ -351,12 +354,12 @@ describe('CustomNode handle interaction policy', () => {
       />
     );
 
-    const markdownSurfaces = container.querySelectorAll('.markdown-content');
-    const subLabelSurface = markdownSurfaces[1] as HTMLElement | undefined;
-    expect(subLabelSurface).toBeTruthy();
-    expect(subLabelSurface?.className).toContain('font-roboto');
-    expect(subLabelSurface?.style.fontSize).toBe('16px');
-    expect(subLabelSurface?.style.fontWeight).toBe('bold');
-    expect(subLabelSurface?.style.fontStyle).toBe('italic');
+    const subLabelSurface = container.querySelector('[data-chart-node-sublabel="1"]');
+    if (!(subLabelSurface instanceof HTMLElement)) {
+      throw new Error('SubLabel surface not found');
+    }
+    expect(subLabelSurface?.querySelector('.font-roboto')).toBeTruthy();
+    expect(subLabelSurface?.style.fontSize).toBe('11px');
+    expect(subLabelSurface?.style.color).toBe('rgb(139, 147, 160)');
   });
 });

@@ -97,6 +97,22 @@ function createSystem(overrides: Partial<DesignSystem> = {}): DesignSystem {
     };
 }
 
+function requireNodeContainer(container: HTMLElement): HTMLDivElement {
+    const nodeContainer = container.querySelector('[data-transform-diagnostics="1"]');
+    if (!(nodeContainer instanceof HTMLDivElement)) {
+        throw new Error('Node container not found');
+    }
+    return nodeContainer;
+}
+
+function requireChildElement(container: ParentNode, selector: string, label: string): HTMLElement {
+    const element = container.querySelector(selector);
+    if (!(element instanceof HTMLElement)) {
+        throw new Error(label);
+    }
+    return element;
+}
+
 describe('Design System integration', () => {
     beforeEach(() => {
         const defaultSystem = createSystem({ id: 'default', name: 'Default' });
@@ -293,6 +309,115 @@ describe('Design System integration', () => {
         // Imported nodes now use the design system font for visual consistency
         expect(importedLabelStyle).not.toContain('Trebuchet MS');
         expect(importedLabelStyle).toContain('line-height: 1.1;');
+    });
+
+    it('renders start nodes with stadium surface and out tone chip', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-start"
+                type="start"
+                selected={false}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Begin' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.style.minHeight).toBe('46px');
+        expect(nodeContainer.style.borderRadius).toBe('999px');
+        expect(nodeContainer.className).toContain('chart-node-surface--stadium');
+
+        const toneChip = requireChildElement(container, '[data-chart-node-tone-chip="1"]', 'Tone chip not found');
+        expect(toneChip.style.backgroundColor).toBe('');
+        expect(toneChip.getAttribute('data-tone')).toBe('out');
+        expect(toneChip.style.getPropertyValue('background')).toBe('var(--wf-t-out-bg)');
+    });
+
+    it('renders process nodes with rounded surface, web tone chip, and subLabel typography', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-process"
+                type="process"
+                selected={false}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Pro Tier', subLabel: 'Payment Process' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.style.borderRadius).toBe('11px');
+        expect(nodeContainer.className).toContain('chart-node-surface--rounded');
+
+        const contentRoot = requireChildElement(container, '[data-chart-node-content="1"]', 'Content root not found');
+        expect(contentRoot.style.padding).toBe('12px');
+
+        const toneChip = requireChildElement(container, '[data-chart-node-tone-chip="1"]', 'Tone chip not found');
+        expect(toneChip.getAttribute('data-tone')).toBe('web');
+        expect(toneChip.style.borderRadius).toBe('8px');
+
+        const subLabel = screen.getByText('Payment Process').closest('[data-chart-node-sublabel="1"]');
+        if (!(subLabel instanceof HTMLElement)) {
+            throw new Error('SubLabel wrapper not found');
+        }
+        expect(subLabel.style.fontSize).toBe('11px');
+        expect(subLabel.style.color).toBe('rgb(139, 147, 160)');
+    });
+
+    it('applies selected accent border and ring styles on active selection', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-selected"
+                type="process"
+                selected={true}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Selected node' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.className).toContain('chart-node-surface--selected');
+        expect(nodeContainer.style.borderColor).toBe('var(--wf-acc)');
+        expect(nodeContainer.style.borderWidth).toBe('1.5px');
+        expect(nodeContainer.style.boxShadow).toBe('var(--wf-shadow-node-selected)');
+    });
+
+    it('exposes hover surface classes on generic chart nodes', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-hover"
+                type="process"
+                selected={false}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Hover me' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.className).toContain('chart-node-surface--hoverable');
     });
 
     it('honors imported Mermaid section geometry instead of generic section minimums', () => {
