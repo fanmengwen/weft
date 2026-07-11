@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { ChevronDown, Play, Trash2 } from 'lucide-react';
+import { ChevronDown, Link, Play, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createId } from '@/lib/id';
 import { useToast } from '@/components/ui/ToastContext';
@@ -39,6 +39,31 @@ const CONDITION_OPERATORS: WorkflowConditionOperator[] = [
 
 function SectionDivider(): React.ReactElement {
   return <div className="-mx-4 mt-[18px] border-t border-[var(--wf-divider)]" />;
+}
+
+// One endpoint line inside the edge panel's source/target card.
+function EdgeEndpointRow({
+  data,
+  role,
+}: {
+  data: WorkflowNodeData | undefined;
+  role: string;
+}): React.ReactElement {
+  const meta = data ? WORKFLOW_NODE_CATALOG.find((entry) => entry.kind === data.kind) : undefined;
+  return (
+    <div className="flex items-center gap-2.5">
+      <span
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px]"
+        style={meta ? workflowToneStyle(meta.tone) : undefined}
+      >
+        {data ? <WorkflowNodeIcon kind={data.kind} className="h-3.5 w-3.5" /> : null}
+      </span>
+      <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-[var(--wf-text)]">
+        {data?.label}
+      </span>
+      <span className="shrink-0 text-[11px] text-[var(--wf-text-faint)]">{role}</span>
+    </div>
+  );
 }
 
 interface LlmModelFieldProps {
@@ -104,8 +129,10 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const workflowNodes = useWorkflowStore((state) => state.workflowNodes);
   const workflowEdges = useWorkflowStore((state) => state.workflowEdges);
   const selectedNodeId = useWorkflowStore((state) => state.selectedNodeId);
+  const selectedEdgeId = useWorkflowStore((state) => state.selectedEdgeId);
   const updateWorkflowNodeData = useWorkflowStore((state) => state.updateWorkflowNodeData);
   const deleteWorkflowNode = useWorkflowStore((state) => state.deleteWorkflowNode);
+  const deleteWorkflowEdge = useWorkflowStore((state) => state.deleteWorkflowEdge);
   const aiSettings = useFlowStore((state) => state.aiSettings);
   const documents = useKnowledgeStore((state) => state.documents);
   const addDocument = useKnowledgeStore((state) => state.addDocument);
@@ -128,6 +155,18 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const selectedNode = workflowNodes.find((node) => node.id === selectedNodeId);
   const data = selectedNode?.data as unknown as WorkflowNodeData | undefined;
   const meta = data ? WORKFLOW_NODE_CATALOG.find((entry) => entry.kind === data.kind) : undefined;
+
+  const selectedEdge = workflowEdges.find((edge) => edge.id === selectedEdgeId);
+  const edgeSourceData = selectedEdge
+    ? (workflowNodes.find((node) => node.id === selectedEdge.source)?.data as unknown as
+        | WorkflowNodeData
+        | undefined)
+    : undefined;
+  const edgeTargetData = selectedEdge
+    ? (workflowNodes.find((node) => node.id === selectedEdge.target)?.data as unknown as
+        | WorkflowNodeData
+        | undefined)
+    : undefined;
 
   const patchNode = (patch: Partial<WorkflowNodeData>) => {
     if (selectedNode) {
@@ -535,6 +574,46 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                 ) : null}
               </div>
             )}
+          </>
+        ) : selectedEdge ? (
+          <>
+            <div className="mt-3 flex items-center gap-2.5">
+              <span className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[9px] bg-[color-mix(in_srgb,var(--wf-acc)_10%,#fff)] text-[var(--wf-acc)]">
+                <Link className="h-[17px] w-[17px]" />
+              </span>
+              <div className="min-w-0">
+                <div className="text-[15px] font-semibold leading-tight text-[var(--wf-text)]">
+                  {t('workflowMode.properties.edgePanel.title')}
+                </div>
+                <div className="mt-1 truncate text-xs text-[var(--wf-text-type)]">
+                  {edgeSourceData?.label} → {edgeTargetData?.label}
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3.5 rounded-[10px] border border-[var(--wf-panel-card-border)] bg-[var(--wf-panel-card-bg)] p-2.5">
+              <EdgeEndpointRow
+                data={edgeSourceData}
+                role={t('workflowMode.properties.edgePanel.source')}
+              />
+              <div className="ml-[13px] h-3.5 w-[1.5px] bg-[var(--wf-input-border)]" />
+              <EdgeEndpointRow
+                data={edgeTargetData}
+                role={t('workflowMode.properties.edgePanel.target')}
+              />
+            </div>
+
+            <button
+              type="button"
+              onClick={() => deleteWorkflowEdge(selectedEdge.id)}
+              className="mt-3.5 flex h-[34px] w-full items-center justify-center gap-[7px] rounded-lg border border-[var(--wf-danger-tint-border)] bg-[var(--wf-danger-tint-bg)] text-[13px] font-semibold text-[var(--wf-danger)] transition-colors hover:bg-[var(--wf-danger-tint-hover)]"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              {t('workflowMode.properties.edgePanel.delete')}
+            </button>
+            <p className="mt-2.5 text-center text-xs leading-relaxed text-[var(--wf-text-faint)]">
+              {t('workflowMode.properties.edgePanel.deleteHint')}
+            </p>
           </>
         ) : (
           <div className="mt-3 flex items-center justify-center rounded-lg border border-dashed border-[var(--wf-input-border)] p-6 text-center">

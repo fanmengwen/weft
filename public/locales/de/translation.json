@@ -98,7 +98,14 @@
         "prompt": "Prompt",
         "config": "Konfiguration"
       },
-      "modelCustomOption": "Eigenes Modell…"
+      "modelCustomOption": "Eigenes Modell…",
+      "edgePanel": {
+        "title": "Verbindung",
+        "source": "Quelle",
+        "target": "Ziel",
+        "delete": "Verbindung löschen",
+        "deleteHint": "Nach dem Löschen kann vom Knotenanschluss aus neu verbunden werden"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

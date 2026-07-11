@@ -98,7 +98,14 @@
         "prompt": "プロンプト",
         "config": "設定"
       },
-      "modelCustomOption": "カスタムモデル…"
+      "modelCustomOption": "カスタムモデル…",
+      "edgePanel": {
+        "title": "接続",
+        "source": "ソース",
+        "target": "ターゲット",
+        "delete": "接続を削除",
+        "deleteHint": "削除後はノードのポートからドラッグして再接続できます"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

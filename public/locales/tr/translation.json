@@ -98,7 +98,14 @@
         "prompt": "İstem",
         "config": "Yapılandırma"
       },
-      "modelCustomOption": "Özel model…"
+      "modelCustomOption": "Özel model…",
+      "edgePanel": {
+        "title": "Bağlantı",
+        "source": "Kaynak",
+        "target": "Hedef",
+        "delete": "Bağlantıyı sil",
+        "deleteHint": "Sildikten sonra düğüm portundan sürükleyerek yeniden bağlanabilir"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

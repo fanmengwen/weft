@@ -98,7 +98,14 @@
         "prompt": "Prompt",
         "config": "Configuration"
       },
-      "modelCustomOption": "Custom model…"
+      "modelCustomOption": "Custom model…",
+      "edgePanel": {
+        "title": "Connection",
+        "source": "Source",
+        "target": "Target",
+        "delete": "Delete connection",
+        "deleteHint": "After deleting, drag from a node port to reconnect"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

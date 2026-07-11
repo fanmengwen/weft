@@ -4,6 +4,7 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
   type Connection,
+  type EdgeMouseHandler,
   type NodeMouseHandler,
 } from '@/lib/reactflowCompat';
 import { useTranslation } from 'react-i18next';
@@ -29,11 +30,13 @@ function WorkflowCanvasInner(): React.ReactElement {
   const workflowNodes = useWorkflowStore((state) => state.workflowNodes);
   const workflowEdges = useWorkflowStore((state) => state.workflowEdges);
   const selectedNodeId = useWorkflowStore((state) => state.selectedNodeId);
+  const selectedEdgeId = useWorkflowStore((state) => state.selectedEdgeId);
   const onWorkflowNodesChange = useWorkflowStore((state) => state.onWorkflowNodesChange);
   const onWorkflowEdgesChange = useWorkflowStore((state) => state.onWorkflowEdgesChange);
   const onWorkflowConnect = useWorkflowStore((state) => state.onWorkflowConnect);
   const addWorkflowNode = useWorkflowStore((state) => state.addWorkflowNode);
   const setSelectedNodeId = useWorkflowStore((state) => state.setSelectedNodeId);
+  const setSelectedEdgeId = useWorkflowStore((state) => state.setSelectedEdgeId);
 
   const nodes = useMemo(
     () =>
@@ -55,8 +58,9 @@ function WorkflowCanvasInner(): React.ReactElement {
         animated: false,
         style: undefined,
         markerEnd: undefined,
+        selected: edge.id === selectedEdgeId,
       })),
-    [workflowEdges]
+    [selectedEdgeId, workflowEdges]
   );
 
   useEffect(() => {
@@ -113,9 +117,17 @@ function WorkflowCanvasInner(): React.ReactElement {
     [setSelectedNodeId]
   );
 
+  const onEdgeClick: EdgeMouseHandler = useCallback(
+    (_event, edge) => {
+      setSelectedEdgeId(edge.id);
+    },
+    [setSelectedEdgeId]
+  );
+
   const onPaneClick = useCallback(() => {
     setSelectedNodeId(null);
-  }, [setSelectedNodeId]);
+    setSelectedEdgeId(null);
+  }, [setSelectedEdgeId, setSelectedNodeId]);
 
   return (
     <div ref={wrapperRef} className="relative min-h-0 flex-1 bg-[var(--wf-bg)]">
@@ -129,6 +141,7 @@ function WorkflowCanvasInner(): React.ReactElement {
         onConnect={handleConnect}
         isValidConnection={isValidConnection}
         onNodeClick={onNodeClick}
+        onEdgeClick={onEdgeClick}
         onPaneClick={onPaneClick}
         connectionLineStyle={WORKFLOW_EDGE_STYLE}
         autoPanOnNodeDrag={false}

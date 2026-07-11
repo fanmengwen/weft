@@ -98,7 +98,14 @@
         "prompt": "Prompt",
         "config": "Configuration"
       },
-      "modelCustomOption": "Modèle personnalisé…"
+      "modelCustomOption": "Modèle personnalisé…",
+      "edgePanel": {
+        "title": "Connexion",
+        "source": "Source",
+        "target": "Cible",
+        "delete": "Supprimer la connexion",
+        "deleteHint": "Après suppression, faites glisser depuis un port du nœud pour reconnecter"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

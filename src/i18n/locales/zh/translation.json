@@ -98,7 +98,14 @@
         "prompt": "提示词",
         "config": "配置"
       },
-      "modelCustomOption": "自定义模型…"
+      "modelCustomOption": "自定义模型…",
+      "edgePanel": {
+        "title": "连线",
+        "source": "来源",
+        "target": "目标",
+        "delete": "删除连线",
+        "deleteHint": "删除后可从节点端口重新拖出连线"
+      }
     },
     "canvas": {
       "emptyTitle": "从左侧拖入节点开始搭建工作流",
