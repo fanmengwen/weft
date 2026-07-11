@@ -5,7 +5,6 @@ import { Position } from '@/lib/reactflowCompat';
 import BrowserNode from './BrowserNode';
 import MobileNode from './MobileNode';
 
-
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,

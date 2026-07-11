@@ -140,7 +140,6 @@ function createTemplatePreview(template: FlowTemplate): {
   nodeIndex: Map<string, TemplatePreviewNode>;
 } {
   const nodes = template.nodes
-    .filter((node) => !isPreviewContainerNode(node))
     .filter((node) => typeof node.position?.x === 'number' && typeof node.position?.y === 'number')
     .slice(0, TEMPLATE_PREVIEW_MAX_NODES)
     .map((node) => {
@@ -167,10 +166,6 @@ function createTemplatePreview(template: FlowTemplate): {
     edges,
     nodeIndex: new Map(nodes.map((node) => [node.id, node])),
   };
-}
-
-function isPreviewContainerNode(node: FlowNode): boolean {
-  return node.type === 'section';
 }
 
 function clamp(value: number, min: number, max: number): number {

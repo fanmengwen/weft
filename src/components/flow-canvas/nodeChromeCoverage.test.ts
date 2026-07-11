@@ -10,11 +10,9 @@ const NODE_COMPONENT_FILES = [
   'src/components/SectionNode.tsx',
   'src/components/TextNode.tsx',
   'src/components/GroupNode.tsx',
-
   'src/components/ImageNode.tsx',
   'src/components/custom-nodes/BrowserNode.tsx',
   'src/components/custom-nodes/MobileNode.tsx',
-
   'src/components/custom-nodes/ArchitectureNode.tsx',
 ] as const;
 

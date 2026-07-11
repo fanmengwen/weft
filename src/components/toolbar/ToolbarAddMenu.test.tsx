@@ -22,7 +22,6 @@ function createProps() {
     onAddAnnotation: vi.fn(),
     onAddSection: vi.fn(),
     onAddTextNode: vi.fn(),
-
     onAddArchitectureNode: vi.fn(),
     onAddWireframe: vi.fn(),
     onRequestImageUpload: vi.fn(),

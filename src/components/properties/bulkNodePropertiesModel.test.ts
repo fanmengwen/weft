@@ -44,7 +44,6 @@ describe('bulkNodePropertiesModel', () => {
         icon: 0,
         variant: 0,
         architecture: 0,
-
         labels: 2,
         findReplace: 2,
       })

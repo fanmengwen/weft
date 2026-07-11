@@ -5,7 +5,6 @@ import { Position } from '@/lib/reactflowCompat';
 import ImageNode from './ImageNode';
 import GroupNode from './GroupNode';
 
-
 let selectedNodeId: string | null = null;
 let currentNodeId: string | null = null;
 
