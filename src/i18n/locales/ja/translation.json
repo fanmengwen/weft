@@ -612,6 +612,7 @@
     "language": "言語",
     "selectLanguage": "言語を選択",
     "languageDescription": "アプリ全体で使用する表示言語を選択します。",
+    "closeLanguageSelector": "言語セレクターを閉じる",
     "appearance": "外観",
     "ai": "AI設定",
     "analytics": "分析",

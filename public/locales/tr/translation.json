@@ -629,6 +629,7 @@
     "language": "Dil",
     "selectLanguage": "Dil Seçin",
     "languageDescription": "Uygulama genelinde kullanılacak arayüz dilini seçin.",
+    "closeLanguageSelector": "Dil seçicisini kapat",
     "appearance": "Görünüm",
     "ai": "Yapay Zeka",
     "analytics": "Analitik",

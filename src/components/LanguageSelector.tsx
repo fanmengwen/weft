@@ -44,6 +44,7 @@ function LanguageDropdown({
   onClose,
   width = 'w-60', // Widened to accommodate badges
 }: LanguageDropdownProps): React.JSX.Element | null {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   const positionClass = placement === 'top' ? 'bottom-full mb-2' : 'top-full mt-2';
@@ -55,7 +56,7 @@ function LanguageDropdown({
         type="button"
         className="fixed inset-0 z-40"
         onClick={onClose}
-        aria-label="Close language selector"
+        aria-label={t('settings.closeLanguageSelector')}
       />
       <div
         className={`absolute right-0 ${positionClass} ${width} rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)]/95 p-1 shadow-[var(--shadow-md)] ring-1 ring-black/5 backdrop-blur-xl z-50 animate-in fade-in zoom-in-95 duration-200 ${originClass}`}

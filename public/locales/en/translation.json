@@ -670,6 +670,7 @@
     "language": "Language",
     "selectLanguage": "Select Language",
     "languageDescription": "Choose the interface language used across the app.",
+    "closeLanguageSelector": "Close language selector",
     "appearance": "Appearance",
     "ai": "AI Settings",
     "analytics": "Analytics",

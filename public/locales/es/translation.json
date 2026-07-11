@@ -612,6 +612,7 @@
     "language": "Idioma",
     "selectLanguage": "Seleccionar idioma",
     "languageDescription": "Elige el idioma de la interfaz en toda la aplicación.",
+    "closeLanguageSelector": "Cerrar selector de idioma",
     "appearance": "Apariencia",
     "ai": "Configuración IA",
     "analytics": "Análisis",

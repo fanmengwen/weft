@@ -612,6 +612,7 @@
     "language": "Sprache",
     "selectLanguage": "Sprache auswählen",
     "languageDescription": "Wählen Sie die Oberflächensprache der App.",
+    "closeLanguageSelector": "Sprachauswahl schließen",
     "appearance": "Erscheinungsbild",
     "ai": "KI-Einstellungen",
     "analytics": "Analysen",
