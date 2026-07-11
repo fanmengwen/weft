@@ -9,7 +9,13 @@
     "run": "Run",
     "library": {
       "title": "Nodes",
-      "hint": "Drag onto the canvas to add a node"
+      "hint": "Drag onto the canvas to add a node",
+      "categories": {
+        "input": "Eingabe",
+        "process": "Verarbeitung",
+        "logic": "Logik",
+        "output": "Ausgabe"
+      }
     },
     "nodes": {
       "textInput": {
@@ -86,7 +92,20 @@
       "lastRunInput": "Eingabe",
       "lastRunOutput": "Ausgabe",
       "lastRunEmpty": "Führe den Knoten aus, um Ein- und Ausgaben zu sehen.",
-      "conditionUpstream": "Vorgelagerter Text"
+      "conditionUpstream": "Vorgelagerter Text",
+      "sections": {
+        "basic": "Grundlagen",
+        "prompt": "Prompt",
+        "config": "Konfiguration"
+      },
+      "modelCustomOption": "Eigenes Modell…",
+      "edgePanel": {
+        "title": "Verbindung",
+        "source": "Quelle",
+        "target": "Ziel",
+        "delete": "Verbindung löschen",
+        "deleteHint": "Nach dem Löschen kann vom Knotenanschluss aus neu verbunden werden"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

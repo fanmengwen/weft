@@ -23,28 +23,28 @@ export function WorkflowOutputModal(): React.ReactElement | null {
         aria-modal="true"
         aria-label={t('workflowMode.outputModal.title')}
         onClick={(event) => event.stopPropagation()}
-        className="flex max-h-[70vh] w-full max-w-xl flex-col gap-3 rounded-[var(--brand-radius-lg,1rem)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-5 shadow-xl"
+        className="flex max-h-[70vh] w-full max-w-xl flex-col gap-3 rounded-xl border border-[var(--wf-border)] bg-white p-5 shadow-[0_16px_40px_rgba(16,24,40,0.14)]"
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold uppercase tracking-wide text-[var(--brand-secondary)]">
+          <h2 className="text-[13px] font-semibold text-[var(--wf-text)]">
             {t('workflowMode.outputModal.title')}
           </h2>
           <button
             type="button"
             onClick={closeOutputModal}
             aria-label={t('workflowMode.outputModal.close')}
-            className="flex h-8 w-8 items-center justify-center rounded-[var(--brand-radius)] text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-glass-bg)] hover:text-[var(--brand-text)]"
+            className="flex h-[30px] w-[30px] items-center justify-center rounded-lg text-[var(--wf-text-label)] transition-colors hover:bg-[var(--wf-hover)]"
           >
             ✕
           </button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-glass-bg)] p-4 text-sm leading-relaxed text-[var(--brand-text)]">
+        <div className="min-h-0 flex-1 overflow-y-auto whitespace-pre-wrap rounded-lg border border-[var(--wf-border)] bg-[var(--wf-bg)] p-4 text-sm leading-relaxed text-[var(--wf-text)]">
           {finalOutput}
         </div>
         <button
           type="button"
           onClick={closeOutputModal}
-          className="self-end rounded-[var(--brand-radius)] bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-on-primary)]"
+          className="self-end rounded-lg bg-[var(--wf-acc)] px-4 py-2 text-[13px] font-semibold text-white transition-[filter] hover:brightness-[0.94]"
         >
           {t('workflowMode.outputModal.close')}
         </button>

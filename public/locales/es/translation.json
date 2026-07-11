@@ -9,7 +9,13 @@
     "run": "Run",
     "library": {
       "title": "Nodes",
-      "hint": "Drag onto the canvas to add a node"
+      "hint": "Drag onto the canvas to add a node",
+      "categories": {
+        "input": "Entrada",
+        "process": "Procesamiento",
+        "logic": "Lógica",
+        "output": "Salida"
+      }
     },
     "nodes": {
       "textInput": {
@@ -86,7 +92,20 @@
       "lastRunInput": "Entrada",
       "lastRunOutput": "Salida",
       "lastRunEmpty": "Ejecuta el nodo para ver sus entradas y salidas.",
-      "conditionUpstream": "Texto anterior"
+      "conditionUpstream": "Texto anterior",
+      "sections": {
+        "basic": "Básico",
+        "prompt": "Prompt",
+        "config": "Configuración"
+      },
+      "modelCustomOption": "Modelo personalizado…",
+      "edgePanel": {
+        "title": "Conexión",
+        "source": "Origen",
+        "target": "Destino",
+        "delete": "Eliminar conexión",
+        "deleteHint": "Tras eliminarla, arrastra desde un puerto del nodo para reconectar"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

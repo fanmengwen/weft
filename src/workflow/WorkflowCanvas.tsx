@@ -4,6 +4,7 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
   type Connection,
+  type EdgeMouseHandler,
   type NodeMouseHandler,
 } from '@/lib/reactflowCompat';
 import { useTranslation } from 'react-i18next';
@@ -11,9 +12,13 @@ import { useToast } from '@/components/ui/ToastContext';
 import { createWorkflowNode } from './dnd/createWorkflowNode';
 import { useWorkflowDnD } from './dnd/useWorkflowDnD';
 import { isValidWorkflowConnection } from './graph/workflowConnectionRules';
+import { WorkflowEdge } from './graph/WorkflowEdge';
+import { WORKFLOW_EDGE_STYLE } from './graph/workflowEdgeStyle';
 import { workflowNodeTypes } from './nodes/workflowNodeTypes';
-import { WorkflowZoomControls } from './panels/WorkflowZoomControls';
+import { WorkflowLogPanel } from './panels/WorkflowLogPanel';
 import { useWorkflowStore } from './store/workflowStore';
+
+const workflowEdgeTypes = { workflow: WorkflowEdge };
 
 function WorkflowCanvasInner(): React.ReactElement {
   const { t } = useTranslation();
@@ -25,11 +30,13 @@ function WorkflowCanvasInner(): React.ReactElement {
   const workflowNodes = useWorkflowStore((state) => state.workflowNodes);
   const workflowEdges = useWorkflowStore((state) => state.workflowEdges);
   const selectedNodeId = useWorkflowStore((state) => state.selectedNodeId);
+  const selectedEdgeId = useWorkflowStore((state) => state.selectedEdgeId);
   const onWorkflowNodesChange = useWorkflowStore((state) => state.onWorkflowNodesChange);
   const onWorkflowEdgesChange = useWorkflowStore((state) => state.onWorkflowEdgesChange);
   const onWorkflowConnect = useWorkflowStore((state) => state.onWorkflowConnect);
   const addWorkflowNode = useWorkflowStore((state) => state.addWorkflowNode);
   const setSelectedNodeId = useWorkflowStore((state) => state.setSelectedNodeId);
+  const setSelectedEdgeId = useWorkflowStore((state) => state.setSelectedEdgeId);
 
   const nodes = useMemo(
     () =>
@@ -40,8 +47,26 @@ function WorkflowCanvasInner(): React.ReactElement {
     [selectedNodeId, workflowNodes]
   );
 
+  // Normalize every edge to the workflow edge type at render time, so edges
+  // from older persisted graphs and imported files shed their baked-in style;
+  // the WorkflowEdge component owns the look, including selection.
+  const edges = useMemo(
+    () =>
+      workflowEdges.map((edge) => ({
+        ...edge,
+        type: 'workflow' as const,
+        animated: false,
+        style: undefined,
+        markerEnd: undefined,
+        selected: edge.id === selectedEdgeId,
+      })),
+    [selectedEdgeId, workflowEdges]
+  );
+
+  // Center the persisted graph but keep the default 100% zoom; the zoom
+  // controls then step in flat 20% increments from there.
   useEffect(() => {
-    fitView({ padding: 0.2, duration: 0 });
+    fitView({ padding: 0.2, minZoom: 1, maxZoom: 1, duration: 0 });
   }, [fitView]);
 
   useEffect(() => {
@@ -94,36 +119,47 @@ function WorkflowCanvasInner(): React.ReactElement {
     [setSelectedNodeId]
   );
 
+  const onEdgeClick: EdgeMouseHandler = useCallback(
+    (_event, edge) => {
+      setSelectedEdgeId(edge.id);
+    },
+    [setSelectedEdgeId]
+  );
+
   const onPaneClick = useCallback(() => {
     setSelectedNodeId(null);
-  }, [setSelectedNodeId]);
+    setSelectedEdgeId(null);
+  }, [setSelectedEdgeId, setSelectedNodeId]);
 
   return (
-    <div ref={wrapperRef} className="relative h-full w-full">
+    <div ref={wrapperRef} className="relative min-h-0 flex-1 bg-[var(--wf-bg)]">
       <ReactFlow
         nodes={nodes}
-        edges={workflowEdges}
+        edges={edges}
         nodeTypes={workflowNodeTypes}
+        edgeTypes={workflowEdgeTypes}
         onNodesChange={onWorkflowNodesChange}
         onEdgesChange={onWorkflowEdgesChange}
         onConnect={handleConnect}
         isValidConnection={isValidConnection}
         onNodeClick={onNodeClick}
+        onEdgeClick={onEdgeClick}
         onPaneClick={onPaneClick}
+        connectionLineStyle={WORKFLOW_EDGE_STYLE}
+        minZoom={0.2}
         autoPanOnNodeDrag={false}
         autoPanOnConnect={false}
         proOptions={{ hideAttribution: true }}
-        className="h-full w-full"
+        className="workflow-flow h-full w-full"
       >
-        <Background gap={16} size={1} color="rgba(59, 130, 246, 0.1)" />
+        <Background gap={22} size={1} color="#dee1e7" />
       </ReactFlow>
-      <WorkflowZoomControls />
       {nodes.length === 0 ? (
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-          <p className="text-base font-semibold text-[var(--brand-text)]">
+          <p className="text-base font-semibold text-[var(--wf-text)]">
             {t('workflowMode.canvas.emptyTitle')}
           </p>
-          <p className="text-sm text-[var(--brand-secondary)]">
+          <p className="text-sm text-[var(--wf-text-muted)]">
             {t('workflowMode.canvas.emptyHint')}
           </p>
         </div>
@@ -135,10 +171,15 @@ function WorkflowCanvasInner(): React.ReactElement {
 // Own provider so the workflow canvas keeps a React Flow store separate from
 // the chart editor's; with a shared one, whichever canvas mounts next briefly
 // renders the other mode's nodes against the wrong nodeTypes registry.
+// The bottom status bar lives inside the provider because its zoom controls
+// read the viewport through useReactFlow.
 export function WorkflowCanvas(): React.ReactElement {
   return (
     <ReactFlowProvider>
-      <WorkflowCanvasInner />
+      <div className="flex h-full min-h-0 min-w-0 flex-col">
+        <WorkflowCanvasInner />
+        <WorkflowLogPanel />
+      </div>
     </ReactFlowProvider>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useCallback, useRef } from 'react';
+import { ArrowLeft, Play } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { TopNavBrand } from '@/components/top-nav/TopNavBrand';
 import { ModeSelector } from '@/components/top-nav/ModeSelector';
 import { APP_NAME } from '@/lib/brand';
 import { useToast } from '@/components/ui/ToastContext';
@@ -11,6 +11,9 @@ import { useWorkflowStore } from './store/workflowStore';
 interface WorkflowTopBarProps {
   onGoHome: () => void;
 }
+
+const TEXT_BUTTON_CLASS =
+  'rounded-lg px-2.5 py-1.5 text-[13px] font-medium text-[var(--wf-text-btn)] transition-colors hover:bg-[var(--wf-hover)] disabled:cursor-not-allowed disabled:opacity-50';
 
 export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactElement {
   const { t } = useTranslation();
@@ -61,21 +64,35 @@ export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactEl
   );
 
   return (
-    <div className="absolute top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-4 sm:px-6">
-      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+    <div className="flex h-[52px] items-center justify-between gap-3 border-b border-[var(--wf-border)] bg-[var(--wf-surface)] px-3">
+      <div className="flex min-w-0 items-center gap-1.5">
         <button
           type="button"
           onClick={onGoHome}
           aria-label={t('workflowMode.home')}
           title={t('workflowMode.home')}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--brand-radius)] text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-glass-bg)] hover:text-[var(--brand-text)]"
+          className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-lg text-[var(--wf-text-label)] transition-colors hover:bg-[var(--wf-hover)]"
         >
-          ←
+          <ArrowLeft className="h-4 w-4" />
         </button>
-        <TopNavBrand appName={APP_NAME} logoUrl={null} logoStyle="text" ui={{ showBeta: true }} />
-        <ModeSelector />
+        <div className="flex items-center gap-1.5 px-1">
+          <span className="text-[15px] font-semibold text-[var(--wf-text)]">{APP_NAME}</span>
+          <svg width={15} height={15} viewBox="0 0 24 24" aria-hidden className="block shrink-0">
+            <circle cx={12} cy={12} r={10} fill="var(--wf-acc)" />
+            <path
+              d="M8 12.2 L10.8 15 L16 9.5"
+              stroke="#fff"
+              strokeWidth={2.2}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </div>
+        <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" />
+        <ModeSelector variant="flat" />
       </div>
-      <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
+      <div className="flex shrink-0 items-center gap-1">
         <input
           ref={importInputRef}
           type="file"
@@ -93,7 +110,7 @@ export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactEl
           type="button"
           onClick={() => importInputRef.current?.click()}
           disabled={isRunning}
-          className="rounded-[var(--brand-radius)] px-3 py-2 text-sm font-medium text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-glass-bg)] hover:text-[var(--brand-text)] disabled:cursor-not-allowed disabled:opacity-50"
+          className={TEXT_BUTTON_CLASS}
         >
           {t('workflowMode.io.import')}
         </button>
@@ -101,17 +118,18 @@ export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactEl
           type="button"
           onClick={handleExport}
           disabled={!hasNodes || isRunning}
-          className="rounded-[var(--brand-radius)] px-3 py-2 text-sm font-medium text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-glass-bg)] hover:text-[var(--brand-text)] disabled:cursor-not-allowed disabled:opacity-50"
+          className={TEXT_BUTTON_CLASS}
         >
           {t('workflowMode.io.export')}
         </button>
+        <div className="mx-1.5 h-4 w-px bg-[var(--wf-border)]" />
         {isRunning ? (
           <button
             type="button"
             onClick={stopRun}
-            className="inline-flex items-center gap-1.5 rounded-[var(--brand-radius)] border border-[var(--brand-danger,#ef4444)] px-4 py-2 text-sm font-semibold text-[var(--brand-danger,#ef4444)] transition-colors hover:bg-[var(--brand-danger,#ef4444)]/10"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-[var(--wf-danger)] px-3.5 text-[13px] font-semibold text-[var(--wf-danger)] transition-colors hover:bg-[var(--wf-danger-soft)]"
           >
-            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--brand-danger,#ef4444)]" />
+            <span className="h-2 w-2 animate-pulse rounded-full bg-[var(--wf-danger)]" />
             {t('workflowMode.stop')}
           </button>
         ) : (
@@ -120,9 +138,10 @@ export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactEl
             onClick={handleRun}
             disabled={!hasNodes}
             title={hasNodes ? t('workflowMode.run') : t('workflowMode.runNeedsNodes')}
-            className="inline-flex items-center gap-1.5 rounded-[var(--brand-radius)] bg-[var(--brand-primary)] px-4 py-2 text-sm font-semibold text-[var(--brand-on-primary)] transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+            className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold text-white transition-[filter] hover:brightness-[0.94] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            ▶ {t('workflowMode.run')}
+            <Play className="h-3 w-3 fill-current" />
+            {t('workflowMode.run')}
           </button>
         )}
       </div>

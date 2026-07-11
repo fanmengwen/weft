@@ -9,7 +9,13 @@
     "run": "Run",
     "library": {
       "title": "Nodes",
-      "hint": "Drag onto the canvas to add a node"
+      "hint": "Drag onto the canvas to add a node",
+      "categories": {
+        "input": "入力",
+        "process": "処理",
+        "logic": "ロジック",
+        "output": "出力"
+      }
     },
     "nodes": {
       "textInput": {
@@ -86,7 +92,20 @@
       "lastRunInput": "入力",
       "lastRunOutput": "出力",
       "lastRunEmpty": "ノードを実行すると入力と出力を確認できます。",
-      "conditionUpstream": "上流テキスト"
+      "conditionUpstream": "上流テキスト",
+      "sections": {
+        "basic": "基本",
+        "prompt": "プロンプト",
+        "config": "設定"
+      },
+      "modelCustomOption": "カスタムモデル…",
+      "edgePanel": {
+        "title": "接続",
+        "source": "ソース",
+        "target": "ターゲット",
+        "delete": "接続を削除",
+        "deleteHint": "削除後はノードのポートからドラッグして再接続できます"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

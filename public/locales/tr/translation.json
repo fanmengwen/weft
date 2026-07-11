@@ -9,7 +9,13 @@
     "run": "Run",
     "library": {
       "title": "Nodes",
-      "hint": "Drag onto the canvas to add a node"
+      "hint": "Drag onto the canvas to add a node",
+      "categories": {
+        "input": "Girdi",
+        "process": "İşleme",
+        "logic": "Mantık",
+        "output": "Çıktı"
+      }
     },
     "nodes": {
       "textInput": {
@@ -86,7 +92,20 @@
       "lastRunInput": "Girdi",
       "lastRunOutput": "Çıktı",
       "lastRunEmpty": "Girdi ve çıktıları görmek için düğümü çalıştırın.",
-      "conditionUpstream": "Önceki metin"
+      "conditionUpstream": "Önceki metin",
+      "sections": {
+        "basic": "Temel",
+        "prompt": "İstem",
+        "config": "Yapılandırma"
+      },
+      "modelCustomOption": "Özel model…",
+      "edgePanel": {
+        "title": "Bağlantı",
+        "source": "Kaynak",
+        "target": "Hedef",
+        "delete": "Bağlantıyı sil",
+        "deleteHint": "Sildikten sonra düğüm portundan sürükleyerek yeniden bağlanabilir"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

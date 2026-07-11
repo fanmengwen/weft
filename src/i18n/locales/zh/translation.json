@@ -9,7 +9,13 @@
     "run": "运行",
     "library": {
       "title": "节点库",
-      "hint": "拖拽到画布添加节点"
+      "hint": "拖拽节点到画布中添加",
+      "categories": {
+        "input": "输入",
+        "process": "处理",
+        "logic": "逻辑",
+        "output": "输出"
+      }
     },
     "nodes": {
       "textInput": {
@@ -86,7 +92,20 @@
       "lastRunInput": "输入",
       "lastRunOutput": "输出",
       "lastRunEmpty": "运行该节点后可查看输入与输出。",
-      "conditionUpstream": "上游文本"
+      "conditionUpstream": "上游文本",
+      "sections": {
+        "basic": "基础",
+        "prompt": "提示词",
+        "config": "配置"
+      },
+      "modelCustomOption": "自定义模型…",
+      "edgePanel": {
+        "title": "连线",
+        "source": "来源",
+        "target": "目标",
+        "delete": "删除连线",
+        "deleteHint": "删除后可从节点端口重新拖出连线"
+      }
     },
     "canvas": {
       "emptyTitle": "从左侧拖入节点开始搭建工作流",

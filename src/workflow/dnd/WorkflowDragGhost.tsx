@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { WORKFLOW_NODE_CATALOG } from '../nodes/nodeCatalog';
+import { WORKFLOW_NODE_CATALOG, workflowToneStyle } from '../nodes/nodeCatalog';
+import { WorkflowNodeIcon } from '../nodes/WorkflowNodeIcon';
 import { useWorkflowDnD } from './useWorkflowDnD';
 
 export function WorkflowDragGhost(): React.ReactElement | null {
@@ -18,16 +19,16 @@ export function WorkflowDragGhost(): React.ReactElement | null {
 
   return (
     <div
-      className="pointer-events-none fixed z-[100] flex items-center gap-2 rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] px-3 py-2 opacity-80 shadow-lg"
+      className="pointer-events-none fixed z-[100] flex items-center gap-2.5 rounded-[10px] border border-[var(--wf-node-border)] bg-white px-3 py-2 opacity-80 shadow-[var(--wf-shadow-node-selected)]"
       style={{ left: ghostPosition.x + 12, top: ghostPosition.y + 12 }}
     >
       <span
-        className="flex h-8 w-8 items-center justify-center rounded-[var(--brand-radius)] text-base"
-        style={{ backgroundColor: `${meta.accent}1a` }}
+        className="flex h-7 w-7 items-center justify-center rounded-[7px]"
+        style={workflowToneStyle(meta.tone)}
       >
-        {meta.icon}
+        <WorkflowNodeIcon kind={meta.kind} className="h-[15px] w-[15px]" />
       </span>
-      <span className="text-sm font-semibold text-[var(--brand-text)]">
+      <span className="text-[13px] font-semibold text-[var(--wf-text)]">
         {t(`workflowMode.nodes.${meta.kind}.name`)}
       </span>
     </div>

@@ -9,7 +9,13 @@
     "run": "Run",
     "library": {
       "title": "Nodes",
-      "hint": "Drag onto the canvas to add a node"
+      "hint": "Drag onto the canvas to add a node",
+      "categories": {
+        "input": "Entrée",
+        "process": "Traitement",
+        "logic": "Logique",
+        "output": "Sortie"
+      }
     },
     "nodes": {
       "textInput": {
@@ -86,7 +92,20 @@
       "lastRunInput": "Entrée",
       "lastRunOutput": "Sortie",
       "lastRunEmpty": "Exécutez le nœud pour inspecter ses entrées et sorties.",
-      "conditionUpstream": "Texte amont"
+      "conditionUpstream": "Texte amont",
+      "sections": {
+        "basic": "Général",
+        "prompt": "Prompt",
+        "config": "Configuration"
+      },
+      "modelCustomOption": "Modèle personnalisé…",
+      "edgePanel": {
+        "title": "Connexion",
+        "source": "Source",
+        "target": "Cible",
+        "delete": "Supprimer la connexion",
+        "deleteHint": "Après suppression, faites glisser depuis un port du nœud pour reconnecter"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

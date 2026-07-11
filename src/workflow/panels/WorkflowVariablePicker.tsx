@@ -29,12 +29,12 @@ export function WorkflowVariablePicker({
         }
       }}
       aria-label={t('workflowMode.properties.insertVariable')}
-      className="rounded-[var(--brand-radius)] border border-dashed border-[var(--brand-border)] bg-transparent px-2 py-1 text-xs text-[var(--brand-secondary)] outline-none focus:border-[var(--brand-primary)] disabled:opacity-60"
+      className="max-w-40 appearance-none truncate rounded-md bg-[var(--wf-chip-bg)] px-2 py-[3px] text-xs font-medium text-[var(--wf-acc)] outline-none transition-colors hover:bg-[var(--wf-chip-hover)] disabled:opacity-60"
     >
       <option value="">
         {options.length === 0
           ? t('workflowMode.properties.noUpstreamVariables')
-          : `+ ${t('workflowMode.properties.insertVariable')}`}
+          : `{ } ${t('workflowMode.properties.insertVariable')}`}
       </option>
       {options.map((option) => (
         <option key={option.selector} value={option.selector}>

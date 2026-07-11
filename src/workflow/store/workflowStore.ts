@@ -18,13 +18,16 @@ interface WorkflowState {
   workflowNodes: FlowNode[];
   workflowEdges: FlowEdge[];
   selectedNodeId: string | null;
+  selectedEdgeId: string | null;
   setMode: (mode: AppMode) => void;
   setWorkflowNodes: (nodes: FlowNode[]) => void;
   setWorkflowEdges: (edges: FlowEdge[]) => void;
   setSelectedNodeId: (nodeId: string | null) => void;
+  setSelectedEdgeId: (edgeId: string | null) => void;
   addWorkflowNode: (node: FlowNode) => void;
   updateWorkflowNodeData: (nodeId: string, patch: Partial<WorkflowNodeData>) => void;
   deleteWorkflowNode: (nodeId: string) => void;
+  deleteWorkflowEdge: (edgeId: string) => void;
   onWorkflowNodesChange: (changes: NodeChange[]) => void;
   onWorkflowEdgesChange: (changes: EdgeChange[]) => void;
   onWorkflowConnect: (connection: Connection) => boolean;
@@ -37,10 +40,16 @@ export const useWorkflowStore = create<WorkflowState>()(
       workflowNodes: [],
       workflowEdges: [],
       selectedNodeId: null,
+      selectedEdgeId: null,
       setMode: (mode) => set({ mode }),
       setWorkflowNodes: (workflowNodes) => set({ workflowNodes }),
       setWorkflowEdges: (workflowEdges) => set({ workflowEdges }),
-      setSelectedNodeId: (selectedNodeId) => set({ selectedNodeId }),
+      // Node and edge selection are mutually exclusive — the properties
+      // panel shows one or the other.
+      setSelectedNodeId: (selectedNodeId) =>
+        set(selectedNodeId === null ? { selectedNodeId } : { selectedNodeId, selectedEdgeId: null }),
+      setSelectedEdgeId: (selectedEdgeId) =>
+        set(selectedEdgeId === null ? { selectedEdgeId } : { selectedEdgeId, selectedNodeId: null }),
       addWorkflowNode: (node) =>
         set((state) => ({
           workflowNodes: [
@@ -48,6 +57,7 @@ export const useWorkflowStore = create<WorkflowState>()(
             node,
           ],
           selectedNodeId: node.id,
+          selectedEdgeId: null,
         })),
       updateWorkflowNodeData: (nodeId, patch) =>
         set((state) => ({
@@ -58,12 +68,23 @@ export const useWorkflowStore = create<WorkflowState>()(
           ),
         })),
       deleteWorkflowNode: (nodeId) =>
-        set((state) => ({
-          workflowNodes: state.workflowNodes.filter((node) => node.id !== nodeId),
-          workflowEdges: state.workflowEdges.filter(
+        set((state) => {
+          const workflowEdges = state.workflowEdges.filter(
             (edge) => edge.source !== nodeId && edge.target !== nodeId
-          ),
-          selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
+          );
+          return {
+            workflowNodes: state.workflowNodes.filter((node) => node.id !== nodeId),
+            workflowEdges,
+            selectedNodeId: state.selectedNodeId === nodeId ? null : state.selectedNodeId,
+            selectedEdgeId: workflowEdges.some((edge) => edge.id === state.selectedEdgeId)
+              ? state.selectedEdgeId
+              : null,
+          };
+        }),
+      deleteWorkflowEdge: (edgeId) =>
+        set((state) => ({
+          workflowEdges: state.workflowEdges.filter((edge) => edge.id !== edgeId),
+          selectedEdgeId: state.selectedEdgeId === edgeId ? null : state.selectedEdgeId,
         })),
       onWorkflowNodesChange: (changes) =>
         set((state) => {
@@ -78,9 +99,15 @@ export const useWorkflowStore = create<WorkflowState>()(
           };
         }),
       onWorkflowEdgesChange: (changes) =>
-        set((state) => ({
-          workflowEdges: applyFlowEdgeChanges(changes, state.workflowEdges) as FlowEdge[],
-        })),
+        set((state) => {
+          const workflowEdges = applyFlowEdgeChanges(changes, state.workflowEdges) as FlowEdge[];
+          return {
+            workflowEdges,
+            selectedEdgeId: workflowEdges.some((edge) => edge.id === state.selectedEdgeId)
+              ? state.selectedEdgeId
+              : null,
+          };
+        }),
       onWorkflowConnect: (connection) => {
         const state = get();
         if (!isValidWorkflowConnection(connection, state.workflowNodes, state.workflowEdges)) {
@@ -105,7 +132,7 @@ export const useWorkflowStore = create<WorkflowState>()(
       ): Pick<WorkflowState, 'mode' | 'workflowNodes' | 'workflowEdges'> => ({
         mode: state.mode,
         workflowNodes: state.workflowNodes.map((node) => ({ ...node, selected: false })),
-        workflowEdges: state.workflowEdges,
+        workflowEdges: state.workflowEdges.map((edge) => ({ ...edge, selected: false })),
       }),
     }
   )
