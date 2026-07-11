@@ -218,6 +218,8 @@
     "help": "Aide",
     "selectTool": "Outil de sélection",
     "handTool": "Outil main",
+    "elementPalette": "Palette d'éléments",
+    "autoLayout": "Mise en page auto",
     "getStarted": "Commencer",
     "bringToFront": "Mettre au premier plan",
     "sendToBack": "Mettre en arrière-plan",

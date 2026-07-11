@@ -218,6 +218,8 @@
     "help": "Hilfe",
     "selectTool": "Auswahlwerkzeug",
     "handTool": "Handwerkzeug",
+    "elementPalette": "Elementpalette",
+    "autoLayout": "Auto-Layout",
     "getStarted": "Loslegen",
     "bringToFront": "In den Vordergrund",
     "sendToBack": "In den Hintergrund",

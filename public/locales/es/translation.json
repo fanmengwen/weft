@@ -218,6 +218,8 @@
     "help": "Ayuda",
     "selectTool": "Herramienta de selección",
     "handTool": "Herramienta mano",
+    "elementPalette": "Panel de elementos",
+    "autoLayout": "Diseño automático",
     "getStarted": "Comenzar",
     "bringToFront": "Traer al frente",
     "sendToBack": "Enviar atrás",

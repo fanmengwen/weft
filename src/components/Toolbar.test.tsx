@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { FlowEditorMode } from '@/hooks/useFlowEditorUIState';
 import { Toolbar } from './Toolbar';
@@ -34,26 +34,35 @@ function createProps() {
   };
 }
 
-function getToolbarButtons(container: HTMLElement): HTMLElement[] {
+function getRailChildMarkers(container: HTMLElement): string[] {
   const rail = container.querySelector('[data-testid="toolbar-rail"]');
   if (!(rail instanceof HTMLElement)) {
     throw new Error('toolbar rail not found');
   }
-  return within(rail)
-    .getAllByRole('button')
-    .filter((button) => button.getAttribute('data-testid')?.startsWith('toolbar-'));
+
+  return [...rail.children].map((child) => {
+    if (child.getAttribute('data-testid') === 'toolbar-divider') {
+      return 'divider';
+    }
+
+    const button = child.matches('button')
+      ? child
+      : child.querySelector('button[data-testid^="toolbar-"]');
+    return button?.getAttribute('data-testid') ?? child.tagName.toLowerCase();
+  });
 }
 
 describe('Toolbar', () => {
-  it('renders five vertical tool groups in spec order', () => {
+  it('renders three tool clusters separated by two dividers in spec order', () => {
     const { container } = render(<Toolbar {...createProps()} />);
-    const buttons = getToolbarButtons(container);
 
-    expect(buttons.map((button) => button.getAttribute('data-testid'))).toEqual([
+    expect(getRailChildMarkers(container)).toEqual([
       'toolbar-select',
       'toolbar-pan',
+      'divider',
       'toolbar-add',
       'toolbar-layout',
+      'divider',
       'toolbar-undo',
       'toolbar-redo',
     ]);

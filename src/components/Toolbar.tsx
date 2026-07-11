@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Plus, Workflow } from 'lucide-react';
 import { Button } from './ui/Button';
@@ -7,16 +7,16 @@ import { ElementPalette } from './element-palette/ElementPalette';
 import { ToolbarHistoryControls } from './toolbar/ToolbarHistoryControls';
 import { ToolbarModeControls } from './toolbar/ToolbarModeControls';
 import {
-  TOOLBAR_ADD_BUTTON_CLASS,
-  TOOLBAR_ADD_BUTTON_OPEN_CLASS,
   TOOLBAR_CONTAINER_CLASS,
   TOOLBAR_DIVIDER_CLASS,
   TOOLBAR_ICON_CLASS,
   TOOLBAR_ICON_DISABLED_CLASS,
   TOOLBAR_PALETTE_OFFSET_CLASS,
   TOOLBAR_RAIL_CLASS,
+  getToolbarAddButtonClasses,
   getToolbarIconButtonClass,
 } from './toolbar/toolbarButtonStyles';
+import { useMousedownOutside } from '@/hooks/useMousedownOutside';
 import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import type { FlowEditorMode } from '@/hooks/useFlowEditorUIState';
 
@@ -66,36 +66,12 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   const isInteractive = !isCommandBarOpen;
   const shouldShowPalette =
     isElementPaletteOpen && isInteractive && editorMode === 'canvas';
+  const { button: addButtonClass, icon: addIconClass } = getToolbarAddButtonClasses({
+    open: shouldShowPalette,
+    interactive: isInteractive,
+  });
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent): void => {
-      const target = event.target;
-      if (
-        toolbarRef.current &&
-        target instanceof Node &&
-        !toolbarRef.current.contains(target)
-      ) {
-        onCloseElementPalette();
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onCloseElementPalette]);
-
-  const addButtonClass = [
-    TOOLBAR_ADD_BUTTON_CLASS,
-    shouldShowPalette ? TOOLBAR_ADD_BUTTON_OPEN_CLASS : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
-  const addIconClass = [
-    TOOLBAR_ICON_CLASS,
-    'transition-transform duration-200',
-    shouldShowPalette ? 'rotate-45 text-[var(--wf-acc)]' : 'text-white',
-    !isInteractive ? TOOLBAR_ICON_DISABLED_CLASS : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
+  useMousedownOutside(toolbarRef, onCloseElementPalette);
 
   return (
     <div ref={toolbarRef} className={TOOLBAR_CONTAINER_CLASS}>
@@ -108,7 +84,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             onTogglePanMode={onTogglePanMode}
           />
 
-          <div className={TOOLBAR_DIVIDER_CLASS} />
+          <div data-testid="toolbar-divider" className={TOOLBAR_DIVIDER_CLASS} />
 
           <Tooltip text={t('toolbar.addItem', 'Add Item')}>
             <Button
@@ -123,8 +99,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
               icon={<Plus data-testid="toolbar-add-icon" className={addIconClass} />}
             />
           </Tooltip>
-
-          <div className={TOOLBAR_DIVIDER_CLASS} />
 
           <Tooltip text={t('toolbar.autoLayout')}>
             <Button
@@ -142,7 +116,7 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             />
           </Tooltip>
 
-          <div className={TOOLBAR_DIVIDER_CLASS} />
+          <div data-testid="toolbar-divider" className={TOOLBAR_DIVIDER_CLASS} />
 
           <ToolbarHistoryControls
             isInteractive={isInteractive}

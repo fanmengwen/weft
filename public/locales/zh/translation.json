@@ -218,6 +218,8 @@
     "help": "帮助",
     "selectTool": "选择工具",
     "handTool": "抓手工具",
+    "elementPalette": "元素面板",
+    "autoLayout": "自动布局",
     "getStarted": "开始使用",
     "bringToFront": "移至顶层",
     "sendToBack": "移至底层",

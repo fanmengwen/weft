@@ -33,3 +33,24 @@ export function getToolbarIconButtonClass(options?: {
 
   return [TOOLBAR_BUTTON_BASE_CLASS, activeClass, disabledClass].filter(Boolean).join(' ');
 }
+
+export function getToolbarAddButtonClasses(options: {
+  open: boolean;
+  interactive: boolean;
+}): { button: string; icon: string } {
+  const { open, interactive } = options;
+
+  return {
+    button: [TOOLBAR_ADD_BUTTON_CLASS, open ? TOOLBAR_ADD_BUTTON_OPEN_CLASS : '']
+      .filter(Boolean)
+      .join(' '),
+    icon: [
+      TOOLBAR_ICON_CLASS,
+      'transition-transform duration-200',
+      open ? 'rotate-45 text-[var(--wf-acc)]' : 'text-white',
+      !interactive ? TOOLBAR_ICON_DISABLED_CLASS : '',
+    ]
+      .filter(Boolean)
+      .join(' '),
+  };
+}

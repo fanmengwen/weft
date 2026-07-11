@@ -218,6 +218,8 @@
     "help": "ヘルプ",
     "selectTool": "選択ツール",
     "handTool": "手のひらツール",
+    "elementPalette": "要素パレット",
+    "autoLayout": "自動レイアウト",
     "getStarted": "始める",
     "bringToFront": "最前面へ",
     "sendToBack": "最背面へ",
