@@ -28,7 +28,7 @@ export interface AddShapeSpec {
   shape?: NodeData['shape'];
 }
 
-export type AddShapeInput = NodeData['shape'] | AddShapeSpec;
+export type AddShapeInput = AddShapeSpec;
 
 export interface AddItemDefinition {
   id: AddItemId;
@@ -134,7 +134,6 @@ export interface AddItemActions {
   onAddShape: (input: AddShapeInput, position?: { x: number; y: number }) => void;
   onAddAnnotation: (position?: { x: number; y: number }) => void;
   onAddSection: (position?: { x: number; y: number }) => void;
-  onAddArchitectureNode: (position?: { x: number; y: number }) => void;
 }
 
 export function executeAddItem(

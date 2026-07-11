@@ -25,24 +25,15 @@ interface UseNodeOperationAddersParams {
   setSelectedNodeId: (nodeId: string | null) => void;
 }
 
-function resolveAddShapeInput(input: AddShapeInput): {
+function resolveAddShapeSpec(input: AddShapeInput): {
   type: FlowNode['type'];
   shape?: NodeData['shape'];
   color: string;
 } {
-  if (typeof input === 'string') {
-    return {
-      type: 'process',
-      shape: input,
-      color: NODE_DEFAULTS.process.color,
-    };
-  }
-
-  const type = input.type ?? 'process';
-  const defaults = NODE_DEFAULTS[type];
+  const defaults = NODE_DEFAULTS[input.type];
 
   return {
-    type,
+    type: input.type,
     shape: input.shape,
     color: defaults?.color ?? NODE_DEFAULTS.process.color,
   };
@@ -101,7 +92,7 @@ export function useNodeOperationAdders({
     (input: AddShapeInput, position?: { x: number; y: number }) => {
       recordHistory();
       const id = createId();
-      const resolved = resolveAddShapeInput(input);
+      const resolved = resolveAddShapeSpec(input);
       commitAddedNode(
         id,
         (resolvedPosition) =>
@@ -139,33 +130,6 @@ export function useNodeOperationAdders({
       );
     },
     [commitAddedNode, nodesLength, recordHistory, t]
-  );
-
-  const handleAddArchitectureNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('arch');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'architecture',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'New Service',
-            color: 'slate',
-            shape: 'rectangle',
-            icon: 'Server',
-            archProvider: 'custom',
-            archResourceType: 'service',
-            archEnvironment: 'default',
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
   );
 
   const handleAddSection = useCallback(
@@ -233,7 +197,6 @@ export function useNodeOperationAdders({
     handleAddShape,
     handleAddNode,
     handleAddAnnotation,
-    handleAddArchitectureNode,
     handleAddSection,
     handleAddDomainLibraryItem,
   };

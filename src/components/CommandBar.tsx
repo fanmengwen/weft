@@ -58,7 +58,6 @@ function OpenCommandBarContent({
   initialView = 'root',
   onAddAnnotation: _onAddAnnotation,
   onAddSection: _onAddSection,
-  onAddArchitecture: _onAddArchitecture,
   onAddDomainLibraryItem,
   onCodeAnalysis,
   onSqlAnalysis,

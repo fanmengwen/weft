@@ -21,7 +21,6 @@ function createProps() {
     onAddShape: vi.fn(),
     onAddAnnotation: vi.fn(),
     onAddSection: vi.fn(),
-    onAddArchitectureNode: vi.fn(),
   };
 }
 

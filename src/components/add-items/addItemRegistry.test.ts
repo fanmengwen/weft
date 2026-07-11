@@ -1,22 +1,35 @@
+import { renderHook } from '@testing-library/react';
+import { useTranslation } from 'react-i18next';
 import { describe, expect, it, vi } from 'vitest';
-import { executeAddItem, getAddItemDefinitions } from './addItemRegistry';
+import {
+  executeAddItem,
+  getAddItemDefinitions,
+  type AddItemId,
+  type AddShapeSpec,
+} from './addItemRegistry';
 
-const identityT = ((key: string, fallback?: string) => fallback ?? key) as Parameters<
-  typeof getAddItemDefinitions
->[0];
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (_key: string, fallback?: string) => fallback ?? _key,
+  }),
+}));
+
+function getTestT() {
+  const { result } = renderHook(() => useTranslation());
+  return result.current.t;
+}
 
 function createActions() {
   return {
     onAddShape: vi.fn(),
     onAddAnnotation: vi.fn(),
     onAddSection: vi.fn(),
-    onAddArchitectureNode: vi.fn(),
   };
 }
 
 describe('addItemRegistry', () => {
   it('exposes seven semantic toolbar entries', () => {
-    const ids = getAddItemDefinitions(identityT).map((item) => item.id);
+    const ids = getAddItemDefinitions(getTestT()).map((item) => item.id);
 
     expect(ids).toEqual([
       'start',
@@ -29,27 +42,20 @@ describe('addItemRegistry', () => {
     ]);
   });
 
-  it('creates a start node via onAddShape', () => {
+  it.each<[AddItemId, AddShapeSpec]>([
+    ['start', { type: 'start', shape: 'capsule' }],
+    ['end', { type: 'end', shape: 'capsule' }],
+    ['process', { type: 'process', shape: 'rounded' }],
+    ['decision', { type: 'decision', shape: 'diamond' }],
+    ['io', { type: 'custom', shape: 'parallelogram' }],
+    ['database', { type: 'custom', shape: 'cylinder' }],
+  ])('dispatches %s to onAddShape with the expected node spec', (id, spec) => {
     const actions = createActions();
 
-    executeAddItem('start', actions, { x: 10, y: 20 });
+    executeAddItem(id, actions, { x: 10, y: 20 });
 
-    expect(actions.onAddShape).toHaveBeenCalledWith(
-      { type: 'start', shape: 'capsule' },
-      { x: 10, y: 20 },
-    );
+    expect(actions.onAddShape).toHaveBeenCalledWith(spec, { x: 10, y: 20 });
     expect(actions.onAddAnnotation).not.toHaveBeenCalled();
-  });
-
-  it('creates an io node as custom with parallelogram shape', () => {
-    const actions = createActions();
-
-    executeAddItem('io', actions);
-
-    expect(actions.onAddShape).toHaveBeenCalledWith(
-      { type: 'custom', shape: 'parallelogram' },
-      undefined,
-    );
   });
 
   it('routes annotation through onAddAnnotation', () => {

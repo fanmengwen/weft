@@ -233,7 +233,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddShape,
     handleAddNode,
     handleAddAnnotation,
-    handleAddArchitectureNode,
     handleAddSection,
     handleAddDomainLibraryItem,
   } = useNodeOperationAdders({
@@ -255,7 +254,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddShape,
     handleAddNode,
     handleAddAnnotation,
-    handleAddArchitectureNode,
     handleAddSection,
     handleAddDomainLibraryItem,
     ...archOps,

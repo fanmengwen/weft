@@ -74,7 +74,6 @@ type FlowEditorCommandBarConfig = Omit<
     | 'openStudioPlayback'
     | 'handleAddAnnotation'
     | 'handleAddSection'
-    | 'handleAddArchitectureNode'
     | 'handleAddDomainLibraryItem'
     | 'openArchitectureRulesPanel'
 >;
@@ -178,7 +177,6 @@ export interface UseFlowEditorChromeParams {
     stopPlayback: () => void;
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
-    handleAddArchitectureNode: () => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
 }
 
@@ -231,7 +229,6 @@ export function useFlowEditorController({
             openArchitectureRulesPanel,
             handleAddAnnotation: chromeParams.handleAddAnnotation,
             handleAddSection: chromeParams.handleAddSection,
-            handleAddArchitectureNode: chromeParams.handleAddArchitectureNode,
             handleAddDomainLibraryItem: chromeParams.handleAddDomainLibraryItem,
         },
         snapshots: {

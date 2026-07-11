@@ -30,7 +30,6 @@ interface ToolbarProps {
   onAddShape: (input: AddShapeInput, position: { x: number; y: number }) => void;
   onAddAnnotation: (position: { x: number; y: number }) => void;
   onAddSection: (position: { x: number; y: number }) => void;
-  onAddArchitectureNode: (position: { x: number; y: number }) => void;
   onLayout: () => void;
   getCenter: () => { x: number; y: number };
 }
@@ -51,7 +50,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onAddShape,
   onAddAnnotation,
   onAddSection,
-  onAddArchitectureNode,
   onLayout,
   getCenter,
 }) => {
@@ -107,7 +105,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             onAddShape={onAddShape}
             onAddAnnotation={onAddAnnotation}
             onAddSection={onAddSection}
-            onAddArchitectureNode={onAddArchitectureNode}
             getCenter={getCenter}
           />
         </div>

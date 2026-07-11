@@ -111,7 +111,6 @@ export interface FlowEditorChromeProps {
     onAddShape: (input: AddShapeInput, position: { x: number; y: number }) => void;
     onAddAnnotation: (position: { x: number; y: number }) => void;
     onAddSection: (position: { x: number; y: number }) => void;
-    onAddArchitectureNode: (position: { x: number; y: number }) => void;
     onUndo: () => void;
     onRedo: () => void;
     onLayout: () => void;
@@ -189,7 +188,6 @@ export function FlowEditorChrome({
     onAddShape: toolbar.onAddShape,
     onAddAnnotation: toolbar.onAddAnnotation,
     onAddSection: toolbar.onAddSection,
-    onAddArchitectureNode: toolbar.onAddArchitectureNode,
     onUndo: toolbar.onUndo,
     onRedo: toolbar.onRedo,
     onLayout: toolbar.onLayout,

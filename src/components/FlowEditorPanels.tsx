@@ -137,7 +137,6 @@ export interface CommandBarPanelProps {
   initialView: CommandBarView;
   onAddAnnotation: () => void;
   onAddSection: () => void;
-  onAddArchitecture?: () => void;
   onAddDomainLibraryItem?: (item: DomainLibraryItem) => void;
   onCodeAnalysis?: (code: string, language: SupportedLanguage) => Promise<void>;
   onSqlAnalysis?: (sql: string) => Promise<void>;
@@ -289,7 +288,6 @@ export function FlowEditorPanels({
               initialView={commandBar.initialView}
               onAddAnnotation={commandBar.onAddAnnotation}
               onAddSection={commandBar.onAddSection}
-              onAddArchitecture={commandBar.onAddArchitecture}
               onAddDomainLibraryItem={commandBar.onAddDomainLibraryItem}
               onCodeAnalysis={commandBar.onCodeAnalysis}
               onSqlAnalysis={commandBar.onSqlAnalysis}

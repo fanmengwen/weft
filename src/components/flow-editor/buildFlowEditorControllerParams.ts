@@ -99,7 +99,6 @@ interface BuildFlowEditorControllerChromeParams {
     stopPlayback: () => void;
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
-    handleAddArchitectureNode: () => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
 }
 

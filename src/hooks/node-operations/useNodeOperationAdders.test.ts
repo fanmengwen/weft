@@ -10,26 +10,17 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('@/lib/id', () => ({
-  createId: () => 'node-test-id',
-}));
-
-vi.mock('@/hooks/nodeLabelEditRequest', () => ({
-  queueNodeLabelEditRequest: vi.fn(),
-}));
-
-vi.mock('@/store', () => ({
-  useFlowStore: Object.assign(vi.fn(), {
-    getState: vi.fn(),
-  }),
-}));
-
 const mockSetNodes = vi.fn();
 const mockSetSelectedNodeId = vi.fn();
 
 function captureCreatedNode(setNodes: typeof mockSetNodes): FlowNode | undefined {
-  const updater = setNodes.mock.calls.at(-1)?.[0] as ((nodes: FlowNode[]) => FlowNode[]) | undefined;
-  if (!updater) {
+  const call = setNodes.mock.calls.at(-1);
+  if (!call) {
+    return undefined;
+  }
+
+  const updater = call[0];
+  if (typeof updater !== 'function') {
     return undefined;
   }
 
@@ -38,14 +29,11 @@ function captureCreatedNode(setNodes: typeof mockSetNodes): FlowNode | undefined
 
 beforeEach(() => {
   vi.clearAllMocks();
-  vi.mocked(useFlowStore).mockReturnValue({
-    setNodes: mockSetNodes,
-    setSelectedNodeId: mockSetSelectedNodeId,
-  } as never);
-  vi.mocked(useFlowStore.getState).mockReturnValue({
+  useFlowStore.setState({
+    ...useFlowStore.getInitialState(),
     activeLayerId: 'layer-1',
     selectedNodeId: null,
-  } as never);
+  });
 });
 
 describe('useNodeOperationAdders', () => {
@@ -66,9 +54,11 @@ describe('useNodeOperationAdders', () => {
     });
 
     const createdNode = captureCreatedNode(mockSetNodes);
+    expect(createdNode?.id).toBeTruthy();
     expect(createdNode?.type).toBe('start');
     expect(createdNode?.data.shape).toBe('capsule');
     expect(createdNode?.data.color).toBe('emerald');
+    expect(mockSetSelectedNodeId).toHaveBeenCalledWith(createdNode?.id);
   });
 
   it('handleAddShape creates custom parallelogram nodes for io semantics', () => {
@@ -86,7 +76,9 @@ describe('useNodeOperationAdders', () => {
     });
 
     const createdNode = captureCreatedNode(mockSetNodes);
+    expect(createdNode?.id).toBeTruthy();
     expect(createdNode?.type).toBe('custom');
     expect(createdNode?.data.shape).toBe('parallelogram');
+    expect(mockSetSelectedNodeId).toHaveBeenCalledWith(createdNode?.id);
   });
 });

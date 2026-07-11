@@ -51,7 +51,6 @@ describe('buildFlowEditorPanelsProps', () => {
       commandBarView: 'assets' as const,
       handleAddAnnotation: vi.fn(),
       handleAddSection: vi.fn(),
-      handleAddArchitectureNode: vi.fn(),
       handleAddDomainLibraryItem: vi.fn(),
       showGrid: true,
       toggleGrid: vi.fn(),

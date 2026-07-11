@@ -328,7 +328,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       stopPlayback,
       handleAddAnnotation: operations.handleAddAnnotation,
       handleAddSection: operations.handleAddSection,
-      handleAddArchitectureNode: operations.handleAddArchitectureNode,
       handleAddDomainLibraryItem: operations.handleAddDomainLibraryItem,
     },
   });
