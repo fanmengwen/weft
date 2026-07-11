@@ -1,5 +1,5 @@
 {
-  "name": "openflowkit-signaling",
+  "name": "weft-signaling",
   "version": "1.0.0",
   "private": true,
   "scripts": {
