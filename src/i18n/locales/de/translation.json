@@ -92,7 +92,12 @@
       "lastRunInput": "Eingabe",
       "lastRunOutput": "Ausgabe",
       "lastRunEmpty": "Führe den Knoten aus, um Ein- und Ausgaben zu sehen.",
-      "conditionUpstream": "Vorgelagerter Text"
+      "conditionUpstream": "Vorgelagerter Text",
+      "sections": {
+        "basic": "Grundlagen",
+        "prompt": "Prompt",
+        "config": "Konfiguration"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

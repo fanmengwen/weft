@@ -92,7 +92,12 @@
       "lastRunInput": "入力",
       "lastRunOutput": "出力",
       "lastRunEmpty": "ノードを実行すると入力と出力を確認できます。",
-      "conditionUpstream": "上流テキスト"
+      "conditionUpstream": "上流テキスト",
+      "sections": {
+        "basic": "基本",
+        "prompt": "プロンプト",
+        "config": "設定"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

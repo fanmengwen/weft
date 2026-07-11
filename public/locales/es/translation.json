@@ -92,7 +92,12 @@
       "lastRunInput": "Entrada",
       "lastRunOutput": "Salida",
       "lastRunEmpty": "Ejecuta el nodo para ver sus entradas y salidas.",
-      "conditionUpstream": "Texto anterior"
+      "conditionUpstream": "Texto anterior",
+      "sections": {
+        "basic": "Básico",
+        "prompt": "Prompt",
+        "config": "Configuración"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

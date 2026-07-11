@@ -1,8 +1,10 @@
 import React, { useRef } from 'react';
+import { Play, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createId } from '@/lib/id';
 import { useToast } from '@/components/ui/ToastContext';
-import { WORKFLOW_NODE_CATALOG } from '../nodes/nodeCatalog';
+import { WORKFLOW_NODE_CATALOG, workflowToneStyle } from '../nodes/nodeCatalog';
+import { WorkflowNodeIcon } from '../nodes/WorkflowNodeIcon';
 import type {
   WorkflowCondition,
   WorkflowConditionOperator,
@@ -14,12 +16,13 @@ import { useWorkflowRunStore } from '../store/workflowRunStore';
 import { useWorkflowStore } from '../store/workflowStore';
 import { WorkflowVariablePicker } from './WorkflowVariablePicker';
 
-const FIELD_LABEL_CLASS = 'font-medium text-[var(--brand-text)]';
-const INPUT_CLASS =
-  'rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] px-3 py-2 text-[var(--brand-text)] outline-none focus:border-[var(--brand-primary)]';
-const TEXTAREA_CLASS = `resize-none ${INPUT_CLASS}`;
-const COMPACT_SELECT_CLASS =
-  'rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] px-2 py-1.5 text-xs text-[var(--brand-text)] outline-none focus:border-[var(--brand-primary)]';
+const SECTION_HEADER_CLASS = 'mb-2.5 mt-4 text-[11px] tracking-[0.05em] text-[var(--wf-text-faint)]';
+const FIELD_LABEL_CLASS = 'text-xs font-medium text-[var(--wf-text-label)]';
+const FOCUS_RING_CLASS =
+  'outline-none transition-shadow focus:border-[var(--wf-acc)] focus:shadow-[0_0_0_3px_var(--wf-acc-focus)]';
+const INPUT_CLASS = `h-[34px] w-full rounded-lg border border-[var(--wf-input-border)] bg-white px-2.5 text-[13px] text-[var(--wf-text)] placeholder:text-[var(--wf-placeholder)] ${FOCUS_RING_CLASS}`;
+const TEXTAREA_CLASS = `min-h-[84px] w-full resize-none rounded-lg border border-[var(--wf-input-border)] bg-white px-2.5 py-2 text-[13px] leading-normal text-[var(--wf-text)] placeholder:text-[var(--wf-placeholder)] ${FOCUS_RING_CLASS}`;
+const COMPACT_SELECT_CLASS = `rounded-[7px] border border-[var(--wf-input-border)] bg-white px-2 py-1.5 text-xs text-[var(--wf-text)] outline-none focus:border-[var(--wf-acc)]`;
 
 const CONDITION_OPERATORS: WorkflowConditionOperator[] = [
   'contains',
@@ -27,6 +30,10 @@ const CONDITION_OPERATORS: WorkflowConditionOperator[] = [
   'equals',
   'regex',
 ];
+
+function SectionDivider(): React.ReactElement {
+  return <div className="-mx-4 mt-[18px] border-t border-[var(--wf-divider)]" />;
+}
 
 export function WorkflowPropertiesPanel(): React.ReactElement {
   const { t } = useTranslation();
@@ -85,68 +92,66 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   };
 
   return (
-    <aside className="flex w-72 shrink-0 flex-col gap-3 overflow-y-auto border-l border-[var(--brand-border)] bg-[var(--brand-glass-bg)] p-4 backdrop-blur-[var(--brand-glass-blur)]">
-      <h2 className="text-xs font-bold uppercase tracking-wide text-[var(--brand-secondary)]">
-        {t('workflowMode.properties.title')}
-      </h2>
+    <aside className="flex min-h-0 flex-col border-l border-[var(--wf-border)] bg-[var(--wf-surface)]">
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-3.5">
+        <h2 className="text-[11px] tracking-[0.05em] text-[var(--wf-text-faint)]">
+          {t('workflowMode.properties.title')}
+        </h2>
 
-      {!selectedNode || !data ? (
-        <div className="flex flex-1 items-center justify-center rounded-[var(--brand-radius)] border border-dashed border-[var(--brand-border)] p-6 text-center">
-          <p className="text-sm text-[var(--brand-secondary)]">{t('workflowMode.properties.empty')}</p>
-        </div>
-      ) : (
-        <div className="flex flex-1 flex-col gap-4">
-          <div className="flex items-center gap-2 rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-3">
-            <span
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--brand-radius)] text-lg"
-              style={{ backgroundColor: `${meta?.accent ?? '#3b82f6'}1a` }}
-            >
-              {meta?.icon}
-            </span>
-            <div>
-              <div className="text-sm font-semibold text-[var(--brand-text)]">
-                {t(`workflowMode.nodes.${data.kind}.name`)}
+        {selectedNode && data ? (
+          <>
+            <div className="mt-3 flex items-center gap-2.5">
+              <span
+                className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[9px]"
+                style={meta ? workflowToneStyle(meta.tone) : undefined}
+              >
+                <WorkflowNodeIcon kind={data.kind} className="h-[17px] w-[17px]" />
+              </span>
+              <div className="min-w-0">
+                <div className="truncate text-[15px] font-semibold leading-tight text-[var(--wf-text)]">
+                  {data.label}
+                </div>
+                <div className="mt-1 flex items-center gap-1.5">
+                  <span
+                    className="h-1.5 w-1.5 rounded-full"
+                    style={meta ? { background: `var(--wf-t-${meta.tone}-fg)` } : undefined}
+                  />
+                  <span className="text-xs text-[var(--wf-text-type)]">
+                    {t(`workflowMode.nodes.${data.kind}.name`)}
+                  </span>
+                </div>
               </div>
-              <div className="text-xs text-[var(--brand-secondary)]">{data.label}</div>
             </div>
-          </div>
 
-          <button
-            type="button"
-            onClick={() => void runSingleNode(selectedNode.id)}
-            disabled={isBusy}
-            className="rounded-[var(--brand-radius)] border border-[var(--brand-primary)] px-3 py-2 text-sm font-medium text-[var(--brand-primary)] transition-colors hover:bg-[var(--brand-primary)]/10 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            ▶ {t('workflowMode.properties.runNode')}
-          </button>
+            <button
+              type="button"
+              onClick={() => void runSingleNode(selectedNode.id)}
+              disabled={isBusy}
+              className="mt-3.5 flex h-[34px] w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--wf-acc-border)] bg-[var(--wf-acc-soft)] text-[13px] font-semibold text-[var(--wf-acc)] transition-colors hover:bg-[var(--wf-acc-soft-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <Play className="h-2.5 w-2.5 fill-current" />
+              {t('workflowMode.properties.runNode')}
+            </button>
 
-          <label className="flex flex-col gap-1.5 text-sm">
-            <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.labelField')}</span>
-            <input
-              type="text"
-              value={data.label}
-              onChange={(event) => patchNode({ label: event.target.value })}
-              className={INPUT_CLASS}
-            />
-          </label>
-
-          {data.kind === 'textInput' ? (
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.textField')}</span>
-              <textarea
-                value={data.text ?? ''}
-                onChange={(event) => patchNode({ text: event.target.value })}
-                rows={5}
-                className={TEXTAREA_CLASS}
-                placeholder={t('workflowMode.properties.textPlaceholder')}
+            <SectionDivider />
+            <div className={SECTION_HEADER_CLASS}>
+              {t('workflowMode.properties.sections.basic')}
+            </div>
+            <label className="flex flex-col gap-1.5">
+              <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.labelField')}</span>
+              <input
+                type="text"
+                value={data.label}
+                onChange={(event) => patchNode({ label: event.target.value })}
+                className={INPUT_CLASS}
               />
             </label>
-          ) : null}
 
-          {data.kind === 'llm' ? (
-            <>
-              <label className="flex flex-col gap-1.5 text-sm">
-                <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.modelField')}</span>
+            {data.kind === 'llm' ? (
+              <label className="mt-3.5 flex flex-col gap-1.5">
+                <span className={FIELD_LABEL_CLASS}>
+                  {t('workflowMode.properties.modelField')}
+                </span>
                 <input
                   type="text"
                   value={data.model ?? ''}
@@ -155,55 +160,85 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                   placeholder={t('workflowMode.properties.modelFollowGlobal')}
                 />
               </label>
-              <label className="flex flex-col gap-1.5 text-sm">
-                <span className={FIELD_LABEL_CLASS}>
-                  {t('workflowMode.properties.systemPromptField')}
-                </span>
-                <textarea
-                  value={data.systemPrompt ?? ''}
-                  onChange={(event) => patchNode({ systemPrompt: event.target.value })}
-                  rows={3}
-                  className={TEXTAREA_CLASS}
-                  placeholder={t('workflowMode.properties.systemPromptPlaceholder')}
-                />
-              </label>
-              <label className="flex flex-col gap-1.5 text-sm">
-                <span className="flex items-center justify-between">
-                  <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.promptField')}</span>
-                  <WorkflowVariablePicker
-                    nodeId={selectedNode.id}
-                    onPick={(template) => patchNode({ prompt: (data.prompt ?? '') + template })}
-                  />
-                </span>
-                <textarea
-                  value={data.prompt ?? ''}
-                  onChange={(event) => patchNode({ prompt: event.target.value })}
-                  rows={5}
-                  className={TEXTAREA_CLASS}
-                  placeholder={t('workflowMode.properties.promptPlaceholder')}
-                />
-              </label>
-            </>
-          ) : null}
+            ) : null}
 
-          {data.kind === 'webSearch' ? (
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className="flex items-center justify-between">
-                <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.queryField')}</span>
-                <WorkflowVariablePicker
-                  nodeId={selectedNode.id}
-                  onPick={(template) => patchNode({ query: (data.query ?? '') + template })}
-                />
-              </span>
-              <input
-                type="text"
-                value={data.query ?? ''}
-                onChange={(event) => patchNode({ query: event.target.value })}
-                className={INPUT_CLASS}
-                placeholder={t('workflowMode.properties.queryPlaceholder')}
-              />
-            </label>
-          ) : null}
+            <SectionDivider />
+            {data.kind === 'llm' ? (
+              <>
+                <div className={SECTION_HEADER_CLASS}>
+                  {t('workflowMode.properties.sections.prompt')}
+                </div>
+                <label className="flex flex-col gap-1.5">
+                  <span className={FIELD_LABEL_CLASS}>
+                    {t('workflowMode.properties.systemPromptField')}
+                  </span>
+                  <textarea
+                    value={data.systemPrompt ?? ''}
+                    onChange={(event) => patchNode({ systemPrompt: event.target.value })}
+                    className={TEXTAREA_CLASS}
+                    placeholder={t('workflowMode.properties.systemPromptPlaceholder')}
+                  />
+                </label>
+                <label className="mt-3.5 flex flex-col gap-1.5">
+                  <span className="flex items-center justify-between">
+                    <span className={FIELD_LABEL_CLASS}>
+                      {t('workflowMode.properties.promptField')}
+                    </span>
+                    <WorkflowVariablePicker
+                      nodeId={selectedNode.id}
+                      onPick={(template) => patchNode({ prompt: (data.prompt ?? '') + template })}
+                    />
+                  </span>
+                  <textarea
+                    value={data.prompt ?? ''}
+                    onChange={(event) => patchNode({ prompt: event.target.value })}
+                    className={`${TEXTAREA_CLASS} min-h-[108px]`}
+                    placeholder={t('workflowMode.properties.promptPlaceholder')}
+                  />
+                </label>
+              </>
+            ) : (
+              <>
+                <div className={SECTION_HEADER_CLASS}>
+                  {t('workflowMode.properties.sections.config')}
+                </div>
+
+                {data.kind === 'textInput' ? (
+                  <label className="flex flex-col gap-1.5">
+                    <span className={FIELD_LABEL_CLASS}>
+                      {t('workflowMode.properties.textField')}
+                    </span>
+                    <textarea
+                      value={data.text ?? ''}
+                      onChange={(event) => patchNode({ text: event.target.value })}
+                      className={`${TEXTAREA_CLASS} min-h-[108px]`}
+                      placeholder={t('workflowMode.properties.textPlaceholder')}
+                    />
+                  </label>
+                ) : null}
+
+                {data.kind === 'webSearch' ? (
+                  <label className="flex flex-col gap-1.5">
+                    <span className="flex items-center justify-between">
+                      <span className={FIELD_LABEL_CLASS}>
+                        {t('workflowMode.properties.queryField')}
+                      </span>
+                      <WorkflowVariablePicker
+                        nodeId={selectedNode.id}
+                        onPick={(template) => patchNode({ query: (data.query ?? '') + template })}
+                      />
+                    </span>
+                    <input
+                      type="text"
+                      value={data.query ?? ''}
+                      onChange={(event) => patchNode({ query: event.target.value })}
+                      className={INPUT_CLASS}
+                      placeholder={t('workflowMode.properties.queryPlaceholder')}
+                    />
+                  </label>
+                ) : null}
+              </>
+            )}
 
           {data.kind === 'knowledgeRetrieval' ? (
             <>
@@ -389,48 +424,59 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
             </p>
           ) : null}
 
-          <div className="flex flex-col gap-1.5 text-sm">
-            <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.lastRun')}</span>
+            <SectionDivider />
+            <div className={SECTION_HEADER_CLASS}>{t('workflowMode.properties.lastRun')}</div>
             {lastRunOutput === undefined && Object.keys(lastRunInputs).length === 0 ? (
-              <p className="text-xs text-[var(--brand-secondary)]">
+              <div className="rounded-lg border border-dashed border-[var(--wf-input-border)] px-3 py-3.5 text-center text-xs leading-relaxed text-[var(--wf-text-muted)]">
                 {t('workflowMode.properties.lastRunEmpty')}
-              </p>
+              </div>
             ) : (
-              <>
+              <div className="flex flex-col gap-3">
                 {Object.keys(lastRunInputs).length > 0 ? (
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs font-medium text-[var(--brand-secondary)]">
+                    <span className="text-xs font-medium text-[var(--wf-text-label)]">
                       {t('workflowMode.properties.lastRunInput')}
                     </span>
-                    <pre className="max-h-32 overflow-auto rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-2 text-[11px] leading-relaxed text-[var(--brand-text)]">
+                    <pre className="max-h-32 overflow-auto rounded-lg border border-[var(--wf-input-border)] bg-white p-2 text-[11px] leading-relaxed text-[var(--wf-text)]">
                       {JSON.stringify(lastRunInputs, null, 2)}
                     </pre>
                   </div>
                 ) : null}
                 {lastRunOutput !== undefined ? (
                   <div className="flex flex-col gap-1">
-                    <span className="text-xs font-medium text-[var(--brand-secondary)]">
+                    <span className="text-xs font-medium text-[var(--wf-text-label)]">
                       {t('workflowMode.properties.lastRunOutput')}
                     </span>
-                    <pre className="max-h-32 overflow-auto rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-2 text-[11px] leading-relaxed text-[var(--brand-text)]">
+                    <pre className="max-h-32 overflow-auto rounded-lg border border-[var(--wf-input-border)] bg-white p-2 text-[11px] leading-relaxed text-[var(--wf-text)]">
                       {JSON.stringify(lastRunOutput, null, 2)}
                     </pre>
                   </div>
                 ) : null}
-              </>
+              </div>
             )}
+          </>
+        ) : (
+          <div className="mt-3 flex items-center justify-center rounded-lg border border-dashed border-[var(--wf-input-border)] p-6 text-center">
+            <p className="text-xs leading-relaxed text-[var(--wf-text-muted)]">
+              {t('workflowMode.properties.empty')}
+            </p>
           </div>
+        )}
+      </div>
 
+      {selectedNode ? (
+        <div className="border-t border-[var(--wf-hairline)] px-3 py-2">
           <button
             type="button"
             onClick={() => deleteWorkflowNode(selectedNode.id)}
             aria-label={t('workflowMode.properties.deleteAria')}
-            className="mt-auto rounded-[var(--brand-radius)] border border-[var(--brand-danger,#ef4444)] px-3 py-2 text-sm font-medium text-[var(--brand-danger,#ef4444)] transition-colors hover:bg-[var(--brand-danger,#ef4444)]/10"
+            className="inline-flex items-center gap-1.5 rounded-[7px] px-2 py-1.5 text-[12.5px] font-medium text-[var(--wf-danger)] transition-colors hover:bg-[var(--wf-danger-soft)]"
           >
+            <Trash2 className="h-3.5 w-3.5" />
             {t('workflowMode.properties.delete')}
           </button>
         </div>
-      )}
+      ) : null}
     </aside>
   );
 }

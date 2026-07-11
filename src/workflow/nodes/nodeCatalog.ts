@@ -16,20 +16,18 @@ export type WorkflowNodeTone = 'input' | 'llm' | 'web' | 'kb' | 'cond' | 'code' 
 
 export interface WorkflowNodeMeta {
   kind: WorkflowNodeKind;
-  icon: string;
-  accent: string;
   category: WorkflowNodeCategory;
   tone: WorkflowNodeTone;
 }
 
 export const WORKFLOW_NODE_CATALOG: ReadonlyArray<WorkflowNodeMeta> = [
-  { kind: 'textInput', icon: '📝', accent: '#3b82f6', category: 'input', tone: 'input' },
-  { kind: 'llm', icon: '🤖', accent: '#8b5cf6', category: 'process', tone: 'llm' },
-  { kind: 'webSearch', icon: '🔍', accent: '#14b8a6', category: 'process', tone: 'web' },
-  { kind: 'knowledgeRetrieval', icon: '📚', accent: '#ec4899', category: 'process', tone: 'kb' },
-  { kind: 'ifElse', icon: '🔀', accent: '#f97316', category: 'logic', tone: 'cond' },
-  { kind: 'code', icon: '💻', accent: '#64748b', category: 'process', tone: 'code' },
-  { kind: 'output', icon: '📤', accent: '#f59e0b', category: 'output', tone: 'out' },
+  { kind: 'textInput', category: 'input', tone: 'input' },
+  { kind: 'llm', category: 'process', tone: 'llm' },
+  { kind: 'webSearch', category: 'process', tone: 'web' },
+  { kind: 'knowledgeRetrieval', category: 'process', tone: 'kb' },
+  { kind: 'ifElse', category: 'logic', tone: 'cond' },
+  { kind: 'code', category: 'process', tone: 'code' },
+  { kind: 'output', category: 'output', tone: 'out' },
 ];
 
 /** Library display order: sections and the kinds inside each. */

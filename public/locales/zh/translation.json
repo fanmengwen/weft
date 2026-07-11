@@ -92,7 +92,12 @@
       "lastRunInput": "输入",
       "lastRunOutput": "输出",
       "lastRunEmpty": "运行该节点后可查看输入与输出。",
-      "conditionUpstream": "上游文本"
+      "conditionUpstream": "上游文本",
+      "sections": {
+        "basic": "基础",
+        "prompt": "提示词",
+        "config": "配置"
+      }
     },
     "canvas": {
       "emptyTitle": "从左侧拖入节点开始搭建工作流",

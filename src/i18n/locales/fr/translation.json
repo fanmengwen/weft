@@ -92,7 +92,12 @@
       "lastRunInput": "Entrée",
       "lastRunOutput": "Sortie",
       "lastRunEmpty": "Exécutez le nœud pour inspecter ses entrées et sorties.",
-      "conditionUpstream": "Texte amont"
+      "conditionUpstream": "Texte amont",
+      "sections": {
+        "basic": "Général",
+        "prompt": "Prompt",
+        "config": "Configuration"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

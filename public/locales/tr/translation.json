@@ -92,7 +92,12 @@
       "lastRunInput": "Girdi",
       "lastRunOutput": "Çıktı",
       "lastRunEmpty": "Girdi ve çıktıları görmek için düğümü çalıştırın.",
-      "conditionUpstream": "Önceki metin"
+      "conditionUpstream": "Önceki metin",
+      "sections": {
+        "basic": "Temel",
+        "prompt": "İstem",
+        "config": "Yapılandırma"
+      }
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",
