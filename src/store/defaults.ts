@@ -7,23 +7,23 @@ export const DEFAULT_DESIGN_SYSTEM: DesignSystem = {
     name: 'Weft Default',
     description: 'The default Weft design system.',
     colors: {
-        primary: '#6366f1',
-        secondary: '#64748b',
-        accent: '#f43f5e',
-        background: '#f8fafc',
+        primary: '#3b63d3',
+        secondary: '#5c6572',
+        accent: '#3b63d3',
+        background: '#f6f7f9',
         surface: '#ffffff',
-        border: '#e2e8f0',
+        border: '#e6e8ec',
         text: {
-            primary: '#0f172a',
-            secondary: '#475569',
+            primary: '#171d26',
+            secondary: '#5c6572',
         },
         nodeBackground: '#ffffff',
-        nodeBorder: '#e2e8f0',
-        nodeText: '#0f172a',
-        edge: '#94a3b8',
+        nodeBorder: '#e1e4ea',
+        nodeText: '#171d26',
+        edge: '#c3c9d3',
     },
     typography: {
-        fontFamily: 'Inter, sans-serif',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif',
         fontSize: {
             sm: '12px',
             md: '14px',
@@ -33,13 +33,13 @@ export const DEFAULT_DESIGN_SYSTEM: DesignSystem = {
     },
     components: {
         node: {
-            borderRadius: '8px',
+            borderRadius: '11px',
             borderWidth: '1px',
-            boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.08), 0 4px 8px -2px rgb(0 0 0 / 0.1), 0 0 0 1px rgb(0 0 0 / 0.04)',
-            padding: '1rem',
+            boxShadow: '0 1px 2px rgba(16,24,40,0.05), 0 2px 6px rgba(16,24,40,0.04)',
+            padding: '12px',
         },
         edge: {
-            strokeWidth: 2,
+            strokeWidth: 1.6,
         },
     },
 };
@@ -114,7 +114,7 @@ export const INITIAL_GLOBAL_EDGE_OPTIONS: GlobalEdgeOptions = {
     type: 'bezier',
     curve: 'basis',
     animated: false,
-    strokeWidth: 1.5,
+    strokeWidth: 1.6,
 };
 
 export const INITIAL_LAYERS: Layer[] = [

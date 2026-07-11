@@ -307,9 +307,8 @@ html {
   --color-surface-info-text: #1d4ed8;
 }
 
-/* ===== Workflow mode (flat light) — self-contained token set.
-   Chart mode keeps --brand-*; workflow components consume only --wf-*.
-   Static values by design: workflow stays light regardless of theme. ===== */
+/* ===== Flat light token set shared by the chart and workflow editors.
+   Static values by design: stays light regardless of theme. ===== */
 :root {
   --wf-acc: #3b63d3;
   --wf-acc-soft: color-mix(in srgb, var(--wf-acc) 8%, #fff);
@@ -366,6 +365,10 @@ html {
   --wf-t-code-fg: #4a5568;
   --wf-t-out-bg: #e2f2e8;
   --wf-t-out-fg: #1f7d4d;
+  --wf-t-end-bg: #fbeae8;
+  --wf-t-end-fg: #c4443c;
+  --wf-t-note-bg: #fdf4d7;
+  --wf-t-note-fg: #a8862b;
 }
 
 @media (prefers-color-scheme: dark) {

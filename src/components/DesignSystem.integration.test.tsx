@@ -140,8 +140,10 @@ describe('Design System integration', () => {
         if (!nodeContainer) {
             throw new Error('Node container not found');
         }
-        expect(nodeContainer.style.fontFamily).toBe('Inter, sans-serif');
-        expect(nodeContainer.style.borderRadius).toBe('8px');
+        expect(nodeContainer.style.fontFamily).toBe(
+            '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif'
+        );
+        expect(nodeContainer.style.borderRadius).toBe('11px');
 
         act(() => {
             useFlowStore.getState().setActiveDesignSystem('alt');
@@ -169,8 +171,8 @@ describe('Design System integration', () => {
         );
 
         const beforeStyle = JSON.parse(screen.getByTestId('custom-edge-base').getAttribute('data-style') || '{}');
-        expect(beforeStyle.stroke).toBe('#94a3b8');
-        expect(beforeStyle.strokeWidth).toBe(2);
+        expect(beforeStyle.stroke).toBe('#c3c9d3');
+        expect(beforeStyle.strokeWidth).toBe(1.6);
 
         act(() => {
             useFlowStore.getState().setActiveDesignSystem('alt');
