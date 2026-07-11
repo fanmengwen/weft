@@ -220,7 +220,7 @@ export function downloadOpenFlowDSLToFile({
 }: Pick<ExportOpenFlowDSLParams, 'nodes' | 'edges' | 'exportSerializationMode' | 't' | 'addToast' | 'baseFileName'>): void {
     downloadTextFile({
         text: toOpenFlowDSL(nodes, edges, { mode: exportSerializationMode }),
-        fileName: buildExportFileName(baseFileName, 'ofk'),
+        fileName: buildExportFileName(baseFileName, 'weft'),
         processingMessage: t('export.progress.preparingDslDownload'),
         successMessage: 'Weft DSL downloaded.',
         errorMessage: 'Failed to download Weft DSL.',

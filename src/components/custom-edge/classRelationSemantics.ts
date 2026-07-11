@@ -1,14 +1,14 @@
 import { isClassRelationToken, type ClassRelationToken } from '@/lib/relationSemantics';
 import type { EdgeData } from '@/lib/types';
 
-export const CLASS_MARKER_ARROW_FILLED = 'ofk-class-arrow-filled';
-export const CLASS_MARKER_ARROW_OPEN = 'ofk-class-arrow-open';
-export const CLASS_MARKER_TRIANGLE_OPEN = 'ofk-class-triangle-open';
-export const CLASS_MARKER_DIAMOND_OPEN = 'ofk-class-diamond-open';
-export const CLASS_MARKER_DIAMOND_FILLED = 'ofk-class-diamond-filled';
-export const ER_MARKER_BAR = 'ofk-er-bar';
-export const ER_MARKER_CIRCLE = 'ofk-er-circle';
-export const ER_MARKER_CROW = 'ofk-er-crow';
+export const CLASS_MARKER_ARROW_FILLED = 'weft-class-arrow-filled';
+export const CLASS_MARKER_ARROW_OPEN = 'weft-class-arrow-open';
+export const CLASS_MARKER_TRIANGLE_OPEN = 'weft-class-triangle-open';
+export const CLASS_MARKER_DIAMOND_OPEN = 'weft-class-diamond-open';
+export const CLASS_MARKER_DIAMOND_FILLED = 'weft-class-diamond-filled';
+export const ER_MARKER_BAR = 'weft-er-bar';
+export const ER_MARKER_CIRCLE = 'weft-er-circle';
+export const ER_MARKER_CROW = 'weft-er-crow';
 
 interface ClassRelationVisualSpec {
   markerStartId?: string;
