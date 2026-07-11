@@ -568,15 +568,10 @@ body {
   transform: translate(50%, -50%) !important;
 }
 
-.chart-node-surface--hoverable:hover {
+.chart-node-surface--hoverable:not(.chart-node-surface--selected):hover {
   transform: translateY(-2px);
   border-color: #d4d9e0 !important;
   box-shadow: var(--wf-shadow-node-hover) !important;
-}
-
-.chart-node-surface--selected.chart-node-surface--hoverable:hover {
-  border-color: var(--wf-acc) !important;
-  box-shadow: var(--wf-shadow-node-selected) !important;
 }
 
 /* ===== Node Resizer Bounding Box (Miro/Figma style) ===== */

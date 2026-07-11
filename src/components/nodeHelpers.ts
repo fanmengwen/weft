@@ -212,9 +212,6 @@ export function resolveChartNodeChipIcon(
   if (nodeType === 'custom' && shape === 'cylinder') {
     return 'Database';
   }
-  if (nodeType === 'process') {
-    return 'Square';
-  }
   return 'Square';
 }
 

@@ -1,12 +1,8 @@
 import React from 'react';
 import MemoizedMarkdown from './MemoizedMarkdown';
 import { InlineTextEditSurface } from './InlineTextEditSurface';
-import { NamedIcon } from './IconMap';
-import {
-  type ChartNodeSurfaceVariant,
-  type ChartNodeTone,
-  chartNodeToneVars,
-} from './nodeHelpers';
+import { ChartNodeToneChip } from './ChartNodeToneChip';
+import { type ChartNodeSurfaceVariant, type ChartNodeTone } from './nodeHelpers';
 
 interface InlineEditState {
   isEditing: boolean;
@@ -42,49 +38,6 @@ interface CustomNodeContentProps {
   isComplexShape: boolean;
   complexShapePaddingClassName: string;
   contentPadding: string;
-}
-
-function ChartNodeToneChip({
-  tone,
-  chipIcon,
-  resolvedAssetIconUrl,
-  isCircular,
-  lodPreserveClassName,
-}: {
-  tone: ChartNodeTone;
-  chipIcon: string;
-  resolvedAssetIconUrl: string | null | undefined;
-  isCircular: boolean;
-  lodPreserveClassName: string;
-}): React.ReactElement {
-  const toneVars = chartNodeToneVars(tone);
-  return (
-    <div
-      data-chart-node-tone-chip="1"
-      data-tone={tone}
-      className={`shrink-0 flex h-[30px] w-[30px] items-center justify-center flow-lod-far-target flow-lod-far-flex-target flow-lod-shadow ${lodPreserveClassName} ${isCircular ? 'rounded-full' : ''}`}
-      style={{
-        background: toneVars.background,
-        color: toneVars.color,
-        borderRadius: isCircular ? '999px' : '8px',
-      }}
-    >
-      {resolvedAssetIconUrl ? (
-        <img
-          src={resolvedAssetIconUrl}
-          alt=""
-          className="h-4 w-4 object-contain"
-        />
-      ) : (
-        <NamedIcon
-          name={chipIcon}
-          fallbackName="Square"
-          className="h-4 w-4"
-          style={{ color: toneVars.color }}
-        />
-      )}
-    </div>
-  );
 }
 
 export function CustomNodeContent({

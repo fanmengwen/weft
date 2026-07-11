@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { act, render, screen } from '@testing-library/react';
 import type { CSSProperties } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -397,6 +399,34 @@ describe('Design System integration', () => {
         expect(nodeContainer.style.borderColor).toBe('var(--wf-acc)');
         expect(nodeContainer.style.borderWidth).toBe('1.5px');
         expect(nodeContainer.style.boxShadow).toBe('var(--wf-shadow-node-selected)');
+    });
+
+    it('keeps selected surface styles when hoverable and selected classes coexist', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-selected-hover"
+                type="process"
+                selected={true}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Selected hover node' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.className).toContain('chart-node-surface--hoverable');
+        expect(nodeContainer.className).toContain('chart-node-surface--selected');
+        expect(nodeContainer.style.borderColor).toBe('var(--wf-acc)');
+        expect(nodeContainer.style.borderWidth).toBe('1.5px');
+        expect(nodeContainer.style.boxShadow).toBe('var(--wf-shadow-node-selected)');
+
+        const css = readFileSync(join(process.cwd(), 'src/index.css'), 'utf8');
+        expect(css).toContain('.chart-node-surface--hoverable:not(.chart-node-surface--selected):hover');
     });
 
     it('exposes hover surface classes on generic chart nodes', () => {
