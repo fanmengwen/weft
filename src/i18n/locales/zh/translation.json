@@ -372,6 +372,11 @@
     "deleteNode": "删除节点",
     "duplicateNode": "复制节点"
   },
+  "elementPalette": {
+    "assetLibrary": "素材库",
+    "dragHint": "点击或拖拽到画布添加",
+    "title": "元素"
+  },
   "landing": {
     "nav": {
       "features": "功能",
@@ -1572,6 +1577,11 @@
     "assets": "资源",
     "node": "形状",
     "stickyNote": "便利贴",
+    "annotation": "注释",
+    "decision": "判断",
+    "end": "结束",
+    "process": "处理",
+    "start": "开始",
     "section": "分区",
     "other": "其他",
     "autoLayout": "自动布局",

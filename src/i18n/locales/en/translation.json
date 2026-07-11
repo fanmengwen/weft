@@ -372,6 +372,11 @@
     "deleteNode": "Delete Node",
     "duplicateNode": "Duplicate Node"
   },
+  "elementPalette": {
+    "assetLibrary": "Asset library",
+    "dragHint": "Click or drag to add to the canvas",
+    "title": "Elements"
+  },
   "nodes": {
     "newNode": "New Node",
     "processStep": "Process Step",
@@ -1625,6 +1630,11 @@
     "assets": "Assets",
     "node": "Shape",
     "stickyNote": "Note",
+    "annotation": "Note",
+    "decision": "Decision",
+    "end": "End",
+    "process": "Process",
+    "start": "Start",
     "section": "Section",
     "other": "Other",
     "autoLayout": "Auto Layout",

@@ -372,6 +372,11 @@
     "deleteNode": "Eliminar nodo",
     "duplicateNode": "Duplicar nodo"
   },
+  "elementPalette": {
+    "assetLibrary": "Biblioteca de recursos",
+    "dragHint": "Haz clic o arrastra para añadir al lienzo",
+    "title": "Elementos"
+  },
   "landing": {
     "nav": {
       "features": "Características",
@@ -1538,6 +1543,11 @@
     "assets": "Recursos",
     "node": "Forma",
     "stickyNote": "Nota adhesiva",
+    "annotation": "Nota",
+    "decision": "Decisión",
+    "end": "Fin",
+    "process": "Proceso",
+    "start": "Inicio",
     "section": "Sección",
     "other": "Otros",
     "autoLayout": "Diseño automático",

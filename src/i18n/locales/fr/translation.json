@@ -372,6 +372,11 @@
     "deleteNode": "Supprimer le nœud",
     "duplicateNode": "Dupliquer le nœud"
   },
+  "elementPalette": {
+    "assetLibrary": "Bibliothèque d'assets",
+    "dragHint": "Cliquez ou faites glisser pour ajouter au canevas",
+    "title": "Éléments"
+  },
   "landing": {
     "nav": {
       "features": "Fonctionnalités",
@@ -1538,6 +1543,11 @@
     "assets": "Ressources",
     "node": "Forme",
     "stickyNote": "Note adhésive",
+    "annotation": "Note",
+    "decision": "Décision",
+    "end": "Fin",
+    "process": "Processus",
+    "start": "Début",
     "section": "Section",
     "other": "Autres",
     "autoLayout": "Mise en page auto",

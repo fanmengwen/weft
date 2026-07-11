@@ -372,6 +372,11 @@
     "deleteNode": "Knoten löschen",
     "duplicateNode": "Knoten duplizieren"
   },
+  "elementPalette": {
+    "assetLibrary": "Asset-Bibliothek",
+    "dragHint": "Klicken oder ziehen, um zum Canvas hinzuzufügen",
+    "title": "Elemente"
+  },
   "landing": {
     "nav": {
       "features": "Funktionen",
@@ -1538,6 +1543,11 @@
     "assets": "Assets",
     "node": "Form",
     "stickyNote": "Haftnotiz",
+    "annotation": "Anmerkung",
+    "decision": "Entscheidung",
+    "end": "Ende",
+    "process": "Prozess",
+    "start": "Start",
     "section": "Abschnitt",
     "other": "Andere",
     "autoLayout": "Auto-Layout",

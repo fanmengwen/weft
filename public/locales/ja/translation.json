@@ -372,6 +372,11 @@
     "deleteNode": "ノードを削除",
     "duplicateNode": "ノードを複製"
   },
+  "elementPalette": {
+    "assetLibrary": "アセットライブラリ",
+    "dragHint": "クリックまたはドラッグでキャンバスに追加",
+    "title": "要素"
+  },
   "landing": {
     "nav": {
       "features": "機能",
@@ -1538,6 +1543,11 @@
     "assets": "アセット",
     "node": "図形",
     "stickyNote": "付箋",
+    "annotation": "注釈",
+    "decision": "分岐",
+    "end": "終了",
+    "process": "処理",
+    "start": "開始",
     "section": "セクション",
     "other": "その他",
     "autoLayout": "自動レイアウト",

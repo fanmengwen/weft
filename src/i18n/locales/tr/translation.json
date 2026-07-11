@@ -372,6 +372,11 @@
     "deleteNode": "Düğümü Sil",
     "duplicateNode": "Düğümü Çoğalt"
   },
+  "elementPalette": {
+    "assetLibrary": "Varlık kütüphanesi",
+    "dragHint": "Tuvala eklemek için tıklayın veya sürükleyin",
+    "title": "Öğeler"
+  },
   "nodes": {
     "newNode": "Yeni Düğüm",
     "processStep": "İşlem Adımı",
@@ -1555,6 +1560,11 @@
     "assets": "Varlıklar",
     "node": "Şekil",
     "stickyNote": "Yapışkan Not",
+    "annotation": "Not",
+    "decision": "Karar",
+    "end": "Bitiş",
+    "process": "İşlem",
+    "start": "Başlangıç",
     "section": "Bölüm",
     "other": "Diğer",
     "autoLayout": "Otomatik Düzen",
