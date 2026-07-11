@@ -1,12 +1,12 @@
 {
-  "name": "openflowkit",
+  "name": "weft",
   "private": true,
   "version": "0.1.1",
   "type": "module",
   "workspaces": [
     "mcp-server"
   ],
-  "homepage": "https://openflowkit.com",
+  "homepage": "https://weft.app",
   "engines": {
     "node": ">=18.0.0"
   },

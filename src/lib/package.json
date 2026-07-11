@@ -1,15 +1,15 @@
 {
-    "name": "@vrun-design/openflowkit-core",
+    "name": "@weft/core",
     "version": "0.1.0",
     "description": "Core parsers, types, and brand utilities for the Weft diagramming canvas.",
     "type": "module",
-    "main": "./dist/openflowkit-core.cjs.js",
-    "module": "./dist/openflowkit-core.es.js",
+    "main": "./dist/weft-core.cjs.js",
+    "module": "./dist/weft-core.es.js",
     "types": "./dist/index.d.ts",
     "exports": {
         ".": {
-            "import": "./dist/openflowkit-core.es.js",
-            "require": "./dist/openflowkit-core.cjs.js",
+            "import": "./dist/weft-core.es.js",
+            "require": "./dist/weft-core.cjs.js",
             "types": "./dist/index.d.ts"
         }
     },
@@ -27,19 +27,11 @@
         "dsl",
         "parser",
         "brand",
-        "openflowkit"
+        "weft"
     ],
-    "author": "Varun <https://github.com/Vrun-design>",
+    "author": "fanmengwen",
     "license": "MIT",
     "homepage": "https://weft.app",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Vrun-design/OpenFlowKit.git",
-        "directory": "src/lib"
-    },
-    "bugs": {
-        "url": "https://github.com/Vrun-design/OpenFlowKit/issues"
-    },
     "peerDependencies": {
         "react": ">=18",
         "react-dom": ">=18",
