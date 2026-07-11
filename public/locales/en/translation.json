@@ -1750,7 +1750,6 @@
     "architecture": "Architecture",
     "condition": "Condition",
     "label": "Label",
-    "messagePlaceholder": "Message",
     "route": "Route",
     "style": "Style",
     "appearance": "Appearance",

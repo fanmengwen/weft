@@ -1752,7 +1752,6 @@
   "connectionPanel": {
     "architecture": "Mimari",
     "label": "Etiket",
-    "messagePlaceholder": "Mesaj",
     "route": "Yol",
     "appearance": "Görünüm",
     "condition": "Koşul",

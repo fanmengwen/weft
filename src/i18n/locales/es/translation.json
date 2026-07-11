@@ -1752,7 +1752,6 @@
   "connectionPanel": {
     "architecture": "Arquitectura",
     "label": "Label",
-    "messagePlaceholder": "Mensaje",
     "route": "Ruta",
     "appearance": "Apariencia",
     "condition": "Condición",

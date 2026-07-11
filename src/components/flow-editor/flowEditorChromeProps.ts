@@ -75,7 +75,6 @@ export function buildFlowEditorToolbarProps({
   handleAddTextNode,
   handleAddJourneyNode,
   handleAddArchitectureNode,
-
   handleAddWireframe,
   undo,
   redo,
@@ -100,7 +99,6 @@ export function buildFlowEditorToolbarProps({
     onAddTextNode: handleAddTextNode,
     onAddJourneyNode: handleAddJourneyNode,
     onAddArchitectureNode: handleAddArchitectureNode,
-
     onAddWireframe: handleAddWireframe,
     onUndo: undo,
     onRedo: redo,
@@ -212,7 +210,6 @@ export function useFlowEditorChromeProps(
     handleAddTextNode,
     handleAddJourneyNode,
     handleAddArchitectureNode,
-  
     handleAddWireframe,
     undo,
     redo,
@@ -308,7 +305,6 @@ export function useFlowEditorChromeProps(
         handleAddTextNode,
         handleAddJourneyNode,
         handleAddArchitectureNode,
-      
         handleAddWireframe,
         undo,
         redo,
@@ -332,7 +328,6 @@ export function useFlowEditorChromeProps(
       handleAddTextNode,
       handleAddJourneyNode,
       handleAddArchitectureNode,
-    
       handleAddWireframe,
       undo,
       redo,

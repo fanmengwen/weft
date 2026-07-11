@@ -79,6 +79,7 @@ function mapOfficialType(rawType: string | undefined): DiagramType | undefined {
   if (normalized === 'mindmap') return 'mindmap';
   if (normalized === 'journey') return 'journey';
   if (normalized === 'architecture' || normalized === 'architecture-beta') return 'architecture';
+  if (normalized === 'sequenceDiagram' || normalized === 'sequence') return 'sequence';
   return undefined;
 }
 

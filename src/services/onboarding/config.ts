@@ -14,7 +14,7 @@ export const RECOMMENDED_IMPORT_OPTIONS: OnboardingImportOption[] = [
   {
     id: 'mermaid',
     label: 'Mermaid',
-    description: 'Paste a flowchart, state, class, ER, or architecture diagram.',
+    description: 'Paste a flowchart, state, or architecture diagram.',
   },
   {
     id: 'sql',

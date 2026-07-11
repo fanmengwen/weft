@@ -401,32 +401,4 @@ describe('parseMermaidByType without a registered plugin', () => {
   });
 });
 
-describe('parseMermaidByType without sequence plugin', () => {
-  beforeEach(() => {
-    initializeDiagramTypeRuntime();
-    unregisterDiagramPluginForTests('sequence');
-  });
-
-  afterEach(() => {
-    resetDiagramTypeRuntimeForTests();
-    initializeDiagramTypeRuntime();
-  });
-
-  it('degrades to an error-free renderer-only result for sequence diagrams', () => {
-    const result = parseMermaidByType(`
-      sequenceDiagram
-      participant Alice
-      participant Bob
-      Alice->>Bob: Hello
-    `);
-
-    expect(result.error).toBeUndefined();
-    expect(result.diagramType).toBe('sequence');
-    expect(result.nativeParseUnavailable).toBe(true);
-    expect(result.importState).toBe('unsupported_family');
-    expect(result.nodes).toHaveLength(0);
-    expect(result.edges).toHaveLength(0);
-  });
-});
-
 

@@ -20,6 +20,7 @@ const IMPORT_ICON_MATCH_THRESHOLD = 0.92;
 const DEFAULT_ICON_MATCH_THRESHOLD = 0.8;
 const DIAGRAM_TYPES_WITHOUT_IMPORT_ICON_ENRICHMENT = new Set<DiagramType>([
   'stateDiagram',
+  'sequence',
   'classDiagram',
   'erDiagram',
   'journey',

@@ -1752,7 +1752,6 @@
   "connectionPanel": {
     "architecture": "アーキテクチャ",
     "label": "ラベル",
-    "messagePlaceholder": "メッセージ",
     "route": "ルート",
     "appearance": "外観",
     "condition": "条件",

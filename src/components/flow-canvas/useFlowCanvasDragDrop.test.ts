@@ -54,7 +54,6 @@ function createAddItemActions() {
     onAddTextNode: vi.fn(),
     onAddJourneyNode: vi.fn(),
     onAddArchitectureNode: vi.fn(),
-
     onAddWireframe: vi.fn(),
   };
 }

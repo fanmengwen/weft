@@ -24,7 +24,6 @@ function createProps() {
     onAddTextNode: vi.fn(),
     onAddJourneyNode: vi.fn(),
     onAddArchitectureNode: vi.fn(),
-
     onAddWireframe: vi.fn(),
     onRequestImageUpload: vi.fn(),
   };

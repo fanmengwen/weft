@@ -1786,7 +1786,6 @@
   "connectionPanel": {
     "architecture": "架构",
     "label": "标签",
-    "messagePlaceholder": "消息",
     "route": "路由",
     "appearance": "外观",
     "condition": "条件",
