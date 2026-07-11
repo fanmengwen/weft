@@ -18,10 +18,11 @@ import { DiffBadge, LintViolationBadge } from './NodeBadges';
 import { IconAssetNodeBody } from './IconAssetNodeBody';
 import { CustomNodeContent } from './CustomNodeContent';
 import { readMermaidImportedNodeMetadataFromData } from '@/services/mermaid/importProvenance';
+import { getMermaidImportedContentPadding } from './customNodeMermaidHelpers';
+import { buildCustomNodeTypography } from './customNodeTypography';
 import {
   type NodeShape,
   COMPLEX_SHAPES,
-  FONT_FAMILY_MAP,
   NEEDS_SQUARE_ASPECT,
   COMPLEX_SHAPE_PADDING,
   buildChartNodeSurfaceStyle,
@@ -33,40 +34,7 @@ import {
   resolveChartNodeTone,
   toCssSize,
   getNodeBorderRadius,
-  fontSizeClassFor,
 } from './nodeHelpers';
-
-function getMermaidImportedFontSize(nodeHeightPx: number | undefined): number {
-  if (typeof nodeHeightPx !== 'number') {
-    return 15;
-  }
-
-  if (nodeHeightPx <= 56) {
-    return 14;
-  }
-
-  if (nodeHeightPx >= 96) {
-    return 16;
-  }
-
-  return 15;
-}
-
-function getMermaidImportedContentPadding(nodeHeightPx: number | undefined): string {
-  if (typeof nodeHeightPx !== 'number') {
-    return '0.6rem 0.75rem';
-  }
-
-  if (nodeHeightPx <= 40) {
-    return '0.4rem 0.6rem';
-  }
-
-  if (nodeHeightPx <= 60) {
-    return '0.5rem 0.7rem';
-  }
-
-  return '0.65rem 0.9rem';
-}
 
 function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const { id, data, type, selected } = props;
@@ -93,27 +61,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const activeShape = (data.shape || defaults.shape || 'rounded') as NodeShape;
   const visualStyle = resolveNodeVisualStyle(activeColor, activeColorMode, data.customColor);
   const iconName = resolvedAssetIconUrl || !activeIconKey ? null : activeIconKey;
-  const labelFontFamilyClass = data.fontFamily ? FONT_FAMILY_MAP[data.fontFamily] : '';
-  const labelFontFamilyStyle = !data.fontFamily
-    ? { fontFamily: designSystem.typography.fontFamily }
-    : {};
-  const subLabelFontFamily = data.subLabelFontFamily || data.fontFamily;
-  const subLabelFontFamilyClass = subLabelFontFamily ? FONT_FAMILY_MAP[subLabelFontFamily] : '';
-  const subLabelFontFamilyStyle = !subLabelFontFamily
-    ? { fontFamily: designSystem.typography.fontFamily }
-    : {};
-  const fontSize = data.fontSize || '13';
-  const isNumericSize = !isNaN(Number(fontSize));
-  const fSizeClass = fontSizeClassFor(fontSize);
-  const fontSizeStyle = isNumericSize ? { fontSize: fontSize + 'px' } : {};
-  const subLabelFontSize = data.subLabelFontSize || '10';
-  const subLabelIsNumericSize = !isNaN(Number(subLabelFontSize));
-  const subLabelSizeClass = fontSizeClassFor(subLabelFontSize);
-  const subLabelFontSizeStyle = subLabelIsNumericSize ? { fontSize: subLabelFontSize + 'px' } : {};
-  const hasProviderIcon = Boolean(resolvedAssetIconUrl) || Boolean(data.archIconPackId);
-  const hasIcon = Boolean(iconName) || Boolean(data.customIconUrl) || hasProviderIcon;
-  const hasLabel = Boolean(data.label?.trim());
-  const hasSubLabel = Boolean(data.subLabel);
   const mermaidImportedNodeMetadata = readMermaidImportedNodeMetadataFromData(data);
   const isMermaidImportedLeaf = mermaidImportedNodeMetadata?.role === 'leaf';
   const isComplexShape = COMPLEX_SHAPES.includes(activeShape);
@@ -121,6 +68,10 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const nodeTone = resolveChartNodeTone(type || 'process', activeShape);
   const chipIcon = resolveChartNodeChipIcon(type || 'process', activeShape, activeIconKey);
   const { minWidth: baseMinWidth, minHeight: baseMinHeight } = getMinNodeSize(activeShape);
+  const hasSubLabel = Boolean(data.subLabel);
+  const hasLabel = Boolean(data.label?.trim());
+  const hasProviderIcon = Boolean(resolvedAssetIconUrl) || Boolean(data.archIconPackId);
+  const hasIcon = Boolean(iconName) || Boolean(data.customIconUrl) || hasProviderIcon;
   const contentMinHeight = surfaceVariant === 'stadium'
     ? 46
     : !isComplexShape
@@ -171,13 +122,21 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         isSelected: isActiveSelected,
       })
     : null;
+  const typography = buildCustomNodeTypography({
+    data,
+    designSystem,
+    visualStyle,
+    surfaceVariant,
+    isMermaidImportedLeaf,
+    nodeHeightPx,
+  });
   const containerStyle: React.CSSProperties = {
     minWidth,
     minHeight: effectiveMinHeight,
     width: toCssSize(explicitWidth) ?? '100%',
     height: toCssSize(explicitHeight),
     ...(needsSquareAspect ? { aspectRatio: '1/1' } : {}),
-    ...labelFontFamilyStyle,
+    ...typography.labelFontFamilyStyle,
     boxShadow: repaintedSurface?.boxShadow ?? (isComplexShape ? 'none' : designSystem.components.node.boxShadow),
     borderWidth: repaintedSurface?.borderWidth ?? (!isComplexShape ? designSystem.components.node.borderWidth : 0),
     padding: 0,
@@ -190,6 +149,21 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
       ? { animation: `nodeAnimateIn 180ms ease-out ${data.animateDelay ?? 0}ms both` }
       : {}),
   };
+  const surfaceClassName = surfaceVariant
+    ? [
+        'chart-node-surface',
+        `chart-node-surface--${surfaceVariant}`,
+        'chart-node-surface--hoverable',
+        isActiveSelected ? 'chart-node-surface--selected' : '',
+      ].filter(Boolean).join(' ')
+    : '';
+  const ariaLabelParts = [
+    `${type || 'process'} node`,
+    hasLabel ? String(data.label).trim() : emptyLabelPrompt,
+    hasSubLabel ? String(data.subLabel).trim() : null,
+    isActiveSelected ? 'selected' : null,
+  ].filter(Boolean);
+  const nodeAriaLabel = ariaLabelParts.join(', ');
 
   if (isIconAssetNode) {
     return (
@@ -208,74 +182,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
       />
     );
   }
-
-  const importedFontFamilyStyle =
-    isMermaidImportedLeaf && !data.fontFamily
-      ? { fontFamily: designSystem.typography.fontFamily }
-      : {};
-  const importedFontSizeStyle =
-    !data.fontSize && isMermaidImportedLeaf
-      ? { fontSize: `${getMermaidImportedFontSize(nodeHeightPx)}px` }
-      : {};
-  const textProps = surfaceVariant
-    ? {
-        ...labelFontFamilyStyle,
-        ...importedFontFamilyStyle,
-        color: designSystem.colors.nodeText,
-        fontSize: surfaceVariant === 'stadium' ? '13px' : '13.5px',
-        fontWeight: data.fontWeight || '600',
-        fontStyle: data.fontStyle || 'normal',
-        lineHeight: 1.2,
-      }
-    : {
-        ...fontSizeStyle,
-        ...importedFontSizeStyle,
-        ...labelFontFamilyStyle,
-        ...importedFontFamilyStyle,
-        color: visualStyle.text,
-        fontWeight: data.fontWeight || (isMermaidImportedLeaf ? '500' : '600'),
-        fontStyle: data.fontStyle || 'normal',
-        lineHeight: isMermaidImportedLeaf ? 1.1 : 1.2,
-      };
-  const labelTextAlign = (data.align || 'center') as React.CSSProperties['textAlign'];
-  const subTextProps = surfaceVariant
-    ? {
-        ...subLabelFontFamilyStyle,
-        color: '#8B93A0',
-        fontSize: '11px',
-        fontWeight: data.subLabelFontWeight || 'normal',
-        fontStyle: data.subLabelFontStyle || 'normal',
-        textAlign: labelTextAlign,
-        lineHeight: 1.25,
-      }
-    : {
-        ...subLabelFontSizeStyle,
-        ...subLabelFontFamilyStyle,
-        color: visualStyle.subText,
-        fontWeight: data.subLabelFontWeight || 'normal',
-        fontStyle: data.subLabelFontStyle || 'normal',
-        textAlign: labelTextAlign,
-        opacity: 0.85,
-        lineHeight: 1.25,
-      };
-  const textAlignStyle = {
-    textAlign: labelTextAlign,
-  };
-  const surfaceClassName = surfaceVariant
-    ? [
-        'chart-node-surface',
-        `chart-node-surface--${surfaceVariant}`,
-        'chart-node-surface--hoverable',
-        isActiveSelected ? 'chart-node-surface--selected' : '',
-      ].filter(Boolean).join(' ')
-    : '';
-  const ariaLabelParts = [
-    `${type || 'process'} node`,
-    hasLabel ? String(data.label).trim() : emptyLabelPrompt,
-    hasSubLabel ? String(data.subLabel).trim() : null,
-    isActiveSelected ? 'selected' : null,
-  ].filter(Boolean);
-  const nodeAriaLabel = ariaLabelParts.join(', ');
 
   return (
     <>
@@ -336,11 +242,11 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
             chipIcon={chipIcon}
             tone={nodeTone}
             surfaceVariant={surfaceVariant}
-            textAlignStyle={textAlignStyle}
-            textClassName={`leading-tight block break-words markdown-content [&_p]:m-0 [&_p]:leading-tight ${surfaceVariant ? '' : fSizeClass} ${labelFontFamilyClass}`}
-            textStyle={textProps}
-            subTextClassName={`${surfaceVariant ? 'mt-1' : 'text-slate-500 mt-1'} leading-snug markdown-content [&_p]:m-0 [&_p]:leading-snug break-words flow-lod-secondary ${lodPreserveClass} ${surfaceVariant ? '' : subLabelSizeClass} ${subLabelFontFamilyClass}`}
-            subTextStyle={subTextProps}
+            textAlignStyle={typography.textAlignStyle}
+            textClassName={`leading-tight block break-words markdown-content [&_p]:m-0 [&_p]:leading-tight ${surfaceVariant ? '' : typography.fSizeClass} ${typography.labelFontFamilyClass}`}
+            textStyle={typography.textProps}
+            subTextClassName={`${surfaceVariant ? 'mt-1' : 'text-slate-500 mt-1'} leading-snug markdown-content [&_p]:m-0 [&_p]:leading-snug break-words flow-lod-secondary ${lodPreserveClass} ${surfaceVariant ? '' : typography.subLabelSizeClass} ${typography.subLabelFontFamilyClass}`}
+            subTextStyle={typography.subTextProps}
             displayLabel={labelDisplayValue}
             labelEdit={labelEdit}
             subLabelEdit={subLabelEdit}
@@ -358,3 +264,4 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
 }
 
 export default memo(CustomNode);
+
