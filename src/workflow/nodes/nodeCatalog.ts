@@ -32,6 +32,17 @@ export const WORKFLOW_NODE_CATALOG: ReadonlyArray<WorkflowNodeMeta> = [
   { kind: 'output', icon: '📤', accent: '#f59e0b', category: 'output', tone: 'out' },
 ];
 
+/** Library display order: sections and the kinds inside each. */
+export const WORKFLOW_NODE_CATEGORIES: ReadonlyArray<{
+  id: WorkflowNodeCategory;
+  kinds: ReadonlyArray<WorkflowNodeKind>;
+}> = [
+  { id: 'input', kinds: ['textInput'] },
+  { id: 'process', kinds: ['llm', 'webSearch', 'knowledgeRetrieval', 'code'] },
+  { id: 'logic', kinds: ['ifElse'] },
+  { id: 'output', kinds: ['output'] },
+];
+
 export function workflowNodeTone(kind: WorkflowNodeKind): WorkflowNodeTone {
   return WORKFLOW_NODE_CATALOG.find((entry) => entry.kind === kind)?.tone ?? 'code';
 }

@@ -9,7 +9,13 @@
     "run": "运行",
     "library": {
       "title": "节点库",
-      "hint": "拖拽到画布添加节点"
+      "hint": "拖拽节点到画布中添加",
+      "categories": {
+        "input": "输入",
+        "process": "处理",
+        "logic": "逻辑",
+        "output": "输出"
+      }
     },
     "nodes": {
       "textInput": {

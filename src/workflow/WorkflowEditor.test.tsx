@@ -29,9 +29,20 @@ describe('WorkflowEditor', () => {
       </ToastProvider>
     );
     expect(screen.getAllByRole('tab')).toHaveLength(2);
-    const icons = ['📝', '🤖', '🔍', '📚', '🔀', '💻', '📤'];
-    for (const icon of icons) {
-      expect(screen.getByText(icon)).toBeInTheDocument();
+    // i18n is not initialized here, so t() echoes the key strings.
+    const kinds = [
+      'textInput',
+      'llm',
+      'webSearch',
+      'knowledgeRetrieval',
+      'ifElse',
+      'code',
+      'output',
+    ];
+    for (const kind of kinds) {
+      expect(
+        screen.getAllByText(`workflowMode.nodes.${kind}.name`).length
+      ).toBeGreaterThan(0);
     }
   });
 });

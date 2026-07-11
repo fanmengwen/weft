@@ -9,7 +9,13 @@
     "run": "Run",
     "library": {
       "title": "Nodes",
-      "hint": "Drag onto the canvas to add a node"
+      "hint": "Drag onto the canvas to add a node",
+      "categories": {
+        "input": "入力",
+        "process": "処理",
+        "logic": "ロジック",
+        "output": "出力"
+      }
     },
     "nodes": {
       "textInput": {

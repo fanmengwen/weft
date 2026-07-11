@@ -9,7 +9,13 @@
     "run": "Run",
     "library": {
       "title": "Nodes",
-      "hint": "Drag onto the canvas to add a node"
+      "hint": "Drag onto the canvas to add a node",
+      "categories": {
+        "input": "Entrada",
+        "process": "Procesamiento",
+        "logic": "Lógica",
+        "output": "Salida"
+      }
     },
     "nodes": {
       "textInput": {

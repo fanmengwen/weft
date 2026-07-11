@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { WORKFLOW_NODE_CATALOG } from '../nodes/nodeCatalog';
+import { WORKFLOW_NODE_CATALOG, WORKFLOW_NODE_CATEGORIES, workflowToneStyle } from '../nodes/nodeCatalog';
+import { WorkflowNodeIcon } from '../nodes/WorkflowNodeIcon';
 import { useWorkflowDnD } from '../dnd/useWorkflowDnD';
 
 export function WorkflowNodeLibrary(): React.ReactElement {
@@ -8,40 +9,55 @@ export function WorkflowNodeLibrary(): React.ReactElement {
   const { startDrag } = useWorkflowDnD();
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col gap-3 border-r border-[var(--brand-border)] bg-[var(--brand-glass-bg)] p-4 backdrop-blur-[var(--brand-glass-blur)]">
-      <h2 className="text-xs font-bold uppercase tracking-wide text-[var(--brand-secondary)]">
+    <aside className="flex min-h-0 flex-col border-r border-[var(--wf-border)] bg-[var(--wf-surface)]">
+      <h2 className="px-4 pb-1 pt-3.5 text-[13px] font-semibold text-[var(--wf-text)]">
         {t('workflowMode.library.title')}
       </h2>
-      <div className="flex flex-col gap-2">
-        {WORKFLOW_NODE_CATALOG.map((node) => (
-          <div
-            key={node.kind}
-            role="button"
-            tabIndex={0}
-            onPointerDown={(event) => {
-              event.preventDefault();
-              startDrag(node.kind, event.clientX, event.clientY);
-            }}
-            className="flex cursor-grab items-start gap-3 rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-3 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md active:cursor-grabbing"
-          >
-            <span
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[var(--brand-radius)] text-lg"
-              style={{ backgroundColor: `${node.accent}1a` }}
-            >
-              {node.icon}
-            </span>
-            <div className="flex min-w-0 flex-col">
-              <span className="text-sm font-semibold text-[var(--brand-text)]">
-                {t(`workflowMode.nodes.${node.kind}.name`)}
-              </span>
-              <span className="text-xs text-[var(--brand-secondary)]">
-                {t(`workflowMode.nodes.${node.kind}.desc`)}
-              </span>
+      <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 pb-2">
+        {WORKFLOW_NODE_CATEGORIES.map((category) => (
+          <React.Fragment key={category.id}>
+            <div className="px-2 pb-1.5 pt-3 text-[11px] tracking-[0.05em] text-[var(--wf-text-faint)]">
+              {t(`workflowMode.library.categories.${category.id}`)}
             </div>
-          </div>
+            {category.kinds.map((kind) => {
+              const meta = WORKFLOW_NODE_CATALOG.find((entry) => entry.kind === kind);
+              if (!meta) {
+                return null;
+              }
+              return (
+                <div
+                  key={kind}
+                  role="button"
+                  tabIndex={0}
+                  onPointerDown={(event) => {
+                    event.preventDefault();
+                    startDrag(kind, event.clientX, event.clientY);
+                  }}
+                  className="flex cursor-grab items-center gap-2.5 rounded-lg px-2 py-[7px] transition-colors hover:bg-[var(--wf-hover)] active:cursor-grabbing"
+                >
+                  <span
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px]"
+                    style={workflowToneStyle(meta.tone)}
+                  >
+                    <WorkflowNodeIcon kind={kind} className="h-[15px] w-[15px]" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="truncate text-[13px] font-medium leading-snug text-[var(--wf-text)]">
+                      {t(`workflowMode.nodes.${kind}.name`)}
+                    </div>
+                    <div className="mt-px truncate text-[11.5px] leading-snug text-[var(--wf-text-muted)]">
+                      {t(`workflowMode.nodes.${kind}.desc`)}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </React.Fragment>
         ))}
       </div>
-      <p className="mt-auto text-xs text-[var(--brand-secondary)]">{t('workflowMode.library.hint')}</p>
+      <p className="border-t border-[var(--wf-hairline)] px-4 py-2.5 text-xs text-[var(--wf-text-muted)]">
+        {t('workflowMode.library.hint')}
+      </p>
     </aside>
   );
 }
