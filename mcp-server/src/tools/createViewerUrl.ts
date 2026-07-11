@@ -7,7 +7,7 @@ export function registerCreateViewerUrl(server: McpServer): void {
   server.registerTool(
     'create_viewer_url',
     {
-      title: 'Create an Weft viewer URL',
+      title: 'Create a Weft viewer URL',
       description:
         'Build a shareable Weft viewer URL for agent-authored Weft DSL. ' +
         'No AI provider, network call, account, or API key is required. Always validate ' +

@@ -77,7 +77,7 @@ export function registerPrompts(server: McpServer): void {
             type: 'text' as const,
             text:
               `Call \`analyze_codebase\` on rootPath=\`${rootPath}\`, then read \`weft://docs/dsl-cheatsheet\`.\n\n` +
-              `Write an Weft DSL architecture diagram yourself from the scan. Use \`find_icon\` before assigning architecture icon slugs. Call \`validate_openflow_dsl\`, fix any errors, then call \`create_viewer_url\`.\n\n` +
+              `Write a Weft DSL architecture diagram yourself from the scan. Use \`find_icon\` before assigning architecture icon slugs. Call \`validate_openflow_dsl\`, fix any errors, then call \`create_viewer_url\`.\n\n` +
               `Return the final DSL, lint status, viewer URL, and a short architecture summary.`,
           },
         },

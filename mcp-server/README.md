@@ -129,7 +129,7 @@ Clients can surface three prompt templates:
 Ask your MCP client:
 
 ```text
-Using the weft MCP server: read weft://docs/dsl-cheatsheet, then write an Weft DSL flowchart for checkout with cart, shipping, promo-code decision, payment, Stripe webhook, and confirmation. Call validate_openflow_dsl, fix any issues, then call create_viewer_url. Return the final DSL and viewer URL.
+Using the weft MCP server: read weft://docs/dsl-cheatsheet, then write a Weft DSL flowchart for checkout with cart, shipping, promo-code decision, payment, Stripe webhook, and confirmation. Call validate_openflow_dsl, fix any issues, then call create_viewer_url. Return the final DSL and viewer URL.
 ```
 
 For architecture diagrams:

@@ -8,7 +8,7 @@ export function registerValidateDsl(server: McpServer): void {
     {
       title: 'Validate Weft DSL',
       description:
-        'Lint an Weft DSL document. Returns structured diagnostics ' +
+        'Lint a Weft DSL document. Returns structured diagnostics ' +
         '(errors + warnings), declared node ids, and edge count. ' +
         'No network access; runs locally.',
       inputSchema: {
