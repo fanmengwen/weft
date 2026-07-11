@@ -7,8 +7,7 @@ export type BulkEditableCapability =
   | 'advancedColor'
   | 'icon'
   | 'variant'
-  | 'architecture'
-  | 'journey';
+  | 'architecture';
 
 export interface BulkLabelTransformOptions {
   labelPrefix?: string;
@@ -24,7 +23,6 @@ export interface BulkSelectionFamilySummary {
 
 type NodeFamilyId =
   | 'architecture'
-  | 'journey'
   | 'wireframe'
   | 'text'
   | 'annotation'
@@ -43,7 +41,6 @@ const FLOW_NODE_LABEL = 'Flow node';
 
 const NODE_FAMILY_LABELS: Record<NodeFamilyId, string> = {
   architecture: 'Architecture',
-  journey: 'Journey',
   wireframe: 'Wireframe',
   text: 'Text',
   annotation: 'Annotation',
@@ -97,11 +94,6 @@ const BULK_CAPABILITY_RULES: CapabilityRule[] = [
     keys: ['archEnvironment', 'archResourceType', 'archZone', 'archTrustDomain'],
     supports: (node) => node.type === NodeType.ARCHITECTURE,
   },
-  {
-    capability: 'journey',
-    keys: ['journeySection', 'journeyScore'],
-    supports: (node) => node.type === NodeType.JOURNEY,
-  },
 ];
 
 const GENERIC_SHAPE_NODE_TYPES = new Set<string>([
@@ -111,7 +103,6 @@ const GENERIC_SHAPE_NODE_TYPES = new Set<string>([
   NodeType.END,
   NodeType.CUSTOM,
   NodeType.GROUP,
-  NodeType.SWIMLANE,
 ]);
 
 const GENERIC_ICON_NODE_TYPES = new Set<string>([
@@ -121,7 +112,6 @@ const GENERIC_ICON_NODE_TYPES = new Set<string>([
   NodeType.END,
   NodeType.CUSTOM,
   NodeType.GROUP,
-  NodeType.SWIMLANE,
 ]);
 
 const GENERIC_COLOR_NODE_TYPES = new Set<string>([
@@ -133,7 +123,6 @@ const GENERIC_COLOR_NODE_TYPES = new Set<string>([
   NodeType.ANNOTATION,
   NodeType.SECTION,
   NodeType.GROUP,
-  NodeType.SWIMLANE,
   NodeType.TEXT,
 ]);
 
@@ -158,8 +147,6 @@ function getNodeFamilyId(node: Node<NodeData>): NodeFamilyId {
   switch (node.type) {
     case NodeType.ARCHITECTURE:
       return 'architecture';
-    case NodeType.JOURNEY:
-      return 'journey';
     case NodeType.BROWSER:
     case NodeType.MOBILE:
       return 'wireframe';

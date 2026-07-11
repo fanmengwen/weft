@@ -24,7 +24,6 @@ import { getWireframeVariants } from './wireframeVariants';
 import {
   ArchitectureBulkSection,
   FindReplaceBulkSection,
-  JourneyBulkSection,
   LabelTransformBulkSection,
   SelectionSummary,
   WireframeVariantBulkSection,
@@ -110,7 +109,6 @@ export function BulkNodeProperties({
     icon: capabilityCounts.icon,
     variant: capabilityCounts.variant,
     architecture: capabilityCounts.architecture,
-    journey: capabilityCounts.journey,
     labels: selectedNodes.length,
     findReplace: selectedNodes.length,
   });
@@ -306,19 +304,6 @@ export function BulkNodeProperties({
           onResourceTypeChange={(value) => updateForm('archResourceType', value)}
           onZoneChange={(value) => updateForm('archZone', value)}
           onTrustDomainChange={(value) => updateForm('archTrustDomain', value)}
-          onInputKeyDown={handleInputKeyDown}
-        />
-      ) : null}
-
-      {capabilityCounts.journey > 0 ? (
-        <JourneyBulkSection
-          title={getScopedSectionTitle('Journey Step', capabilityCounts.journey, selectedNodes.length)}
-          isOpen={resolvedActiveSection === 'journey'}
-          onToggle={() => toggleSection('journey')}
-          journeySection={form.journeySection}
-          journeyScore={form.journeyScore}
-          onJourneySectionChange={(value) => updateForm('journeySection', value)}
-          onJourneyScoreChange={(value) => updateForm('journeyScore', value)}
           onInputKeyDown={handleInputKeyDown}
         />
       ) : null}

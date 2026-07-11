@@ -9,7 +9,6 @@ export type TemplateCategory =
   | 'aws'
   | 'azure'
   | 'cncf'
-  | 'journey'
   | 'wireframe';
 
 export type ProviderKey = 'aws' | 'azure' | 'cncf';
@@ -82,31 +81,6 @@ export function createArchitectureNode(
       archProvider: 'custom',
       archEnvironment: 'default',
       archResourceType: resourceType,
-    },
-  };
-}
-
-export function createJourneyNode(
-  id: string,
-  label: string,
-  actor: string,
-  section: string,
-  score: number,
-  x: number,
-  y: number
-): FlowNode {
-  return {
-    id,
-    type: NodeType.JOURNEY,
-    position: { x, y },
-    data: {
-      label,
-      subLabel: actor,
-      color: 'violet',
-      journeySection: section,
-      journeyTask: label,
-      journeyActor: actor,
-      journeyScore: score,
     },
   };
 }

@@ -11,7 +11,7 @@ describe('connectCreationPolicy', () => {
 
   it('propagates structured node families through connector creation', () => {
     expect(getDefaultConnectedNodeSpec('architecture')).toEqual({ type: 'architecture' });
-    expect(getDefaultConnectedNodeSpec('journey')).toEqual({ type: 'journey' });
+
     expect(getDefaultConnectedNodeSpec('annotation')).toEqual({ type: 'annotation' });
   });
 });

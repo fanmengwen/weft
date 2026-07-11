@@ -53,7 +53,6 @@ export interface CommandBarProps {
   onAddAnnotation?: () => void;
   onAddSection?: () => void;
   onAddText?: () => void;
-  onAddJourney?: () => void;
   onAddArchitecture?: () => void;
   onAddImage?: (imageUrl: string) => void;
   onAddBrowserWireframe?: () => void;

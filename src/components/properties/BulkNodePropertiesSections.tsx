@@ -1,6 +1,5 @@
 export {
   ArchitectureBulkSection,
-  JourneyBulkSection,
   WireframeVariantBulkSection,
 } from './BulkNodePropertiesFamilySections';
 

@@ -9,10 +9,10 @@ const HANDLE_POLICY_FILES = [
   'src/components/ImageNode.tsx',
   'src/components/TextNode.tsx',
   'src/components/GroupNode.tsx',
-  'src/components/SwimlaneNode.tsx',
+
   'src/components/custom-nodes/ArchitectureNode.tsx',
   'src/components/custom-nodes/BrowserNode.tsx',
-  'src/components/custom-nodes/JourneyNode.tsx',
+
   'src/components/custom-nodes/MobileNode.tsx',
 ] as const;
 

@@ -2,7 +2,6 @@ import React from 'react';
 import {
   AppWindow,
   Boxes,
-  GitBranch,
   Image as ImageIcon,
   Smartphone,
   StickyNote,
@@ -21,7 +20,6 @@ export type AddItemId =
   | 'circle'
   | 'sticky-note'
   | 'text'
-  | 'journey'
   | 'architecture'
   | 'image'
   | 'browser'
@@ -182,14 +180,6 @@ export function getAddItemDefinitions(t: TFunction): AddItemDefinition[] {
       renderIcon: makeShapeIcon('circle'),
     },
     {
-      id: 'journey',
-      label: 'Journey',
-      section: 'diagrams',
-      keywords: ['journey', 'user flow', 'experience'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(GitBranch),
-    },
-    {
       id: 'architecture',
       label: 'Architecture',
       section: 'diagrams',
@@ -259,7 +249,6 @@ export interface AddItemActions {
   onAddAnnotation: (position?: { x: number; y: number }) => void;
   onAddSection: (position?: { x: number; y: number }) => void;
   onAddTextNode: (position?: { x: number; y: number }) => void;
-  onAddJourneyNode: (position?: { x: number; y: number }) => void;
   onAddArchitectureNode: (position?: { x: number; y: number }) => void;
   onAddWireframe: (variant: 'browser' | 'mobile', position?: { x: number; y: number }) => void;
   onRequestImageUpload?: () => void;
@@ -285,9 +274,6 @@ export function executeAddItem(
       return;
     case 'text':
       actions.onAddTextNode(position);
-      return;
-    case 'journey':
-      actions.onAddJourneyNode(position);
       return;
     case 'architecture':
       actions.onAddArchitectureNode(position);

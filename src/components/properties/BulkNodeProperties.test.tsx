@@ -79,14 +79,14 @@ describe('BulkNodeProperties', () => {
     render(
       <BulkNodeProperties
         selectedNodes={[
-          createNode(NodeType.JOURNEY),
+          createNode(NodeType.BROWSER),
           createNode(NodeType.ARCHITECTURE),
         ]}
         onApply={vi.fn()}
       />
     );
 
-    expect(screen.getByText('Journey Step (1/2)')).toBeTruthy();
+    expect(screen.getByText('Wireframe Variant (1/2)')).toBeTruthy();
     expect(screen.getByText('Architecture Deployment (1/2)')).toBeTruthy();
   });
 });

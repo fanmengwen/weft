@@ -1,5 +1,5 @@
 import React from 'react';
-import { Footprints, Layout, ServerCog } from 'lucide-react';
+import { Layout, ServerCog } from 'lucide-react';
 import { CollapsibleSection } from '../ui/CollapsibleSection';
 import { Select } from '../ui/Select';
 import { INSPECTOR_INPUT_CLASSNAME, InspectorField } from './InspectorPrimitives';
@@ -31,14 +31,6 @@ interface ArchitectureBulkSectionProps extends CommonSectionProps {
   onResourceTypeChange: (value: string) => void;
   onZoneChange: (value: string) => void;
   onTrustDomainChange: (value: string) => void;
-  onInputKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-}
-
-interface JourneyBulkSectionProps extends CommonSectionProps {
-  journeySection: string;
-  journeyScore: string;
-  onJourneySectionChange: (value: string) => void;
-  onJourneyScoreChange: (value: string) => void;
   onInputKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
@@ -138,48 +130,6 @@ export function ArchitectureBulkSection({
             />
           </InspectorField>
         </div>
-      </div>
-    </CollapsibleSection>
-  );
-}
-
-export function JourneyBulkSection({
-  title,
-  isOpen,
-  onToggle,
-  journeySection,
-  journeyScore,
-  onJourneySectionChange,
-  onJourneyScoreChange,
-  onInputKeyDown,
-}: JourneyBulkSectionProps): React.ReactElement {
-  return (
-    <CollapsibleSection
-      title={title}
-      icon={<Footprints className="w-3.5 h-3.5" />}
-      isOpen={isOpen}
-      onToggle={onToggle}
-    >
-      <div className="space-y-3">
-        <InspectorField label="Section">
-          <input
-            value={journeySection}
-            onChange={(event) => onJourneySectionChange(event.target.value)}
-            onKeyDown={onInputKeyDown}
-            className={INSPECTOR_INPUT_CLASSNAME}
-            placeholder="Discovery"
-          />
-        </InspectorField>
-        <InspectorField label="Experience Score">
-          <input
-            value={journeyScore}
-            onChange={(event) => onJourneyScoreChange(event.target.value)}
-            onKeyDown={onInputKeyDown}
-            className={INSPECTOR_INPUT_CLASSNAME}
-            placeholder="1-5"
-            inputMode="numeric"
-          />
-        </InspectorField>
       </div>
     </CollapsibleSection>
   );

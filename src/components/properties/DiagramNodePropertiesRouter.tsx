@@ -27,7 +27,6 @@ interface DiagramNodePropertiesRouterProps {
 
 const NODE_TYPE_PANEL_MAP: Partial<Record<NodeType, DiagramType>> = {
   [NodeType.ARCHITECTURE]: 'architecture',
-  [NodeType.JOURNEY]: 'journey',
 };
 
 export function resolveNodePropertiesPanelDiagramType(

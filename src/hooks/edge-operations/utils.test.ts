@@ -71,7 +71,7 @@ describe('edge operation utils', () => {
     expect(getOppositeTargetHandle(processNode, null)).toBeNull();
   });
 
-  it('builds translated annotation content and journey defaults', () => {
+  it('builds translated annotation content', () => {
     expect(
       getAddedNodeContent('annotation', {
         noteLabel: 'Note',
@@ -82,32 +82,9 @@ describe('edge operation utils', () => {
       subLabel: 'Add comments here',
       icon: 'StickyNote',
     });
-
-    expect(
-      getAddedNodeContent('journey', {
-        noteLabel: 'Ignored',
-        noteSubLabel: 'Ignored',
-      })
-    ).toEqual({
-      label: 'User Journey',
-      subLabel: 'User',
-    });
   });
 
   it('builds connected nodes and default edges without changing runtime defaults', () => {
-    const { newNode: journeyNode } = buildConnectedNode({
-      type: 'journey',
-      position: { x: 10, y: 20 },
-      labels: {
-        noteLabel: 'Note',
-        noteSubLabel: 'Add comments here',
-      },
-    });
-
-    expect(journeyNode.type).toBe('journey');
-    expect(journeyNode.position).toEqual({ x: 10, y: 20 });
-    expect(journeyNode.data.journeyTask).toBe('User Journey');
-
     const { newNode: annotationNode } = buildConnectedNode({
       type: 'annotation',
       position: { x: 20, y: 30 },

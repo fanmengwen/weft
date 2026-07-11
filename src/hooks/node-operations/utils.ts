@@ -25,7 +25,6 @@ export {
   createSectionNode,
   createTextNode,
   createImageNode,
-  createJourneyNode,
   createArchitectureNode,
   createBrowserNode,
   createMobileNode,

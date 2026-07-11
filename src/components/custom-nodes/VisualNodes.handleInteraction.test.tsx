@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { Position } from '@/lib/reactflowCompat';
 import BrowserNode from './BrowserNode';
 import MobileNode from './MobileNode';
-import JourneyNode from './JourneyNode';
+
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -145,39 +145,4 @@ describe('visual-heavy node handle interaction policy', () => {
     assertUnselectedDiscoverableHandles();
   });
 
-  it('keeps selected JourneyNode handles connectable in visualQualityV2', () => {
-    render(
-      <JourneyNode
-        id="journey-1"
-        type="journey"
-        selected={true}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Step', subLabel: 'Actor', journeySection: 'A', journeyScore: 3 }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-      />
-    );
-
-    assertSelectedConnectableHandles();
-  });
-
-  it('keeps unselected JourneyNode handles discoverable', () => {
-    render(
-      <JourneyNode
-        id="journey-2"
-        type="journey"
-        selected={false}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Step', subLabel: 'Actor', journeySection: 'A', journeyScore: 3 }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-      />
-    );
-
-    assertUnselectedDiscoverableHandles();
-  });
 });

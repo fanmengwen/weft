@@ -150,35 +150,35 @@
     "name": "journey-basic",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Checkout\nsection Happy\n  Search: 5: User\n  Buy: 3: User"
   },
   {
     "name": "journey-multiple-sections",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Incident Response\nsection Detect\n  Alert fires: 5: SRE\nsection Resolve\n  Mitigate: 3: SRE, Platform"
   },
   {
     "name": "journey-invalid-score",
     "family": "journey",
     "expectedOfficial": "environment_limited",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Checkout\nsection Happy\n  Search: User"
   },
   {
     "name": "journey-colon-rich-step",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Incident Response\nsection Alerts\n  HTTP: 500 Error: 1: SRE: On-call\n  Recover service: 4: API: Team"
   },
   {
     "name": "journey-support-escalation",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Support Escalation\nsection Intake\n  Customer reports issue: 2: Support\n  Triage severity: 3: Support\nsection Escalation\n  Hand off to engineering: 4: Support, Engineering\n  Confirm resolution: 5: Support"
   },
   {

@@ -120,42 +120,6 @@ describe('parseMermaidByType', () => {
     expect(result.nodes.find((node) => node.id === 'Idle')?.parentId).toBe('Working');
   });
 
-  it('parses journey through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      journey
-      title Checkout
-      section Happy
-        Search: 5: User
-        Buy: 3: User
-    `);
-
-    expect(result.diagramType).toBe('journey');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.nodes.every((node) => node.type === 'journey')).toBe(true);
-  });
-
-  it('returns journey diagnostics for malformed section and malformed score-like steps', () => {
-    const result = parseMermaidByType(`
-      journey
-      section
-      Open ticket: User
-      Resolve issue: 5: Agent
-    `);
-
-    expect(result.diagramType).toBe('journey');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Invalid journey section syntax at line')
-      )
-    ).toBe(true);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Invalid journey score at line'))
-    ).toBe(true);
-  });
-
   it('parses architecture through plugin dispatcher', () => {
     const result = parseMermaidByType(`
       architecture-beta
@@ -358,12 +322,29 @@ describe('parseMermaidByType', () => {
     expect(result.nodes).toHaveLength(0);
     expect(result.edges).toHaveLength(0);
   });
+
+  it('degrades journey sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      journey
+      title Checkout
+      section Happy
+        Search: 5: User
+        Buy: 3: User
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('journey');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
 });
 
 describe('parseMermaidByType without a registered plugin', () => {
   beforeEach(() => {
     initializeDiagramTypeRuntime();
-    unregisterDiagramPluginForTests('journey');
+    unregisterDiagramPluginForTests('stateDiagram');
   });
 
   afterEach(() => {
@@ -373,14 +354,13 @@ describe('parseMermaidByType without a registered plugin', () => {
 
   it('degrades to an error-free renderer-only result for the detected family', () => {
     const result = parseMermaidByType(`
-      journey
-      title Checkout
-      section Happy
-        Search: 5: User
+      stateDiagram-v2
+      [*] --> Idle
+      Idle --> Working
     `);
 
     expect(result.error).toBeUndefined();
-    expect(result.diagramType).toBe('journey');
+    expect(result.diagramType).toBe('stateDiagram');
     expect(result.nativeParseUnavailable).toBe(true);
     expect(result.importState).toBe('unsupported_family');
     expect(result.nodes).toHaveLength(0);
@@ -400,5 +380,3 @@ describe('parseMermaidByType without a registered plugin', () => {
     expect(result.edges).toHaveLength(1);
   });
 });
-
-

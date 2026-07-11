@@ -7,8 +7,7 @@ interface PartialCorpusCase {
   diagramType:
     | 'flowchart'
     | 'stateDiagram'
-    | 'architecture'
-    | 'journey';
+    | 'architecture';
   diagnosticIncludes: string[];
   expectedDiagnosticCodes?: string[];
 }
@@ -52,19 +51,6 @@ const PARTIAL_CORPUS: PartialCorpusCase[] = [
     `,
     diagnosticIncludes: ['Recovered implicit service node "cache"'],
     expectedDiagnosticCodes: ['MERMAID_RECOVERY'],
-  },
-  {
-    name: 'journey invalid score still recovers',
-    diagramType: 'journey',
-    source: `
-      journey
-      title Checkout
-      section Happy
-      Search: User
-      Resolve issue: 5: Agent
-    `,
-    diagnosticIncludes: ['Invalid journey score at line'],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
   },
 ];
 

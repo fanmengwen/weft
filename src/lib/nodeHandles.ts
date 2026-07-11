@@ -15,12 +15,6 @@ const SPECIAL_HANDLE_IDS_BY_TYPE: Partial<Record<string, Partial<Record<HandleSi
     bottom: 'bottom-source',
     left: 'left-target',
   },
-  swimlane: {
-    top: 'top-target',
-    right: 'right-source',
-    bottom: 'bottom-source',
-    left: 'left-target',
-  },
 };
 
 export function handleIdToSide(handleId: string | null | undefined): HandleSide | undefined {

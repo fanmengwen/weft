@@ -117,34 +117,6 @@ export function useNodeOperationAdders({
     [commitAddedNode, nodesLength, recordHistory, t]
   );
 
-  const handleAddJourneyNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('journey');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'journey',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'User Journey',
-            subLabel: 'User',
-            color: 'violet',
-            shape: 'rounded',
-            journeySection: 'General',
-            journeyTask: 'User Journey',
-            journeyActor: 'User',
-            journeyScore: 3,
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
-  );
-
   const handleAddArchitectureNode = useCallback(
     (position?: { x: number; y: number }) => {
       recordHistory();
@@ -301,7 +273,6 @@ export function useNodeOperationAdders({
     handleAddShape,
     handleAddNode,
     handleAddAnnotation,
-    handleAddJourneyNode,
     handleAddArchitectureNode,
     handleAddSection,
     handleAddTextNode,

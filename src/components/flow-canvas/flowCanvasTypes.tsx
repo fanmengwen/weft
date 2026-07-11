@@ -9,11 +9,9 @@ import {
 } from '@/components/CustomEdge';
 import ImageNode from '@/components/ImageNode';
 import MermaidSvgNode from '@/components/MermaidSvgNode';
-import SwimlaneNode from '@/components/SwimlaneNode';
 import TextNode from '@/components/TextNode';
 import BrowserNode from '@/components/custom-nodes/BrowserNode';
 import MobileNode from '@/components/custom-nodes/MobileNode';
-import JourneyNode from '@/components/custom-nodes/JourneyNode';
 import ArchitectureNode from '@/components/custom-nodes/ArchitectureNode';
 import SectionNode from '@/components/SectionNode';
 
@@ -23,12 +21,10 @@ export const flowCanvasNodeTypes: NodeTypes = {
   decision: CustomNode,
   end: CustomNode,
   custom: CustomNode,
-  journey: JourneyNode,
   architecture: ArchitectureNode,
   annotation: AnnotationNode,
   text: TextNode,
   section: SectionNode,
-  swimlane: SwimlaneNode,
   image: ImageNode,
   mermaid_svg: MermaidSvgNode,
   browser: BrowserNode,

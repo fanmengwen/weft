@@ -30,7 +30,6 @@ describe('nodeBulkEditing', () => {
     expect(getNodeBulkEditCapabilities(createNode(NodeType.ARCHITECTURE)).has('architecture')).toBe(
       true
     );
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.JOURNEY)).has('journey')).toBe(true);
   });
 
   it('filters unsupported updates per node during bulk apply', () => {
@@ -60,17 +59,6 @@ describe('nodeBulkEditing', () => {
         shape: 'rounded',
       })
     ).toEqual({ archEnvironment: 'production' });
-
-    expect(
-      filterBulkUpdatesForNode(createNode(NodeType.JOURNEY), {
-        journeySection: 'Onboarding',
-        journeyScore: 4,
-        shape: 'rounded',
-      })
-    ).toEqual({
-      journeySection: 'Onboarding',
-      journeyScore: 4,
-    });
 
     expect(
       filterBulkUpdatesForNode(genericNode, {

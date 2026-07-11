@@ -125,7 +125,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     handleAddAnnotation,
     handleAddSection,
     handleAddTextNode,
-    handleAddJourneyNode,
     handleAddArchitectureNode,
     handleAddWireframe,
   } = useFlowOperations(recordHistory, (position, sourceId, sourceHandle, sourceType) => {
@@ -173,7 +172,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         handleAddAnnotation,
         handleAddSection,
         handleAddTextNode,
-        handleAddJourneyNode,
         handleAddArchitectureNode,
         handleAddWireframe,
       }),
@@ -182,7 +180,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       handleAddAnnotation,
       handleAddSection,
       handleAddTextNode,
-      handleAddJourneyNode,
       handleAddArchitectureNode,
       handleAddWireframe,
     ]

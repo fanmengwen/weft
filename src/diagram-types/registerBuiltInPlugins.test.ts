@@ -17,19 +17,15 @@ describe('registerBuiltInDiagramPlugins', () => {
 
     const flowchart = getDiagramPlugin('flowchart');
     const stateDiagram = getDiagramPlugin('stateDiagram');
-    const journey = getDiagramPlugin('journey');
     const architecture = getDiagramPlugin('architecture');
     expect(flowchart).toBeDefined();
     expect(flowchart?.id).toBe('flowchart');
     expect(stateDiagram).toBeDefined();
     expect(stateDiagram?.id).toBe('stateDiagram');
-    expect(journey).toBeDefined();
-    expect(journey?.id).toBe('journey');
     expect(architecture).toBeDefined();
     expect(architecture?.id).toBe('architecture');
     expect(listDiagramPlugins().some((candidate) => candidate.id === 'flowchart')).toBe(true);
     expect(listDiagramPlugins().some((candidate) => candidate.id === 'stateDiagram')).toBe(true);
-    expect(listDiagramPlugins().some((candidate) => candidate.id === 'journey')).toBe(true);
     expect(listDiagramPlugins().some((candidate) => candidate.id === 'architecture')).toBe(true);
   });
 
@@ -41,11 +37,9 @@ describe('registerBuiltInDiagramPlugins', () => {
 
     const flowchartPlugins = listDiagramPlugins().filter((candidate) => candidate.id === 'flowchart');
     const statePlugins = listDiagramPlugins().filter((candidate) => candidate.id === 'stateDiagram');
-    const journeyPlugins = listDiagramPlugins().filter((candidate) => candidate.id === 'journey');
     const architecturePlugins = listDiagramPlugins().filter((candidate) => candidate.id === 'architecture');
     expect(flowchartPlugins).toHaveLength(1);
     expect(statePlugins).toHaveLength(1);
-    expect(journeyPlugins).toHaveLength(1);
     expect(architecturePlugins).toHaveLength(1);
   });
 });

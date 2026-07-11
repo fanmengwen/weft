@@ -15,7 +15,6 @@ export type BulkSectionId =
   | 'icon'
   | 'variant'
   | 'architecture'
-  | 'journey'
   | 'labels'
   | 'findReplace'
   | '';
@@ -27,7 +26,6 @@ export interface BulkCapabilityCounts {
   icon: number;
   variant: number;
   architecture: number;
-  journey: number;
 }
 
 type AvailableBulkSectionCounts = Record<Exclude<BulkSectionId, ''>, number>;
@@ -49,8 +47,6 @@ export interface BulkNodePropertiesFormState {
   archResourceType: string;
   archZone: string;
   archTrustDomain: string;
-  journeySection: string;
-  journeyScore: string;
   labelPrefix: string;
   labelSuffix: string;
   labelFind: string;
@@ -75,8 +71,6 @@ export const INITIAL_BULK_NODE_PROPERTIES_FORM_STATE: BulkNodePropertiesFormStat
   archResourceType: '',
   archZone: '',
   archTrustDomain: '',
-  journeySection: '',
-  journeyScore: '',
   labelPrefix: '',
   labelSuffix: '',
   labelFind: '',
@@ -92,7 +86,6 @@ export function getBulkCapabilityCounts(selectedNodes: Node<NodeData>[]): BulkCa
     icon: getCapabilityTargetNodeIds(selectedNodes, 'icon').length,
     variant: getCapabilityTargetNodeIds(selectedNodes, 'variant').length,
     architecture: getCapabilityTargetNodeIds(selectedNodes, 'architecture').length,
-    journey: getCapabilityTargetNodeIds(selectedNodes, 'journey').length,
   };
 }
 
@@ -103,7 +96,6 @@ export function getAvailableBulkSections(counts: AvailableBulkSectionCounts): Bu
     counts.icon > 0 ? 'icon' : null,
     counts.variant > 0 ? 'variant' : null,
     counts.architecture > 0 ? 'architecture' : null,
-    counts.journey > 0 ? 'journey' : null,
     'labels',
     'findReplace',
   ].filter((value): value is BulkSectionId => value !== null);
@@ -183,17 +175,6 @@ export function buildBulkUpdates(
 
   if (form.archTrustDomain) {
     updates.archTrustDomain = form.archTrustDomain;
-  }
-
-  if (form.journeySection) {
-    updates.journeySection = form.journeySection;
-  }
-
-  if (form.journeyScore) {
-    const scoreValue = Number(form.journeyScore);
-    if (!Number.isNaN(scoreValue)) {
-      updates.journeyScore = scoreValue;
-    }
   }
 
   return updates;
@@ -277,16 +258,6 @@ export function buildChangeSummary(
     items.push(
       `trust domain: ${updates.archTrustDomain} (${supportCount('architecture')}/${totalCount})`
     );
-  }
-
-  if (updates.journeySection) {
-    items.push(
-      `journey section: ${updates.journeySection} (${supportCount('journey')}/${totalCount})`
-    );
-  }
-
-  if (typeof updates.journeyScore === 'number') {
-    items.push(`journey score: ${updates.journeyScore} (${supportCount('journey')}/${totalCount})`);
   }
 
   if (labelOptions.labelPrefix) {

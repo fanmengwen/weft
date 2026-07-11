@@ -52,7 +52,7 @@ function createAddItemActions() {
     onAddAnnotation: vi.fn(),
     onAddSection: vi.fn(),
     onAddTextNode: vi.fn(),
-    onAddJourneyNode: vi.fn(),
+
     onAddArchitectureNode: vi.fn(),
     onAddWireframe: vi.fn(),
   };

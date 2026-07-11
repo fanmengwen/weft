@@ -74,7 +74,6 @@ type FlowEditorCommandBarConfig = Omit<
     | 'handleAddAnnotation'
     | 'handleAddSection'
     | 'handleAddTextNode'
-    | 'handleAddJourneyNode'
     | 'handleAddArchitectureNode'
     | 'handleAddImage'
     | 'handleAddWireframe'
@@ -182,7 +181,6 @@ export interface UseFlowEditorChromeParams {
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
     handleAddTextNode: () => void;
-    handleAddJourneyNode: () => void;
     handleAddArchitectureNode: () => void;
     handleAddImage: (imageUrl: string) => void;
     handleAddWireframe: (surface: 'browser' | 'mobile') => void;
@@ -239,7 +237,6 @@ export function useFlowEditorController({
             handleAddAnnotation: chromeParams.handleAddAnnotation,
             handleAddSection: chromeParams.handleAddSection,
             handleAddTextNode: chromeParams.handleAddTextNode,
-            handleAddJourneyNode: chromeParams.handleAddJourneyNode,
             handleAddArchitectureNode: chromeParams.handleAddArchitectureNode,
             handleAddImage: chromeParams.handleAddImage,
             handleAddWireframe: chromeParams.handleAddWireframe,

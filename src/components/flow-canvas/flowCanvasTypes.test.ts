@@ -13,13 +13,11 @@ describe('flowCanvasNodeTypes', () => {
         "decision",
         "end",
         "image",
-        "journey",
         "mermaid_svg",
         "mobile",
         "process",
         "section",
         "start",
-        "swimlane",
         "text",
       ]
     `);
@@ -27,10 +25,6 @@ describe('flowCanvasNodeTypes', () => {
 
   it('registers architecture node renderer', () => {
     expect(flowCanvasNodeTypes.architecture).toBeDefined();
-  });
-
-  it('registers journey node renderer', () => {
-    expect(flowCanvasNodeTypes.journey).toBeDefined();
   });
 });
 

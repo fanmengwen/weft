@@ -34,14 +34,6 @@ function getContextualOptions(sourceType?: string | null): ConnectMenuOption[] {
                 toneClassName: 'bg-cyan-50 text-cyan-700 border-cyan-100',
                 icon: <Settings className="w-4.5 h-4.5" />,
             }];
-        case 'journey':
-            return [{
-                type: 'journey',
-                title: 'Journey Step',
-                description: 'Create the next journey step',
-                toneClassName: 'bg-violet-50 text-violet-600 border-violet-100',
-                icon: <WandSparkles className="w-4.5 h-4.5" />,
-            }];
         case 'annotation':
             return [{
                 type: 'annotation',

@@ -34,7 +34,6 @@ export interface CommandBarPanelBuilderParams {
   handleAddAnnotation: () => void;
   handleAddSection: () => void;
   handleAddTextNode: () => void;
-  handleAddJourneyNode: () => void;
   handleAddArchitectureNode: () => void;
   handleAddImage: (imageUrl: string) => void;
   handleAddWireframe: (surface: 'browser' | 'mobile') => void;
@@ -156,7 +155,6 @@ export function buildCommandBarPanelProps({
   handleAddAnnotation,
   handleAddSection,
   handleAddTextNode,
-  handleAddJourneyNode,
   handleAddArchitectureNode,
   handleAddImage,
   handleAddWireframe,
@@ -188,7 +186,6 @@ export function buildCommandBarPanelProps({
     onAddAnnotation: handleAddAnnotation,
     onAddSection: handleAddSection,
     onAddText: handleAddTextNode,
-    onAddJourney: handleAddJourneyNode,
     onAddArchitecture: handleAddArchitectureNode,
     onAddImage: handleAddImage,
     onAddBrowserWireframe: () => handleAddWireframe('browser'),

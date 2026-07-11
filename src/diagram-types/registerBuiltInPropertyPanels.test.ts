@@ -13,7 +13,7 @@ describe('registerBuiltInPropertyPanels', () => {
     resetBuiltInPropertyPanelRegistrationForTests();
     resetDiagramNodePropertiesRegistryForTests();
     registerBuiltInPropertyPanels();
-    expect(getDiagramNodeProperties('journey')).toBeDefined();
+    expect(getDiagramNodeProperties('architecture')).toBeDefined();
     expect(getDiagramNodeProperties('architecture')).toBeDefined();
   });
 });

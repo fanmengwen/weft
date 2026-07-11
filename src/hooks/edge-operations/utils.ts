@@ -113,13 +113,6 @@ export function findClosestHandleTarget(
 }
 
 export function getAddedNodeContent(type: string, labels: AddedNodeContentLabels): AddedNodeContent {
-    if (type === 'journey') {
-        return {
-            label: 'User Journey',
-            subLabel: 'User',
-        };
-    }
-
     if (type === 'annotation') {
         return {
             label: labels.noteLabel,
@@ -145,27 +138,6 @@ export function buildConnectedNode({
     const defaultStyle = NODE_DEFAULTS[type] || NODE_DEFAULTS.process;
     const isGenericShape = isGenericShapeType(type);
     const nodeContent = getAddedNodeContent(type, labels);
-
-    if (type === 'journey') {
-        return {
-            newNode: {
-                id,
-                position,
-                data: {
-                    label: nodeContent.label,
-                    subLabel: nodeContent.subLabel,
-                    color: 'violet',
-                    shape: (shape || defaultStyle?.shape) as NodeData['shape'],
-                    journeySection: 'General',
-                    journeyTask: 'User Journey',
-                    journeyActor: 'User',
-                    journeyScore: 3,
-                },
-                type,
-            },
-            isGenericShape,
-        };
-    }
 
     if (type === 'architecture') {
         const sourceProvider = sourceNode?.data?.archProvider || 'custom';

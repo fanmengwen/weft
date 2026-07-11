@@ -1,7 +1,6 @@
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import { sanitizeId, sanitizeLabel, sanitizeEdgeLabel } from './formatting';
 import { toArchitectureMermaid } from './mermaid/architectureMermaid';
-import { toJourneyMermaid } from './mermaid/journeyMermaid';
 import { toStateDiagramMermaid, looksLikeStateDiagram } from './mermaid/stateDiagramMermaid';
 function hasMarker(marker: FlowEdge['markerStart'] | FlowEdge['markerEnd']): boolean {
   return Boolean(marker);
@@ -243,11 +242,6 @@ export function toMermaid(nodes: FlowNode[], edges: FlowEdge[], direction?: stri
   const architectureNodeCount = nodes.filter((node) => node.type === 'architecture').length;
   if (nodes.length > 0 && architectureNodeCount === nodes.length) {
     return toArchitectureMermaid(nodes, edges);
-  }
-
-  const journeyNodeCount = nodes.filter((node) => node.type === 'journey').length;
-  if (nodes.length > 0 && journeyNodeCount === nodes.length) {
-    return toJourneyMermaid(nodes);
   }
 
   if (looksLikeStateDiagram(nodes)) {

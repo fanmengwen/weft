@@ -156,26 +156,6 @@ export function createMermaidSvgNode(
   };
 }
 
-export function createJourneyNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Step'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: {
-      label,
-      color: 'violet',
-      journeySection: '',
-      journeyActor: '',
-      journeyTask: label,
-      journeyScore: 3,
-    },
-    type: 'journey',
-  };
-}
-
 export function createArchitectureNode(
   id: string,
   position: { x: number; y: number },

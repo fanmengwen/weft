@@ -27,7 +27,6 @@ export function isDiagramType(value: unknown): value is DiagramType {
 export enum NodeType {
   START = 'start',
   PROCESS = 'process',
-  JOURNEY = 'journey',
   ARCHITECTURE = 'architecture',
   DECISION = 'decision',
   END = 'end',
@@ -35,7 +34,6 @@ export enum NodeType {
   ANNOTATION = 'annotation',
   SECTION = 'section',
   GROUP = 'group',
-  SWIMLANE = 'swimlane',
   IMAGE = 'image',
   MERMAID_SVG = 'mermaid_svg',
   TEXT = 'text',
@@ -97,14 +95,6 @@ export interface NodeCanvasMetadata {
   pinned?: boolean;
 }
 
-export interface JourneyNodeData {
-  journeyTitle?: string;
-  journeySection?: string;
-  journeyActor?: string;
-  journeyTask?: string;
-  journeyScore?: number;
-}
-
 export interface ArchitectureNodeData {
   archTitle?: string;
   archProvider?: string;
@@ -148,7 +138,6 @@ export interface NodeData
     NodeIconData,
     NodeVisualStyleData,
     NodeCanvasMetadata,
-    JourneyNodeData,
     ArchitectureNodeData,
     SectionNodeData,
     MermaidSvgNodeData {
