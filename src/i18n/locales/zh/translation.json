@@ -97,7 +97,8 @@
         "basic": "基础",
         "prompt": "提示词",
         "config": "配置"
-      }
+      },
+      "modelCustomOption": "自定义模型…"
     },
     "canvas": {
       "emptyTitle": "从左侧拖入节点开始搭建工作流",

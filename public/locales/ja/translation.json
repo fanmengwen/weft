@@ -97,7 +97,8 @@
         "basic": "基本",
         "prompt": "プロンプト",
         "config": "設定"
-      }
+      },
+      "modelCustomOption": "カスタムモデル…"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

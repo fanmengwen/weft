@@ -97,7 +97,8 @@
         "basic": "Basics",
         "prompt": "Prompt",
         "config": "Configuration"
-      }
+      },
+      "modelCustomOption": "Custom model…"
     },
     "canvas": {
       "emptyTitle": "Drag a node from the left to start building",

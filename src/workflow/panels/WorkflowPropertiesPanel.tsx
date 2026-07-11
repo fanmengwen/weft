@@ -1,8 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { ChevronDown, Play, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createId } from '@/lib/id';
 import { useToast } from '@/components/ui/ToastContext';
+import { useFlowStore } from '@/store';
+import { DEFAULT_MODELS } from '@/config/aiProviders';
 import { WORKFLOW_NODE_CATALOG, workflowToneStyle } from '../nodes/nodeCatalog';
 import { WorkflowNodeIcon } from '../nodes/WorkflowNodeIcon';
 import type {
@@ -26,6 +28,8 @@ const COMPACT_SELECT_CLASS = `rounded-[7px] border border-[var(--wf-input-border
 const DASHED_BUTTON_CLASS =
   'rounded-lg border border-dashed border-[var(--wf-input-border)] px-3 py-2 text-[13px] text-[var(--wf-text-muted)] transition-colors hover:border-[var(--wf-acc)] hover:text-[var(--wf-text)]';
 
+const MODEL_CUSTOM_OPTION = '__custom__';
+
 const CONDITION_OPERATORS: WorkflowConditionOperator[] = [
   'contains',
   'notContains',
@@ -37,6 +41,63 @@ function SectionDivider(): React.ReactElement {
   return <div className="-mx-4 mt-[18px] border-t border-[var(--wf-divider)]" />;
 }
 
+interface LlmModelFieldProps {
+  model: string | undefined;
+  suggestions: string[];
+  onChange: (model: string) => void;
+}
+
+// Mounted with key={nodeId} so the custom-editing state resets per node.
+function LlmModelField({ model, suggestions, onChange }: LlmModelFieldProps): React.ReactElement {
+  const { t } = useTranslation();
+  const [customEditing, setCustomEditing] = useState(false);
+
+  const value = model?.trim() ?? '';
+  const isKnown = value === '' || suggestions.includes(value);
+  const showCustomInput = customEditing || !isKnown;
+
+  return (
+    <div className="mt-3.5 flex flex-col gap-1.5">
+      <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.modelField')}</span>
+      <div className="relative">
+        <select
+          value={showCustomInput ? MODEL_CUSTOM_OPTION : value}
+          onChange={(event) => {
+            const next = event.target.value;
+            if (next === MODEL_CUSTOM_OPTION) {
+              setCustomEditing(true);
+              return;
+            }
+            setCustomEditing(false);
+            onChange(next);
+          }}
+          className={`${INPUT_CLASS} appearance-none pr-8`}
+        >
+          <option value="">{t('workflowMode.properties.modelFollowGlobal')}</option>
+          {suggestions.map((suggestion) => (
+            <option key={suggestion} value={suggestion}>
+              {suggestion}
+            </option>
+          ))}
+          <option value={MODEL_CUSTOM_OPTION}>
+            {t('workflowMode.properties.modelCustomOption')}
+          </option>
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--wf-text-muted)]" />
+      </div>
+      {showCustomInput ? (
+        <input
+          type="text"
+          value={model ?? ''}
+          onChange={(event) => onChange(event.target.value)}
+          className={INPUT_CLASS}
+          placeholder={t('workflowMode.properties.modelFollowGlobal')}
+        />
+      ) : null}
+    </div>
+  );
+}
+
 export function WorkflowPropertiesPanel(): React.ReactElement {
   const { t } = useTranslation();
   const { addToast } = useToast();
@@ -45,6 +106,7 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const selectedNodeId = useWorkflowStore((state) => state.selectedNodeId);
   const updateWorkflowNodeData = useWorkflowStore((state) => state.updateWorkflowNodeData);
   const deleteWorkflowNode = useWorkflowStore((state) => state.deleteWorkflowNode);
+  const aiSettings = useFlowStore((state) => state.aiSettings);
   const documents = useKnowledgeStore((state) => state.documents);
   const addDocument = useKnowledgeStore((state) => state.addDocument);
   const runStatus = useWorkflowRunStore((state) => state.runStatus);
@@ -52,6 +114,16 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const lastRunOutputs = useWorkflowRunStore((state) => state.lastRunOutputs);
   const runSingleNode = useWorkflowRunStore((state) => state.runSingleNode);
   const uploadInputRef = useRef<HTMLInputElement>(null);
+
+  const modelSuggestions = useMemo(() => {
+    const provider = aiSettings.provider || 'gemini';
+    const candidates = [aiSettings.model, DEFAULT_MODELS[provider]];
+    return [
+      ...new Set(
+        candidates.filter((model): model is string => Boolean(model && model.trim()))
+      ),
+    ];
+  }, [aiSettings]);
 
   const selectedNode = workflowNodes.find((node) => node.id === selectedNodeId);
   const data = selectedNode?.data as unknown as WorkflowNodeData | undefined;
@@ -150,18 +222,12 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
             </label>
 
             {data.kind === 'llm' ? (
-              <label className="mt-3.5 flex flex-col gap-1.5">
-                <span className={FIELD_LABEL_CLASS}>
-                  {t('workflowMode.properties.modelField')}
-                </span>
-                <input
-                  type="text"
-                  value={data.model ?? ''}
-                  onChange={(event) => patchNode({ model: event.target.value })}
-                  className={INPUT_CLASS}
-                  placeholder={t('workflowMode.properties.modelFollowGlobal')}
-                />
-              </label>
+              <LlmModelField
+                key={selectedNode.id}
+                model={data.model}
+                suggestions={modelSuggestions}
+                onChange={(model) => patchNode({ model })}
+              />
             ) : null}
 
             <SectionDivider />
