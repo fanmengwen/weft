@@ -7,8 +7,6 @@ export interface DiagramNodePropertiesComponentProps {
   onChange: (id: string, data: Partial<NodeData>) => void;
   onDuplicate: (id: string) => void;
   onDelete: (id: string) => void;
-  onAddMindmapChild?: (parentId: string) => void;
-  onAddMindmapSibling?: (nodeId: string) => void;
   onAddArchitectureService?: (sourceId: string) => void;
   onCreateArchitectureBoundary?: (sourceId: string) => void;
   onApplyArchitectureTemplate?: (sourceId: string, templateId: import('@/lib/architectureTemplates').ArchitectureTemplateId) => void;

@@ -17,7 +17,6 @@ describe('flowCanvasNodeTypes', () => {
         "image",
         "journey",
         "mermaid_svg",
-        "mindmap",
         "mobile",
         "process",
         "section",
@@ -28,10 +27,6 @@ describe('flowCanvasNodeTypes', () => {
         "text",
       ]
     `);
-  });
-
-  it('registers mindmap node renderer', () => {
-    expect(flowCanvasNodeTypes.mindmap).toBeDefined();
   });
 
   it('registers architecture node renderer', () => {

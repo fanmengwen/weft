@@ -31,17 +31,6 @@ describe('toMermaid', () => {
         expect(result).toContain('service');
     });
 
-    it('mindmap — two mindmap nodes starts with mindmap', () => {
-        const result = toMermaid(
-            [
-                node('root', 'mindmap', 'Root', { mindmapDepth: 0 }),
-                node('child', 'mindmap', 'Topic', { mindmapDepth: 1 }),
-            ],
-            [edge('e1', 'root', 'child')]
-        );
-        expect(result).toMatch(/^mindmap/);
-    });
-
     it('class diagram — two class nodes starts with classDiagram', () => {
         const result = toMermaid(
             [node('ClassA', 'class', 'ClassA'), node('ClassB', 'class', 'ClassB')],

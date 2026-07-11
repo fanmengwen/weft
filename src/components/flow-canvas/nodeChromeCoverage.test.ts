@@ -16,7 +16,6 @@ const NODE_COMPONENT_FILES = [
   'src/components/custom-nodes/MobileNode.tsx',
   'src/components/custom-nodes/ClassNode.tsx',
   'src/components/custom-nodes/EntityNode.tsx',
-  'src/components/custom-nodes/MindmapNode.tsx',
   'src/components/custom-nodes/JourneyNode.tsx',
   'src/components/custom-nodes/ArchitectureNode.tsx',
   'src/components/custom-nodes/SequenceParticipantNode.tsx',

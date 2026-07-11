@@ -206,8 +206,6 @@
     "fitView": "ビューに合わせる",
     "nudgeNode": "ノードを微調整",
     "groupSelection": "選択をグループ化",
-    "mindmapAddChild": "Mindmap: Add Child Topic",
-    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "選択項目の名前を変更",
     "quickCreateConnectedNode": "Quick-create Connected Node",
     "annotationColors": "Annotation Colors",
@@ -1677,8 +1675,7 @@
     "newSection": "新しいセクション",
     "section": "セクション",
     "text": "テキスト",
-    "image": "画像",
-    "mindmap": "トピック"
+    "image": "画像"
   },
   "actions": {
     "clearCanvasConfirm": "キャンバスを本当にクリアしますか？"
@@ -1770,7 +1767,6 @@
     "label": "キャンバスコンテキストメニュー"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

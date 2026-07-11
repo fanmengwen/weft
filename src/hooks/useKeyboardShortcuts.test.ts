@@ -149,30 +149,6 @@ describe('useKeyboardShortcuts', () => {
     expect(onRedoUnavailable).toHaveBeenCalledTimes(1);
   });
 
-  it('adds a mindmap child on Tab when a mindmap topic is selected', () => {
-    const onAddMindmapChildShortcut = vi.fn();
-    renderShortcuts({
-      selectedNodeType: 'mindmap',
-      onAddMindmapChildShortcut,
-    });
-
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab' }));
-
-    expect(onAddMindmapChildShortcut).toHaveBeenCalledTimes(1);
-  });
-
-  it('adds a mindmap sibling on Enter when a mindmap topic is selected', () => {
-    const onAddMindmapSiblingShortcut = vi.fn();
-    renderShortcuts({
-      selectedNodeType: 'mindmap',
-      onAddMindmapSiblingShortcut,
-    });
-
-    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
-
-    expect(onAddMindmapSiblingShortcut).toHaveBeenCalledTimes(1);
-  });
-
   it('deletes the selected edge on Delete', () => {
     const deleteEdge = vi.fn();
     renderShortcuts({

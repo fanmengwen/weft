@@ -60,7 +60,6 @@ function OpenCommandBarContent({
   onAddSection: _onAddSection,
   onAddText: _onAddText,
   onAddJourney: _onAddJourney,
-  onAddMindmap: _onAddMindmap,
   onAddArchitecture: _onAddArchitecture,
   onAddSequence: _onAddSequence,
   onAddClassNode: _onAddClassNode,

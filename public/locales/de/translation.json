@@ -206,8 +206,6 @@
     "fitView": "Ansicht anpassen",
     "nudgeNode": "Knoten verschieben",
     "groupSelection": "Auswahl gruppieren",
-    "mindmapAddChild": "Mindmap: Add Child Topic",
-    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "Auswahl umbenennen",
     "quickCreateConnectedNode": "Quick-create Connected Node",
     "annotationColors": "Annotation Colors",
@@ -1677,8 +1675,7 @@
     "newSection": "Neuer Abschnitt",
     "section": "Abschnitt",
     "text": "Text",
-    "image": "Image",
-    "mindmap": "Thema"
+    "image": "Image"
   },
   "actions": {
     "clearCanvasConfirm": "Möchten Sie die Zeichenfläche wirklich leeren?"
@@ -1770,7 +1767,6 @@
     "label": "Canvas-Kontextmenü"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

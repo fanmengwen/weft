@@ -12,16 +12,6 @@ interface CreateGenericShapeNodeOptions {
   layerId?: string;
 }
 
-interface CreateMindmapTopicNodeOptions {
-  id: string;
-  position: { x: number; y: number };
-  depth: number;
-  parentId: string;
-  side: 'left' | 'right';
-  branchStyle: 'curved' | 'straight';
-  layerId?: string;
-}
-
 interface CreateArchitectureServiceNodeOptions {
   id: string;
   position: { x: number; y: number };
@@ -263,33 +253,6 @@ export function createSequenceParticipantNode(
     position,
     data: { label, color: 'slate', seqParticipantKind: 'participant' },
     type: 'sequence_participant',
-  };
-}
-
-export function createMindmapTopicNode({
-  id,
-  position,
-  depth,
-  parentId,
-  side,
-  branchStyle,
-  layerId,
-}: CreateMindmapTopicNodeOptions): FlowNode {
-  return {
-    id,
-    type: 'mindmap',
-    position,
-    data: {
-      label: 'New Topic',
-      color: 'slate',
-      shape: 'rounded',
-      mindmapDepth: depth,
-      mindmapParentId: parentId,
-      mindmapSide: side,
-      mindmapBranchStyle: branchStyle,
-      layerId,
-    },
-    selected: true,
   };
 }
 

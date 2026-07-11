@@ -111,8 +111,6 @@ const baseProps = {
     onFitSectionToContents: vi.fn(),
     onReleaseFromSection: vi.fn(),
     onBringContentsIntoSection: vi.fn(),
-    onAddMindmapChild: vi.fn(),
-    onAddMindmapSibling: vi.fn(),
     onAddArchitectureService: vi.fn(),
     onCreateArchitectureBoundary: vi.fn(),
     onApplyArchitectureTemplate: vi.fn(),

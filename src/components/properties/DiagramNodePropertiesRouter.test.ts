@@ -7,10 +7,6 @@ describe('resolveNodePropertiesPanelDiagramType', () => {
     expect(resolveNodePropertiesPanelDiagramType(NodeType.PROCESS, 'flowchart')).toBe('flowchart');
   });
 
-  it('routes mindmap nodes to the mindmap property panel even on a flowchart tab', () => {
-    expect(resolveNodePropertiesPanelDiagramType(NodeType.MINDMAP, 'flowchart')).toBe('mindmap');
-  });
-
   it('routes other specialized node families to their dedicated property panels', () => {
     expect(resolveNodePropertiesPanelDiagramType(NodeType.JOURNEY, 'flowchart')).toBe('journey');
     expect(resolveNodePropertiesPanelDiagramType(NodeType.ARCHITECTURE, 'flowchart')).toBe('architecture');

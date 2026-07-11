@@ -206,8 +206,6 @@
     "fitView": "适应视图",
     "nudgeNode": "微移节点",
     "groupSelection": "分组选择",
-    "mindmapAddChild": "思维导图：添加子主题",
-    "mindmapAddSibling": "思维导图：添加同级主题",
     "renameSelection": "重命名所选项",
     "quickCreateConnectedNode": "快速创建连接节点",
     "annotationColors": "标注颜色",
@@ -1711,8 +1709,7 @@
     "newSection": "新分区",
     "section": "部分",
     "text": "文本",
-    "image": "图片",
-    "mindmap": "主题"
+    "image": "图片"
   },
   "actions": {
     "clearCanvasConfirm": "确定要清空画布吗？"
@@ -1804,7 +1801,6 @@
     "label": "画布右键菜单"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

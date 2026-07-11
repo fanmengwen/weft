@@ -37,7 +37,6 @@ function getTemplateIcon(category: string): LucideIcon {
       return Layout;
     case 'cncf':
       return ShipWheel;
-    case 'mindmap':
     case 'sequence':
       return GitBranch;
     case 'journey':

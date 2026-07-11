@@ -53,8 +53,6 @@ export function useFlowEditorScreenBehavior(params: {
     },
     duplicateNode: operations.duplicateNode,
     selectAll: callbacks.selectAll,
-    handleAddMindmapChild: operations.handleAddMindmapChild,
-    handleAddMindmapSibling: operations.handleAddMindmapSibling,
     openCommandBar: screenState.openCommandBar,
     setShortcutsHelpOpen: screenState.setShortcutsHelpOpen,
     enableSelectMode: screenState.enableSelectMode,

@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { useMindmapTopicActionRequest } from '@/hooks/mindmapTopicActionRequest';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import { useNodeQuickCreateRequest } from '@/hooks/nodeQuickCreateRequest';
 
@@ -18,8 +17,6 @@ interface UseFlowEditorInteractionBindingsParams {
     onRedoUnavailable: () => void;
     duplicateNode: (id: string) => void;
     selectAll: () => void;
-    handleAddMindmapChild: (nodeId: string, side?: 'left' | 'right' | null) => void;
-    handleAddMindmapSibling: (nodeId: string) => void;
     openCommandBar: (view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system') => void;
     setShortcutsHelpOpen: (open: boolean) => void;
     enableSelectMode: () => void;
@@ -53,8 +50,6 @@ export function useFlowEditorInteractionBindings({
     onRedoUnavailable,
     duplicateNode,
     selectAll,
-    handleAddMindmapChild,
-    handleAddMindmapSibling,
     openCommandBar,
     setShortcutsHelpOpen,
     enableSelectMode,
@@ -87,16 +82,6 @@ export function useFlowEditorInteractionBindings({
         duplicateNode,
         selectAll,
         selectedNodeType,
-        onAddMindmapChildShortcut: () => {
-            if (selectedNodeId) {
-                handleAddMindmapChild(selectedNodeId);
-            }
-        },
-        onAddMindmapSiblingShortcut: () => {
-            if (selectedNodeId) {
-                handleAddMindmapSibling(selectedNodeId);
-            }
-        },
         onCommandBar: () => openCommandBar('root'),
         onSearch: () => openCommandBar('search'),
         onShortcutsHelp: () => setShortcutsHelpOpen(true),
@@ -156,18 +141,5 @@ export function useFlowEditorInteractionBindings({
         useCallback((nodeId, direction) => {
             createConnectedNodeInDirection(nodeId, direction);
         }, [createConnectedNodeInDirection])
-    );
-
-    useMindmapTopicActionRequest(
-        useCallback(({ nodeId, action, side }) => {
-            if (action === 'child') {
-                handleAddMindmapChild(nodeId, side ?? null);
-                return;
-            }
-
-            if (action === 'sibling') {
-                handleAddMindmapSibling(nodeId);
-            }
-        }, [handleAddMindmapChild, handleAddMindmapSibling])
     );
 }

@@ -31,7 +31,6 @@ describe('useFlowCanvasSelectionTools', () => {
         const hook = renderHook(() =>
             useFlowCanvasSelectionTools({
                 layerAdjustedNodes: [selectedNode],
-                edges: [],
                 alignmentGuidesEnabled: true,
                 toTypedFlowNode: (node) => node as FlowNode,
                 onNodeDragStart,

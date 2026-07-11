@@ -44,7 +44,6 @@ export interface BuildToolbarParams {
   handleAddTextNode: (position: { x: number; y: number }) => void;
   handleAddClassNode: (position: { x: number; y: number }) => void;
   handleAddEntityNode: (position: { x: number; y: number }) => void;
-  handleAddMindmapNode: (position: { x: number; y: number }) => void;
   handleAddJourneyNode: (position: { x: number; y: number }) => void;
   handleAddArchitectureNode: (position: { x: number; y: number }) => void;
   handleAddSequenceParticipant: (position: { x: number; y: number }) => void;

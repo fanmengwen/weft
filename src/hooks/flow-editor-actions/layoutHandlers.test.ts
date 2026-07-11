@@ -5,7 +5,6 @@ import { getElkLayout } from '@/services/elkLayout';
 import {
   buildTemplateInsertionResult,
   getAutoLayoutResult,
-  isMindmapAutoLayoutTarget,
   scheduleFitView,
 } from './layoutHandlers';
 
@@ -23,21 +22,6 @@ function createNode(id: string, type: FlowNode['type'] = 'process'): FlowNode {
   };
 }
 
-function createMindmapNode(id: string, data: Partial<FlowNode['data']> = {}): FlowNode {
-  return {
-    id,
-    type: 'mindmap',
-    position: { x: 0, y: 0 },
-    data: {
-      label: id,
-      color: 'slate',
-      shape: 'rounded',
-      ...data,
-    },
-    selected: true,
-  };
-}
-
 function createEdge(id: string, source: string, target: string): FlowEdge {
   return { id, source, target };
 }
@@ -47,13 +31,7 @@ describe('layoutHandlers', () => {
     vi.restoreAllMocks();
   });
 
-  it('detects when auto-layout should stay in mindmap mode', () => {
-    expect(isMindmapAutoLayoutTarget([createMindmapNode('root')], 'mindmap')).toBe(true);
-    expect(isMindmapAutoLayoutTarget([createMindmapNode('root')], undefined)).toBe(true);
-    expect(isMindmapAutoLayoutTarget([createNode('n1')], undefined)).toBe(false);
-  });
-
-  it('uses ELK for non-mindmap auto-layout targets', async () => {
+  it('uses ELK for auto-layout targets', async () => {
     const nodes = [createNode('n1')];
     const edges = [createEdge('e1', 'n1', 'n1')];
 

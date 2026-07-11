@@ -243,8 +243,5 @@ function getPreviewNodeColor(
   if (node.type === 'architecture') {
     return 'color-mix(in_srgb, var(--brand-primary) 38%, white)';
   }
-  if (node.type === 'mindmap') {
-    return 'color-mix(in_srgb, var(--brand-secondary) 30%, white)';
-  }
   return 'currentColor';
 }

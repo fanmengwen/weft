@@ -28,8 +28,6 @@ interface PropertiesPanelProps {
   onFitSectionToContents: (id: string) => void;
   onReleaseFromSection: (id: string) => void;
   onBringContentsIntoSection: (id: string) => void;
-  onAddMindmapChild: (parentId: string) => void;
-  onAddMindmapSibling: (nodeId: string) => void;
   onAddArchitectureService: (sourceId: string) => void;
   onCreateArchitectureBoundary: (sourceId: string) => void;
   onApplyArchitectureTemplate: (sourceId: string, templateId: ArchitectureTemplateId) => void;
@@ -52,8 +50,6 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   onFitSectionToContents,
   onReleaseFromSection,
   onBringContentsIntoSection,
-  onAddMindmapChild,
-  onAddMindmapSibling,
   onAddArchitectureService,
   onCreateArchitectureBoundary,
   onApplyArchitectureTemplate,
@@ -108,8 +104,6 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
             onFitSectionToContents={onFitSectionToContents}
             onReleaseFromSection={onReleaseFromSection}
             onBringContentsIntoSection={onBringContentsIntoSection}
-            onAddMindmapChild={onAddMindmapChild}
-            onAddMindmapSibling={onAddMindmapSibling}
             onAddArchitectureService={onAddArchitectureService}
             onCreateArchitectureBoundary={onCreateArchitectureBoundary}
             onApplyArchitectureTemplate={onApplyArchitectureTemplate}

@@ -32,7 +32,6 @@ export {
   createBrowserNode,
   createMobileNode,
   createSequenceParticipantNode,
-  createMindmapTopicNode,
   createArchitectureServiceNode,
 } from './nodeFactories';
 

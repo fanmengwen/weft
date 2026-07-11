@@ -9,7 +9,6 @@ export type TemplateCategory =
   | 'aws'
   | 'azure'
   | 'cncf'
-  | 'mindmap'
   | 'journey'
   | 'wireframe'
   | 'sequence';
@@ -85,21 +84,6 @@ export function createArchitectureNode(
       archEnvironment: 'default',
       archResourceType: resourceType,
     },
-  };
-}
-
-export function createMindmapNode(
-  id: string,
-  label: string,
-  x: number,
-  y: number,
-  options: Partial<NodeData> = {}
-): FlowNode {
-  return {
-    id,
-    type: NodeType.MINDMAP,
-    position: { x, y },
-    data: { label, color: 'slate', shape: 'rounded', mindmapBranchStyle: 'curved', ...options },
   };
 }
 

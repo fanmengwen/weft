@@ -11,7 +11,6 @@ interface PartialCorpusCase {
     | 'erDiagram'
     | 'architecture'
     | 'sequence'
-    | 'mindmap'
     | 'journey';
   diagnosticIncludes: string[];
   expectedDiagnosticCodes?: string[];
@@ -100,18 +99,6 @@ const PARTIAL_CORPUS: PartialCorpusCase[] = [
       A->>
     `,
     diagnosticIncludes: ['Invalid message at line'],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
-  },
-  {
-    name: 'mindmap malformed wrapper still recovers',
-    diagramType: 'mindmap',
-    source: `
-      mindmap
-        Root
-          bad((Unclosed
-          Child
-    `,
-    diagnosticIncludes: ['Malformed mindmap wrapper syntax at line'],
     expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
   },
   {

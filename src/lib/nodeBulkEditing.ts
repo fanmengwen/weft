@@ -26,7 +26,6 @@ export interface BulkSelectionFamilySummary {
 
 type NodeFamilyId =
   | 'architecture'
-  | 'mindmap'
   | 'journey'
   | 'class'
   | 'entity'
@@ -49,7 +48,6 @@ const FLOW_NODE_LABEL = 'Flow node';
 
 const NODE_FAMILY_LABELS: Record<NodeFamilyId, string> = {
   architecture: 'Architecture',
-  mindmap: 'Mindmap',
   journey: 'Journey',
   class: 'Class',
   entity: 'Entity',
@@ -76,8 +74,7 @@ const BULK_CAPABILITY_RULES: CapabilityRule[] = [
     keys: ['color'],
     supports: (node) =>
       GENERIC_COLOR_NODE_TYPES.has(node.type) ||
-      node.type === NodeType.ARCHITECTURE ||
-      node.type === NodeType.MINDMAP,
+      node.type === NodeType.ARCHITECTURE,
   },
   {
     capability: 'advancedColor',
@@ -165,7 +162,6 @@ const ADVANCED_COLOR_NODE_TYPES = new Set<string>([
   NodeType.END,
   NodeType.CUSTOM,
   NodeType.ARCHITECTURE,
-  NodeType.MINDMAP,
 ]);
 
 function isIconAssetNode(node: Node<NodeData>): boolean {
@@ -180,8 +176,6 @@ function getNodeFamilyId(node: Node<NodeData>): NodeFamilyId {
   switch (node.type) {
     case NodeType.ARCHITECTURE:
       return 'architecture';
-    case NodeType.MINDMAP:
-      return 'mindmap';
     case NodeType.JOURNEY:
       return 'journey';
     case NodeType.CLASS:

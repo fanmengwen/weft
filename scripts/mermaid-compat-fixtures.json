@@ -129,21 +129,21 @@
     "name": "mindmap-basic",
     "family": "mindmap",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "mindmap\n  Root\n    Branch A\n    Branch B"
   },
   {
     "name": "mindmap-wrapped-nodes",
     "family": "mindmap",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "mindmap\n  root((Root))\n    feature[[Child A]]\n    decision{{Child B}}"
   },
   {
     "name": "mindmap-dotted-aliases",
     "family": "mindmap",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "mindmap\n  platform.root((Root))\n    platform.api[[Child A]]\n    platform.branch(Child B)"
   },
   {

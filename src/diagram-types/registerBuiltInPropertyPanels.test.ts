@@ -15,7 +15,6 @@ describe('registerBuiltInPropertyPanels', () => {
     registerBuiltInPropertyPanels();
     expect(getDiagramNodeProperties('classDiagram')).toBeDefined();
     expect(getDiagramNodeProperties('erDiagram')).toBeDefined();
-    expect(getDiagramNodeProperties('mindmap')).toBeDefined();
     expect(getDiagramNodeProperties('journey')).toBeDefined();
     expect(getDiagramNodeProperties('architecture')).toBeDefined();
   });

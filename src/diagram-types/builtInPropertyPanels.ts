@@ -4,7 +4,6 @@ import { ArchitectureNodeProperties } from '@/components/properties/families/Arc
 import { ClassDiagramNodeProperties } from '@/components/properties/families/ClassDiagramNodeProperties';
 import { ERDiagramNodeProperties } from '@/components/properties/families/ERDiagramNodeProperties';
 import { JourneyNodeProperties } from '@/components/properties/families/JourneyNodeProperties';
-import { MindmapNodeProperties } from '@/components/properties/families/MindmapNodeProperties';
 import { SequenceNodeProperties } from '@/components/properties/families/SequenceNodeProperties';
 
 export interface BuiltInDiagramPropertyPanel {
@@ -15,7 +14,6 @@ export interface BuiltInDiagramPropertyPanel {
 export const BUILT_IN_DIAGRAM_PROPERTY_PANELS: BuiltInDiagramPropertyPanel[] = [
   { diagramType: 'classDiagram', component: ClassDiagramNodeProperties },
   { diagramType: 'erDiagram', component: ERDiagramNodeProperties },
-  { diagramType: 'mindmap', component: MindmapNodeProperties },
   { diagramType: 'journey', component: JourneyNodeProperties },
   { diagramType: 'architecture', component: ArchitectureNodeProperties },
   { diagramType: 'sequence', component: SequenceNodeProperties },

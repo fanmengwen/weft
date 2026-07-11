@@ -145,32 +145,6 @@ export function useNodeOperationAdders({
     [commitAddedNode, nodesLength, recordHistory]
   );
 
-  const handleAddMindmapNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('mindmap');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'mindmap',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'Central Topic',
-            color: 'slate',
-            shape: 'rounded',
-            mindmapDepth: 0,
-            mindmapBranchStyle: 'curved',
-          },
-          selected: true,
-        }),
-        position
-      );
-      queueNodeLabelEditRequest(id, { replaceExisting: true });
-    },
-    [commitAddedNode, nodesLength, recordHistory]
-  );
-
   const handleAddArchitectureNode = useCallback(
     (position?: { x: number; y: number }) => {
       recordHistory();
@@ -411,7 +385,6 @@ export function useNodeOperationAdders({
     handleAddNode,
     handleAddAnnotation,
     handleAddJourneyNode,
-    handleAddMindmapNode,
     handleAddArchitectureNode,
     handleAddSequenceParticipant,
     handleAddClassNode,

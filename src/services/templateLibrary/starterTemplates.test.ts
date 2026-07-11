@@ -5,7 +5,7 @@ describe('starter template manifests', () => {
   it('includes the curated launch starter catalog', () => {
     const ids = STARTER_TEMPLATE_MANIFESTS.map((template) => template.id);
 
-    expect(ids).toHaveLength(12);
+    expect(ids).toHaveLength(11);
     expect(ids).toContain('incident-response-command-flow');
     expect(ids).toContain('production-release-train');
     expect(ids).toContain('c4-system-context');
@@ -14,7 +14,6 @@ describe('starter template manifests', () => {
     expect(ids).toContain('azure-ai-application-platform');
     expect(ids).toContain('cncf-gitops-delivery-platform');
     expect(ids).toContain('backend-api-request-handoff');
-    expect(ids).toContain('product-discovery-workshop-map');
   });
 
   it('has deterministic graph integrity for every starter template', () => {
@@ -46,10 +45,9 @@ describe('starter template manifests', () => {
   it('is consumable by template registry scaffold', () => {
     const registry = createStarterTemplateRegistry();
 
-    expect(registry.listTemplates()).toHaveLength(12);
+    expect(registry.listTemplates()).toHaveLength(11);
     expect(registry.getTemplate('incident-response-command-flow')?.graph.nodes).toHaveLength(11);
     expect(registry.getTemplate('aws-event-driven-saas-platform')?.graph.nodes).toHaveLength(9);
     expect(registry.getTemplate('c4-system-context')?.graph.nodes).toHaveLength(7);
-    expect(registry.getTemplate('product-discovery-workshop-map')?.graph.nodes).toHaveLength(13);
   });
 });

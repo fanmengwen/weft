@@ -127,7 +127,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     handleAddTextNode,
     handleAddClassNode,
     handleAddEntityNode,
-    handleAddMindmapNode,
     handleAddJourneyNode,
     handleAddArchitectureNode,
     handleAddSequenceParticipant,
@@ -179,7 +178,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         handleAddTextNode,
         handleAddClassNode,
         handleAddEntityNode,
-        handleAddMindmapNode,
         handleAddJourneyNode,
         handleAddArchitectureNode,
         handleAddSequenceParticipant,
@@ -192,7 +190,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       handleAddTextNode,
       handleAddClassNode,
       handleAddEntityNode,
-      handleAddMindmapNode,
       handleAddJourneyNode,
       handleAddArchitectureNode,
       handleAddSequenceParticipant,
@@ -260,13 +257,11 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
 
   const {
     alignmentGuides,
-    selectionDragPreview,
     handleNodeDragStart,
     handleNodeDrag,
     handleNodeDragStop,
   } = useFlowCanvasSelectionTools({
     layerAdjustedNodes,
-    edges: effectiveEdges,
     alignmentGuidesEnabled,
     toTypedFlowNode: (node) => toTypedFlowNode(node as Parameters<typeof toFlowNode>[0]),
     onNodeDragStart: (event, node) =>
@@ -484,7 +479,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       effectiveShowGrid={effectiveShowGrid}
       alignmentGuidesEnabled={alignmentGuidesEnabled}
       alignmentGuides={alignmentGuides}
-      selectionDragPreview={selectionDragPreview}
       connectMenu={connectMenu}
       setConnectMenu={setConnectMenu}
       screenToFlowPosition={screenToFlowPosition}

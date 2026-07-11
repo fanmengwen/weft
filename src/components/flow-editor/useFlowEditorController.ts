@@ -75,7 +75,6 @@ type FlowEditorCommandBarConfig = Omit<
     | 'handleAddSection'
     | 'handleAddTextNode'
     | 'handleAddJourneyNode'
-    | 'handleAddMindmapNode'
     | 'handleAddArchitectureNode'
     | 'handleAddSequenceParticipant'
     | 'handleAddClassNode'
@@ -187,7 +186,6 @@ export interface UseFlowEditorChromeParams {
     handleAddSection: () => void;
     handleAddTextNode: () => void;
     handleAddJourneyNode: () => void;
-    handleAddMindmapNode: () => void;
     handleAddArchitectureNode: () => void;
     handleAddSequenceParticipant: () => void;
     handleAddClassNode: () => void;
@@ -248,7 +246,6 @@ export function useFlowEditorController({
             handleAddSection: chromeParams.handleAddSection,
             handleAddTextNode: chromeParams.handleAddTextNode,
             handleAddJourneyNode: chromeParams.handleAddJourneyNode,
-            handleAddMindmapNode: chromeParams.handleAddMindmapNode,
             handleAddArchitectureNode: chromeParams.handleAddArchitectureNode,
             handleAddSequenceParticipant: chromeParams.handleAddSequenceParticipant,
             handleAddClassNode: chromeParams.handleAddClassNode,

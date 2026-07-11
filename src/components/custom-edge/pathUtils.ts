@@ -3,8 +3,6 @@ import { isEdgeInteractionLowDetailModeActive } from './edgeRenderMode';
 import { measureDevPerformance } from '@/lib/devPerformance';
 import {
     applyAnchorClearance,
-    buildMindmapRootBranchPath,
-    buildMindmapTopicBranchPath,
     buildRoundedPolylinePath,
     enforceMinimumEndpointLead,
     getElkLabelPosition,
@@ -225,11 +223,8 @@ export function buildEdgePath(
             return withBundledLabelOffset(pathStr, labelX, labelY, params, labelBundleOffset);
         }
 
-        const isMindmapBranch = Boolean(options.mindmapBranchKind) && variant === 'bezier' && !effectiveForceOrthogonal;
-        const isMindmapRootBranch = options.mindmapBranchKind === 'root' && isMindmapBranch;
         const shouldUseSharedSourceTrunk =
-            !isMindmapBranch
-            && (variant === 'smoothstep' || variant === 'step' || effectiveForceOrthogonal)
+            (variant === 'smoothstep' || variant === 'step' || effectiveForceOrthogonal)
             && sourceSiblingCount >= 3
             && (
                 params.sourcePosition === Position.Left
@@ -245,7 +240,7 @@ export function buildEdgePath(
             );
         const sourceOffset = getOffsetVector(
             params.sourcePosition,
-            pairOffset + ((isMindmapBranch || shouldUseSharedSourceTrunk) ? 0 : sourceFanoutOffset)
+            pairOffset + (shouldUseSharedSourceTrunk ? 0 : sourceFanoutOffset)
         );
         const targetOffset = getOffsetVector(params.targetPosition, pairOffset + targetFanoutOffset);
         const sourcePoint = applyAnchorClearance(
@@ -290,18 +285,6 @@ export function buildEdgePath(
         // Smooth curves => cubic bezier through endpoints; orthogonal step curves
         // => rounded smoothstep; linear => straight line.
         if (!effectiveForceOrthogonal && isSmoothCurve(resolvedCurve)) {
-            if (isMindmapBranch) {
-                return withBundledLabelOffset(
-                    ...(() => {
-                        const result = isMindmapRootBranch
-                            ? buildMindmapRootBranchPath(sourceX, sourceY, targetX, targetY)
-                            : buildMindmapTopicBranchPath(sourceX, sourceY, targetX, targetY);
-                        return [result.edgePath, result.labelX, result.labelY] as const;
-                    })(),
-                    params,
-                    labelBundleOffset
-                );
-            }
             // For Mermaid-parity we use a slightly looser cubic bezier than the
             // React Flow default; mirrors Mermaid's `curveBasis` softness.
             const [edgePath, labelX, labelY] = getBezierPath({

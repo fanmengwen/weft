@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Settings, WandSparkles, StickyNote, X, Database, ArrowRightLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { isMindmapConnectorSource } from '@/lib/connectCreationPolicy';
 import { useFlowStore } from '@/store';
 import type { DomainLibraryCategory, DomainLibraryItem } from '@/services/domainLibrary';
 import { loadDomainAssetSuggestions } from '@/services/assetCatalog';
@@ -13,7 +12,6 @@ import { normalizeNodeIconData } from '@/lib/nodeIconState';
 import {
     type ConnectMenuOption,
     GenericConnectOptionsSection,
-    MindmapConnectSection,
     ProviderSuggestionsSection,
 } from './ConnectMenuSections';
 
@@ -98,7 +96,6 @@ export const ConnectMenu = ({ position, sourceId, sourceType, onSelect, onSelect
     const { onKeyDown } = useMenuKeyboardNavigation({ menuRef, onClose });
     const sourceNode = useFlowStore((state) => state.nodes.find((node) => node.id === sourceId));
     const normalizedIconData = normalizeNodeIconData(sourceNode?.data);
-    const isMindmapSource = isMindmapConnectorSource(sourceType);
     const isAssetSource = normalizedIconData?.assetPresentation === 'icon'
         && typeof normalizedIconData.assetProvider === 'string';
     const assetProvider = (normalizedIconData?.assetProvider || null) as DomainLibraryCategory | null;
@@ -269,13 +266,7 @@ export const ConnectMenu = ({ position, sourceId, sourceType, onSelect, onSelect
                         <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--brand-secondary)]">{t('connectMenu.createNewNode')}</p>
                     </div>
 
-                    {isMindmapSource ? (
-                        <MindmapConnectSection
-                            title={t('nodes.mindmap', 'Topic')}
-                            description="Create connected topic"
-                            onSelect={() => handleSelect('mindmap')}
-                        />
-                    ) : isAssetSource && providerItems.length > 0 ? (
+                    {isAssetSource && providerItems.length > 0 ? (
                         <ProviderSuggestionsSection
                             title={`${providerTitle} suggestions`}
                             items={providerItems}

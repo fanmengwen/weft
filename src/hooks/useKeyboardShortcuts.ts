@@ -15,8 +15,6 @@ interface ShortcutHandlers {
   onRedoUnavailable?: () => void;
   duplicateNode: (id: string) => void;
   selectAll: () => void;
-  onAddMindmapChildShortcut?: () => void;
-  onAddMindmapSiblingShortcut?: () => void;
   onCommandBar: () => void;
   onSearch: () => void;
   onShortcutsHelp: () => void;
@@ -50,8 +48,6 @@ export function useKeyboardShortcuts({
   onRedoUnavailable,
   duplicateNode,
   selectAll,
-  onAddMindmapChildShortcut,
-  onAddMindmapSiblingShortcut,
   onCommandBar,
   onSearch,
   onShortcutsHelp,
@@ -201,15 +197,6 @@ export function useKeyboardShortcuts({
         if (selectedNodeId) duplicateNode(selectedNodeId);
       }
 
-      // Mindmap quick-add child (Tab)
-      if (!isCmdOrCtrl && !isEditable && e.key === 'Tab') {
-        if (selectedNodeId && selectedNodeType === 'mindmap' && onAddMindmapChildShortcut) {
-          e.preventDefault();
-          onAddMindmapChildShortcut();
-          return;
-        }
-      }
-
       if (!isCmdOrCtrl && e.altKey && !isEditable) {
         if (e.key === 'ArrowUp') {
           e.preventDefault();
@@ -239,16 +226,6 @@ export function useKeyboardShortcuts({
         if (shortcutIndex >= 0 && shortcutIndex < annotationColors.length) {
           e.preventDefault();
           onAnnotationColorShortcut?.(annotationColors[shortcutIndex]);
-          return;
-        }
-      }
-
-      // Mindmap quick-add sibling (Enter)
-      if (!isCmdOrCtrl && !isShift && e.key === 'Enter') {
-        if (isEditable) return;
-        if (selectedNodeId && selectedNodeType === 'mindmap' && onAddMindmapSiblingShortcut) {
-          e.preventDefault();
-          onAddMindmapSiblingShortcut();
           return;
         }
       }
@@ -322,5 +299,5 @@ export function useKeyboardShortcuts({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedNodeId, selectedEdgeId, selectedNodeType, deleteNode, deleteEdge, undo, redo, canUndo, canRedo, onUndoUnavailable, onRedoUnavailable, duplicateNode, selectAll, onAddMindmapChildShortcut, onAddMindmapSiblingShortcut, onCommandBar, onSearch, onShortcutsHelp, onSelectMode, onPanMode, onFitView, onZoomIn, onZoomOut, onCopy, onPaste, onCopyStyle, onPasteStyle, onQuickCreateShortcut, onAnnotationColorShortcut, onClearSelection, onNudge, onTogglePinPositionShortcut]);
+  }, [selectedNodeId, selectedEdgeId, selectedNodeType, deleteNode, deleteEdge, undo, redo, canUndo, canRedo, onUndoUnavailable, onRedoUnavailable, duplicateNode, selectAll, onCommandBar, onSearch, onShortcutsHelp, onSelectMode, onPanMode, onFitView, onZoomIn, onZoomOut, onCopy, onPaste, onCopyStyle, onPasteStyle, onQuickCreateShortcut, onAnnotationColorShortcut, onClearSelection, onNudge, onTogglePinPositionShortcut]);
 }

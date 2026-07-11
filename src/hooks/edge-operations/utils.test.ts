@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import {
-  buildConnectedMindmapTopic,
   buildConnectedEdge,
   buildConnectedNode,
   findClosestHandleTarget,
@@ -163,59 +162,6 @@ describe('edge operation utils', () => {
     expect(newNode.data.archZone).toBe('ap-south-1');
   });
 
-  it('builds and relayouts a connected mindmap topic from the source branch', () => {
-    const rootNode: FlowNode = {
-      id: 'root',
-      type: 'mindmap',
-      position: { x: 400, y: 260 },
-      data: {
-        label: 'Root',
-        color: 'slate',
-        shape: 'rounded',
-        mindmapDepth: 0,
-        mindmapBranchStyle: 'curved',
-      },
-      selected: true,
-    };
-
-    const childNode: FlowNode = {
-      id: 'child',
-      type: 'mindmap',
-      position: { x: 680, y: 260 },
-      data: {
-        label: 'Child',
-        color: 'slate',
-        shape: 'rounded',
-        mindmapDepth: 1,
-        mindmapParentId: 'root',
-        mindmapSide: 'right',
-      },
-      selected: false,
-    };
-
-    const result = buildConnectedMindmapTopic({
-      nodes: [rootNode, childNode],
-      edges: [
-        {
-          id: 'e-root-child',
-          source: 'root',
-          target: 'child',
-        },
-      ],
-      sourceNode: rootNode,
-      sourceHandle: 'right',
-      sourceId: 'root',
-      position: { x: 720, y: 320 },
-    });
-
-    expect(result.nextNode.type).toBe('mindmap');
-    expect(result.nextNode.data.mindmapParentId).toBe('root');
-    expect(result.nextNode.data.mindmapSide).toBe('right');
-    expect(result.insertedEdge.source).toBe('root');
-    expect(result.insertedEdge.target).toBe(result.nextNode.id);
-    expect(result.nextNodes.find((node) => node.id === 'root')?.position).toEqual({ x: 400, y: 260 });
-  });
-
   it('resolves connect-end autosnap, default add, and menu fallbacks', () => {
     const autosnap = resolveConnectEndAction({
       nodes: [processNode],
@@ -239,24 +185,20 @@ describe('edge operation utils', () => {
     });
 
     const add = resolveConnectEndAction({
-      nodes: [{
-        id: 'mind-root',
-        type: 'mindmap',
-        position: { x: 0, y: 0 },
-        data: { label: 'Root', mindmapDepth: 0 },
-      }],
+      nodes: [processNode],
       edges: [],
-      sourceId: 'mind-root',
+      sourceId: 'node-1',
       sourceHandle: 'right',
       position: { x: 600, y: 600 },
       clientPosition: { x: 30, y: 40 },
       targetIsPane: true,
-      canvasInteractionsV1Enabled: false,
+      canvasInteractionsV1Enabled: true,
     });
 
     expect(add).toEqual({
       type: 'add',
-      nodeType: 'mindmap',
+      nodeType: 'process',
+      shape: 'rounded',
       position: { x: 600, y: 600 },
     });
 

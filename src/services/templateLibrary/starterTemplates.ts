@@ -6,7 +6,6 @@ import {
   createArchitectureNode,
   createAssetNode,
   createFlowNode,
-  createMindmapNode,
   createTemplate,
 } from './templateFactories';
 
@@ -598,102 +597,6 @@ export const STARTER_TEMPLATE_MANIFESTS: TemplateManifest[] = [
       outcome: 'Gives engineers a sequence diagram they can directly adapt to a real API path.',
       replacementHints: ['Participant names', 'Endpoint', 'Async job step', 'Persistence calls'],
       previewVariant: 'sequence',
-    }
-  ),
-  createTemplate(
-    'product-discovery-workshop-map',
-    'Product Discovery Workshop Map',
-    'A discovery mindmap for goals, user pain, evidence, solution bets, and experiments.',
-    'mindmap',
-    ['mindmap', 'product', 'workshop', 'discovery'],
-    [
-      createMindmapNode('mm-root', 'Discovery Workshop', 0, 0, {
-        mindmapDepth: 0,
-        color: 'slate',
-      }),
-      createMindmapNode('mm-left-1', 'User Pain', -280, -200, {
-        mindmapParentId: 'mm-root',
-        mindmapSide: 'left',
-        mindmapDepth: 1,
-      }),
-      createMindmapNode('mm-left-2', 'Evidence', -280, 40, {
-        mindmapParentId: 'mm-root',
-        mindmapSide: 'left',
-        mindmapDepth: 1,
-      }),
-      createMindmapNode('mm-left-3', 'Constraints', -280, 280, {
-        mindmapParentId: 'mm-root',
-        mindmapSide: 'left',
-        mindmapDepth: 1,
-      }),
-      createMindmapNode('mm-right-1', 'Solution Bets', 280, -200, {
-        mindmapParentId: 'mm-root',
-        mindmapSide: 'right',
-        mindmapDepth: 1,
-      }),
-      createMindmapNode('mm-right-2', 'Experiments', 280, 40, {
-        mindmapParentId: 'mm-root',
-        mindmapSide: 'right',
-        mindmapDepth: 1,
-      }),
-      createMindmapNode('mm-right-3', 'Success Signals', 280, 280, {
-        mindmapParentId: 'mm-root',
-        mindmapSide: 'right',
-        mindmapDepth: 1,
-      }),
-      createMindmapNode('mm-leaf-1', 'Top complaint from interviews', -560, -280, {
-        mindmapParentId: 'mm-left-1',
-        mindmapSide: 'left',
-        mindmapDepth: 2,
-      }),
-      createMindmapNode('mm-leaf-2', 'Activation drop-off metrics', -560, -40, {
-        mindmapParentId: 'mm-left-2',
-        mindmapSide: 'left',
-        mindmapDepth: 2,
-      }),
-      createMindmapNode('mm-leaf-3', 'Engineering capacity this quarter', -560, 220, {
-        mindmapParentId: 'mm-left-3',
-        mindmapSide: 'left',
-        mindmapDepth: 2,
-      }),
-      createMindmapNode('mm-leaf-4', 'Workflow assistant concept', 560, -280, {
-        mindmapParentId: 'mm-right-1',
-        mindmapSide: 'right',
-        mindmapDepth: 2,
-      }),
-      createMindmapNode('mm-leaf-5', 'Prototype with five users', 560, -40, {
-        mindmapParentId: 'mm-right-2',
-        mindmapSide: 'right',
-        mindmapDepth: 2,
-      }),
-      createMindmapNode('mm-leaf-6', 'Time to first value', 560, 220, {
-        mindmapParentId: 'mm-right-3',
-        mindmapSide: 'right',
-        mindmapDepth: 2,
-      }),
-    ],
-    [
-      createDefaultEdge('mm-root', 'mm-left-1'),
-      createDefaultEdge('mm-root', 'mm-left-2'),
-      createDefaultEdge('mm-root', 'mm-left-3'),
-      createDefaultEdge('mm-root', 'mm-right-1'),
-      createDefaultEdge('mm-root', 'mm-right-2'),
-      createDefaultEdge('mm-root', 'mm-right-3'),
-      createDefaultEdge('mm-left-1', 'mm-leaf-1'),
-      createDefaultEdge('mm-left-2', 'mm-leaf-2'),
-      createDefaultEdge('mm-left-3', 'mm-leaf-3'),
-      createDefaultEdge('mm-right-1', 'mm-leaf-4'),
-      createDefaultEdge('mm-right-2', 'mm-leaf-5'),
-      createDefaultEdge('mm-right-3', 'mm-leaf-6'),
-    ],
-    {
-      audience: 'builders',
-      useCase: 'Run a product discovery workshop with prompts that invite editing instead of blank branches',
-      launchPriority: 7,
-      featured: false,
-      difficulty: 'starter',
-      outcome: 'Turns the mindmap into a real workshop asset instead of a decorative brainstorming shell.',
-      replacementHints: ['Workshop topic', 'Pain points', 'Evidence sources', 'Experiment ideas'],
     }
   ),
 ];

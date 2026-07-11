@@ -38,8 +38,6 @@ const NODE_ATTRIBUTE_KEYS = [
     'journeyActor',
     'journeyTask',
     'journeyScore',
-    'mindmapSide',
-    'mindmapBranchStyle',
     'archProvider',
     'archProviderLabel',
     'archResourceType',

@@ -54,7 +54,6 @@ function createAddItemActions() {
     onAddTextNode: vi.fn(),
     onAddClassNode: vi.fn(),
     onAddEntityNode: vi.fn(),
-    onAddMindmapNode: vi.fn(),
     onAddJourneyNode: vi.fn(),
     onAddArchitectureNode: vi.fn(),
     onAddSequenceParticipant: vi.fn(),

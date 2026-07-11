@@ -16,7 +16,6 @@ import BrowserNode from '@/components/custom-nodes/BrowserNode';
 import MobileNode from '@/components/custom-nodes/MobileNode';
 import ClassNode from '@/components/custom-nodes/ClassNode';
 import EntityNode from '@/components/custom-nodes/EntityNode';
-import MindmapNode from '@/components/custom-nodes/MindmapNode';
 import JourneyNode from '@/components/custom-nodes/JourneyNode';
 import ArchitectureNode from '@/components/custom-nodes/ArchitectureNode';
 import SequenceParticipantNode from '@/components/custom-nodes/SequenceParticipantNode';
@@ -31,7 +30,6 @@ export const flowCanvasNodeTypes: NodeTypes = {
   custom: CustomNode,
   class: ClassNode,
   er_entity: EntityNode,
-  mindmap: MindmapNode,
   journey: JourneyNode,
   architecture: ArchitectureNode,
   annotation: AnnotationNode,

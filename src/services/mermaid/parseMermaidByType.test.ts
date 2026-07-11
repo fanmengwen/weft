@@ -204,41 +204,6 @@ describe('parseMermaidByType', () => {
     ).toBe(true);
   });
 
-  it('parses mindmap through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      mindmap
-        Root
-          Branch A
-          Branch B
-    `);
-
-    expect(result.diagramType).toBe('mindmap');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
-    expect(result.nodes.every((node) => node.type === 'mindmap')).toBe(true);
-  });
-
-  it('keeps dotted wrapped mindmap aliases in editable_full when no diagnostics are present', () => {
-    const result = parseMermaidByType(`
-      mindmap
-        platform.root((Root))
-          platform.api[[Child A]]
-          platform.branch(Child B)
-    `);
-
-    expect(result.diagramType).toBe('mindmap');
-    expect(result.error).toBeUndefined();
-    expect(result.structuredDiagnostics).toEqual([]);
-    expect(result.importState).toBe('editable_full');
-    expect(result.nodes.find((node) => node.data.label === 'Root')?.data.mindmapAlias).toBe(
-      'platform.root'
-    );
-    expect(
-      result.nodes.find((node) => node.data.label === 'Child A')?.data.mindmapAlias
-    ).toBe('platform.api');
-  });
-
   it('parses journey through plugin dispatcher', () => {
     const result = parseMermaidByType(`
       journey
@@ -272,28 +237,6 @@ describe('parseMermaidByType', () => {
     ).toBe(true);
     expect(
       result.diagnostics?.some((message) => message.includes('Invalid journey score at line'))
-    ).toBe(true);
-  });
-
-  it('returns mindmap diagnostics for malformed indentation/wrapper lines', () => {
-    const result = parseMermaidByType(`
-      mindmap
-        Root
-            Jumped
-          bad((Unclosed
-          Child
-    `);
-
-    expect(result.diagramType).toBe('mindmap');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Mindmap indentation jump at line'))
-    ).toBe(true);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Malformed mindmap wrapper syntax at line')
-      )
     ).toBe(true);
   });
 
@@ -444,6 +387,21 @@ describe('parseMermaidByType', () => {
     const result = parseMermaidByType('A --> B');
 
     expect(result.error).toContain('Missing chart type declaration');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('degrades mindmap sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      mindmap
+        Root
+          Branch A
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('mindmap');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
     expect(result.nodes).toHaveLength(0);
     expect(result.edges).toHaveLength(0);
   });

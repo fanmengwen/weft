@@ -3,67 +3,6 @@ import { parseMermaidByType } from '@/services/mermaid/parseMermaidByType';
 import { toMermaid } from './exportService';
 
 describe('remaining Mermaid family round-trip', () => {
-  it('preserves mindmap family through parse/export/parse', () => {
-    const source = `
-      mindmap
-        root((Root))
-          feature[[Child A]]
-            Grandchild
-          (Child B)
-    `;
-
-    const first = parseMermaidByType(source);
-    expect(first.error).toBeUndefined();
-    expect(first.diagramType).toBe('mindmap');
-    expect(first.nodes.length).toBeGreaterThan(0);
-
-    const exported = toMermaid(first.nodes, first.edges);
-    expect(exported.startsWith('mindmap')).toBe(true);
-    expect(exported).toContain('root((Root))');
-    expect(exported).toContain('feature[[Child A]]');
-    expect(exported).toContain('((Root))');
-    expect(exported).toContain('[[Child A]]');
-    expect(exported).toContain('(Child B)');
-
-    const second = parseMermaidByType(exported);
-    expect(second.error).toBeUndefined();
-    expect(second.diagramType).toBe('mindmap');
-    expect(second.nodes).toHaveLength(first.nodes.length);
-    expect(second.edges).toHaveLength(first.edges.length);
-    expect(second.nodes.find((node) => node.data.label === 'Root')?.data.mindmapAlias).toBe('root');
-    expect(second.nodes.find((node) => node.data.label === 'Child A')?.data.mindmapAlias).toBe('feature');
-    expect(second.nodes.find((node) => node.data.label === 'Root')?.data.mindmapWrapper).toBe('double-circle');
-    expect(second.nodes.find((node) => node.data.label === 'Child A')?.data.mindmapWrapper).toBe('double-square');
-    expect(second.nodes.find((node) => node.data.label === 'Child B')?.data.mindmapWrapper).toBe('rounded');
-  });
-
-  it('preserves dotted mindmap aliases through parse/export/parse', () => {
-    const source = `
-      mindmap
-        platform.root((Root))
-          platform.api[[Child A]]
-          platform.branch(Child B)
-    `;
-
-    const first = parseMermaidByType(source);
-    expect(first.error).toBeUndefined();
-    expect(first.diagramType).toBe('mindmap');
-    expect(first.nodes.find((node) => node.data.label === 'Root')?.data.mindmapAlias).toBe('platform.root');
-    expect(first.nodes.find((node) => node.data.label === 'Child A')?.data.mindmapAlias).toBe('platform.api');
-
-    const exported = toMermaid(first.nodes, first.edges);
-    expect(exported).toContain('platform.root((Root))');
-    expect(exported).toContain('platform.api[[Child A]]');
-    expect(exported).toContain('platform.branch(Child B)');
-
-    const second = parseMermaidByType(exported);
-    expect(second.error).toBeUndefined();
-    expect(second.diagramType).toBe('mindmap');
-    expect(second.nodes.find((node) => node.data.label === 'Root')?.data.mindmapAlias).toBe('platform.root');
-    expect(second.nodes.find((node) => node.data.label === 'Child A')?.data.mindmapAlias).toBe('platform.api');
-    expect(second.nodes.find((node) => node.data.label === 'Child B')?.data.mindmapAlias).toBe('platform.branch');
-  });
-
   it('preserves journey family through parse/export/parse', () => {
     const source = `
       journey

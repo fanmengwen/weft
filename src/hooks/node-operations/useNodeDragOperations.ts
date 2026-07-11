@@ -4,14 +4,12 @@ import { useFlowStore } from '../../store';
 import { createId } from '../../lib/id';
 import { assignSmartHandlesWithOptions, getSmartRoutingOptionsFromViewSettings } from '../../services/smartEdgeRouting';
 import { releaseStaleElkRoutesForNodeIds } from '@/lib/releaseStaleElkRoutes';
-import { reconcileMindmapDrop } from '@/lib/mindmapLayout';
-import { applyMindmapVisibility } from '@/lib/mindmapTree';
 import { applySectionParenting, getContainingSectionId } from './utils';
 import { getDragStopReconcileDelayMs } from './dragStopReconcilePolicy';
 import { requestNodeLabelEdit } from '../nodeLabelEditRequest';
 
 export const useNodeDragOperations = (recordHistory: () => void) => {
-    const { setNodes, setEdges, setSelectedNodeId, setHoveredSectionId } = useFlowStore();
+    const { setNodes, setSelectedNodeId, setHoveredSectionId } = useFlowStore();
     const dragStopReconcileTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const altDragDuplicateRef = useRef<{
         originalNodeId: string;
@@ -118,21 +116,9 @@ export const useNodeDragOperations = (recordHistory: () => void) => {
 
         const { nodes: currentNodes } = useFlowStore.getState();
         const parentedNodes = applySectionParenting(currentNodes, effectiveDraggedNode);
-        let reconciledNodes = parentedNodes;
-        let currentEdges = useFlowStore.getState().edges;
+        const currentEdges = useFlowStore.getState().edges;
 
-        if (effectiveDraggedNode.type === 'mindmap') {
-            const mindmapDropResult = reconcileMindmapDrop(parentedNodes, currentEdges, effectiveDraggedNode.id);
-            if (mindmapDropResult.changed) {
-                const visibilityState = applyMindmapVisibility(mindmapDropResult.nodes, mindmapDropResult.edges);
-                reconciledNodes = visibilityState.nodes;
-                currentEdges = visibilityState.edges;
-                setNodes(reconciledNodes);
-                setEdges(currentEdges);
-            } else if (parentedNodes !== currentNodes) {
-                setNodes(parentedNodes);
-            }
-        } else if (parentedNodes !== currentNodes) {
+        if (parentedNodes !== currentNodes) {
             setNodes(parentedNodes);
         }
 
@@ -160,7 +146,7 @@ export const useNodeDragOperations = (recordHistory: () => void) => {
             setLatestEdges(smartEdges);
         };
 
-        const delayMs = getDragStopReconcileDelayMs(reconciledNodes.length, currentEdges.length);
+        const delayMs = getDragStopReconcileDelayMs(parentedNodes.length, currentEdges.length);
         if (delayMs === 0) {
             if (dragStopReconcileTimerRef.current !== null) {
                 clearTimeout(dragStopReconcileTimerRef.current);
@@ -178,7 +164,7 @@ export const useNodeDragOperations = (recordHistory: () => void) => {
             runReconcile();
         }, delayMs);
 
-    }, [setEdges, setHoveredSectionId, setNodes]);
+    }, [setHoveredSectionId, setNodes]);
 
     const onNodeDoubleClick = useCallback((_event: React.MouseEvent, node: FlowNode) => {
         setSelectedNodeId(node.id);

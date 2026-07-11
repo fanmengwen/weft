@@ -206,8 +206,6 @@
     "fitView": "Ajuster la vue",
     "nudgeNode": "Déplacer le nœud",
     "groupSelection": "Grouper la sélection",
-    "mindmapAddChild": "Mindmap: Add Child Topic",
-    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "Renommer la sélection",
     "quickCreateConnectedNode": "Quick-create Connected Node",
     "annotationColors": "Annotation Colors",
@@ -1677,8 +1675,7 @@
     "newSection": "Nouvelle section",
     "section": "Section",
     "text": "Text",
-    "image": "Image",
-    "mindmap": "Sujet"
+    "image": "Image"
   },
   "actions": {
     "clearCanvasConfirm": "Voulez-vous vraiment vider le canevas ?"
@@ -1770,7 +1767,6 @@
     "label": "Menu contextuel du canevas"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

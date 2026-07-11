@@ -40,7 +40,6 @@ export enum NodeType {
   START = 'start',
   PROCESS = 'process',
   JOURNEY = 'journey',
-  MINDMAP = 'mindmap',
   ARCHITECTURE = 'architecture',
   CLASS = 'class',
   ER_ENTITY = 'er_entity',
@@ -132,23 +131,6 @@ export interface JourneyNodeData {
   journeyScore?: number;
 }
 
-export interface MindmapNodeData {
-  mindmapDepth?: number;
-  mindmapParentId?: string;
-  mindmapAlias?: string;
-  mindmapWrapper?:
-    | 'double-circle'
-    | 'double-square'
-    | 'stadium'
-    | 'subroutine'
-    | 'square'
-    | 'rounded'
-    | 'hexagon';
-  mindmapSide?: 'left' | 'right';
-  mindmapBranchStyle?: 'curved' | 'straight';
-  mindmapCollapsed?: boolean;
-}
-
 export interface ArchitectureNodeData {
   archTitle?: string;
   archProvider?: string;
@@ -217,7 +199,6 @@ export interface NodeData
     ClassNodeData,
     EntityNodeData,
     JourneyNodeData,
-    MindmapNodeData,
     ArchitectureNodeData,
     SequenceNodeData,
     SectionNodeData,
@@ -280,7 +261,6 @@ export interface EdgeData {
     y: number;
   }[];
   importRoutePath?: string;
-  mindmapBranchKind?: 'root' | 'branch';
   seqMessageKind?: 'sync' | 'async' | 'return' | 'self' | 'create' | 'destroy';
   connectionType?: 'fixed' | 'dynamic';
   seqFragment?: {

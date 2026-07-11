@@ -35,7 +35,6 @@ export interface CommandBarPanelBuilderParams {
   handleAddSection: () => void;
   handleAddTextNode: () => void;
   handleAddJourneyNode: () => void;
-  handleAddMindmapNode: () => void;
   handleAddArchitectureNode: () => void;
   handleAddSequenceParticipant: () => void;
   handleAddClassNode: () => void;
@@ -87,8 +86,6 @@ export interface PropertiesRailBuilderParams {
   fitSectionToContents: (id: string) => void;
   releaseFromSection: (id: string) => void;
   handleBringContentsIntoSection: (id: string) => void;
-  handleAddMindmapChild: FlowEditorPanelsProps['properties']['onAddMindmapChild'];
-  handleAddMindmapSibling: FlowEditorPanelsProps['properties']['onAddMindmapSibling'];
   handleAddArchitectureService: FlowEditorPanelsProps['properties']['onAddArchitectureService'];
   handleCreateArchitectureBoundary: FlowEditorPanelsProps['properties']['onCreateArchitectureBoundary'];
   handleApplyArchitectureTemplate: FlowEditorPanelsProps['properties']['onApplyArchitectureTemplate'];
@@ -165,7 +162,6 @@ export function buildCommandBarPanelProps({
   handleAddSection,
   handleAddTextNode,
   handleAddJourneyNode,
-  handleAddMindmapNode,
   handleAddArchitectureNode,
   handleAddSequenceParticipant,
   handleAddClassNode,
@@ -201,7 +197,6 @@ export function buildCommandBarPanelProps({
     onAddSection: handleAddSection,
     onAddText: handleAddTextNode,
     onAddJourney: handleAddJourneyNode,
-    onAddMindmap: handleAddMindmapNode,
     onAddArchitecture: handleAddArchitectureNode,
     onAddSequence: handleAddSequenceParticipant,
     onAddClassNode: handleAddClassNode,
@@ -270,8 +265,6 @@ export function buildPropertiesRailProps({
   fitSectionToContents,
   releaseFromSection,
   handleBringContentsIntoSection,
-  handleAddMindmapChild,
-  handleAddMindmapSibling,
   handleAddArchitectureService,
   handleCreateArchitectureBoundary,
   handleApplyArchitectureTemplate,
@@ -295,8 +288,6 @@ export function buildPropertiesRailProps({
     onFitSectionToContents: fitSectionToContents,
     onReleaseFromSection: releaseFromSection,
     onBringContentsIntoSection: handleBringContentsIntoSection,
-    onAddMindmapChild: handleAddMindmapChild,
-    onAddMindmapSibling: handleAddMindmapSibling,
     onAddArchitectureService: handleAddArchitectureService,
     onCreateArchitectureBoundary: handleCreateArchitectureBoundary,
     onApplyArchitectureTemplate: handleApplyArchitectureTemplate,

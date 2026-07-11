@@ -139,7 +139,6 @@ export interface CommandBarPanelProps {
   onAddSection: () => void;
   onAddText: () => void;
   onAddJourney?: () => void;
-  onAddMindmap?: () => void;
   onAddArchitecture?: () => void;
   onAddSequence?: () => void;
   onAddClassNode?: () => void;
@@ -190,8 +189,6 @@ export interface PropertiesRailProps {
   onFitSectionToContents: (id: string) => void;
   onReleaseFromSection: (id: string) => void;
   onBringContentsIntoSection: (id: string) => void;
-  onAddMindmapChild: React.ComponentProps<typeof PropertiesPanelComponent>['onAddMindmapChild'];
-  onAddMindmapSibling: React.ComponentProps<typeof PropertiesPanelComponent>['onAddMindmapSibling'];
   onAddArchitectureService: React.ComponentProps<
     typeof PropertiesPanelComponent
   >['onAddArchitectureService'];
@@ -309,7 +306,6 @@ export function FlowEditorPanels({
               onAddSection={commandBar.onAddSection}
               onAddText={commandBar.onAddText}
               onAddJourney={commandBar.onAddJourney}
-              onAddMindmap={commandBar.onAddMindmap}
               onAddArchitecture={commandBar.onAddArchitecture}
               onAddSequence={commandBar.onAddSequence}
               onAddClassNode={commandBar.onAddClassNode}
@@ -462,8 +458,6 @@ export function FlowEditorPanels({
                 onFitSectionToContents={properties.onFitSectionToContents}
                 onReleaseFromSection={properties.onReleaseFromSection}
                 onBringContentsIntoSection={properties.onBringContentsIntoSection}
-                onAddMindmapChild={properties.onAddMindmapChild}
-                onAddMindmapSibling={properties.onAddMindmapSibling}
                 onAddArchitectureService={properties.onAddArchitectureService}
                 onCreateArchitectureBoundary={properties.onCreateArchitectureBoundary}
                 onApplyArchitectureTemplate={properties.onApplyArchitectureTemplate}

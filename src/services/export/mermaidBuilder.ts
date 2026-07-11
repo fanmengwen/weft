@@ -1,7 +1,6 @@
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import { sanitizeId, sanitizeLabel, sanitizeEdgeLabel } from './formatting';
 import { toArchitectureMermaid } from './mermaid/architectureMermaid';
-import { toMindmapMermaid } from './mermaid/mindmapMermaid';
 import { toJourneyMermaid } from './mermaid/journeyMermaid';
 import { toClassDiagramMermaid } from './mermaid/classDiagramMermaid';
 import { toERDiagramMermaid } from './mermaid/erDiagramMermaid';
@@ -248,11 +247,6 @@ export function toMermaid(nodes: FlowNode[], edges: FlowEdge[], direction?: stri
   const architectureNodeCount = nodes.filter((node) => node.type === 'architecture').length;
   if (nodes.length > 0 && architectureNodeCount === nodes.length) {
     return toArchitectureMermaid(nodes, edges);
-  }
-
-  const mindmapNodeCount = nodes.filter((node) => node.type === 'mindmap').length;
-  if (nodes.length > 0 && mindmapNodeCount === nodes.length) {
-    return toMindmapMermaid(nodes, edges);
   }
 
   const journeyNodeCount = nodes.filter((node) => node.type === 'journey').length;

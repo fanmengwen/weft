@@ -114,7 +114,6 @@ export interface FlowEditorChromeProps {
     onAddTextNode: (position: { x: number; y: number }) => void;
     onAddClassNode: (position: { x: number; y: number }) => void;
     onAddEntityNode: (position: { x: number; y: number }) => void;
-    onAddMindmapNode: (position: { x: number; y: number }) => void;
     onAddJourneyNode: (position: { x: number; y: number }) => void;
     onAddArchitectureNode: (position: { x: number; y: number }) => void;
     onAddSequenceParticipant: (position: { x: number; y: number }) => void;
@@ -199,7 +198,6 @@ export function FlowEditorChrome({
     onAddTextNode: toolbar.onAddTextNode,
     onAddClassNode: toolbar.onAddClassNode,
     onAddEntityNode: toolbar.onAddEntityNode,
-    onAddMindmapNode: toolbar.onAddMindmapNode,
     onAddJourneyNode: toolbar.onAddJourneyNode,
     onAddArchitectureNode: toolbar.onAddArchitectureNode,
     onAddSequenceParticipant: toolbar.onAddSequenceParticipant,

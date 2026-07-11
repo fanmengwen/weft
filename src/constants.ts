@@ -1,5 +1,5 @@
 import { MarkerType } from '@/lib/reactflowCompat';
-import { type FlowEdge, type FlowNode } from '@/lib/types';
+import { type FlowEdge } from '@/lib/types';
 import { createId } from '@/lib/id';
 
 // --- Edge Styles (inline for reliable SVG rendering) ---
@@ -32,35 +32,6 @@ export const createDefaultEdge = (
   label,
   ...DEFAULT_EDGE_OPTIONS,
 });
-
-function getMindmapEdgeHandles(sourceNode: FlowNode, targetNode: FlowNode): Pick<FlowEdge, 'sourceHandle' | 'targetHandle'> {
-  const targetIsLeftOfSource = targetNode.position.x < sourceNode.position.x;
-  return targetIsLeftOfSource
-    ? { sourceHandle: 'left', targetHandle: 'right' }
-    : { sourceHandle: 'right', targetHandle: 'left' };
-}
-
-export function createMindmapEdge(
-  sourceNode: FlowNode,
-  targetNode: FlowNode,
-  label?: string,
-  id?: string,
-  branchStyle: 'curved' | 'straight' = 'curved'
-): FlowEdge {
-  return {
-    id: id || createId(`e-${sourceNode.id}-${targetNode.id}`),
-    source: sourceNode.id,
-    target: targetNode.id,
-    label,
-    ...DEFAULT_EDGE_OPTIONS,
-    type: branchStyle === 'straight' ? 'straight' : 'bezier',
-    markerEnd: undefined,
-    data: {
-      mindmapBranchKind: sourceNode.data.mindmapDepth === 0 ? 'root' : 'branch',
-    },
-    ...getMindmapEdgeHandles(sourceNode, targetNode),
-  };
-}
 
 export const EDGE_CONDITION_STYLES = {
   default: { stroke: '#94a3b8', strokeWidth: 2 },
@@ -155,8 +126,6 @@ export function getKeyboardShortcuts(isMacLike: boolean): ShortcutSection[] {
     {
       title: 'shortcuts.nodes',
       items: [
-        { label: 'common.mindmapAddChild', shortcuts: [['Tab']] },
-        { label: 'common.mindmapAddSibling', shortcuts: [['Enter']] },
         { label: 'common.renameSelection', shortcuts: [['F2']] },
         { label: 'common.quickCreateConnectedNode', shortcuts: [[keyLabels.alternate, 'Arrow']] },
         { label: 'common.annotationColors', shortcuts: [['1'], ['2'], ['3'], ['4'], ['5'], ['6']] },

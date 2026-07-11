@@ -7,7 +7,6 @@ export interface FlowAddItemHandlers {
   handleAddTextNode: AddItemActions['onAddTextNode'];
   handleAddClassNode: AddItemActions['onAddClassNode'];
   handleAddEntityNode: AddItemActions['onAddEntityNode'];
-  handleAddMindmapNode: AddItemActions['onAddMindmapNode'];
   handleAddJourneyNode: AddItemActions['onAddJourneyNode'];
   handleAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
   handleAddSequenceParticipant: AddItemActions['onAddSequenceParticipant'];
@@ -22,7 +21,6 @@ export function buildAddItemActions(handlers: FlowAddItemHandlers): AddItemActio
     onAddTextNode: handlers.handleAddTextNode,
     onAddClassNode: handlers.handleAddClassNode,
     onAddEntityNode: handlers.handleAddEntityNode,
-    onAddMindmapNode: handlers.handleAddMindmapNode,
     onAddJourneyNode: handlers.handleAddJourneyNode,
     onAddArchitectureNode: handlers.handleAddArchitectureNode,
     onAddSequenceParticipant: handlers.handleAddSequenceParticipant,
@@ -37,7 +35,6 @@ export function buildAddItemActionsFromToolbar(toolbar: {
   onAddTextNode: AddItemActions['onAddTextNode'];
   onAddClassNode: AddItemActions['onAddClassNode'];
   onAddEntityNode: AddItemActions['onAddEntityNode'];
-  onAddMindmapNode: AddItemActions['onAddMindmapNode'];
   onAddJourneyNode: AddItemActions['onAddJourneyNode'];
   onAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
   onAddSequenceParticipant: AddItemActions['onAddSequenceParticipant'];
@@ -50,7 +47,6 @@ export function buildAddItemActionsFromToolbar(toolbar: {
     onAddTextNode: toolbar.onAddTextNode,
     onAddClassNode: toolbar.onAddClassNode,
     onAddEntityNode: toolbar.onAddEntityNode,
-    onAddMindmapNode: toolbar.onAddMindmapNode,
     onAddJourneyNode: toolbar.onAddJourneyNode,
     onAddArchitectureNode: toolbar.onAddArchitectureNode,
     onAddSequenceParticipant: toolbar.onAddSequenceParticipant,

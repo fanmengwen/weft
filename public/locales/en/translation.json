@@ -205,8 +205,6 @@
     "fitView": "Fit View",
     "nudgeNode": "Nudge Node",
     "groupSelection": "Group Selection",
-    "mindmapAddChild": "Mindmap: Add Child Topic",
-    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "Rename Selection",
     "quickCreateConnectedNode": "Quick-create Connected Node",
     "annotationColors": "Annotation Colors",
@@ -388,8 +386,7 @@
     "items": "items",
     "database": "Database",
     "inputOutput": "Input / Output",
-    "branch": "Branch",
-    "mindmap": "Topic"
+    "branch": "Branch"
   },
   "actions": {
     "clearCanvasConfirm": "Are you sure you want to clear the canvas?"

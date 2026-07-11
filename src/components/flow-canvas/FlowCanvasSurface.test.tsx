@@ -109,7 +109,6 @@ describe('FlowCanvasSurface', () => {
         effectiveShowGrid={false}
         alignmentGuidesEnabled={false}
         alignmentGuides={{ verticalFlowX: null, horizontalFlowY: null }}
-        selectionDragPreview={null}
         connectMenu={null}
         setConnectMenu={vi.fn()}
         screenToFlowPosition={(position) => position}

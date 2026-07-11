@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import { composeDiagramForDisplay } from './composeDiagramForDisplay';
 import { getElkLayout } from './elkLayout';
-import { relayoutMindmapComponent, syncMindmapEdges } from '@/lib/mindmapLayout';
 import { extractMermaidLayout } from '@/services/mermaid/extractLayoutFromSvg';
 import { buildOfficialFlowchartImportGraph } from '@/services/mermaid/officialFlowchartImport';
 
@@ -16,11 +15,6 @@ vi.mock('@/services/mermaid/extractLayoutFromSvg', () => ({
 
 vi.mock('@/services/mermaid/officialFlowchartImport', () => ({
   buildOfficialFlowchartImportGraph: vi.fn(async () => null),
-}));
-
-vi.mock('@/lib/mindmapLayout', () => ({
-  relayoutMindmapComponent: vi.fn((nodes: FlowNode[]) => nodes),
-  syncMindmapEdges: vi.fn((_: FlowNode[], edges: FlowEdge[]) => edges),
 }));
 
 function createNode(
@@ -317,16 +311,5 @@ describe('composeDiagramForDisplay', () => {
     expect(result.svgExtracted).toBe(true);
     expect(getElkLayout).not.toHaveBeenCalled();
     expect(extractMermaidLayout).not.toHaveBeenCalled();
-  });
-
-  it('uses mindmap relayout for mindmap diagrams', async () => {
-    const nodes = [createNode('root', { type: 'mindmap' }), createNode('child', { type: 'mindmap' })];
-    const edges = [createEdge('e1', 'root', 'child')];
-
-    await composeDiagramForDisplay(nodes, edges, { diagramType: 'mindmap' });
-
-    expect(relayoutMindmapComponent).toHaveBeenCalled();
-    expect(syncMindmapEdges).toHaveBeenCalled();
-    expect(getElkLayout).not.toHaveBeenCalledWith(nodes, edges, expect.anything());
   });
 });

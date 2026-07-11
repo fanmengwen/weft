@@ -4,8 +4,7 @@ import type { NodeData } from '@/lib/types';
 import type { ConnectMenuState, ContextMenuState } from './useFlowCanvasMenus';
 import type { UseFlowCanvasContextActionsResult } from './useFlowCanvasContextActions';
 import { FlowCanvasAlignmentGuidesOverlay } from './FlowCanvasAlignmentGuidesOverlay';
-import type { AlignmentGuides, SelectionDragPreview } from './alignmentGuides';
-import type { FlowNode } from '@/lib/types';
+import type { AlignmentGuides } from './alignmentGuides';
 import type { DomainLibraryItem } from '@/services/domainLibrary';
 import type { ConnectedEdgePreset } from '@/hooks/edge-operations/utils';
 
@@ -22,8 +21,6 @@ const LazyContextMenu = lazy(async () => {
 interface FlowCanvasOverlaysProps {
   alignmentGuidesEnabled: boolean;
   alignmentGuides: AlignmentGuides;
-  overlayNodes: FlowNode[];
-  selectionDragPreview: SelectionDragPreview;
   connectMenu: ConnectMenuState | null;
   setConnectMenu: (menu: ConnectMenuState | null) => void;
   screenToFlowPosition: (position: { x: number; y: number }) => { x: number; y: number };
@@ -50,8 +47,6 @@ interface FlowCanvasOverlaysProps {
 export function FlowCanvasOverlays({
   alignmentGuidesEnabled,
   alignmentGuides,
-  overlayNodes,
-  selectionDragPreview,
   connectMenu,
   setConnectMenu,
   screenToFlowPosition,
@@ -68,8 +63,6 @@ export function FlowCanvasOverlays({
       <FlowCanvasAlignmentGuidesOverlay
         enabled={alignmentGuidesEnabled}
         alignmentGuides={alignmentGuides}
-        selectionDragPreview={selectionDragPreview}
-        nodes={overlayNodes}
         zoom={zoom}
         viewportX={viewportX}
         viewportY={viewportY}

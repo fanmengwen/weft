@@ -16,8 +16,6 @@ interface DiagramNodePropertiesRouterProps {
   onFitSectionToContents?: (id: string) => void;
   onReleaseFromSection?: (id: string) => void;
   onBringContentsIntoSection?: (id: string) => void;
-  onAddMindmapChild?: (parentId: string) => void;
-  onAddMindmapSibling?: (nodeId: string) => void;
   onAddArchitectureService?: (sourceId: string) => void;
   onCreateArchitectureBoundary?: (sourceId: string) => void;
   onApplyArchitectureTemplate?: (
@@ -34,7 +32,6 @@ const NODE_TYPE_PANEL_MAP: Partial<Record<NodeType, DiagramType>> = {
   [NodeType.CLASS]: 'classDiagram',
   [NodeType.ER_ENTITY]: 'erDiagram',
   [NodeType.JOURNEY]: 'journey',
-  [NodeType.MINDMAP]: 'mindmap',
   [NodeType.SEQUENCE_PARTICIPANT]: 'sequence',
 };
 
@@ -53,8 +50,6 @@ export function DiagramNodePropertiesRouter({
   onFitSectionToContents,
   onReleaseFromSection,
   onBringContentsIntoSection,
-  onAddMindmapChild,
-  onAddMindmapSibling,
   onAddArchitectureService,
   onCreateArchitectureBoundary,
   onApplyArchitectureTemplate,
@@ -94,8 +89,6 @@ export function DiagramNodePropertiesRouter({
     onChange,
     onDuplicate,
     onDelete,
-    onAddMindmapChild,
-    onAddMindmapSibling,
     onAddArchitectureService,
     onCreateArchitectureBoundary,
     onApplyArchitectureTemplate,

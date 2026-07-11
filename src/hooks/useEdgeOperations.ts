@@ -2,7 +2,7 @@ import { useCallback, useRef } from 'react';
 import { Edge, Connection, addEdge, useReactFlow } from '@/lib/reactflowCompat';
 import { useFlowStore } from '../store';
 import type { FlowEdge, NodeData } from '@/lib/types';
-import { createMindmapEdge, DEFAULT_EDGE_OPTIONS } from '../constants';
+import { DEFAULT_EDGE_OPTIONS } from '../constants';
 import { useTranslation } from 'react-i18next';
 import type { DomainLibraryItem } from '@/services/domainLibrary';
 import { createDomainLibraryNode } from '@/services/domainLibrary';
@@ -12,15 +12,12 @@ import { getPointerClientPosition, isPaneTarget, normalizeConnectionFromDragStar
 import { normalizeNodeHandleId } from '@/lib/nodeHandles';
 import { buildReconnectedEdge, shouldRespectExplicitReconnectHandles } from '@/lib/reconnectEdge';
 import { queueNodeLabelEditRequest } from './nodeLabelEditRequest';
-import { isMindmapConnectorSource } from '@/lib/connectCreationPolicy';
-import { resolveMindmapBranchStyleForNode, syncMindmapEdges } from '@/lib/mindmapLayout';
 import {
     buildSequenceMessageEdge,
     isSequenceConnection,
 } from '@/services/sequence/sequenceMessage';
 import {
     buildConnectedEdge,
-    buildConnectedMindmapTopic,
     buildConnectedNode,
     type ConnectedEdgePreset,
     getOppositeTargetHandle,
@@ -100,17 +97,6 @@ export const useEdgeOperations = (
         const { viewSettings } = useFlowStore.getState();
         recordHistory();
         setEdges((eds) => {
-            if (sourceNode?.type === 'mindmap' && targetNode?.type === 'mindmap' && resolvedConnection.source && resolvedConnection.target) {
-                const mindmapEdge = createMindmapEdge(
-                    sourceNode,
-                    targetNode,
-                    undefined,
-                    `e-${resolvedConnection.source}-${resolvedConnection.target}`,
-                    resolveMindmapBranchStyleForNode(sourceNode.id, nodes)
-                );
-                return eds.concat(mindmapEdge);
-            }
-
             if (isSequenceConnection(sourceNode, targetNode, resolvedConnection)) {
                 return eds.concat(buildSequenceMessageEdge(
                     resolvedConnection,
@@ -161,33 +147,6 @@ export const useEdgeOperations = (
         recordHistory();
         const state = useFlowStore.getState();
         const sourceNode = state.nodes.find((node) => node.id === sourceId);
-        if (type === 'mindmap' && isMindmapConnectorSource(sourceNode?.type)) {
-            const { insertedEdge, nextNode, nextNodes } = buildConnectedMindmapTopic({
-                nodes: state.nodes,
-                edges: state.edges,
-                sourceNode,
-                sourceHandle,
-                sourceId,
-                position,
-            });
-
-            setNodes(() => nextNodes);
-            setEdges((existingEdges) => {
-                const insertedEdges = syncMindmapEdges(nextNodes, existingEdges.concat(insertedEdge));
-                if (!state.viewSettings.smartRoutingEnabled) {
-                    return insertedEdges;
-                }
-                return assignSmartHandlesWithOptions(
-                    nextNodes,
-                    insertedEdges,
-                    getSmartRoutingOptionsFromViewSettings(state.viewSettings)
-                );
-            });
-            setSelectedNodeId(nextNode.id);
-            queueNodeLabelEditRequest(nextNode.id, { replaceExisting: true });
-            return;
-        }
-
         const { newNode } = buildConnectedNode({
             type,
             position,

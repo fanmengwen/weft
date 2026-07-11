@@ -2,7 +2,6 @@ import React from 'react';
 import {
   AppWindow,
   Boxes,
-  Component,
   GitBranch,
   Image as ImageIcon,
   LayoutList,
@@ -25,7 +24,6 @@ export type AddItemId =
   | 'sticky-note'
   | 'text'
   | 'journey'
-  | 'mindmap'
   | 'architecture'
   | 'image'
   | 'class'
@@ -204,14 +202,6 @@ export function getAddItemDefinitions(t: TFunction): AddItemDefinition[] {
       renderIcon: makeLucideIcon(Table2),
     },
     {
-      id: 'mindmap',
-      label: 'Mindmap',
-      section: 'diagrams',
-      keywords: ['mindmap', 'topic', 'brainstorm'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Component),
-    },
-    {
       id: 'journey',
       label: 'Journey',
       section: 'diagrams',
@@ -291,7 +281,6 @@ export interface AddItemActions {
   onAddTextNode: (position?: { x: number; y: number }) => void;
   onAddClassNode: (position?: { x: number; y: number }) => void;
   onAddEntityNode: (position?: { x: number; y: number }) => void;
-  onAddMindmapNode: (position?: { x: number; y: number }) => void;
   onAddJourneyNode: (position?: { x: number; y: number }) => void;
   onAddArchitectureNode: (position?: { x: number; y: number }) => void;
   onAddSequenceParticipant: (position?: { x: number; y: number }) => void;
@@ -322,9 +311,6 @@ export function executeAddItem(
       return;
     case 'journey':
       actions.onAddJourneyNode(position);
-      return;
-    case 'mindmap':
-      actions.onAddMindmapNode(position);
       return;
     case 'architecture':
       actions.onAddArchitectureNode(position);

@@ -207,8 +207,6 @@
     "fitView": "Görünüme Sığdır",
     "nudgeNode": "Düğümü Hafifçe Taşı",
     "groupSelection": "Seçimi Grupla",
-    "mindmapAddChild": "Zihin Haritası: Alt Konu Ekle",
-    "mindmapAddSibling": "Zihin Haritası: Kardeş Konu Ekle",
     "renameSelection": "Seçimi Yeniden Adlandır",
     "quickCreateConnectedNode": "Bağlı Düğümü Hızlı Oluştur",
     "annotationColors": "Not Renkleri",
@@ -388,8 +386,7 @@
     "items": "öğe",
     "database": "Veritabanı",
     "inputOutput": "Giriş / Çıkış",
-    "branch": "Dal",
-    "mindmap": "Konu"
+    "branch": "Dal"
   },
   "actions": {
     "clearCanvasConfirm": "Tuvali temizlemek istediğinizden emin misiniz?"
@@ -1770,7 +1767,6 @@
     "label": "Tuval Bağlam Menüsü"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

@@ -71,7 +71,6 @@ function createEdgeRenderer(variant: 'bezier' | 'smoothstep' | 'step' | 'straigh
                   | { x: number; y: number }[]
                   | undefined,
                 importRoutePath: props.data?.importRoutePath as string | undefined,
-                mindmapBranchKind: props.data?.mindmapBranchKind as 'root' | 'branch' | undefined,
                 routingMode: props.data?.routingMode as
                   | 'auto'
                   | 'elk'

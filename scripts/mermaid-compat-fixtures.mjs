@@ -116,23 +116,19 @@ const FIXTURE_METADATA = {
     structuralAssertions: { minNodes: 1, maxEdges: 0, requiredLabels: ['ORDER'] },
   },
   'mindmap-basic': {
-    bucket: 'editable_full',
-    expectedImportState: 'editable_full',
-    structuralAssertions: { minNodes: 3, minEdges: 2 },
+    bucket: 'valid_but_not_editable',
+    expectedImportState: 'unsupported_family',
+    structuralAssertions: { maxNodes: 0, maxEdges: 0 },
   },
   'mindmap-wrapped-nodes': {
-    bucket: 'editable_full',
-    expectedImportState: 'editable_full',
-    structuralAssertions: { minNodes: 3, minEdges: 2, requiredLabels: ['Root', 'Child A', 'Child B'] },
+    bucket: 'valid_but_not_editable',
+    expectedImportState: 'unsupported_family',
+    structuralAssertions: { maxNodes: 0, maxEdges: 0 },
   },
   'mindmap-dotted-aliases': {
-    bucket: 'editable_full',
-    expectedImportState: 'editable_full',
-    structuralAssertions: {
-      minNodes: 3,
-      minEdges: 2,
-      requiredLabels: ['Root', 'Child A', 'Child B'],
-    },
+    bucket: 'valid_but_not_editable',
+    expectedImportState: 'unsupported_family',
+    structuralAssertions: { maxNodes: 0, maxEdges: 0 },
   },
   'journey-basic': {
     bucket: 'editable_full',

@@ -206,8 +206,6 @@
     "fitView": "Ajustar vista",
     "nudgeNode": "Mover nodo",
     "groupSelection": "Agrupar selección",
-    "mindmapAddChild": "Mindmap: Add Child Topic",
-    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "Renombrar selección",
     "quickCreateConnectedNode": "Quick-create Connected Node",
     "annotationColors": "Annotation Colors",
@@ -1677,8 +1675,7 @@
     "newSection": "Nueva sección",
     "section": "Sección",
     "text": "Text",
-    "image": "Image",
-    "mindmap": "Tema"
+    "image": "Image"
   },
   "actions": {
     "clearCanvasConfirm": "¿Seguro que quieres limpiar el lienzo?"
@@ -1770,7 +1767,6 @@
     "label": "Menú contextual del lienzo"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },
