@@ -5,7 +5,7 @@ import {
   setAddItemDragData,
 } from './elementPaletteDnD';
 
-function createDataTransfer(): DataTransfer {
+export function createDataTransfer(): DataTransfer {
   const store = new Map<string, string>();
 
   return {
