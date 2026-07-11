@@ -57,6 +57,7 @@ export function useFlowEditorScreenBehavior(params: {
     setShortcutsHelpOpen: screenState.setShortcutsHelpOpen,
     enableSelectMode: screenState.enableSelectMode,
     enablePanMode: screenState.enablePanMode,
+    closeElementPalette: screenState.closeElementPalette,
     fitView: screenState.fitView,
     zoomIn: screenState.zoomIn,
     zoomOut: screenState.zoomOut,

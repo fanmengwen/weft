@@ -38,12 +38,14 @@ interface FlowCanvasProps {
   recordHistory: () => void;
   isSelectMode: boolean;
   onCanvasEntityIntent?: () => void;
+  onDismissToolbarOverlays?: () => void;
 }
 
 export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   recordHistory,
   isSelectMode,
   onCanvasEntityIntent,
+  onDismissToolbarOverlays,
 }) => {
   const { t } = useTranslation();
   const { nodes, edges } = useCanvasState();
@@ -90,7 +92,8 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   const clearPaneSelection = useCallback((): void => {
     setSelectedNodeId(null);
     setSelectedEdgeId(null);
-  }, [setSelectedEdgeId, setSelectedNodeId]);
+    onDismissToolbarOverlays?.();
+  }, [onDismissToolbarOverlays, setSelectedEdgeId, setSelectedNodeId]);
   // --- Operations ---
   const {
     onConnect,

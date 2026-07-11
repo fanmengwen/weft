@@ -86,6 +86,9 @@ interface BuildFlowEditorControllerChromeParams {
     isSelectMode: boolean;
     enableSelectMode: () => void;
     enablePanMode: () => void;
+    isElementPaletteOpen: boolean;
+    toggleElementPalette: () => void;
+    closeElementPalette: () => void;
     getCenter: () => { x: number; y: number };
     t: TFunction;
     handleAddNode: (position?: { x: number; y: number }) => void;

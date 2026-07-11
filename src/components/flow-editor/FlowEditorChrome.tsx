@@ -104,9 +104,6 @@ export interface FlowEditorChromeProps {
   };
   toolbar: {
     isVisible: boolean;
-    onCommandBar: () => void;
-    onToggleStudio: () => void;
-    isStudioOpen: boolean;
     onOpenAssets: () => void;
     onAddShape: (input: AddShapeInput, position: { x: number; y: number }) => void;
     onAddAnnotation: (position: { x: number; y: number }) => void;
@@ -119,7 +116,11 @@ export interface FlowEditorChromeProps {
     isSelectMode: boolean;
     onToggleSelectMode: () => void;
     isCommandBarOpen: boolean;
+    editorMode: 'canvas' | 'studio';
     onTogglePanMode: () => void;
+    isElementPaletteOpen: boolean;
+    onToggleElementPalette: () => void;
+    onCloseElementPalette: () => void;
     getCenter: () => { x: number; y: number };
   };
   emptyState?: {
@@ -181,9 +182,6 @@ export function FlowEditorChrome({
     onPlay: topNav.onPlay,
   };
   const toolbarProps = {
-    onCommandBar: toolbar.onCommandBar,
-    onToggleStudio: toolbar.onToggleStudio,
-    isStudioOpen: toolbar.isStudioOpen,
     onOpenAssets: toolbar.onOpenAssets,
     onAddShape: toolbar.onAddShape,
     onAddAnnotation: toolbar.onAddAnnotation,
@@ -196,7 +194,11 @@ export function FlowEditorChrome({
     isSelectMode: toolbar.isSelectMode,
     onToggleSelectMode: toolbar.onToggleSelectMode,
     isCommandBarOpen: toolbar.isCommandBarOpen,
+    editorMode: toolbar.editorMode,
     onTogglePanMode: toolbar.onTogglePanMode,
+    isElementPaletteOpen: toolbar.isElementPaletteOpen,
+    onToggleElementPalette: toolbar.onToggleElementPalette,
+    onCloseElementPalette: toolbar.onCloseElementPalette,
     getCenter: toolbar.getCenter,
   };
   const playbackProps = {

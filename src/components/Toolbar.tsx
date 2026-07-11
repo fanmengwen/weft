@@ -1,18 +1,24 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Plus, WandSparkles, Workflow } from 'lucide-react';
+import { Plus, Workflow } from 'lucide-react';
 import { Button } from './ui/Button';
 import { Tooltip } from './Tooltip';
-import { ToolbarAddMenu } from './toolbar/ToolbarAddMenu';
+import { ElementPalette } from './element-palette/ElementPalette';
 import { ToolbarHistoryControls } from './toolbar/ToolbarHistoryControls';
 import { ToolbarModeControls } from './toolbar/ToolbarModeControls';
-import { getToolbarIconButtonClass, TOOLBAR_DIVIDER_CLASS } from './toolbar/toolbarButtonStyles';
-import { AssetsIcon } from './icons/AssetsIcon';
 import {
-  getDefaultToolbarAddItemId,
-  type AddItemId,
-  type AddShapeInput,
-} from '@/components/add-items/addItemRegistry';
+  TOOLBAR_ADD_BUTTON_CLASS,
+  TOOLBAR_ADD_BUTTON_OPEN_CLASS,
+  TOOLBAR_CONTAINER_CLASS,
+  TOOLBAR_DIVIDER_CLASS,
+  TOOLBAR_ICON_CLASS,
+  TOOLBAR_ICON_DISABLED_CLASS,
+  TOOLBAR_PALETTE_OFFSET_CLASS,
+  TOOLBAR_RAIL_CLASS,
+  getToolbarIconButtonClass,
+} from './toolbar/toolbarButtonStyles';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
+import type { FlowEditorMode } from '@/hooks/useFlowEditorUIState';
 
 interface ToolbarProps {
   onUndo: () => void;
@@ -22,10 +28,11 @@ interface ToolbarProps {
   onToggleSelectMode: () => void;
   isSelectMode: boolean;
   onTogglePanMode: () => void;
-  onCommandBar: () => void;
   isCommandBarOpen: boolean;
-  onToggleStudio: () => void;
-  isStudioOpen: boolean;
+  editorMode: FlowEditorMode;
+  isElementPaletteOpen: boolean;
+  onToggleElementPalette: () => void;
+  onCloseElementPalette: () => void;
   onOpenAssets: () => void;
   onAddShape: (input: AddShapeInput, position: { x: number; y: number }) => void;
   onAddAnnotation: (position: { x: number; y: number }) => void;
@@ -42,10 +49,11 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onToggleSelectMode,
   isSelectMode,
   onTogglePanMode,
-  onCommandBar,
   isCommandBarOpen,
-  onToggleStudio,
-  isStudioOpen,
+  editorMode,
+  isElementPaletteOpen,
+  onToggleElementPalette,
+  onCloseElementPalette,
   onOpenAssets,
   onAddShape,
   onAddAnnotation,
@@ -54,121 +62,107 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   getCenter,
 }) => {
   const { t } = useTranslation();
-  const [showAddMenu, setShowAddMenu] = useState(false);
-  const [currentAddItemId, setCurrentAddItemId] = useState<AddItemId>(getDefaultToolbarAddItemId);
-  const addMenuRef = useRef<HTMLDivElement>(null);
-  const flowPilotIconClass = `w-4 h-4 transition-transform ${isStudioOpen ? 'scale-110 text-[var(--brand-primary)]' : 'group-hover:scale-110'}`;
-  const shouldShowAddMenu = showAddMenu && !isCommandBarOpen && !isStudioOpen;
+  const toolbarRef = useRef<HTMLDivElement>(null);
+  const isInteractive = !isCommandBarOpen;
+  const shouldShowPalette =
+    isElementPaletteOpen && isInteractive && editorMode === 'canvas';
 
-  // Close add menu when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (addMenuRef.current && !addMenuRef.current.contains(event.target as globalThis.Node)) {
-        setShowAddMenu(false);
+    const handleClickOutside = (event: MouseEvent): void => {
+      const target = event.target;
+      if (
+        toolbarRef.current &&
+        target instanceof Node &&
+        !toolbarRef.current.contains(target)
+      ) {
+        onCloseElementPalette();
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [onCloseElementPalette]);
 
-  // Interaction guard: If command bar is open, disable all toolbar interactions
-  const isInteractive = !isCommandBarOpen;
-  const containerClasses = [
-    'flex items-center p-2 bg-[var(--brand-glass-bg)] backdrop-blur-xl shadow-[var(--shadow-floating)] rounded-[var(--radius-xl)] border border-[var(--brand-glass-border)] transition-all duration-300',
-    !isInteractive ? 'pointer-events-none' : '',
+  const addButtonClass = [
+    TOOLBAR_ADD_BUTTON_CLASS,
+    shouldShowPalette ? TOOLBAR_ADD_BUTTON_OPEN_CLASS : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const addIconClass = [
+    TOOLBAR_ICON_CLASS,
+    'transition-transform duration-200',
+    shouldShowPalette ? 'rotate-45 text-[var(--wf-acc)]' : 'text-white',
+    !isInteractive ? TOOLBAR_ICON_DISABLED_CLASS : '',
   ]
     .filter(Boolean)
     .join(' ');
 
   return (
-    <div className={`absolute bottom-8 left-1/2 -translate-x-1/2 z-40 ${containerClasses}`}>
-      {/* Group 1: Tools */}
-      <ToolbarModeControls
-        isInteractive={isInteractive}
-        isSelectMode={isSelectMode}
-        onToggleSelectMode={onToggleSelectMode}
-        onTogglePanMode={onTogglePanMode}
-      />
-
-      <div className={`mx-2 ${TOOLBAR_DIVIDER_CLASS}`} />
-
-      {/* Group 2: Actions */}
-      <div className="flex items-center gap-1">
-        <div ref={addMenuRef}>
-          <ToolbarAddMenu
-            currentItemId={currentAddItemId}
+    <div ref={toolbarRef} className={TOOLBAR_CONTAINER_CLASS}>
+      <div className="relative">
+        <div data-testid="toolbar-rail" className={TOOLBAR_RAIL_CLASS}>
+          <ToolbarModeControls
             isInteractive={isInteractive}
-            showAddMenu={shouldShowAddMenu}
-            onToggleMenu={() => setShowAddMenu((previouslyShown) => !previouslyShown)}
-            onCloseMenu={() => setShowAddMenu(false)}
-            onCurrentItemChange={setCurrentAddItemId}
-            onAddShape={onAddShape}
-            onAddAnnotation={onAddAnnotation}
-            onAddSection={onAddSection}
-            getCenter={getCenter}
+            isSelectMode={isSelectMode}
+            onToggleSelectMode={onToggleSelectMode}
+            onTogglePanMode={onTogglePanMode}
+          />
+
+          <div className={TOOLBAR_DIVIDER_CLASS} />
+
+          <Tooltip text={t('toolbar.addItem', 'Add Item')}>
+            <Button
+              onClick={onToggleElementPalette}
+              disabled={!isInteractive}
+              data-testid="toolbar-add"
+              variant="ghost"
+              size="icon"
+              className={addButtonClass}
+              aria-expanded={shouldShowPalette}
+              aria-haspopup="menu"
+              icon={<Plus data-testid="toolbar-add-icon" className={addIconClass} />}
+            />
+          </Tooltip>
+
+          <div className={TOOLBAR_DIVIDER_CLASS} />
+
+          <Tooltip text={t('toolbar.autoLayout')}>
+            <Button
+              onClick={onLayout}
+              disabled={!isInteractive}
+              data-testid="toolbar-layout"
+              variant="ghost"
+              size="icon"
+              className={getToolbarIconButtonClass({ disabled: !isInteractive })}
+              icon={
+                <Workflow
+                  className={`${TOOLBAR_ICON_CLASS} ${!isInteractive ? TOOLBAR_ICON_DISABLED_CLASS : ''}`}
+                />
+              }
+            />
+          </Tooltip>
+
+          <div className={TOOLBAR_DIVIDER_CLASS} />
+
+          <ToolbarHistoryControls
+            isInteractive={isInteractive}
+            canUndo={canUndo}
+            canRedo={canRedo}
+            onUndo={onUndo}
+            onRedo={onRedo}
           />
         </div>
 
-        <Tooltip text={t('toolbar.assets', 'Assets')}>
-          <Button
-            onClick={onOpenAssets}
-            disabled={!isInteractive}
-            variant="ghost"
-            size="icon"
-            className={getToolbarIconButtonClass()}
-            icon={<AssetsIcon className="w-4 h-4 transition-transform group-hover:scale-110" />}
-          />
-        </Tooltip>
-
-        <Tooltip text={t('toolbar.commandCenter', 'Open Command Center')}>
-          <Button
-            onClick={onCommandBar}
-            disabled={!isInteractive}
-            variant="primary"
-            size="icon"
-            className={`group rounded-[var(--radius-md)] shadow-[var(--shadow-sm)] transition-all hover:scale-105 active:scale-95 ${isCommandBarOpen ? 'bg-[var(--brand-text)] hover:bg-[var(--brand-text)]' : 'bg-[image:var(--brand-primary-grad)] hover:brightness-105'}`}
-            icon={
-              <Plus
-                className={`w-5 h-5 text-white transition-transform duration-200 ${isCommandBarOpen ? 'rotate-45' : 'group-hover:rotate-90'}`}
-              />
-            }
-          />
-        </Tooltip>
-
-        <Tooltip text={t('toolbar.autoLayout')}>
-          <Button
-            onClick={onLayout}
-            disabled={!isInteractive}
-            variant="ghost"
-            size="icon"
-            className={getToolbarIconButtonClass()}
-            icon={<Workflow className="w-4 h-4 transition-transform group-hover:scale-110" />}
-          />
-        </Tooltip>
-
-        <Tooltip text={t('toolbar.flowpilot', 'AI Assistant (Cmd+K)')}>
-          <Button
-            onClick={onToggleStudio}
-            disabled={!isInteractive}
-            variant="ghost"
-            size="icon"
-            className={`${getToolbarIconButtonClass({ active: isStudioOpen })} group relative overflow-hidden`}
-          >
-            <WandSparkles className={flowPilotIconClass} />
-          </Button>
-        </Tooltip>
+        {shouldShowPalette ? (
+          <div className={TOOLBAR_PALETTE_OFFSET_CLASS}>
+            <ElementPalette
+              addItemActions={{ onAddShape, onAddAnnotation, onAddSection }}
+              getCenter={getCenter}
+              onOpenAssets={onOpenAssets}
+            />
+          </div>
+        ) : null}
       </div>
-
-      <div className={`mx-2 ${TOOLBAR_DIVIDER_CLASS}`} />
-
-      {/* Group 3: History */}
-      <ToolbarHistoryControls
-        isInteractive={isInteractive}
-        canUndo={canUndo}
-        canRedo={canRedo}
-        onUndo={onUndo}
-        onRedo={onRedo}
-      />
     </div>
   );
 };

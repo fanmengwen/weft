@@ -17,6 +17,7 @@ interface UseFlowEditorUIStateResult {
     editorMode: FlowEditorMode;
     studioTab: StudioTab;
     isSelectMode: boolean;
+    isElementPaletteOpen: boolean;
     isDesignSystemPanelOpen: boolean;
     isArchitectureRulesOpen: boolean;
     openHistory: () => void;
@@ -31,6 +32,8 @@ interface UseFlowEditorUIStateResult {
     setStudioTab: (tab: StudioTab) => void;
     enableSelectMode: () => void;
     enablePanMode: () => void;
+    toggleElementPalette: () => void;
+    closeElementPalette: () => void;
 }
 
 export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
@@ -40,6 +43,7 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
     const [editorMode, setEditorMode] = useState<FlowEditorMode>('canvas');
     const [studioTab, setStudioTab] = useState<StudioTab>('ai');
     const [isSelectMode, setIsSelectMode] = useState(true);
+    const [isElementPaletteOpen, setIsElementPaletteOpen] = useState(false);
     const [isArchitectureRulesOpen, setIsArchitectureRulesOpen] = useState(false);
 
     function openHistory(): void {
@@ -53,6 +57,7 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
     function openCommandBar(view: CommandBarView = 'root'): void {
         setCommandBarView(view);
         setIsCommandBarOpen(true);
+        setIsElementPaletteOpen(false);
     }
 
     function closeCommandBar(): void {
@@ -80,6 +85,7 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
     function setStudioMode(): void {
         setEditorMode('studio');
         setIsArchitectureRulesOpen(false);
+        setIsElementPaletteOpen(false);
     }
 
     function enableSelectMode(): void {
@@ -90,6 +96,14 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
         setIsSelectMode(false);
     }
 
+    function toggleElementPalette(): void {
+        setIsElementPaletteOpen((open) => !open);
+    }
+
+    function closeElementPalette(): void {
+        setIsElementPaletteOpen(false);
+    }
+
     return {
         isHistoryOpen,
         isCommandBarOpen,
@@ -97,6 +111,7 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
         editorMode,
         studioTab,
         isSelectMode,
+        isElementPaletteOpen,
         isDesignSystemPanelOpen: isCommandBarOpen && commandBarView === 'design-system',
         isArchitectureRulesOpen,
         openHistory,
@@ -111,5 +126,7 @@ export function useFlowEditorUIState(): UseFlowEditorUIStateResult {
         setStudioTab,
         enableSelectMode,
         enablePanMode,
+        toggleElementPalette,
+        closeElementPalette,
     };
 }

@@ -67,7 +67,6 @@ export function buildFlowEditorTopNavProps({
 export function buildFlowEditorToolbarProps({
   currentStepIndex,
   openCommandBar,
-  toggleStudioPanel,
   editorMode,
   handleAddShape,
   handleAddAnnotation,
@@ -81,13 +80,13 @@ export function buildFlowEditorToolbarProps({
   enableSelectMode,
   isCommandBarOpen,
   enablePanMode,
+  isElementPaletteOpen,
+  toggleElementPalette,
+  closeElementPalette,
   getCenter,
 }: BuildToolbarParams): FlowEditorChromeProps['toolbar'] {
   return {
     isVisible: currentStepIndex === -1,
-    onCommandBar: () => openCommandBar('root'),
-    onToggleStudio: toggleStudioPanel,
-    isStudioOpen: editorMode === 'studio',
     onOpenAssets: () => openCommandBar('assets'),
     onAddShape: handleAddShape,
     onAddAnnotation: handleAddAnnotation,
@@ -100,7 +99,11 @@ export function buildFlowEditorToolbarProps({
     isSelectMode,
     onToggleSelectMode: enableSelectMode,
     isCommandBarOpen,
+    editorMode,
     onTogglePanMode: enablePanMode,
+    isElementPaletteOpen,
+    onToggleElementPalette: toggleElementPalette,
+    onCloseElementPalette: closeElementPalette,
     getCenter,
   };
 }
@@ -194,7 +197,6 @@ export function useFlowEditorChromeProps(
     startPlayback,
     collaborationTopNavState,
     currentStepIndex,
-    toggleStudioPanel,
     editorMode,
     handleAddShape,
     handleAddAnnotation,
@@ -208,6 +210,9 @@ export function useFlowEditorChromeProps(
     enableSelectMode,
     isCommandBarOpen,
     enablePanMode,
+    isElementPaletteOpen,
+    toggleElementPalette,
+    closeElementPalette,
     getCenter,
     totalSteps,
     isPlaying,
@@ -285,7 +290,6 @@ export function useFlowEditorChromeProps(
       buildFlowEditorToolbarProps({
         currentStepIndex,
         openCommandBar,
-        toggleStudioPanel,
         editorMode,
         handleAddShape,
         handleAddAnnotation,
@@ -299,12 +303,14 @@ export function useFlowEditorChromeProps(
         enableSelectMode,
         isCommandBarOpen,
         enablePanMode,
+        isElementPaletteOpen,
+        toggleElementPalette,
+        closeElementPalette,
         getCenter,
       }),
     [
       currentStepIndex,
       openCommandBar,
-      toggleStudioPanel,
       editorMode,
       handleAddShape,
       handleAddAnnotation,
@@ -318,6 +324,9 @@ export function useFlowEditorChromeProps(
       enableSelectMode,
       isCommandBarOpen,
       enablePanMode,
+      isElementPaletteOpen,
+      toggleElementPalette,
+      closeElementPalette,
       getCenter,
     ]
   );

@@ -21,6 +21,7 @@ interface UseFlowEditorInteractionBindingsParams {
     setShortcutsHelpOpen: (open: boolean) => void;
     enableSelectMode: () => void;
     enablePanMode: () => void;
+    closeElementPalette: () => void;
     fitView: (options?: { duration?: number; padding?: number }) => void;
     zoomIn: (options?: { duration?: number }) => void;
     zoomOut: (options?: { duration?: number }) => void;
@@ -54,6 +55,7 @@ export function useFlowEditorInteractionBindings({
     setShortcutsHelpOpen,
     enableSelectMode,
     enablePanMode,
+    closeElementPalette,
     fitView,
     zoomIn,
     zoomOut,
@@ -105,6 +107,7 @@ export function useFlowEditorInteractionBindings({
             }
         },
         onClearSelection: () => {
+            closeElementPalette();
             setSelectedNodeId(null);
             setSelectedEdgeId(null);
             setNodes((nodes) => nodes.map((node) => ({ ...node, selected: false })));

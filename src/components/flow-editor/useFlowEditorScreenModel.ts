@@ -315,6 +315,9 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       isSelectMode: screenState.isSelectMode,
       enableSelectMode: screenState.enableSelectMode,
       enablePanMode: screenState.enablePanMode,
+      isElementPaletteOpen: screenState.isElementPaletteOpen,
+      toggleElementPalette: screenState.toggleElementPalette,
+      closeElementPalette: screenState.closeElementPalette,
       getCenter: callbacks.getCenter,
       t,
       handleAddNode: operations.handleAddNode,
@@ -356,6 +359,7 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
     collaborationNodePositions,
     isLayouting,
     flowEditorController,
+    closeElementPalette: screenState.closeElementPalette,
     t,
   };
 }

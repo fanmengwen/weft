@@ -164,6 +164,9 @@ export interface UseFlowEditorChromeParams {
     isSelectMode: boolean;
     enableSelectMode: () => void;
     enablePanMode: () => void;
+    isElementPaletteOpen: boolean;
+    toggleElementPalette: () => void;
+    closeElementPalette: () => void;
     getCenter: () => { x: number; y: number };
     t: TFunction;
     handleAddNode: (position?: { x: number; y: number }) => void;
@@ -206,7 +209,6 @@ export function useFlowEditorController({
         openStudioAI,
         openStudioPlayback,
         openArchitectureRulesPanel,
-        toggleStudioPanel,
         closeStudioPanel,
         handleCanvasEntityIntent,
     } = useFlowEditorStudioController(studio);
@@ -280,7 +282,6 @@ export function useFlowEditorController({
         ...chromeParams,
         handleExportJSON: shell.handleExportJSON,
         currentStepIndex: panelParams.studio.playback.currentStepIndex,
-        toggleStudioPanel,
         editorMode: shell.editorMode,
         handleLayoutWithContext,
         openStudioPanel,

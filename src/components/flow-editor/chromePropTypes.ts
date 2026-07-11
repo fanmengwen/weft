@@ -36,7 +36,6 @@ export interface BuildToolbarParams {
   openCommandBar: (
     view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system'
   ) => void;
-  toggleStudioPanel: () => void;
   editorMode: 'canvas' | 'studio';
   handleAddShape: FlowEditorChromeProps['toolbar']['onAddShape'];
   handleAddAnnotation: (position: { x: number; y: number }) => void;
@@ -50,6 +49,9 @@ export interface BuildToolbarParams {
   enableSelectMode: () => void;
   isCommandBarOpen: boolean;
   enablePanMode: () => void;
+  isElementPaletteOpen: boolean;
+  toggleElementPalette: () => void;
+  closeElementPalette: () => void;
   getCenter: () => { x: number; y: number };
 }
 
