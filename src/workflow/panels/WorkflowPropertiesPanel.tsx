@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Play, Trash2 } from 'lucide-react';
+import { ChevronDown, Play, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createId } from '@/lib/id';
 import { useToast } from '@/components/ui/ToastContext';
@@ -23,6 +23,8 @@ const FOCUS_RING_CLASS =
 const INPUT_CLASS = `h-[34px] w-full rounded-lg border border-[var(--wf-input-border)] bg-white px-2.5 text-[13px] text-[var(--wf-text)] placeholder:text-[var(--wf-placeholder)] ${FOCUS_RING_CLASS}`;
 const TEXTAREA_CLASS = `min-h-[84px] w-full resize-none rounded-lg border border-[var(--wf-input-border)] bg-white px-2.5 py-2 text-[13px] leading-normal text-[var(--wf-text)] placeholder:text-[var(--wf-placeholder)] ${FOCUS_RING_CLASS}`;
 const COMPACT_SELECT_CLASS = `rounded-[7px] border border-[var(--wf-input-border)] bg-white px-2 py-1.5 text-xs text-[var(--wf-text)] outline-none focus:border-[var(--wf-acc)]`;
+const DASHED_BUTTON_CLASS =
+  'rounded-lg border border-dashed border-[var(--wf-input-border)] px-3 py-2 text-[13px] text-[var(--wf-text-muted)] transition-colors hover:border-[var(--wf-acc)] hover:text-[var(--wf-text)]';
 
 const CONDITION_OPERATORS: WorkflowConditionOperator[] = [
   'contains',
@@ -237,192 +239,205 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                     />
                   </label>
                 ) : null}
+
+                {data.kind === 'knowledgeRetrieval' ? (
+                  <div className="flex flex-col gap-3.5">
+                    <label className="flex flex-col gap-1.5">
+                      <span className={FIELD_LABEL_CLASS}>
+                        {t('workflowMode.properties.knowledgeDocField')}
+                      </span>
+                      <div className="relative">
+                        <select
+                          value={data.knowledgeDocId ?? BUILTIN_DOC_ID}
+                          onChange={(event) => patchNode({ knowledgeDocId: event.target.value })}
+                          className={`${INPUT_CLASS} appearance-none pr-8`}
+                        >
+                          {documents.map((doc) => (
+                            <option key={doc.id} value={doc.id}>
+                              {doc.name}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--wf-text-muted)]" />
+                      </div>
+                    </label>
+                    <input
+                      ref={uploadInputRef}
+                      type="file"
+                      accept=".txt,.md"
+                      className="hidden"
+                      onChange={(event) => {
+                        const file = event.target.files?.[0];
+                        if (file) {
+                          void handleUpload(file);
+                        }
+                        event.target.value = '';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => uploadInputRef.current?.click()}
+                      className={DASHED_BUTTON_CLASS}
+                    >
+                      {t('workflowMode.properties.knowledgeUpload')}
+                    </button>
+                    <label className="flex flex-col gap-1.5">
+                      <span className={FIELD_LABEL_CLASS}>
+                        {t('workflowMode.properties.knowledgeTopKField')}
+                      </span>
+                      <input
+                        type="number"
+                        min={1}
+                        max={10}
+                        value={data.knowledgeTopK ?? 3}
+                        onChange={(event) => {
+                          const parsed = Number.parseInt(event.target.value, 10);
+                          patchNode({
+                            knowledgeTopK: Number.isNaN(parsed)
+                              ? 3
+                              : Math.min(10, Math.max(1, parsed)),
+                          });
+                        }}
+                        className={INPUT_CLASS}
+                      />
+                    </label>
+                  </div>
+                ) : null}
+
+                {data.kind === 'ifElse' ? (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <span className={FIELD_LABEL_CLASS}>
+                        {t('workflowMode.properties.conditionsField')}
+                      </span>
+                      <select
+                        value={data.conditionLogic ?? 'and'}
+                        onChange={(event) =>
+                          patchNode({ conditionLogic: event.target.value === 'or' ? 'or' : 'and' })
+                        }
+                        className={COMPACT_SELECT_CLASS}
+                      >
+                        <option value="and">{t('workflowMode.properties.logicAnd')}</option>
+                        <option value="or">{t('workflowMode.properties.logicOr')}</option>
+                      </select>
+                    </div>
+                    {(data.conditions ?? []).map((condition) => {
+                      const conditions = data.conditions ?? [];
+                      const patchCondition = (patch: Partial<WorkflowCondition>) =>
+                        patchConditions(
+                          conditions.map((entry) =>
+                            entry.id === condition.id ? { ...entry, ...patch } : entry
+                          )
+                        );
+                      return (
+                        <div
+                          key={condition.id}
+                          className="flex flex-col gap-1.5 rounded-lg border border-[var(--wf-input-border)] bg-white p-2"
+                        >
+                          <select
+                            value={condition.variable}
+                            onChange={(event) => patchCondition({ variable: event.target.value })}
+                            aria-label={t('workflowMode.properties.conditionVariable')}
+                            className={COMPACT_SELECT_CLASS}
+                          >
+                            <option value="">
+                              {t('workflowMode.properties.conditionUpstream')}
+                            </option>
+                            {listUpstreamVariables(
+                              selectedNode.id,
+                              workflowNodes,
+                              workflowEdges
+                            ).map((option) => (
+                              <option key={option.selector} value={option.selector}>
+                                {option.nodeLabel} · {option.key}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="flex gap-1.5">
+                            <select
+                              value={condition.operator}
+                              onChange={(event) =>
+                                patchCondition({
+                                  operator: event.target.value as WorkflowConditionOperator,
+                                })
+                              }
+                              aria-label={t('workflowMode.properties.conditionOperator')}
+                              className={`${COMPACT_SELECT_CLASS} min-w-0 flex-1`}
+                            >
+                              {CONDITION_OPERATORS.map((operator) => (
+                                <option key={operator} value={operator}>
+                                  {t(`workflowMode.properties.conditionOp.${operator}`)}
+                                </option>
+                              ))}
+                            </select>
+                            <input
+                              type="text"
+                              value={condition.value}
+                              onChange={(event) => patchCondition({ value: event.target.value })}
+                              aria-label={t('workflowMode.properties.conditionValue')}
+                              placeholder={t('workflowMode.properties.conditionValue')}
+                              className={`${COMPACT_SELECT_CLASS} min-w-0 flex-1`}
+                            />
+                            <button
+                              type="button"
+                              onClick={() =>
+                                patchConditions(
+                                  conditions.filter((entry) => entry.id !== condition.id)
+                                )
+                              }
+                              aria-label={t('workflowMode.properties.removeCondition')}
+                              title={t('workflowMode.properties.removeCondition')}
+                              className="shrink-0 rounded-[7px] px-2 text-[var(--wf-text-muted)] transition-colors hover:text-[var(--wf-danger)]"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        patchConditions([
+                          ...(data.conditions ?? []),
+                          { id: createId('wf-cond'), variable: '', operator: 'contains', value: '' },
+                        ])
+                      }
+                      className={DASHED_BUTTON_CLASS}
+                    >
+                      + {t('workflowMode.properties.addCondition')}
+                    </button>
+                    <p className="text-xs leading-relaxed text-[var(--wf-text-muted)]">
+                      {t('workflowMode.properties.ifElseHint')}
+                    </p>
+                  </div>
+                ) : null}
+
+                {data.kind === 'code' ? (
+                  <label className="flex flex-col gap-1.5">
+                    <span className={FIELD_LABEL_CLASS}>
+                      {t('workflowMode.properties.codeField')}
+                    </span>
+                    <textarea
+                      value={data.code ?? ''}
+                      onChange={(event) => patchNode({ code: event.target.value })}
+                      rows={8}
+                      spellCheck={false}
+                      className={`${TEXTAREA_CLASS} min-h-[140px] font-mono text-xs`}
+                    />
+                    <span className="text-xs leading-relaxed text-[var(--wf-text-muted)]">
+                      {t('workflowMode.properties.codeHint')}
+                    </span>
+                  </label>
+                ) : null}
+
+                {data.kind === 'output' ? (
+                  <p className="text-xs leading-relaxed text-[var(--wf-text-muted)]">
+                    {t('workflowMode.properties.outputHint')}
+                  </p>
+                ) : null}
               </>
             )}
-
-          {data.kind === 'knowledgeRetrieval' ? (
-            <>
-              <label className="flex flex-col gap-1.5 text-sm">
-                <span className={FIELD_LABEL_CLASS}>
-                  {t('workflowMode.properties.knowledgeDocField')}
-                </span>
-                <select
-                  value={data.knowledgeDocId ?? BUILTIN_DOC_ID}
-                  onChange={(event) => patchNode({ knowledgeDocId: event.target.value })}
-                  className={INPUT_CLASS}
-                >
-                  {documents.map((doc) => (
-                    <option key={doc.id} value={doc.id}>
-                      {doc.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <input
-                ref={uploadInputRef}
-                type="file"
-                accept=".txt,.md"
-                className="hidden"
-                onChange={(event) => {
-                  const file = event.target.files?.[0];
-                  if (file) {
-                    void handleUpload(file);
-                  }
-                  event.target.value = '';
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => uploadInputRef.current?.click()}
-                className="rounded-[var(--brand-radius)] border border-dashed border-[var(--brand-border)] px-3 py-2 text-sm text-[var(--brand-secondary)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-text)]"
-              >
-                {t('workflowMode.properties.knowledgeUpload')}
-              </button>
-              <label className="flex flex-col gap-1.5 text-sm">
-                <span className={FIELD_LABEL_CLASS}>
-                  {t('workflowMode.properties.knowledgeTopKField')}
-                </span>
-                <input
-                  type="number"
-                  min={1}
-                  max={10}
-                  value={data.knowledgeTopK ?? 3}
-                  onChange={(event) => {
-                    const parsed = Number.parseInt(event.target.value, 10);
-                    patchNode({
-                      knowledgeTopK: Number.isNaN(parsed) ? 3 : Math.min(10, Math.max(1, parsed)),
-                    });
-                  }}
-                  className={INPUT_CLASS}
-                />
-              </label>
-            </>
-          ) : null}
-
-          {data.kind === 'ifElse' ? (
-            <div className="flex flex-col gap-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className={FIELD_LABEL_CLASS}>
-                  {t('workflowMode.properties.conditionsField')}
-                </span>
-                <select
-                  value={data.conditionLogic ?? 'and'}
-                  onChange={(event) =>
-                    patchNode({ conditionLogic: event.target.value === 'or' ? 'or' : 'and' })
-                  }
-                  className={COMPACT_SELECT_CLASS}
-                >
-                  <option value="and">{t('workflowMode.properties.logicAnd')}</option>
-                  <option value="or">{t('workflowMode.properties.logicOr')}</option>
-                </select>
-              </div>
-              {(data.conditions ?? []).map((condition) => {
-                const conditions = data.conditions ?? [];
-                const patchCondition = (patch: Partial<WorkflowCondition>) =>
-                  patchConditions(
-                    conditions.map((entry) =>
-                      entry.id === condition.id ? { ...entry, ...patch } : entry
-                    )
-                  );
-                return (
-                  <div
-                    key={condition.id}
-                    className="flex flex-col gap-1.5 rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] p-2"
-                  >
-                    <select
-                      value={condition.variable}
-                      onChange={(event) => patchCondition({ variable: event.target.value })}
-                      aria-label={t('workflowMode.properties.conditionVariable')}
-                      className={COMPACT_SELECT_CLASS}
-                    >
-                      <option value="">{t('workflowMode.properties.conditionUpstream')}</option>
-                      {listUpstreamVariables(selectedNode.id, workflowNodes, workflowEdges).map(
-                        (option) => (
-                          <option key={option.selector} value={option.selector}>
-                            {option.nodeLabel} · {option.key}
-                          </option>
-                        )
-                      )}
-                    </select>
-                    <div className="flex gap-1.5">
-                      <select
-                        value={condition.operator}
-                        onChange={(event) =>
-                          patchCondition({
-                            operator: event.target.value as WorkflowConditionOperator,
-                          })
-                        }
-                        aria-label={t('workflowMode.properties.conditionOperator')}
-                        className={`${COMPACT_SELECT_CLASS} min-w-0 flex-1`}
-                      >
-                        {CONDITION_OPERATORS.map((operator) => (
-                          <option key={operator} value={operator}>
-                            {t(`workflowMode.properties.conditionOp.${operator}`)}
-                          </option>
-                        ))}
-                      </select>
-                      <input
-                        type="text"
-                        value={condition.value}
-                        onChange={(event) => patchCondition({ value: event.target.value })}
-                        aria-label={t('workflowMode.properties.conditionValue')}
-                        placeholder={t('workflowMode.properties.conditionValue')}
-                        className={`${COMPACT_SELECT_CLASS} min-w-0 flex-1`}
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          patchConditions(conditions.filter((entry) => entry.id !== condition.id))
-                        }
-                        aria-label={t('workflowMode.properties.removeCondition')}
-                        title={t('workflowMode.properties.removeCondition')}
-                        className="shrink-0 rounded-[var(--brand-radius)] px-2 text-[var(--brand-secondary)] transition-colors hover:text-[var(--brand-danger,#ef4444)]"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-              <button
-                type="button"
-                onClick={() =>
-                  patchConditions([
-                    ...(data.conditions ?? []),
-                    { id: createId('wf-cond'), variable: '', operator: 'contains', value: '' },
-                  ])
-                }
-                className="rounded-[var(--brand-radius)] border border-dashed border-[var(--brand-border)] px-3 py-2 text-sm text-[var(--brand-secondary)] transition-colors hover:border-[var(--brand-primary)] hover:text-[var(--brand-text)]"
-              >
-                + {t('workflowMode.properties.addCondition')}
-              </button>
-              <p className="text-xs text-[var(--brand-secondary)]">
-                {t('workflowMode.properties.ifElseHint')}
-              </p>
-            </div>
-          ) : null}
-
-          {data.kind === 'code' ? (
-            <label className="flex flex-col gap-1.5 text-sm">
-              <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.codeField')}</span>
-              <textarea
-                value={data.code ?? ''}
-                onChange={(event) => patchNode({ code: event.target.value })}
-                rows={8}
-                spellCheck={false}
-                className={`${TEXTAREA_CLASS} font-mono text-xs`}
-              />
-              <span className="text-xs text-[var(--brand-secondary)]">
-                {t('workflowMode.properties.codeHint')}
-              </span>
-            </label>
-          ) : null}
-
-          {data.kind === 'output' ? (
-            <p className="text-sm text-[var(--brand-secondary)]">
-              {t('workflowMode.properties.outputHint')}
-            </p>
-          ) : null}
 
             <SectionDivider />
             <div className={SECTION_HEADER_CLASS}>{t('workflowMode.properties.lastRun')}</div>
