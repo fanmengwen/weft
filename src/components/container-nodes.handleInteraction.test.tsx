@@ -1,8 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import type { CSSProperties } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Position } from '@/lib/reactflowCompat';
-import ImageNode from './ImageNode';
 import GroupNode from './GroupNode';
 
 let selectedNodeId: string | null = null;
@@ -78,46 +76,6 @@ function assertUnselectedDiscoverableHandles(ids: string[]): void {
 }
 
 describe('container-like node handle interaction policy', () => {
-  it('keeps selected ImageNode handles connectable in visualQualityV2', () => {
-    render(
-      <ImageNode
-        id="image-1"
-        type="image"
-        selected={true}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Image', imageUrl: 'https://example.com/x.png' }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-        sourcePosition={Position.Right}
-        targetPosition={Position.Left}
-      />
-    );
-
-    assertSelectedConnectableHandles(['top', 'bottom', 'left', 'right']);
-  });
-
-  it('keeps unselected ImageNode handles discoverable', () => {
-    render(
-      <ImageNode
-        id="image-2"
-        type="image"
-        selected={false}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Image' }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-        sourcePosition={Position.Right}
-        targetPosition={Position.Left}
-      />
-    );
-
-    assertUnselectedDiscoverableHandles(['top', 'bottom', 'left', 'right']);
-  });
-
   it('keeps selected GroupNode handles connectable in visualQualityV2', () => {
     render(
       <GroupNode
@@ -178,5 +136,4 @@ describe('container-like node handle interaction policy', () => {
       expect(handle.getAttribute('data-pointer')).toBe('all');
     }
   });
-
 });

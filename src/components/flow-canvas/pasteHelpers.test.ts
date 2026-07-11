@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  createPastedTextNode,
+  createPastedAnnotationFromText,
   isEditablePasteTarget,
   resolveLayoutDirection,
 } from './pasteHelpers';
@@ -21,8 +21,9 @@ describe('pasteHelpers', () => {
     expect(resolveLayoutDirection({ direction: 'UNKNOWN' })).toBe('TB');
   });
 
-  it('creates a pasted text node bound to active layer', () => {
-    const node = createPastedTextNode('hello', { x: 10, y: 20 }, 'default');
+  it('creates a pasted annotation node bound to active layer', () => {
+    const node = createPastedAnnotationFromText('hello', { x: 10, y: 20 }, 'default');
+    expect(node.type).toBe('annotation');
     expect(node.position).toEqual({ x: 10, y: 20 });
     expect(node.data.label).toBe('hello');
     expect(node.data.layerId).toBe('default');

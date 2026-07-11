@@ -3,12 +3,6 @@ import type { FlowNode } from '@/lib/types';
 export type HandleSide = 'top' | 'right' | 'bottom' | 'left';
 
 const SPECIAL_HANDLE_IDS_BY_TYPE: Partial<Record<string, Partial<Record<HandleSide, string>>>> = {
-  text: {
-    top: 'target-top',
-    right: 'source-right',
-    bottom: 'source-bottom',
-    left: 'target-left',
-  },
   group: {
     top: 'top-target',
     right: 'right-source',

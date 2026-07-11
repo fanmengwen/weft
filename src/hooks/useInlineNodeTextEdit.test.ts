@@ -79,7 +79,7 @@ describe('useInlineNodeTextEdit', () => {
       ...state,
       nodes: [{
         id: nodeId,
-        type: 'text',
+        type: 'annotation',
         position: { x: 0, y: 0 },
         data: { label: 'Line 1', shape: 'rounded', color: 'slate' },
       }],

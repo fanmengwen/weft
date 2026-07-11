@@ -93,34 +93,6 @@ export function createSectionNode(
   });
 }
 
-export function createTextNode(
-  id: string,
-  position: { x: number; y: number },
-  label: string
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, subLabel: '', color: 'slate' },
-    type: 'text',
-  };
-}
-
-export function createImageNode(
-  id: string,
-  imageUrl: string,
-  position: { x: number; y: number },
-  label: string
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, imageUrl, transparency: 1, rotation: 0 },
-    type: 'image',
-    style: { width: 200, height: 200 },
-  };
-}
-
 export function createMermaidSvgNode(
   id: string,
   position: { x: number; y: number },

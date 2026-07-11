@@ -2,10 +2,8 @@ import React from 'react';
 import {
   AppWindow,
   Boxes,
-  Image as ImageIcon,
   Smartphone,
   StickyNote,
-  Type,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
 import type { NodeData } from '@/lib/types';
@@ -19,9 +17,7 @@ export type AddItemId =
   | 'cylinder'
   | 'circle'
   | 'sticky-note'
-  | 'text'
   | 'architecture'
-  | 'image'
   | 'browser'
   | 'mobile';
 
@@ -211,22 +207,6 @@ export function getAddItemDefinitions(t: TFunction): AddItemDefinition[] {
       scope: ['toolbar', 'assets'],
       renderIcon: makeLucideIcon(StickyNote),
     },
-    {
-      id: 'text',
-      label: t('toolbar.text', 'Text'),
-      section: 'other',
-      keywords: ['text', 'label', 'heading'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Type),
-    },
-    {
-      id: 'image',
-      label: t('toolbar.image', 'Image'),
-      section: 'other',
-      keywords: ['image', 'media', 'upload', 'screenshot'],
-      scope: ['assets'],
-      renderIcon: makeLucideIcon(ImageIcon),
-    },
   ];
 }
 
@@ -248,10 +228,8 @@ export interface AddItemActions {
   onAddShape: (shape: NodeData['shape'], position?: { x: number; y: number }) => void;
   onAddAnnotation: (position?: { x: number; y: number }) => void;
   onAddSection: (position?: { x: number; y: number }) => void;
-  onAddTextNode: (position?: { x: number; y: number }) => void;
   onAddArchitectureNode: (position?: { x: number; y: number }) => void;
   onAddWireframe: (variant: 'browser' | 'mobile', position?: { x: number; y: number }) => void;
-  onRequestImageUpload?: () => void;
 }
 
 export function executeAddItem(
@@ -272,14 +250,8 @@ export function executeAddItem(
     case 'sticky-note':
       actions.onAddAnnotation(position);
       return;
-    case 'text':
-      actions.onAddTextNode(position);
-      return;
     case 'architecture':
       actions.onAddArchitectureNode(position);
-      return;
-    case 'image':
-      actions.onRequestImageUpload?.();
       return;
     case 'browser':
       actions.onAddWireframe('browser', position);

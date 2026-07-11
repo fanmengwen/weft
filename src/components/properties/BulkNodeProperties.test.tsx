@@ -44,7 +44,7 @@ describe('BulkNodeProperties', () => {
       <BulkNodeProperties
         selectedNodes={[
           createNode(NodeType.CUSTOM),
-          createNode(NodeType.TEXT),
+          createNode(NodeType.ANNOTATION),
           createNode(NodeType.BROWSER),
           createNode(NodeType.ARCHITECTURE),
         ]}
@@ -58,14 +58,14 @@ describe('BulkNodeProperties', () => {
     expect(screen.getByText('Architecture Deployment (1/4)')).toBeTruthy();
     expect(screen.getByText('1 Architecture')).toBeTruthy();
     expect(screen.getByText('1 Flow node')).toBeTruthy();
-    expect(screen.getByText('1 Text')).toBeTruthy();
+    expect(screen.getByText('1 Annotation')).toBeTruthy();
     expect(screen.getByText('1 Wireframe')).toBeTruthy();
   });
 
   it('keeps shared text operations available for every mixed selection', () => {
     render(
       <BulkNodeProperties
-        selectedNodes={[createNode(NodeType.TEXT), createNode(NodeType.BROWSER)]}
+        selectedNodes={[createNode(NodeType.ANNOTATION), createNode(NodeType.BROWSER)]}
         onApply={vi.fn()}
       />
     );

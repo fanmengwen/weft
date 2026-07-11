@@ -11,7 +11,6 @@ import { CollapsibleSection } from '../ui/CollapsibleSection';
 import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
 import { NodeActionButtons } from './NodeActionButtons';
 import { NodeContentSection } from './NodeContentSection';
-import { NodeImageSettingsSection } from './NodeImageSettingsSection';
 import { NodeWireframeVariantSection } from './NodeWireframeVariantSection';
 import { InspectorSectionDivider } from './InspectorPrimitives';
 import type { DomainLibraryCategory } from '@/services/domainLibrary';
@@ -46,8 +45,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
 }) => {
   const { t } = useTranslation();
   const isAnnotation = selectedNode.type === 'annotation';
-  const isText = selectedNode.type === 'text';
-  const isImage = selectedNode.type === 'image';
   const isSection = selectedNode.type === 'section';
   const isGroup = selectedNode.type === 'group';
   const isWireframeApp = selectedNode.type === 'browser' || selectedNode.type === 'mobile';
@@ -63,7 +60,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
   );
   const supportsColorMode =
     supportsAdvancedColorTheme || isSection || isGroup;
-  const supportsCustomColor = supportsAdvancedColorTheme || isText || isSection || isGroup || isAnnotation;
+  const supportsCustomColor = supportsAdvancedColorTheme || isSection || isGroup || isAnnotation;
   const parentSectionId = getNodeParentId(selectedNode);
   const sectionActions = buildSectionActions({
     isSection,
@@ -78,11 +75,10 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
   });
 
   function getDefaultSection(): string {
-    if (isImage) return 'image';
     if (isWireframeApp) return 'variant';
     if (isIconAssetNode) return 'icon';
     if (isSection) return 'content';
-    if (isText || isAnnotation) return 'content';
+    if (isAnnotation) return 'content';
     return 'content';
   }
 
@@ -121,7 +117,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
       if (action === 'bold') descEditor.insert('**', '**');
       else descEditor.insert('_', '_');
     } else {
-      // Fallback: Toggle Global Style if no text field is active (or maybe just default to label?)
       if (action === 'bold') {
         onChange(selectedNode.id, {
           fontWeight: selectedNode.data?.fontWeight === 'bold' ? 'normal' : 'bold',
@@ -158,7 +153,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
     <>
       <InspectorSectionDivider />
 
-      {/* Wireframe Variant Section */}
       {isWireframeApp && (
         <NodeWireframeVariantSection
           selectedNode={selectedNode}
@@ -168,11 +162,8 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         />
       )}
 
-      {/* Shape Section */}
       {!isWireframeApp &&
         !isAnnotation &&
-        !isText &&
-        !isImage &&
         !isSection &&
         !isIconAssetNode && (
           <CollapsibleSection
@@ -188,24 +179,11 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
           </CollapsibleSection>
         )}
 
-      {/* Image Settings Section */}
-      {isImage && (
-        <NodeImageSettingsSection
-          selectedNode={selectedNode}
-          isOpen={activeSection === 'image'}
-          onToggle={() => toggleSection('image')}
-          onChange={onChange}
-        />
-      )}
-
-      {/* Content Section: Refined Design */}
       <NodeContentSection
         selectedNode={selectedNode}
         onChange={onChange}
         isOpen={activeSection === 'content'}
         onToggle={() => toggleSection('content')}
-        isText={isText}
-        isImage={isImage}
         isWireframeApp={isWireframeApp}
         isWireframeMisc={false}
         onBold={() => handleStyleAction('bold')}
@@ -219,7 +197,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         onLabelKeyDown={labelEditor.handleKeyDown}
         onDescKeyDown={descEditor.handleKeyDown}
       />
-      {!isImage && !isWireframeApp && !isIconAssetNode && (
+      {!isWireframeApp && !isIconAssetNode && (
         <CollapsibleSection
           title={t('properties.color', 'Color')}
           icon={<Palette className="w-3.5 h-3.5" />}
@@ -252,7 +230,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         </CollapsibleSection>
       )}
 
-      {!isAnnotation && !isText && !isImage && !isWireframeApp && (
+      {!isAnnotation && !isWireframeApp && (
         <CollapsibleSection
           title={t('properties.icon', 'Icon')}
           icon={<Star className="w-3.5 h-3.5" />}
@@ -283,7 +261,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         </CollapsibleSection>
       )}
 
-      {!isText && !isWireframeApp && !isIconAssetNode && (
+      {!isWireframeApp && !isIconAssetNode && (
         <CollapsibleSection
           title="Custom Image"
           icon={<ImageStart className="w-3.5 h-3.5" />}

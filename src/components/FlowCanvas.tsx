@@ -120,11 +120,9 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     handleWrapInSection,
     onReconnect,
     onNodeDrag,
-    handleAddImage,
     handleAddShape,
     handleAddAnnotation,
     handleAddSection,
-    handleAddTextNode,
     handleAddArchitectureNode,
     handleAddWireframe,
   } = useFlowOperations(recordHistory, (position, sourceId, sourceHandle, sourceType) => {
@@ -171,7 +169,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         handleAddShape,
         handleAddAnnotation,
         handleAddSection,
-        handleAddTextNode,
         handleAddArchitectureNode,
         handleAddWireframe,
       }),
@@ -179,7 +176,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       handleAddShape,
       handleAddAnnotation,
       handleAddSection,
-      handleAddTextNode,
       handleAddArchitectureNode,
       handleAddWireframe,
     ]
@@ -187,7 +183,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
 
   const { onDragOver, onDrop } = useFlowCanvasDragDrop({
     screenToFlowPosition,
-    handleAddImage,
     addItemActions,
   });
 

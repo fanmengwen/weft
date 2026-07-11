@@ -165,14 +165,17 @@ describe('assignSmartHandles', () => {
     expect(routed[0].targetHandle).toBe('bottom');
   });
 
-  it('maps smart-routed handles to the actual lightweight node handles', () => {
-    const nodes = [createNode('text-a', 0, 0, 'text'), createNode('text-b', 320, 0, 'text')];
-    const edge = createEdge('e-text', 'text-a', 'text-b');
+  it('maps smart-routed handles to node-specific handle conventions', () => {
+    const nodes = [
+      createNode('group-a', 0, 0, 'group'),
+      createNode('group-b', 320, 0, 'group'),
+    ];
+    const edge = createEdge('e-group', 'group-a', 'group-b');
 
     const routed = assignSmartHandles(nodes, [edge]);
 
-    expect(routed[0].sourceHandle).toBe('source-right');
-    expect(routed[0].targetHandle).toBe('target-left');
+    expect(routed[0].sourceHandle).toBe('right-source');
+    expect(routed[0].targetHandle).toBe('left-target');
   });
 
   it('leaves Mermaid import-fixed edges untouched', () => {

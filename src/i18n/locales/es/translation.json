@@ -1546,10 +1546,8 @@
     "node": "Forma",
     "stickyNote": "Nota adhesiva",
     "section": "Sección",
-    "text": "Texto",
     "other": "Otros",
     "wireframes": "Wireframes",
-    "image": "Imagen",
     "autoLayout": "Diseño automático",
     "clearCanvas": "Limpiar lienzo",
     "undo": "Deshacer (Ctrl+Z)",
@@ -1673,9 +1671,7 @@
     "items": "items",
     "addCommentsHere": "Añade aquí tus comentarios.",
     "newSection": "Nueva sección",
-    "section": "Sección",
-    "text": "Text",
-    "image": "Image"
+    "section": "Sección"
   },
   "actions": {
     "clearCanvasConfirm": "¿Seguro que quieres limpiar el lienzo?"

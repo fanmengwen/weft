@@ -1546,10 +1546,8 @@
     "node": "Forme",
     "stickyNote": "Note adhésive",
     "section": "Section",
-    "text": "Texte",
     "other": "Autres",
     "wireframes": "Maquettes",
-    "image": "Image",
     "autoLayout": "Mise en page auto",
     "clearCanvas": "Effacer le canevas",
     "undo": "Annuler (Ctrl+Z)",
@@ -1673,9 +1671,7 @@
     "items": "items",
     "addCommentsHere": "Ajoutez vos commentaires ici.",
     "newSection": "Nouvelle section",
-    "section": "Section",
-    "text": "Text",
-    "image": "Image"
+    "section": "Section"
   },
   "actions": {
     "clearCanvasConfirm": "Voulez-vous vraiment vider le canevas ?"

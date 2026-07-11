@@ -24,7 +24,7 @@ describe('bulkNodePropertiesModel', () => {
   it('derives capability counts from a mixed selection', () => {
     const counts = getBulkCapabilityCounts([
       createNode(NodeType.CUSTOM),
-      createNode(NodeType.TEXT),
+      createNode(NodeType.ANNOTATION),
       createNode(NodeType.BROWSER),
       createNode(NodeType.ARCHITECTURE),
     ]);

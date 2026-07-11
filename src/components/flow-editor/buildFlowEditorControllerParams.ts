@@ -98,9 +98,7 @@ interface BuildFlowEditorControllerChromeParams {
     stopPlayback: () => void;
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
-    handleAddTextNode: () => void;
     handleAddArchitectureNode: () => void;
-    handleAddImage: (imageUrl: string) => void;
     handleAddWireframe: (surface: 'browser' | 'mobile') => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
 }

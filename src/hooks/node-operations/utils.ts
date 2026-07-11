@@ -23,8 +23,6 @@ export {
   createProcessNode,
   createAnnotationNode,
   createSectionNode,
-  createTextNode,
-  createImageNode,
   createArchitectureNode,
   createBrowserNode,
   createMobileNode,

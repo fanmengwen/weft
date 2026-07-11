@@ -8,9 +8,7 @@ import { queueNodeLabelEditRequest } from '@/hooks/nodeLabelEditRequest';
 import {
   createAnnotationNode,
   createGenericShapeNode,
-  createImageNode,
   createSectionNode,
-  createTextNode,
   getDefaultNodePosition,
   getNextSectionOrder,
   getSectionInsertPosition,
@@ -183,41 +181,6 @@ export function useNodeOperationAdders({
     [recordHistory, setNodes, setSelectedNodeId, t]
   );
 
-  const handleAddTextNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('text');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => createTextNode(
-          id,
-          resolvedPosition || getDefaultNodePosition(nodesLength, 100, 100),
-          t('nodes.text')
-        ),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory, t]
-  );
-
-  const handleAddImage = useCallback(
-    (imageUrl: string, position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('image');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => createImageNode(
-          id,
-          imageUrl,
-          resolvedPosition || getDefaultNodePosition(nodesLength, 100, 100),
-          t('nodes.image')
-        ),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory, t]
-  );
-
   const handleAddWireframe = useCallback(
     (type: 'browser' | 'mobile', position?: { x: number; y: number }) => {
       recordHistory();
@@ -275,8 +238,6 @@ export function useNodeOperationAdders({
     handleAddAnnotation,
     handleAddArchitectureNode,
     handleAddSection,
-    handleAddTextNode,
-    handleAddImage,
     handleAddWireframe,
     handleAddDomainLibraryItem,
   };

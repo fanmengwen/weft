@@ -1546,10 +1546,8 @@
     "node": "Form",
     "stickyNote": "Haftnotiz",
     "section": "Abschnitt",
-    "text": "Text",
     "other": "Andere",
     "wireframes": "Wireframes",
-    "image": "Bild",
     "autoLayout": "Auto-Layout",
     "clearCanvas": "Canvas löschen",
     "undo": "Rückgängig (Ctrl+Z)",
@@ -1673,9 +1671,7 @@
     "items": "items",
     "addCommentsHere": "Fügen Sie hier Ihre Kommentare hinzu.",
     "newSection": "Neuer Abschnitt",
-    "section": "Abschnitt",
-    "text": "Text",
-    "image": "Image"
+    "section": "Abschnitt"
   },
   "actions": {
     "clearCanvasConfirm": "Möchten Sie die Zeichenfläche wirklich leeren?"

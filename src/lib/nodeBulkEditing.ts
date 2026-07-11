@@ -24,9 +24,7 @@ export interface BulkSelectionFamilySummary {
 type NodeFamilyId =
   | 'architecture'
   | 'wireframe'
-  | 'text'
   | 'annotation'
-  | 'image'
   | 'asset'
   | 'section'
   | 'generic';
@@ -42,9 +40,7 @@ const FLOW_NODE_LABEL = 'Flow node';
 const NODE_FAMILY_LABELS: Record<NodeFamilyId, string> = {
   architecture: 'Architecture',
   wireframe: 'Wireframe',
-  text: 'Text',
   annotation: 'Annotation',
-  image: 'Image',
   asset: 'Asset',
   section: 'Section',
   generic: FLOW_NODE_LABEL,
@@ -123,7 +119,6 @@ const GENERIC_COLOR_NODE_TYPES = new Set<string>([
   NodeType.ANNOTATION,
   NodeType.SECTION,
   NodeType.GROUP,
-  NodeType.TEXT,
 ]);
 
 const ADVANCED_COLOR_NODE_TYPES = new Set<string>([
@@ -150,12 +145,8 @@ function getNodeFamilyId(node: Node<NodeData>): NodeFamilyId {
     case NodeType.BROWSER:
     case NodeType.MOBILE:
       return 'wireframe';
-    case NodeType.TEXT:
-      return 'text';
     case NodeType.ANNOTATION:
       return 'annotation';
-    case NodeType.IMAGE:
-      return 'image';
     case NodeType.SECTION:
       return 'section';
     default:

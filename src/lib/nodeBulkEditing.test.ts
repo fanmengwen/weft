@@ -25,7 +25,7 @@ function createNode(
 describe('nodeBulkEditing', () => {
   it('assigns capabilities by effective property surface instead of every node sharing the same set', () => {
     expect(getNodeBulkEditCapabilities(createNode(NodeType.CUSTOM)).has('shape')).toBe(true);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.TEXT)).has('shape')).toBe(false);
+    expect(getNodeBulkEditCapabilities(createNode(NodeType.ANNOTATION)).has('shape')).toBe(false);
     expect(getNodeBulkEditCapabilities(createNode(NodeType.BROWSER)).has('variant')).toBe(true);
     expect(getNodeBulkEditCapabilities(createNode(NodeType.ARCHITECTURE)).has('architecture')).toBe(
       true
@@ -33,13 +33,13 @@ describe('nodeBulkEditing', () => {
   });
 
   it('filters unsupported updates per node during bulk apply', () => {
-    const textNode = createNode(NodeType.TEXT);
+    const annotationNode = createNode(NodeType.ANNOTATION);
     const browserNode = createNode(NodeType.BROWSER);
     const architectureNode = createNode(NodeType.ARCHITECTURE);
     const genericNode = createNode(NodeType.CUSTOM);
 
     expect(
-      filterBulkUpdatesForNode(textNode, {
+      filterBulkUpdatesForNode(annotationNode, {
         shape: 'diamond',
         color: 'blue',
         colorMode: 'filled',
@@ -78,7 +78,7 @@ describe('nodeBulkEditing', () => {
   it('counts affected nodes from scoped updates and shared label transforms', () => {
     const selectedNodes = [
       createNode(NodeType.CUSTOM),
-      createNode(NodeType.TEXT),
+      createNode(NodeType.ANNOTATION),
       createNode(NodeType.BROWSER),
       createNode(NodeType.ARCHITECTURE),
     ];

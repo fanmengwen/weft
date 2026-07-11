@@ -74,8 +74,6 @@ const baseProps = {
     initialView: 'root' as const,
     onAddAnnotation: vi.fn(),
     onAddSection: vi.fn(),
-    onAddText: vi.fn(),
-    onAddImage: vi.fn(),
     onAddBrowserWireframe: vi.fn(),
     onAddMobileWireframe: vi.fn(),
     showGrid: true,

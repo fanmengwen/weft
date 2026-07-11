@@ -1546,10 +1546,8 @@
     "node": "図形",
     "stickyNote": "付箋",
     "section": "セクション",
-    "text": "テキスト",
     "other": "その他",
     "wireframes": "ワイヤーフレーム",
-    "image": "画像",
     "autoLayout": "自動レイアウト",
     "clearCanvas": "キャンバスをクリア",
     "undo": "元に戻す (Ctrl+Z)",
@@ -1673,9 +1671,7 @@
     "items": "項目",
     "addCommentsHere": "ここにコメントを追加します。",
     "newSection": "新しいセクション",
-    "section": "セクション",
-    "text": "テキスト",
-    "image": "画像"
+    "section": "セクション"
   },
   "actions": {
     "clearCanvasConfirm": "キャンバスを本当にクリアしますか？"

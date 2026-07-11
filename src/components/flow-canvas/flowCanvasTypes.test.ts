@@ -12,13 +12,11 @@ describe('flowCanvasNodeTypes', () => {
         "custom",
         "decision",
         "end",
-        "image",
         "mermaid_svg",
         "mobile",
         "process",
         "section",
         "start",
-        "text",
       ]
     `);
   });

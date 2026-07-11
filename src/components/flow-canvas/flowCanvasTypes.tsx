@@ -7,9 +7,7 @@ import {
   CustomStepEdge,
   CustomStraightEdge,
 } from '@/components/CustomEdge';
-import ImageNode from '@/components/ImageNode';
 import MermaidSvgNode from '@/components/MermaidSvgNode';
-import TextNode from '@/components/TextNode';
 import BrowserNode from '@/components/custom-nodes/BrowserNode';
 import MobileNode from '@/components/custom-nodes/MobileNode';
 import ArchitectureNode from '@/components/custom-nodes/ArchitectureNode';
@@ -23,9 +21,7 @@ export const flowCanvasNodeTypes: NodeTypes = {
   custom: CustomNode,
   architecture: ArchitectureNode,
   annotation: AnnotationNode,
-  text: TextNode,
   section: SectionNode,
-  image: ImageNode,
   mermaid_svg: MermaidSvgNode,
   browser: BrowserNode,
   mobile: MobileNode,

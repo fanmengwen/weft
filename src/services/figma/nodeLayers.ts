@@ -98,7 +98,7 @@ export function renderStandardNodesLayer(out: string[], nodes: FlowNode[], iconM
     out.push('<g id="nodes">');
 
     nodes
-        .filter((node) => node.type !== 'section' && node.type !== 'annotation' && node.type !== 'text')
+        .filter((node) => node.type !== 'section' && node.type !== 'annotation')
         .forEach((node) => {
             const x = node.position.x;
             const y = node.position.y;
@@ -226,50 +226,6 @@ export function renderStandardNodesLayer(out: string[], nodes: FlowNode[], iconM
                 out.push('    </text>');
             }
 
-            out.push('  </g>');
-        });
-
-    out.push('</g>');
-}
-
-export function renderTextNodesLayer(out: string[], nodes: FlowNode[]): void {
-    out.push('<g id="text-nodes">');
-
-    nodes
-        .filter((node) => node.type === 'text')
-        .forEach((node) => {
-            const x = node.position.x;
-            const y = node.position.y;
-            const width = node.width || 50;
-            const height = node.height || 30;
-            const data = node.data ?? ({} as NodeData);
-            const color = data.color || 'slate';
-            const theme = getNodeTheme(color);
-            const label = escapeXml(data.label || 'Text');
-            const fontSizeMap: Record<string, number> = { small: 12, medium: 14, large: 18, xl: 24 };
-            const fontSize = fontSizeMap[data.fontSize || 'medium'] || 14;
-            const fontFamilyMap: Record<string, string> = {
-                sans: 'Inter, system-ui, sans-serif',
-                serif: 'Times New Roman, serif',
-                mono: 'Courier New, monospace',
-            };
-            const fontFamily = fontFamilyMap[data.fontFamily || 'sans'] || 'Inter, system-ui, sans-serif';
-            const lines = label.split('\n');
-            const lineHeight = fontSize * 1.2;
-            const totalTextHeight = lines.length * lineHeight;
-            const startY = y + (height - totalTextHeight) / 2 + fontSize - 2;
-
-            out.push(`  <g id="text-${node.id}">`);
-
-            if (data.backgroundColor) {
-                out.push(`    <rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${data.backgroundColor}" rx="8" />`);
-            }
-
-            out.push(`    <text x="${x + width / 2}" y="${startY}" font-family="${fontFamily}" font-size="${fontSize}" font-weight="500" fill="${theme.text}" text-anchor="middle">`);
-            lines.forEach((line, index) => {
-                out.push(`      <tspan x="${x + width / 2}" dy="${index === 0 ? 0 : '1.2em'}">${line}</tspan>`);
-            });
-            out.push('    </text>');
             out.push('  </g>');
         });
 

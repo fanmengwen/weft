@@ -34,9 +34,7 @@ export enum NodeType {
   ANNOTATION = 'annotation',
   SECTION = 'section',
   GROUP = 'group',
-  IMAGE = 'image',
   MERMAID_SVG = 'mermaid_svg',
-  TEXT = 'text',
   BROWSER = 'browser',
   MOBILE = 'mobile',
 }

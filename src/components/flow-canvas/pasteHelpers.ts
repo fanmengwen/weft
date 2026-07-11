@@ -1,6 +1,5 @@
 import type { FlowNode } from '@/lib/types';
-import { createId } from '@/lib/id';
-import { createTextNode } from '@/hooks/node-operations/utils';
+import { mapFigmaTextLayerToAnnotationNode } from '@/services/figmaImport/figmaNodeMapping';
 
 type ParseResultLike = {
   metadata?: { direction?: string };
@@ -24,16 +23,14 @@ export function resolveLayoutDirection(result: ParseResultLike): 'TB' | 'LR' | '
   return 'TB';
 }
 
-export function createPastedTextNode(
+export function createPastedAnnotationFromText(
   text: string,
   position: { x: number; y: number },
   activeLayerId: string
 ): FlowNode {
-  const textNodeId = createId('text');
-  const newTextNode = createTextNode(textNodeId, position, text);
-  newTextNode.data = {
-    ...newTextNode.data,
+  return mapFigmaTextLayerToAnnotationNode({
+    text,
+    position,
     layerId: activeLayerId,
-  };
-  return newTextNode;
+  });
 }

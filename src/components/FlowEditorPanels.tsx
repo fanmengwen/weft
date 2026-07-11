@@ -137,9 +137,7 @@ export interface CommandBarPanelProps {
   initialView: CommandBarView;
   onAddAnnotation: () => void;
   onAddSection: () => void;
-  onAddText: () => void;
   onAddArchitecture?: () => void;
-  onAddImage: (imageUrl: string) => void;
   onAddBrowserWireframe: () => void;
   onAddMobileWireframe: () => void;
   onAddDomainLibraryItem?: (item: DomainLibraryItem) => void;
@@ -294,9 +292,7 @@ export function FlowEditorPanels({
               initialView={commandBar.initialView}
               onAddAnnotation={commandBar.onAddAnnotation}
               onAddSection={commandBar.onAddSection}
-              onAddText={commandBar.onAddText}
               onAddArchitecture={commandBar.onAddArchitecture}
-              onAddImage={commandBar.onAddImage}
               onAddBrowserWireframe={commandBar.onAddBrowserWireframe}
               onAddMobileWireframe={commandBar.onAddMobileWireframe}
               onAddDomainLibraryItem={commandBar.onAddDomainLibraryItem}

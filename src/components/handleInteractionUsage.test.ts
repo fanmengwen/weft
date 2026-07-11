@@ -6,8 +6,6 @@ const ROOT = process.cwd();
 
 const HANDLE_POLICY_FILES = [
   'src/components/CustomNode.tsx',
-  'src/components/ImageNode.tsx',
-  'src/components/TextNode.tsx',
   'src/components/GroupNode.tsx',
   'src/components/custom-nodes/ArchitectureNode.tsx',
   'src/components/custom-nodes/BrowserNode.tsx',

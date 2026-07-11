@@ -32,7 +32,6 @@ interface ToolbarProps {
   ) => void;
   onAddAnnotation: (position: { x: number; y: number }) => void;
   onAddSection: (position: { x: number; y: number }) => void;
-  onAddTextNode: (position: { x: number; y: number }) => void;
   onAddArchitectureNode: (position: { x: number; y: number }) => void;
   onAddWireframe: (variant: 'browser' | 'mobile', position: { x: number; y: number }) => void;
   onLayout: () => void;
@@ -55,7 +54,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
   onAddShape,
   onAddAnnotation,
   onAddSection,
-  onAddTextNode,
   onAddArchitectureNode,
   onAddWireframe,
   onLayout,
@@ -113,7 +111,6 @@ export const Toolbar: React.FC<ToolbarProps> = ({
             onAddShape={onAddShape}
             onAddAnnotation={onAddAnnotation}
             onAddSection={onAddSection}
-            onAddTextNode={onAddTextNode}
             onAddArchitectureNode={onAddArchitectureNode}
             onAddWireframe={onAddWireframe}
             getCenter={getCenter}

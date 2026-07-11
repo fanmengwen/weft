@@ -11,8 +11,6 @@ interface NodeContentSectionProps {
     onChange: (id: string, data: Partial<NodeData>) => void;
     isOpen: boolean;
     onToggle: () => void;
-    isText: boolean;
-    isImage: boolean;
     isWireframeApp: boolean;
     isWireframeMisc: boolean;
     onBold: () => void;
@@ -68,8 +66,6 @@ export function NodeContentSection({
     onChange,
     isOpen,
     onToggle,
-    isText,
-    isImage,
     isWireframeApp,
     isWireframeMisc,
     onBold,
@@ -91,7 +87,7 @@ export function NodeContentSection({
         delegate(event);
     }
 
-    const showDescriptionInput = !isText && !isImage && !isWireframeApp && !isWireframeMisc;
+    const showDescriptionInput = !isWireframeApp && !isWireframeMisc;
     const hasSubLabel = Boolean(selectedNode.data?.subLabel && selectedNode.data.subLabel.trim().length > 0);
 
     return (
@@ -152,7 +148,7 @@ export function NodeContentSection({
                         <div className="flex items-center gap-2">
                             <div className="w-[85px] shrink-0">
                                 <Select
-                                    value={selectedNode.data?.fontSize || (isText ? '16' : '14')}
+                                    value={selectedNode.data?.fontSize || '14'}
                                     onChange={(val) => onChange(selectedNode.id, { fontSize: val })}
                                     options={LABEL_SIZE_OPTIONS}
                                     placeholder="Size"

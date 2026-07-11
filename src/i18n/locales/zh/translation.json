@@ -1580,10 +1580,8 @@
     "node": "形状",
     "stickyNote": "便利贴",
     "section": "分区",
-    "text": "文本",
     "other": "其他",
     "wireframes": "线框图",
-    "image": "图片",
     "autoLayout": "自动布局",
     "clearCanvas": "清除画布",
     "undo": "撤销 (Ctrl+Z)",
@@ -1707,9 +1705,7 @@
     "items": "项",
     "addCommentsHere": "在这里添加你的评论。",
     "newSection": "新分区",
-    "section": "部分",
-    "text": "文本",
-    "image": "图片"
+    "section": "部分"
   },
   "actions": {
     "clearCanvasConfirm": "确定要清空画布吗？"

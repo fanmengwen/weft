@@ -17,11 +17,11 @@ const processNode: FlowNode = {
   data: { label: 'Process' },
 };
 
-const textNode: FlowNode = {
-  id: 'text-1',
-  type: 'text',
+const annotationNode: FlowNode = {
+  id: 'annotation-1',
+  type: 'annotation',
   position: { x: 300, y: 100 },
-  data: { label: 'Text' },
+  data: { label: 'Note' },
 };
 
 describe('edge operation utils', () => {
@@ -67,7 +67,7 @@ describe('edge operation utils', () => {
 
   it('resolves opposite handle ids using node-specific handle conventions', () => {
     expect(getOppositeTargetHandle(processNode, 'right')).toBe('left');
-    expect(getOppositeTargetHandle(textNode, 'right')).toBe('target-left');
+    expect(getOppositeTargetHandle(annotationNode, 'right')).toBe('left');
     expect(getOppositeTargetHandle(processNode, null)).toBeNull();
   });
 
