@@ -2,9 +2,7 @@ import type { DesignSystem, FlowNode, NodeData } from '@/lib/types';
 
 export type NodeShape = NonNullable<NodeData['shape']>;
 
-export const DIV_SHAPES: NodeShape[] = ['diamond'];
-
-export const SVG_COMPLEX_SHAPES: NodeShape[] = ['parallelogram', 'cylinder'];
+export const DIV_SHAPES: NodeShape[] = ['diamond', 'parallelogram', 'cylinder'];
 
 export const LEGACY_SHAPE_FALLBACKS: NodeShape[] = [
   'hexagon',
@@ -16,10 +14,6 @@ export const LEGACY_SHAPE_FALLBACKS: NodeShape[] = [
 
 export function isDivShape(shape: NodeShape): boolean {
   return DIV_SHAPES.includes(shape);
-}
-
-export function isSvgComplexShape(shape: NodeShape): boolean {
-  return SVG_COMPLEX_SHAPES.includes(shape);
 }
 
 export function isLegacyShapeFallback(shape: NodeShape): boolean {
@@ -154,11 +148,6 @@ export function fontSizeClassFor(fontSize: string | undefined): string {
 
 export const NEEDS_SQUARE_ASPECT: Set<NodeShape> = new Set(['diamond']);
 
-export const COMPLEX_SHAPE_PADDING: Partial<Record<NodeShape, string>> = {
-  parallelogram: 'px-8',
-  cylinder: 'pt-8 pb-4',
-};
-
 export type ChartNodeTone = 'out' | 'end' | 'web' | 'cond' | 'kb' | 'llm';
 
 export type ChartNodeSurfaceVariant = 'stadium' | 'rounded';
@@ -170,7 +159,7 @@ export function resolveChartNodeSurfaceVariant(
   nodeType: string,
   shape: NodeShape
 ): ChartNodeSurfaceVariant | null {
-  if (isDivShape(shape) || isSvgComplexShape(shape)) {
+  if (isDivShape(shape)) {
     return null;
   }
   if (nodeType === 'start' || nodeType === 'end') {

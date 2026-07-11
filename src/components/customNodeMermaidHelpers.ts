@@ -29,3 +29,4 @@ export function getMermaidImportedContentPadding(nodeHeightPx: number | undefine
 
   return '0.65rem 0.9rem';
 }
+

@@ -100,6 +100,43 @@ describe('CustomNode chart div shapes', () => {
     expect(screen.getByText('Approved?').parentElement?.style.maxWidth).toBe('92px');
   });
 
+  it('renders io nodes with skewed container and counter-skewed content', () => {
+    const { container } = renderCustomNode({
+      id: 'io-shape',
+      type: 'custom',
+      data: { label: 'Input', shape: 'parallelogram' },
+    });
+
+    const shapeRoot = queryHTMLElement(container, '[data-chart-div-shape="io"]');
+    expect(shapeRoot).not.toBeNull();
+    expect(shapeRoot?.style.transform).toContain('skewX(-12deg)');
+    expect(shapeRoot?.style.borderRadius).toBe('10px');
+
+    const upright = queryHTMLElement(container, '[data-chart-shape-upright="1"]');
+    expect(upright).not.toBeNull();
+    expect(upright?.style.transform).toContain('skewX(12deg)');
+  });
+
+  it('renders database nodes with cap and body segments', () => {
+    const { container } = renderCustomNode({
+      id: 'db-shape',
+      type: 'custom',
+      data: { label: 'Users DB', shape: 'cylinder' },
+    });
+
+    const shapeRoot = queryHTMLElement(container, '[data-chart-div-shape="database"]');
+    expect(shapeRoot).not.toBeNull();
+
+    const cap = queryHTMLElement(container, '[data-chart-database-cap="1"]');
+    const body = queryHTMLElement(container, '[data-chart-database-body="1"]');
+    expect(cap).not.toBeNull();
+    expect(body).not.toBeNull();
+    expect(cap?.style.height).toBe('24px');
+    expect(cap?.style.borderRadius).toBe('50%');
+    expect(body?.style.marginTop).toBe('-12px');
+    expect(shapeRoot?.style.filter).toContain('drop-shadow');
+  });
+
   it('falls back legacy hexagon shapes to rounded surfaces', () => {
     const { container } = renderCustomNode({
       id: 'legacy-hex',
@@ -113,5 +150,15 @@ describe('CustomNode chart div shapes', () => {
     expect(container.querySelector('[data-chart-div-shape]')).toBeNull();
     expect(container.querySelector('polygon')).toBeNull();
   });
-});
 
+  it('does not render legacy NodeShapeSVG polygons for complex shapes', () => {
+    const { container } = renderCustomNode({
+      id: 'decision-svg-free',
+      type: 'decision',
+      data: { label: 'No SVG', shape: 'diamond' },
+    });
+
+    expect(container.querySelector('svg polygon')).toBeNull();
+    expect(queryHTMLElement(container, '[data-chart-div-shape="diamond"]')).not.toBeNull();
+  });
+});

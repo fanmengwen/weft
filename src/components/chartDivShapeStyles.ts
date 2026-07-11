@@ -76,5 +76,3 @@ export function buildChartDatabaseBodyStyle(options: {
   };
 }
 
-
-

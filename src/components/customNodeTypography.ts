@@ -36,7 +36,6 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
   subLabelSizeClass: string;
   labelFontFamilyClass: string;
   subLabelFontFamilyClass: string;
-  labelFontFamilyStyle: CSSProperties;
 } {
   const {
     data,
@@ -98,15 +97,15 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
           maxWidth: '92px',
         }
       : {
-        ...fontSizeStyle,
-        ...importedFontSizeStyle,
-        ...labelFontFamilyStyle,
-        ...importedFontFamilyStyle,
-        color: visualStyle.text,
-        fontWeight: data.fontWeight || (isMermaidImportedLeaf ? '500' : '600'),
-        fontStyle: data.fontStyle || 'normal',
-        lineHeight: isMermaidImportedLeaf ? 1.1 : 1.2,
-      };
+          ...fontSizeStyle,
+          ...importedFontSizeStyle,
+          ...labelFontFamilyStyle,
+          ...importedFontFamilyStyle,
+          color: visualStyle.text,
+          fontWeight: data.fontWeight || (isMermaidImportedLeaf ? '500' : '600'),
+          fontStyle: data.fontStyle || 'normal',
+          lineHeight: isMermaidImportedLeaf ? 1.1 : 1.2,
+        };
 
   const labelTextAlign = (data.align || 'center') as CSSProperties['textAlign'];
   const subTextProps = surfaceVariant
@@ -138,7 +137,6 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
     subLabelSizeClass,
     labelFontFamilyClass,
     subLabelFontFamilyClass,
-    labelFontFamilyStyle,
   };
 }
 

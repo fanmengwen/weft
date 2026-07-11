@@ -13,23 +13,20 @@ import { useActiveNodeSelection } from './useActiveNodeSelection';
 import { useTranslation } from 'react-i18next';
 import { useProviderShapePreview } from '@/hooks/useProviderShapePreview';
 import { useShiftHeld } from '@/hooks/useShiftHeld';
-import { NodeShapeSVG } from './NodeShapeSVG';
 import { DiffBadge, LintViolationBadge } from './NodeBadges';
 import { IconAssetNodeBody } from './IconAssetNodeBody';
 import { CustomNodeContent } from './CustomNodeContent';
 import { readMermaidImportedNodeMetadataFromData } from '@/services/mermaid/importProvenance';
-import { ChartDecisionSurface } from './ChartDecisionSurface';
+import { ChartDivShapeSurface } from './ChartDivShapeSurface';
 import { getMermaidImportedContentPadding } from './customNodeMermaidHelpers';
 import { buildCustomNodeTypography } from './customNodeTypography';
 import {
   type NodeShape,
-  COMPLEX_SHAPE_PADDING,
   buildChartNodeSurfaceStyle,
   getNodeDefaults,
   getNumericNodeDimension,
   getMinNodeSize,
   isDivShape,
-  isSvgComplexShape,
   resolveChartNodeChipIcon,
   resolveChartNodeSurfaceVariant,
   resolveChartNodeTone,
@@ -66,7 +63,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const mermaidImportedNodeMetadata = readMermaidImportedNodeMetadataFromData(data);
   const isMermaidImportedLeaf = mermaidImportedNodeMetadata?.role === 'leaf';
   const nodeUsesDivShape = isDivShape(activeShape);
-  const usesSvgComplexShape = isSvgComplexShape(activeShape);
   const surfaceVariant = resolveChartNodeSurfaceVariant(type || 'process', activeShape);
   const nodeTone = resolveChartNodeTone(type || 'process', activeShape);
   const chipIcon = resolveChartNodeChipIcon(type || 'process', activeShape, activeIconKey);
@@ -77,7 +73,7 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const hasIcon = Boolean(iconName) || Boolean(data.customIconUrl) || hasProviderIcon;
   const contentMinHeight = surfaceVariant === 'stadium'
     ? 46
-    : !nodeUsesDivShape && !usesSvgComplexShape
+    : !nodeUsesDivShape
       ? hasSubLabel
         ? 128
         : 108
@@ -136,23 +132,23 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     nodeHeightPx,
   });
   const containerStyle: React.CSSProperties = {
-    minWidth,
-    minHeight: effectiveMinHeight,
-    width: toCssSize(explicitWidth) ?? '100%',
-    height: toCssSize(explicitHeight),
-    ...(needsSquareAspect ? { aspectRatio: '1/1' } : {}),
-    ...typography.labelFontFamilyStyle,
-    boxShadow: repaintedSurface?.boxShadow ?? (usesSvgComplexShape ? 'none' : designSystem.components.node.boxShadow),
-    borderWidth: repaintedSurface?.borderWidth ?? (!usesSvgComplexShape ? designSystem.components.node.borderWidth : 0),
-    padding: 0,
-    borderRadius: repaintedSurface?.borderRadius
-      ?? getNodeBorderRadius(usesSvgComplexShape, activeShape, designSystem.components.node.borderRadius),
-    background: repaintedSurface?.background,
-    backgroundColor: repaintedSurface ? undefined : !usesSvgComplexShape ? visualStyle.bg : undefined,
-    borderColor: repaintedSurface?.borderColor ?? (!usesSvgComplexShape ? visualStyle.border : undefined),
-    ...(animateIn
-      ? { animation: `nodeAnimateIn 180ms ease-out ${data.animateDelay ?? 0}ms both` }
-      : {}),
+        minWidth,
+        minHeight: effectiveMinHeight,
+        width: toCssSize(explicitWidth) ?? '100%',
+        height: toCssSize(explicitHeight),
+        ...(needsSquareAspect ? { aspectRatio: '1/1' } : {}),
+        ...typography.textProps.fontFamily ? { fontFamily: typography.textProps.fontFamily } : {},
+        boxShadow: repaintedSurface?.boxShadow ?? designSystem.components.node.boxShadow,
+        borderWidth: repaintedSurface?.borderWidth ?? designSystem.components.node.borderWidth,
+        padding: 0,
+        borderRadius: repaintedSurface?.borderRadius
+          ?? getNodeBorderRadius(false, activeShape, designSystem.components.node.borderRadius),
+        background: repaintedSurface?.background,
+        backgroundColor: repaintedSurface ? undefined : visualStyle.bg,
+        borderColor: repaintedSurface?.borderColor ?? visualStyle.border,
+        ...(animateIn
+          ? { animation: `nodeAnimateIn 180ms ease-out ${data.animateDelay ?? 0}ms both` }
+          : {}),
   };
   const surfaceClassName = [
     'chart-node-surface',
@@ -199,24 +195,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     <>
       <DiffBadge nodeId={id} />
       <LintViolationBadge nodeId={id} />
-
-      {usesSvgComplexShape && (
-        <div className="absolute inset-0 w-full h-full z-0 flex items-center justify-center">
-          <svg
-            viewBox="0 0 100 100"
-            preserveAspectRatio="xMidYMid meet"
-            className="w-full h-full overflow-visible drop-shadow-sm"
-          >
-            <NodeShapeSVG
-              shape={activeShape}
-              fill={visualStyle.bg}
-              stroke={visualStyle.border}
-              strokeWidth={designSystem.components.edge.strokeWidth || '2'}
-            />
-          </svg>
-        </div>
-      )}
-
       <CustomNodeContent
         data={data}
         hasSubLabel={hasSubLabel}
@@ -236,8 +214,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         hasSubLabelSelection={Boolean(selected)}
         lodPreserveClassName={lodPreserveClass}
         isDivShape={nodeUsesDivShape}
-        isSvgComplexShape={usesSvgComplexShape}
-        complexShapePaddingClassName={COMPLEX_SHAPE_PADDING[activeShape] ?? ''}
         contentPadding={contentPadding}
       />
     </>
@@ -260,7 +236,8 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         handleClassName={connectionHandleClass}
       >
         {nodeUsesDivShape ? (
-          <ChartDecisionSurface
+          <ChartDivShapeSurface
+            shape={activeShape}
             designSystem={designSystem}
             isSelected={isActiveSelected}
             surfaceClassName={surfaceClassName}
@@ -268,13 +245,13 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
             ariaLabel={nodeAriaLabel}
           >
             {nodeContent}
-          </ChartDecisionSurface>
+          </ChartDivShapeSurface>
         ) : (
           <div
             role="group"
             aria-roledescription="canvas node"
             aria-label={nodeAriaLabel}
-            className={`relative group flex flex-col justify-center h-full border transition-all duration-200 flow-lod-shadow ${surfaceClassName} ${usesSvgComplexShape ? 'overflow-hidden' : 'overflow-visible'}`}
+            className={`relative group flex flex-col justify-center h-full border transition-all duration-200 flow-lod-shadow ${surfaceClassName} overflow-visible`}
             style={containerStyle}
             {...diagnosticsAttrs}
           >

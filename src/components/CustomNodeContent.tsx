@@ -36,8 +36,6 @@ interface CustomNodeContentProps {
   hasSubLabelSelection: boolean;
   lodPreserveClassName: string;
   isDivShape: boolean;
-  isSvgComplexShape: boolean;
-  complexShapePaddingClassName: string;
   contentPadding: string;
 }
 
@@ -60,21 +58,19 @@ export function CustomNodeContent({
   hasSubLabelSelection,
   lodPreserveClassName,
   isDivShape,
-  isSvgComplexShape,
-  complexShapePaddingClassName,
   contentPadding,
 }: CustomNodeContentProps): React.ReactElement {
   const isStadium = surfaceVariant === 'stadium';
-  const isCircularChip = isStadium || isSvgComplexShape;
+  const isCircularChip = isStadium;
   const layoutClassName = isStadium
     ? 'flex-row items-center gap-[10px]'
-    : `flex-col items-center ${isDivShape || isSvgComplexShape ? 'gap-1.5' : 'gap-2'}`;
+    : `flex-col items-center ${isDivShape ? 'gap-1.5' : 'gap-2'}`;
 
   return (
     <div
       data-chart-node-content="1"
-      className={`relative z-10 flex h-full w-full min-h-0 justify-center ${layoutClassName} ${isSvgComplexShape ? complexShapePaddingClassName : ''}`}
-      style={!isDivShape && !isSvgComplexShape ? { padding: contentPadding } : undefined}
+      className={`relative z-10 flex h-full w-full min-h-0 justify-center ${layoutClassName}`}
+      style={!isDivShape ? { padding: contentPadding } : undefined}
     >
       <ChartNodeToneChip
         tone={tone}
