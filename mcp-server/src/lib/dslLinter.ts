@@ -1,5 +1,5 @@
 /**
- * Lightweight structural linter for OpenFlow DSL. Catches the most common
+ * Lightweight structural linter for Weft DSL. Catches the most common
  * mistakes (missing header, undeclared node references, malformed edges)
  * without pulling the full app parser into the MCP server.
  *

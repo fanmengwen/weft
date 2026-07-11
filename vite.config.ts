@@ -1,12 +1,17 @@
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+  // Per-worktree dev port: parallel worktrees set WEFT_DEV_PORT in their .env.local
+  // so dev servers don't collide. strictPort fails loud only when explicitly set.
+  const env = loadEnv(mode, process.cwd(), 'WEFT_');
+  const devPort = env.WEFT_DEV_PORT ? Number(env.WEFT_DEV_PORT) : undefined;
   return {
     server: {
-      port: 3000,
+      port: devPort ?? 3000,
       host: '0.0.0.0',
+      strictPort: devPort !== undefined,
     },
     plugins: [react()],
     resolve: {
@@ -94,7 +99,9 @@ export default defineConfig(() => {
       },
       testTimeout: 10000,
       maxWorkers: 2,
-      exclude: ['e2e/**', 'node_modules/**', 'dist/**', 'mcp-server/**'],
+      // Exclude nested git-worktree checkouts so their *.test files aren't
+      // collected into this worktree's run.
+      exclude: ['e2e/**', 'node_modules/**', 'dist/**', 'mcp-server/**', '**/worktrees/**'],
       coverage: {
         provider: 'v8',
         reporter: ['text', 'lcov'],

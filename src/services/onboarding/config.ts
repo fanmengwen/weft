@@ -29,7 +29,7 @@ export const RECOMMENDED_IMPORT_OPTIONS: OnboardingImportOption[] = [
   },
   {
     id: 'json-openflow',
-    label: 'JSON / OpenFlow',
+    label: 'JSON / Weft',
     description: 'Reopen a saved workspace or portable DSL file.',
   },
 ];

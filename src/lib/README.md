@@ -7,7 +7,7 @@ Framework-agnostic parsers, types, and brand utilities used by the Weft diagramm
 | Export | Description |
 |--------|-------------|
 | `parseMermaid(dsl)` | Parse Mermaid.js flowchart / state diagram DSL into React Flow–compatible `nodes` and `edges` |
-| `parseOpenFlowDSL(dsl)` | Parse OpenFlow DSL V2 (type-safe, explicit IDs, groups, edge styling) |
+| `parseOpenFlowDSL(dsl)` | Parse Weft DSL V2 (type-safe, explicit IDs, groups, edge styling) |
 | `generatePalette(primaryColor)` | Generate harmonious brand palettes from a single hex color |
 | Type exports | `FlowNode`, `FlowEdge`, `NodeData`, `EdgeData`, `DesignSystem`, `NodeType`, and more |
 

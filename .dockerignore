@@ -12,8 +12,6 @@ dist-ssr
 dist-lib
 src/lib/dist
 src/lib/*.tgz
-docs-site/dist
-web/dist
 tsconfig.tsbuildinfo
 
 # Tests / reports

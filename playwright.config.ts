@@ -1,4 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
+import { loadEnv } from 'vite';
+
+// Derive the e2e port from the worktree dev port so parallel worktrees don't
+// share 4173 (reuseExistingServer would otherwise silently cross-wire them).
+const env = loadEnv('development', process.cwd(), 'WEFT_');
+const e2ePort = env.WEFT_DEV_PORT ? Number(env.WEFT_DEV_PORT) + 1000 : 4173;
+const e2eUrl = `http://127.0.0.1:${e2ePort}`;
 
 export default defineConfig({
   testDir: './e2e',
@@ -9,7 +16,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : 2,
   reporter: 'html',
   use: {
-    baseURL: 'http://127.0.0.1:4173',
+    baseURL: e2eUrl,
     trace: 'on-first-retry',
   },
   projects: [
@@ -19,8 +26,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm run dev -- --host 127.0.0.1 --port 4173',
-    url: 'http://127.0.0.1:4173',
+    command: `npm run dev -- --host 127.0.0.1 --port ${e2ePort}`,
+    url: e2eUrl,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

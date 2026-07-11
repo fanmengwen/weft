@@ -41,7 +41,7 @@ describe('chatHistoryStorage', () => {
 
   it('falls back to legacy localStorage when repository loading fails', async () => {
     loadChatThread.mockRejectedValue(new Error('offline'));
-    localStorage.setItem('ofk_chat_history_doc-2', JSON.stringify([
+    localStorage.setItem('weft_chat_history_doc-2', JSON.stringify([
       { role: 'model', parts: [{ text: 'stored locally' }] },
     ] satisfies ChatMessage[]));
 
@@ -55,7 +55,7 @@ describe('chatHistoryStorage', () => {
   it('drops malformed legacy localStorage chat payloads', async () => {
     loadChatThread.mockRejectedValue(new Error('offline'));
     localStorage.setItem(
-      'ofk_chat_history_doc-bad',
+      'weft_chat_history_doc-bad',
       JSON.stringify([{ role: 'system', parts: ['bad-shape'] }])
     );
 
@@ -107,7 +107,7 @@ describe('chatHistoryStorage', () => {
 
   it('clears the repository thread and falls back to localStorage cleanup on failure', async () => {
     clearChatThread.mockRejectedValueOnce(new Error('boom'));
-    localStorage.setItem('ofk_chat_history_doc-4', JSON.stringify([
+    localStorage.setItem('weft_chat_history_doc-4', JSON.stringify([
       { role: 'user', parts: [{ text: 'draft' }] },
     ] satisfies ChatMessage[]));
 
@@ -116,6 +116,6 @@ describe('chatHistoryStorage', () => {
     await clearChatHistory('doc-4');
 
     expect(clearChatThread).toHaveBeenCalledWith('doc-4');
-    expect(localStorage.getItem('ofk_chat_history_doc-4')).toBeNull();
+    expect(localStorage.getItem('weft_chat_history_doc-4')).toBeNull();
   });
 });

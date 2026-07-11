@@ -27,7 +27,7 @@ describe('serializeCanvasContextForAI', () => {
     expect(serializeCanvasContextForAI([], [])).toBe('');
   });
 
-  it('serializes nodes/edges as OpenFlow DSL with header comment', () => {
+  it('serializes nodes/edges as Weft DSL with header comment', () => {
     const nodes = [createNode('n1', 'process', 'A'), createNode('n2', 'decision', 'B')];
     const edges = [createEdge('e1', 'n1', 'n2', 'yes')];
 

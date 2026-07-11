@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  OPENFLOWKIT_STORAGE_KEY,
+  WEFT_STORAGE_KEY,
   estimateTrackedLocalStorageUsageBytes,
   estimateTrackedLocalStorageUsageRatio,
 } from './storagePressure';
@@ -19,19 +19,19 @@ function createStorage(entries: Record<string, string>): Storage {
 describe('storagePressure', () => {
   it('counts only tracked keys', () => {
     const storage = createStorage({
-      [OPENFLOWKIT_STORAGE_KEY]: 'abc',
+      [WEFT_STORAGE_KEY]: 'abc',
       unrelated: 'should-not-count',
     });
 
     const usage = estimateTrackedLocalStorageUsageBytes(storage);
-    const expected = (OPENFLOWKIT_STORAGE_KEY.length + 3) * 2;
+    const expected = (WEFT_STORAGE_KEY.length + 3) * 2;
 
     expect(usage).toBe(expected);
   });
 
   it('computes ratio against provided quota', () => {
     const storage = createStorage({
-      [OPENFLOWKIT_STORAGE_KEY]: '12345',
+      [WEFT_STORAGE_KEY]: '12345',
     });
     const usage = estimateTrackedLocalStorageUsageBytes(storage);
 

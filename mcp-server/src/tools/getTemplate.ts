@@ -10,7 +10,7 @@ export function registerGetTemplate(server: McpServer): void {
     {
       title: 'Get a starter template',
       description:
-        'Return the OpenFlow DSL for a named starter template. Use ' +
+        'Return the Weft DSL for a named starter template. Use ' +
         'list_starter_templates to discover available names.',
       inputSchema: {
         name: z

@@ -25,9 +25,9 @@ export function registerDiscoveryTools(server: McpServer): void {
   server.registerTool(
     'list_diagram_node_types',
     {
-      title: 'List OpenFlow DSL node types and edge styles',
+      title: 'List Weft DSL node types and edge styles',
       description:
-        'Quick reference for every supported OpenFlow node type and edge style. ' +
+        'Quick reference for every supported Weft node type and edge style. ' +
         'Use this when authoring DSL by hand or when guiding another agent.',
     },
     async () => ({

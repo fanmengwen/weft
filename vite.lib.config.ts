@@ -22,8 +22,8 @@ export default defineConfig({
     build: {
         lib: {
             entry: resolve(__dirname, 'src/lib/index.ts'),
-            name: 'OpenFlowKitCore',
-            fileName: (format) => `openflowkit-core.${format}.js`,
+            name: 'WeftCore',
+            fileName: (format) => `weft-core.${format}.js`,
             formats: ['es', 'cjs'],
         },
         outDir: 'src/lib/dist',

@@ -42,7 +42,7 @@ export interface ImportFidelityReport {
     };
 }
 
-const IMPORT_REPORT_STORAGE_KEY = 'openflowkit-import-report-latest';
+const IMPORT_REPORT_STORAGE_KEY = 'weft-import-report-latest';
 
 function isOfficialFlowchartReason(layoutFallbackReason?: string): boolean {
     return layoutFallbackReason?.toLowerCase().includes('official flowchart') ?? false;
