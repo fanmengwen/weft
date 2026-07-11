@@ -4,6 +4,7 @@ import {
     createInitialFlowState,
     migratePersistedFlowState,
     partializePersistedFlowState,
+    sanitizePersistedNode,
     sanitizePersistedTab,
 } from './persistence';
 import * as aiSettingsPersistence from './aiSettingsPersistence';
@@ -217,6 +218,90 @@ describe('store persistence helpers', () => {
         };
 
         expect(migrated.tabs[0]?.nodes).toEqual([]);
+    });
+
+    it('downgrades retired shape family nodes to rounded process nodes', () => {
+        const tab = createTab(
+            'tab-a',
+            'A',
+            [
+                { ...createNode('n-class', 'Order'), type: 'class' },
+                { ...createNode('n-mindmap', 'Idea'), type: 'mindmap' },
+            ],
+            []
+        );
+
+        const persistedTab = sanitizePersistedTab(tab);
+
+        expect(persistedTab.nodes.map((node) => node.type)).toEqual(['process', 'process']);
+        expect(persistedTab.nodes.map((node) => node.data.shape)).toEqual(['rounded', 'rounded']);
+        expect(persistedTab.nodes.map((node) => node.data.label)).toEqual(['Order', 'Idea']);
+    });
+
+    it('downgrades text nodes to annotation nodes preserving the label', () => {
+        const tab = createTab(
+            'tab-a',
+            'A',
+            [{ ...createNode('n-text', 'Note to self'), type: 'text' }],
+            []
+        );
+
+        const persistedTab = sanitizePersistedTab(tab);
+
+        expect(persistedTab.nodes[0]?.type).toBe('annotation');
+        expect(persistedTab.nodes[0]?.data.label).toBe('Note to self');
+    });
+
+    it('downgrades image nodes without a label to annotations with an empty label', () => {
+        const sanitized = sanitizePersistedNode({
+            id: 'n-image',
+            type: 'image',
+            position: { x: 0, y: 0 },
+            data: { label: undefined, imageUrl: 'https://example.com/pic.png' },
+        });
+
+        expect(sanitized.type).toBe('annotation');
+        expect(sanitized.data.label).toBe('');
+    });
+
+    it('downgrades swimlane nodes to section nodes', () => {
+        const sanitized = sanitizePersistedNode({ ...createNode('n-lane', 'Lane A'), type: 'swimlane' });
+
+        expect(sanitized.type).toBe('section');
+        expect(sanitized.data.label).toBe('Lane A');
+    });
+
+    it('drops the sequence_message type from persisted edges', () => {
+        const tab = createTab(
+            'tab-a',
+            'A',
+            [],
+            [{ ...createEdge('e1', 'n1', 'n2'), type: 'sequence_message' }]
+        );
+
+        const persistedTab = sanitizePersistedTab(tab);
+
+        expect(persistedTab.edges[0]?.type).toBeUndefined();
+    });
+
+    it('downgrades retired node families during persisted state migration', () => {
+        const migrated = migratePersistedFlowState({
+            tabs: [
+                {
+                    id: 'tab-a',
+                    name: 'A',
+                    nodes: [{ ...createNode('n-class', 'Order'), type: 'class' }],
+                    edges: [],
+                    history: { past: [], future: [] },
+                },
+            ],
+            activeTabId: 'tab-a',
+        }) as {
+            tabs: FlowTab[];
+        };
+
+        expect(migrated.tabs[0]?.nodes[0]?.type).toBe('process');
+        expect(migrated.tabs[0]?.nodes[0]?.data.shape).toBe('rounded');
     });
 
     it('sanitizes persisted ai settings during migration', () => {

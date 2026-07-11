@@ -93,6 +93,39 @@ function sanitizePersistedHistory(history: unknown): FlowTab['history'] {
   return { past, future };
 }
 
+// Diagram families retired from the editor are downgraded on load so
+// documents saved before their node and edge components were removed keep rendering.
+const RETIRED_NODE_TYPE_DOWNGRADES: Partial<Record<string, 'process' | 'annotation' | 'section'>> = {
+  class: 'process',
+  er_entity: 'process',
+  mindmap: 'process',
+  journey: 'process',
+  sequence_participant: 'process',
+  browser: 'process',
+  mobile: 'process',
+  text: 'annotation',
+  image: 'annotation',
+  sequence_note: 'annotation',
+  swimlane: 'section',
+};
+
+function downgradeRetiredNodeFamily(node: FlowTab['nodes'][number]): FlowTab['nodes'][number] {
+  const downgradedType = node.type ? RETIRED_NODE_TYPE_DOWNGRADES[node.type] : undefined;
+  if (!downgradedType) {
+    return node;
+  }
+
+  const data = { ...node.data };
+  if (downgradedType === 'process') {
+    data.shape = 'rounded';
+  }
+  if (downgradedType === 'annotation' && typeof data.label !== 'string') {
+    data.label = '';
+  }
+
+  return { ...node, type: downgradedType, data };
+}
+
 export function sanitizePersistedNode(node: FlowTab['nodes'][number]): FlowTab['nodes'][number] {
   const {
     selected: _selected,
@@ -105,7 +138,7 @@ export function sanitizePersistedNode(node: FlowTab['nodes'][number]): FlowTab['
     positionAbsolute?: unknown;
   };
 
-  return withSectionDefaults(persistedNode);
+  return withSectionDefaults(downgradeRetiredNodeFamily(persistedNode));
 }
 
 function flattenLegacyContainerNodes(nodes: FlowTab['nodes']): FlowTab['nodes'] {
@@ -129,7 +162,12 @@ function flattenLegacyContainerNodes(nodes: FlowTab['nodes']): FlowTab['nodes'] 
 
 export function sanitizePersistedEdge(edge: FlowTab['edges'][number]): FlowTab['edges'][number] {
   const { selected: _selected, ...persistedEdge } = edge;
-  return persistedEdge;
+  if (persistedEdge.type !== 'sequence_message') {
+    return persistedEdge;
+  }
+
+  const { type: _type, ...downgradedEdge } = persistedEdge;
+  return downgradedEdge;
 }
 
 export function sanitizePersistedTab(tab: FlowTab): FlowTab {
