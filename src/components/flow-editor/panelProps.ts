@@ -34,7 +34,6 @@ export interface CommandBarPanelBuilderParams {
   handleAddAnnotation: () => void;
   handleAddSection: () => void;
   handleAddArchitectureNode: () => void;
-  handleAddWireframe: (surface: 'browser' | 'mobile') => void;
   handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
   handleCodeAnalysis?: (code: string, language: SupportedLanguage) => Promise<boolean>;
   handleSqlAnalysis?: (sql: string) => Promise<boolean>;
@@ -153,7 +152,6 @@ export function buildCommandBarPanelProps({
   handleAddAnnotation,
   handleAddSection,
   handleAddArchitectureNode,
-  handleAddWireframe,
   handleAddDomainLibraryItem,
   handleCodeAnalysis,
   handleSqlAnalysis,
@@ -182,8 +180,6 @@ export function buildCommandBarPanelProps({
     onAddAnnotation: handleAddAnnotation,
     onAddSection: handleAddSection,
     onAddArchitecture: handleAddArchitectureNode,
-    onAddBrowserWireframe: () => handleAddWireframe('browser'),
-    onAddMobileWireframe: () => handleAddWireframe('mobile'),
     onAddDomainLibraryItem: handleAddDomainLibraryItem,
     onCodeAnalysis: wrapAsyncCommand(handleCodeAnalysis),
     onSqlAnalysis: wrapAsyncCommand(handleSqlAnalysis),

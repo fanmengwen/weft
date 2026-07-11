@@ -6,7 +6,6 @@ export type BulkEditableCapability =
   | 'color'
   | 'advancedColor'
   | 'icon'
-  | 'variant'
   | 'architecture';
 
 export interface BulkLabelTransformOptions {
@@ -23,7 +22,6 @@ export interface BulkSelectionFamilySummary {
 
 type NodeFamilyId =
   | 'architecture'
-  | 'wireframe'
   | 'annotation'
   | 'asset'
   | 'section'
@@ -39,7 +37,6 @@ const FLOW_NODE_LABEL = 'Flow node';
 
 const NODE_FAMILY_LABELS: Record<NodeFamilyId, string> = {
   architecture: 'Architecture',
-  wireframe: 'Wireframe',
   annotation: 'Annotation',
   asset: 'Asset',
   section: 'Section',
@@ -79,11 +76,6 @@ const BULK_CAPABILITY_RULES: CapabilityRule[] = [
     supports: (node) =>
       !isIconAssetNode(node) &&
       GENERIC_ICON_NODE_TYPES.has(node.type),
-  },
-  {
-    capability: 'variant',
-    keys: ['variant'],
-    supports: (node) => node.type === NodeType.BROWSER || node.type === NodeType.MOBILE,
   },
   {
     capability: 'architecture',
@@ -142,9 +134,6 @@ function getNodeFamilyId(node: Node<NodeData>): NodeFamilyId {
   switch (node.type) {
     case NodeType.ARCHITECTURE:
       return 'architecture';
-    case NodeType.BROWSER:
-    case NodeType.MOBILE:
-      return 'wireframe';
     case NodeType.ANNOTATION:
       return 'annotation';
     case NodeType.SECTION:

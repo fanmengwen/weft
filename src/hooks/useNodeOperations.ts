@@ -243,7 +243,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddAnnotation,
     handleAddArchitectureNode,
     handleAddSection,
-    handleAddWireframe,
     handleAddDomainLibraryItem,
   } = useNodeOperationAdders({
     recordHistory,
@@ -267,7 +266,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddAnnotation,
     handleAddArchitectureNode,
     handleAddSection,
-    handleAddWireframe,
     handleAddDomainLibraryItem,
     ...archOps,
     ...dragOps,

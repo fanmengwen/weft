@@ -1520,10 +1520,6 @@
       "enableDescription": "Compartir datos básicos de uso de forma anónima (opcional)"
     }
   },
-  "customNodes": {
-    "browserContent": "Contenido del navegador",
-    "mobileContent": "Contenido móvil"
-  },
   "keyboardShortcutsModal": {
     "title": "Atajos de teclado",
     "subtitle": "Domine su flujo de trabajo con velocidad.",
@@ -1544,7 +1540,6 @@
     "stickyNote": "Nota adhesiva",
     "section": "Sección",
     "other": "Otros",
-    "wireframes": "Wireframes",
     "autoLayout": "Diseño automático",
     "clearCanvas": "Limpiar lienzo",
     "undo": "Deshacer (Ctrl+Z)",

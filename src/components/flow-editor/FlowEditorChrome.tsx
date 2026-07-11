@@ -112,7 +112,6 @@ export interface FlowEditorChromeProps {
     onAddAnnotation: (position: { x: number; y: number }) => void;
     onAddSection: (position: { x: number; y: number }) => void;
     onAddArchitectureNode: (position: { x: number; y: number }) => void;
-    onAddWireframe: (variant: string, position: { x: number; y: number }) => void;
     onUndo: () => void;
     onRedo: () => void;
     onLayout: () => void;
@@ -191,7 +190,6 @@ export function FlowEditorChrome({
     onAddAnnotation: toolbar.onAddAnnotation,
     onAddSection: toolbar.onAddSection,
     onAddArchitectureNode: toolbar.onAddArchitectureNode,
-    onAddWireframe: toolbar.onAddWireframe,
     onUndo: toolbar.onUndo,
     onRedo: toolbar.onRedo,
     onLayout: toolbar.onLayout,

@@ -42,7 +42,6 @@ export interface BuildToolbarParams {
   handleAddAnnotation: (position: { x: number; y: number }) => void;
   handleAddSection: (position: { x: number; y: number }) => void;
   handleAddArchitectureNode: (position: { x: number; y: number }) => void;
-  handleAddWireframe: (variant: string, position: { x: number; y: number }) => void;
   undo: () => void;
   redo: () => void;
   handleLayoutWithContext: () => void;

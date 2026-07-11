@@ -141,34 +141,6 @@ export function createArchitectureNode(
   };
 }
 
-export function createBrowserNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Page'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', icon: 'lock', variant: 'default' },
-    type: 'browser',
-    style: { width: 400, height: 300 },
-  };
-}
-
-export function createMobileNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Screen'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', variant: 'default' },
-    type: 'mobile',
-    style: { width: 300, height: 600 },
-  };
-}
-
 export function createArchitectureServiceNode({
   id,
   position,

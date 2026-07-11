@@ -14,7 +14,7 @@ const FALLBACK_LAYER_KEYWORDS: ReadonlyArray<{
   { layer: 'external', keywords: ['external', 'third-party', 'third party'] },
 ];
 
-const SECTION_TYPES = new Set(['section', 'group', 'browser', 'mobile']);
+const SECTION_TYPES = new Set(['section', 'group']);
 
 export function buildDynamicLayerOrder(nodes: FlowNode[]): readonly string[] {
   const sections = nodes.filter((n) => SECTION_TYPES.has(String(n.type)));

@@ -35,8 +35,6 @@ export enum NodeType {
   SECTION = 'section',
   GROUP = 'group',
   MERMAID_SVG = 'mermaid_svg',
-  BROWSER = 'browser',
-  MOBILE = 'mobile',
 }
 
 export interface NodeLabelData {
@@ -80,7 +78,6 @@ export interface NodeVisualStyleData {
   subLabelFontStyle?: string; // 'normal', 'italic'
   backgroundColor?: string;
   transparency?: number; // 0-1
-  variant?: string; // wireframe preset key (e.g. 'landing', 'modal')
 }
 
 export interface NodeCanvasMetadata {

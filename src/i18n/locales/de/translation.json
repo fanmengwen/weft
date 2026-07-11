@@ -1520,10 +1520,6 @@
       "enableDescription": "Anonyme grundlegende Nutzungsdaten teilen (optional)"
     }
   },
-  "customNodes": {
-    "browserContent": "Browser-Inhalt",
-    "mobileContent": "Mobiler Inhalt"
-  },
   "keyboardShortcutsModal": {
     "title": "Tastaturkürzel",
     "subtitle": "Meistern Sie Ihren Arbeitsablauf mit Geschwindigkeit.",
@@ -1544,7 +1540,6 @@
     "stickyNote": "Haftnotiz",
     "section": "Abschnitt",
     "other": "Andere",
-    "wireframes": "Wireframes",
     "autoLayout": "Auto-Layout",
     "clearCanvas": "Canvas löschen",
     "undo": "Rückgängig (Ctrl+Z)",

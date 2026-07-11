@@ -178,4 +178,23 @@ describe('OpenFlow DSL V2 Parser', () => {
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0]).toContain('Unrecognized syntax');
   });
+
+  it('remaps legacy [browser] nodes to process', () => {
+    const result = parseOpenFlowDslV2('[browser] web: Web App { color: "blue" }');
+
+    expect(result.errors).toHaveLength(0);
+    const web = result.nodes.find((node) => node.id === 'web');
+    expect(web?.type).toBe('process');
+    expect(web?.data.label).toBe('Web App');
+    expect(web?.data.color).toBe('blue');
+  });
+
+  it('remaps legacy [mobile] nodes to process', () => {
+    const result = parseOpenFlowDslV2('[mobile] app: Mobile App');
+
+    expect(result.errors).toHaveLength(0);
+    const app = result.nodes.find((node) => node.id === 'app');
+    expect(app?.type).toBe('process');
+    expect(app?.data.label).toBe('Mobile App');
+  });
 });

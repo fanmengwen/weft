@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, ServerCog } from 'lucide-react';
+import { ServerCog } from 'lucide-react';
 import { CollapsibleSection } from '../ui/CollapsibleSection';
 import { Select } from '../ui/Select';
 import { INSPECTOR_INPUT_CLASSNAME, InspectorField } from './InspectorPrimitives';
@@ -9,17 +9,6 @@ interface CommonSectionProps {
   title: string;
   isOpen: boolean;
   onToggle: () => void;
-}
-
-interface WireframeVariantOption {
-  id: string;
-  label: string;
-}
-
-interface WireframeVariantBulkSectionProps extends CommonSectionProps {
-  options: WireframeVariantOption[];
-  value: string;
-  onChange: (value: string) => void;
 }
 
 interface ArchitectureBulkSectionProps extends CommonSectionProps {
@@ -32,41 +21,6 @@ interface ArchitectureBulkSectionProps extends CommonSectionProps {
   onZoneChange: (value: string) => void;
   onTrustDomainChange: (value: string) => void;
   onInputKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-}
-
-export function WireframeVariantBulkSection({
-  title,
-  isOpen,
-  onToggle,
-  options,
-  value,
-  onChange,
-}: WireframeVariantBulkSectionProps): React.ReactElement {
-  return (
-    <CollapsibleSection
-      title={title}
-      icon={<Layout className="w-3.5 h-3.5" />}
-      isOpen={isOpen}
-      onToggle={onToggle}
-    >
-      <div className="grid grid-cols-2 gap-2">
-        {options.map((option) => (
-          <button
-            key={option.id}
-            type="button"
-            onClick={() => onChange(option.id)}
-            className={`rounded border px-2 py-2 text-xs font-medium transition-all ${
-              value === option.id
-                ? 'bg-[var(--brand-primary-50)] border-[var(--brand-primary-200)] text-[var(--brand-primary)]'
-                : 'bg-[var(--brand-surface)] border-[var(--color-brand-border)] text-[var(--brand-secondary)] hover:border-[var(--brand-secondary)] hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)]'
-            }`}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
-    </CollapsibleSection>
-  );
 }
 
 export function ArchitectureBulkSection({

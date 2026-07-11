@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-  AppWindow,
   Boxes,
-  Smartphone,
   StickyNote,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
@@ -17,11 +15,9 @@ export type AddItemId =
   | 'cylinder'
   | 'circle'
   | 'sticky-note'
-  | 'architecture'
-  | 'browser'
-  | 'mobile';
+  | 'architecture';
 
-export type AddItemSectionId = 'shapes' | 'diagrams' | 'wireframes' | 'other';
+export type AddItemSectionId = 'shapes' | 'diagrams' | 'other';
 export type AddItemScope = 'toolbar' | 'assets';
 
 export interface AddItemDefinition {
@@ -112,7 +108,6 @@ export function getAddItemSections(t: TFunction): Array<{ id: AddItemSectionId; 
   return [
     { id: 'shapes', title: t('toolbar.shapes', 'Shapes') },
     { id: 'diagrams', title: t('toolbar.diagrams', 'Diagrams') },
-    { id: 'wireframes', title: t('toolbar.wireframes', 'Wireframes') },
     { id: 'other', title: t('toolbar.other', 'Other') },
   ];
 }
@@ -184,22 +179,6 @@ export function getAddItemDefinitions(t: TFunction): AddItemDefinition[] {
       renderIcon: makeLucideIcon(Boxes),
     },
     {
-      id: 'browser',
-      label: 'Browser',
-      section: 'wireframes',
-      keywords: ['browser', 'desktop', 'wireframe', 'web'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(AppWindow),
-    },
-    {
-      id: 'mobile',
-      label: 'Mobile',
-      section: 'wireframes',
-      keywords: ['mobile', 'device', 'wireframe', 'app'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Smartphone),
-    },
-    {
       id: 'sticky-note',
       label: t('toolbar.stickyNote', 'Note'),
       section: 'other',
@@ -229,7 +208,6 @@ export interface AddItemActions {
   onAddAnnotation: (position?: { x: number; y: number }) => void;
   onAddSection: (position?: { x: number; y: number }) => void;
   onAddArchitectureNode: (position?: { x: number; y: number }) => void;
-  onAddWireframe: (variant: 'browser' | 'mobile', position?: { x: number; y: number }) => void;
 }
 
 export function executeAddItem(
@@ -252,12 +230,6 @@ export function executeAddItem(
       return;
     case 'architecture':
       actions.onAddArchitectureNode(position);
-      return;
-    case 'browser':
-      actions.onAddWireframe('browser', position);
-      return;
-    case 'mobile':
-      actions.onAddWireframe('mobile', position);
       return;
     default: {
       const exhaustiveCheck: never = id;

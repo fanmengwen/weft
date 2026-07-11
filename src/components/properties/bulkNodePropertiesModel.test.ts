@@ -25,14 +25,12 @@ describe('bulkNodePropertiesModel', () => {
     const counts = getBulkCapabilityCounts([
       createNode(NodeType.CUSTOM),
       createNode(NodeType.ANNOTATION),
-      createNode(NodeType.BROWSER),
       createNode(NodeType.ARCHITECTURE),
     ]);
 
     expect(counts.shape).toBe(1);
     expect(counts.color).toBe(3);
     expect(counts.icon).toBe(1);
-    expect(counts.variant).toBe(1);
     expect(counts.architecture).toBe(1);
   });
 
@@ -42,7 +40,6 @@ describe('bulkNodePropertiesModel', () => {
         shape: 0,
         color: 0,
         icon: 0,
-        variant: 0,
         architecture: 0,
         labels: 2,
         findReplace: 2,

@@ -12,8 +12,8 @@ const TYPE_TO_DSL: Record<string, string> = {
     annotation: 'note',
     section: 'process',
     group: 'process',
-    browser: 'browser',
-    mobile: 'mobile',
+    browser: 'process',
+    mobile: 'process',
     container: 'container',
 };
 

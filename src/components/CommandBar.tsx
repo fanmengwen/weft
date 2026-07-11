@@ -59,8 +59,6 @@ function OpenCommandBarContent({
   onAddAnnotation: _onAddAnnotation,
   onAddSection: _onAddSection,
   onAddArchitecture: _onAddArchitecture,
-  onAddBrowserWireframe: _onAddBrowserWireframe,
-  onAddMobileWireframe: _onAddMobileWireframe,
   onAddDomainLibraryItem,
   onCodeAnalysis,
   onSqlAnalysis,

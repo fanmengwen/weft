@@ -8,8 +8,7 @@ export type TemplateCategory =
   | 'architecture'
   | 'aws'
   | 'azure'
-  | 'cncf'
-  | 'wireframe';
+  | 'cncf';
 
 export type ProviderKey = 'aws' | 'azure' | 'cncf';
 
@@ -83,17 +82,6 @@ export function createArchitectureNode(
       archResourceType: resourceType,
     },
   };
-}
-
-export function createWireframeNode(
-  id: string,
-  type: 'browser' | 'mobile',
-  label: string,
-  variant: string,
-  x: number,
-  y: number
-): FlowNode {
-  return { id, type, position: { x, y }, data: { label, color: 'slate', variant } };
 }
 
 export function createTemplate(

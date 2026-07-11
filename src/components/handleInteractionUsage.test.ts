@@ -8,8 +8,6 @@ const HANDLE_POLICY_FILES = [
   'src/components/CustomNode.tsx',
   'src/components/GroupNode.tsx',
   'src/components/custom-nodes/ArchitectureNode.tsx',
-  'src/components/custom-nodes/BrowserNode.tsx',
-  'src/components/custom-nodes/MobileNode.tsx',
 ] as const;
 
 function readSource(path: string): string {

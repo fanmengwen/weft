@@ -181,35 +181,6 @@ export function useNodeOperationAdders({
     [recordHistory, setNodes, setSelectedNodeId, t]
   );
 
-  const handleAddWireframe = useCallback(
-    (type: 'browser' | 'mobile', position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId(type);
-      const { activeLayerId } = useFlowStore.getState();
-      const label = type === 'browser' ? 'New Window' : 'Mobile App';
-      const newNode: FlowNode = {
-        id,
-        type,
-        position: position || getDefaultNodePosition(nodesLength, 100, 100),
-        data: {
-          label,
-          color: 'slate',
-          variant: 'default',
-          layerId: activeLayerId,
-        },
-        selected: true,
-      };
-      setNodes((nds) => {
-        const selectedSectionId = useFlowStore.getState().selectedNodeId;
-        return nds.concat(
-          insertNodeIntoNearestSection(nds, newNode, position, selectedSectionId)
-        );
-      });
-      setSelectedNodeId(id);
-    },
-    [nodesLength, recordHistory, setNodes, setSelectedNodeId]
-  );
-
   const handleAddDomainLibraryItem = useCallback(
     (item: DomainLibraryItem, position?: { x: number; y: number }) => {
       recordHistory();
@@ -238,7 +209,6 @@ export function useNodeOperationAdders({
     handleAddAnnotation,
     handleAddArchitectureNode,
     handleAddSection,
-    handleAddWireframe,
     handleAddDomainLibraryItem,
   };
 }

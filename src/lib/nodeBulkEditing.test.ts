@@ -26,7 +26,6 @@ describe('nodeBulkEditing', () => {
   it('assigns capabilities by effective property surface instead of every node sharing the same set', () => {
     expect(getNodeBulkEditCapabilities(createNode(NodeType.CUSTOM)).has('shape')).toBe(true);
     expect(getNodeBulkEditCapabilities(createNode(NodeType.ANNOTATION)).has('shape')).toBe(false);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.BROWSER)).has('variant')).toBe(true);
     expect(getNodeBulkEditCapabilities(createNode(NodeType.ARCHITECTURE)).has('architecture')).toBe(
       true
     );
@@ -34,7 +33,6 @@ describe('nodeBulkEditing', () => {
 
   it('filters unsupported updates per node during bulk apply', () => {
     const annotationNode = createNode(NodeType.ANNOTATION);
-    const browserNode = createNode(NodeType.BROWSER);
     const architectureNode = createNode(NodeType.ARCHITECTURE);
     const genericNode = createNode(NodeType.CUSTOM);
 
@@ -45,13 +43,6 @@ describe('nodeBulkEditing', () => {
         colorMode: 'filled',
       })
     ).toEqual({ color: 'blue' });
-
-    expect(
-      filterBulkUpdatesForNode(browserNode, {
-        variant: 'dashboard',
-        color: 'blue',
-      })
-    ).toEqual({ variant: 'dashboard' });
 
     expect(
       filterBulkUpdatesForNode(architectureNode, {
@@ -79,7 +70,6 @@ describe('nodeBulkEditing', () => {
     const selectedNodes = [
       createNode(NodeType.CUSTOM),
       createNode(NodeType.ANNOTATION),
-      createNode(NodeType.BROWSER),
       createNode(NodeType.ARCHITECTURE),
     ];
 
@@ -93,10 +83,10 @@ describe('nodeBulkEditing', () => {
       getBulkAffectedNodeCount(
         selectedNodes,
         {
-          variant: 'dashboard',
+          archEnvironment: 'production',
         },
         { labelPrefix: 'New ' }
       )
-    ).toBe(4);
+    ).toBe(3);
   });
 });

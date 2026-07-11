@@ -52,7 +52,6 @@ describe('buildFlowEditorPanelsProps', () => {
       handleAddAnnotation: vi.fn(),
       handleAddSection: vi.fn(),
       handleAddArchitectureNode: vi.fn(),
-      handleAddWireframe: vi.fn(),
       handleAddDomainLibraryItem: vi.fn(),
       showGrid: true,
       toggleGrid: vi.fn(),

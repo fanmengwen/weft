@@ -330,7 +330,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       handleAddAnnotation: operations.handleAddAnnotation,
       handleAddSection: operations.handleAddSection,
       handleAddArchitectureNode: operations.handleAddArchitectureNode,
-      handleAddWireframe: operations.handleAddWireframe,
       handleAddDomainLibraryItem: operations.handleAddDomainLibraryItem,
     },
   });

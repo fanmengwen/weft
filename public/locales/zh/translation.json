@@ -1554,10 +1554,6 @@
       "enableDescription": "共享匿名的基础使用数据（可选）"
     }
   },
-  "customNodes": {
-    "browserContent": "浏览器内容",
-    "mobileContent": "移动端内容"
-  },
   "keyboardShortcutsModal": {
     "title": "键盘快捷键",
     "subtitle": "用速度掌控您的工作流程。",
@@ -1578,7 +1574,6 @@
     "stickyNote": "便利贴",
     "section": "分区",
     "other": "其他",
-    "wireframes": "线框图",
     "autoLayout": "自动布局",
     "clearCanvas": "清除画布",
     "undo": "撤销 (Ctrl+Z)",

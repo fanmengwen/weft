@@ -24,8 +24,6 @@ export {
   createAnnotationNode,
   createSectionNode,
   createArchitectureNode,
-  createBrowserNode,
-  createMobileNode,
   createArchitectureServiceNode,
 } from './nodeFactories';
 

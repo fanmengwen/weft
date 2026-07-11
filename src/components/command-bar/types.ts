@@ -53,8 +53,6 @@ export interface CommandBarProps {
   onAddAnnotation?: () => void;
   onAddSection?: () => void;
   onAddArchitecture?: () => void;
-  onAddBrowserWireframe?: () => void;
-  onAddMobileWireframe?: () => void;
   onAddDomainLibraryItem?: (item: DomainLibraryItem) => void;
   onCodeAnalysis?: (code: string, language: SupportedLanguage) => Promise<void>;
   onSqlAnalysis?: (sql: string) => Promise<void>;

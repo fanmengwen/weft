@@ -20,13 +20,11 @@ import {
   InspectorSummaryCard,
 } from './InspectorPrimitives';
 import { createPropertyInputKeyDownHandler } from './propertyInputBehavior';
-import { getWireframeVariants } from './wireframeVariants';
 import {
   ArchitectureBulkSection,
   FindReplaceBulkSection,
   LabelTransformBulkSection,
   SelectionSummary,
-  WireframeVariantBulkSection,
 } from './BulkNodePropertiesSections';
 import {
   buildBulkUpdates,
@@ -74,22 +72,6 @@ export function BulkNodeProperties({
   const allowAdvancedColorControls =
     capabilityCounts.advancedColor === capabilityCounts.color && capabilityCounts.color > 0;
 
-  const wireframeVariantOptions = useMemo(() => {
-    const optionMap = new Map<string, string>();
-
-    for (const node of selectedNodes) {
-      if (node.type !== 'browser' && node.type !== 'mobile') {
-        continue;
-      }
-
-      for (const option of getWireframeVariants(node.type)) {
-        optionMap.set(option.id, option.label);
-      }
-    }
-
-    return Array.from(optionMap.entries()).map(([id, label]) => ({ id, label }));
-  }, [selectedNodes]);
-
   const updates = useMemo(
     () => buildBulkUpdates(form, allowAdvancedColorControls),
     [form, allowAdvancedColorControls]
@@ -107,7 +89,6 @@ export function BulkNodeProperties({
     shape: capabilityCounts.shape,
     color: capabilityCounts.color,
     icon: capabilityCounts.icon,
-    variant: capabilityCounts.variant,
     architecture: capabilityCounts.architecture,
     labels: selectedNodes.length,
     findReplace: selectedNodes.length,
@@ -270,21 +251,6 @@ export function BulkNodeProperties({
             onCustomIconChange={handleCustomIconChange}
           />
         </CollapsibleSection>
-      ) : null}
-
-      {capabilityCounts.variant > 0 ? (
-        <WireframeVariantBulkSection
-          title={getScopedSectionTitle(
-            'Wireframe Variant',
-            capabilityCounts.variant,
-            selectedNodes.length
-          )}
-          isOpen={resolvedActiveSection === 'variant'}
-          onToggle={() => toggleSection('variant')}
-          options={wireframeVariantOptions}
-          value={form.variant}
-          onChange={(value) => updateForm('variant', value)}
-        />
       ) : null}
 
       {capabilityCounts.architecture > 0 ? (

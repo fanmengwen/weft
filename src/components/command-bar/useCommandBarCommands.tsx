@@ -106,7 +106,7 @@ export function useCommandBarCommands({
                 tier: 'advanced',
                 type: 'navigation',
                 view: 'assets',
-                description: 'Wireframes, notes, sections, and media',
+                description: 'Notes, sections, and media',
             },
             {
                 id: 'search-nodes',

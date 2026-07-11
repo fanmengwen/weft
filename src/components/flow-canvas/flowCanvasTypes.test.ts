@@ -8,12 +8,10 @@ describe('flowCanvasNodeTypes', () => {
       [
         "annotation",
         "architecture",
-        "browser",
         "custom",
         "decision",
         "end",
         "mermaid_svg",
-        "mobile",
         "process",
         "section",
         "start",

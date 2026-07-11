@@ -11,7 +11,6 @@ import { CollapsibleSection } from '../ui/CollapsibleSection';
 import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
 import { NodeActionButtons } from './NodeActionButtons';
 import { NodeContentSection } from './NodeContentSection';
-import { NodeWireframeVariantSection } from './NodeWireframeVariantSection';
 import { InspectorSectionDivider } from './InspectorPrimitives';
 import type { DomainLibraryCategory } from '@/services/domainLibrary';
 import { getAssetCategoryDisplayName } from '@/services/assetPresentation';
@@ -47,7 +46,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
   const isAnnotation = selectedNode.type === 'annotation';
   const isSection = selectedNode.type === 'section';
   const isGroup = selectedNode.type === 'group';
-  const isWireframeApp = selectedNode.type === 'browser' || selectedNode.type === 'mobile';
   const normalizedIconData = normalizeNodeIconData(selectedNode.data);
   const isIconAssetNode = normalizedIconData?.assetPresentation === 'icon';
   const assetProvider = normalizedIconData?.assetProvider as DomainLibraryCategory | undefined;
@@ -75,14 +73,12 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
   });
 
   function getDefaultSection(): string {
-    if (isWireframeApp) return 'variant';
     if (isIconAssetNode) return 'icon';
     if (isSection) return 'content';
     if (isAnnotation) return 'content';
     return 'content';
   }
 
-  // Persist accordion state per node to avoid effect-driven synchronous setState.
   const [activeSectionsByNode, setActiveSectionsByNode] = useState<Record<string, string>>({});
   const activeSection = activeSectionsByNode[selectedNode.id] ?? getDefaultSection();
 
@@ -153,17 +149,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
     <>
       <InspectorSectionDivider />
 
-      {isWireframeApp && (
-        <NodeWireframeVariantSection
-          selectedNode={selectedNode}
-          isOpen={activeSection === 'variant'}
-          onToggle={() => toggleSection('variant')}
-          onChange={onChange}
-        />
-      )}
-
-      {!isWireframeApp &&
-        !isAnnotation &&
+      {!isAnnotation &&
         !isSection &&
         !isIconAssetNode && (
           <CollapsibleSection
@@ -184,8 +170,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         onChange={onChange}
         isOpen={activeSection === 'content'}
         onToggle={() => toggleSection('content')}
-        isWireframeApp={isWireframeApp}
-        isWireframeMisc={false}
         onBold={() => handleStyleAction('bold')}
         onItalic={() => handleStyleAction('italic')}
         labelInputRef={labelInputRef}
@@ -197,7 +181,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         onLabelKeyDown={labelEditor.handleKeyDown}
         onDescKeyDown={descEditor.handleKeyDown}
       />
-      {!isWireframeApp && !isIconAssetNode && (
+      {!isIconAssetNode && (
         <CollapsibleSection
           title={t('properties.color', 'Color')}
           icon={<Palette className="w-3.5 h-3.5" />}
@@ -230,7 +214,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         </CollapsibleSection>
       )}
 
-      {!isAnnotation && !isWireframeApp && (
+      {!isAnnotation && (
         <CollapsibleSection
           title={t('properties.icon', 'Icon')}
           icon={<Star className="w-3.5 h-3.5" />}
@@ -261,7 +245,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         </CollapsibleSection>
       )}
 
-      {!isWireframeApp && !isIconAssetNode && (
+      {!isIconAssetNode && (
         <CollapsibleSection
           title="Custom Image"
           icon={<ImageStart className="w-3.5 h-3.5" />}

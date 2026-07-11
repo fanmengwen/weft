@@ -1520,10 +1520,6 @@
       "enableDescription": "匿名の基本的な利用データを共有します（任意）"
     }
   },
-  "customNodes": {
-    "browserContent": "ブラウザコンテンツ",
-    "mobileContent": "モバイルコンテンツ"
-  },
   "keyboardShortcutsModal": {
     "title": "キーボードショートカット",
     "subtitle": "スピードでワークフローをマスターしましょう。",
@@ -1544,7 +1540,6 @@
     "stickyNote": "付箋",
     "section": "セクション",
     "other": "その他",
-    "wireframes": "ワイヤーフレーム",
     "autoLayout": "自動レイアウト",
     "clearCanvas": "キャンバスをクリア",
     "undo": "元に戻す (Ctrl+Z)",

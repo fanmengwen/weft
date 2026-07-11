@@ -5,7 +5,6 @@ export interface FlowAddItemHandlers {
   handleAddAnnotation: AddItemActions['onAddAnnotation'];
   handleAddSection: AddItemActions['onAddSection'];
   handleAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
-  handleAddWireframe: AddItemActions['onAddWireframe'];
 }
 
 export function buildAddItemActions(handlers: FlowAddItemHandlers): AddItemActions {
@@ -14,7 +13,6 @@ export function buildAddItemActions(handlers: FlowAddItemHandlers): AddItemActio
     onAddAnnotation: handlers.handleAddAnnotation,
     onAddSection: handlers.handleAddSection,
     onAddArchitectureNode: handlers.handleAddArchitectureNode,
-    onAddWireframe: handlers.handleAddWireframe,
   };
 }
 
@@ -23,13 +21,11 @@ export function buildAddItemActionsFromToolbar(toolbar: {
   onAddAnnotation: AddItemActions['onAddAnnotation'];
   onAddSection: AddItemActions['onAddSection'];
   onAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
-  onAddWireframe: AddItemActions['onAddWireframe'];
 }): AddItemActions {
   return {
     onAddShape: toolbar.onAddShape,
     onAddAnnotation: toolbar.onAddAnnotation,
     onAddSection: toolbar.onAddSection,
     onAddArchitectureNode: toolbar.onAddArchitectureNode,
-    onAddWireframe: toolbar.onAddWireframe,
   };
 }

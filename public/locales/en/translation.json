@@ -1607,10 +1607,6 @@
     "shortcutsHint": "You can also press ? to view these anytime.",
     "canvasSettings": "Canvas Settings"
   },
-  "customNodes": {
-    "browserContent": "Browser Content",
-    "mobileContent": "Mobile Content"
-  },
   "keyboardShortcutsModal": {
     "title": "Keyboard Shortcuts",
     "subtitle": "Master your workflow with speed.",
@@ -1631,7 +1627,6 @@
     "stickyNote": "Note",
     "section": "Section",
     "other": "Other",
-    "wireframes": "Wireframes",
     "autoLayout": "Auto Layout",
     "clearCanvas": "Clear Canvas",
     "undo": "Undo (Ctrl+Z)",

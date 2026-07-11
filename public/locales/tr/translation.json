@@ -1537,10 +1537,6 @@
       "enableDescription": "Anonim temel kullanım verilerini paylaş (isteğe bağlı)"
     }
   },
-  "customNodes": {
-    "browserContent": "Tarayıcı İçeriği",
-    "mobileContent": "Mobil İçerik"
-  },
   "keyboardShortcutsModal": {
     "title": "Klavye Kısayolları",
     "subtitle": "İş akışınıza hızla hakim olun.",
@@ -1561,7 +1557,6 @@
     "stickyNote": "Yapışkan Not",
     "section": "Bölüm",
     "other": "Diğer",
-    "wireframes": "Tel Çerçeveler",
     "autoLayout": "Otomatik Düzen",
     "clearCanvas": "Tuvali Temizle",
     "undo": "Geri Al (Ctrl+Z)",

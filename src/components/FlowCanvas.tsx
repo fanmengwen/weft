@@ -124,7 +124,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     handleAddAnnotation,
     handleAddSection,
     handleAddArchitectureNode,
-    handleAddWireframe,
   } = useFlowOperations(recordHistory, (position, sourceId, sourceHandle, sourceType) => {
     connectMenuSetterRef.current?.({ position, sourceId, sourceHandle, sourceType });
   });
@@ -170,14 +169,12 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         handleAddAnnotation,
         handleAddSection,
         handleAddArchitectureNode,
-        handleAddWireframe,
       }),
     [
       handleAddShape,
       handleAddAnnotation,
       handleAddSection,
       handleAddArchitectureNode,
-      handleAddWireframe,
     ]
   );
 

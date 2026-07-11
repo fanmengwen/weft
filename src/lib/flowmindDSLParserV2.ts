@@ -45,8 +45,8 @@ const NODE_TYPE_MAP: Record<string, string> = {
   note: 'annotation',
   section: 'process',
   group: 'process',
-  browser: 'browser',
-  mobile: 'mobile',
+  browser: 'process',
+  mobile: 'process',
   container: 'container',
   architecture: 'custom',
 };

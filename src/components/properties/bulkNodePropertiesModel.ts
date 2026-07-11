@@ -13,7 +13,6 @@ export type BulkSectionId =
   | 'shape'
   | 'color'
   | 'icon'
-  | 'variant'
   | 'architecture'
   | 'labels'
   | 'findReplace'
@@ -24,7 +23,6 @@ export interface BulkCapabilityCounts {
   color: number;
   advancedColor: number;
   icon: number;
-  variant: number;
   architecture: number;
 }
 
@@ -42,7 +40,6 @@ export interface BulkNodePropertiesFormState {
   assetCategory: string | undefined;
   archIconPackId: string | undefined;
   archIconShapeId: string | undefined;
-  variant: string;
   archEnvironment: string;
   archResourceType: string;
   archZone: string;
@@ -66,7 +63,6 @@ export const INITIAL_BULK_NODE_PROPERTIES_FORM_STATE: BulkNodePropertiesFormStat
   assetCategory: undefined,
   archIconPackId: undefined,
   archIconShapeId: undefined,
-  variant: '',
   archEnvironment: '',
   archResourceType: '',
   archZone: '',
@@ -84,7 +80,6 @@ export function getBulkCapabilityCounts(selectedNodes: Node<NodeData>[]): BulkCa
     color: getCapabilityTargetNodeIds(selectedNodes, 'color').length,
     advancedColor: getCapabilityTargetNodeIds(selectedNodes, 'advancedColor').length,
     icon: getCapabilityTargetNodeIds(selectedNodes, 'icon').length,
-    variant: getCapabilityTargetNodeIds(selectedNodes, 'variant').length,
     architecture: getCapabilityTargetNodeIds(selectedNodes, 'architecture').length,
   };
 }
@@ -94,7 +89,6 @@ export function getAvailableBulkSections(counts: AvailableBulkSectionCounts): Bu
     counts.shape > 0 ? 'shape' : null,
     counts.color > 0 ? 'color' : null,
     counts.icon > 0 ? 'icon' : null,
-    counts.variant > 0 ? 'variant' : null,
     counts.architecture > 0 ? 'architecture' : null,
     'labels',
     'findReplace',
@@ -133,10 +127,6 @@ export function buildBulkUpdates(
 
   if (form.color === 'custom' && includeAdvancedColorControls && form.customColor) {
     updates.customColor = form.customColor;
-  }
-
-  if (form.variant) {
-    updates.variant = form.variant;
   }
 
   if (form.iconMode === 'built-in') {
@@ -218,10 +208,6 @@ export function buildChangeSummary(
         ? `${updates.customColor}${advancedCount > 0 && updates.colorMode ? ` (${updates.colorMode})` : ''}`
         : `${updates.color}${advancedCount > 0 && updates.colorMode ? ` (${updates.colorMode})` : ''}`;
     items.push(`color: ${colorModeSummary} (${supportCount('color')}/${totalCount})`);
-  }
-
-  if (updates.variant) {
-    items.push(`variant: ${updates.variant} (${supportCount('variant')}/${totalCount})`);
   }
 
   if (updates.icon) {

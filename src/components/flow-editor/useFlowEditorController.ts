@@ -74,7 +74,6 @@ type FlowEditorCommandBarConfig = Omit<
     | 'handleAddAnnotation'
     | 'handleAddSection'
     | 'handleAddArchitectureNode'
-    | 'handleAddWireframe'
     | 'handleAddDomainLibraryItem'
     | 'openArchitectureRulesPanel'
 >;
@@ -179,7 +178,6 @@ export interface UseFlowEditorChromeParams {
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
     handleAddArchitectureNode: () => void;
-    handleAddWireframe: (surface: 'browser' | 'mobile') => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
 }
 
@@ -233,7 +231,6 @@ export function useFlowEditorController({
             handleAddAnnotation: chromeParams.handleAddAnnotation,
             handleAddSection: chromeParams.handleAddSection,
             handleAddArchitectureNode: chromeParams.handleAddArchitectureNode,
-            handleAddWireframe: chromeParams.handleAddWireframe,
             handleAddDomainLibraryItem: chromeParams.handleAddDomainLibraryItem,
         },
         snapshots: {

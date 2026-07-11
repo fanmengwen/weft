@@ -99,7 +99,6 @@ interface BuildFlowEditorControllerChromeParams {
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
     handleAddArchitectureNode: () => void;
-    handleAddWireframe: (surface: 'browser' | 'mobile') => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
 }
 

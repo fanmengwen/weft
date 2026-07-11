@@ -8,8 +8,6 @@ import {
   CustomStraightEdge,
 } from '@/components/CustomEdge';
 import MermaidSvgNode from '@/components/MermaidSvgNode';
-import BrowserNode from '@/components/custom-nodes/BrowserNode';
-import MobileNode from '@/components/custom-nodes/MobileNode';
 import ArchitectureNode from '@/components/custom-nodes/ArchitectureNode';
 import SectionNode from '@/components/SectionNode';
 
@@ -23,8 +21,6 @@ export const flowCanvasNodeTypes: NodeTypes = {
   annotation: AnnotationNode,
   section: SectionNode,
   mermaid_svg: MermaidSvgNode,
-  browser: BrowserNode,
-  mobile: MobileNode,
 };
 
 export const flowCanvasEdgeTypes: EdgeTypes = {

@@ -11,8 +11,6 @@ interface NodeContentSectionProps {
     onChange: (id: string, data: Partial<NodeData>) => void;
     isOpen: boolean;
     onToggle: () => void;
-    isWireframeApp: boolean;
-    isWireframeMisc: boolean;
     onBold: () => void;
     onItalic: () => void;
     labelInputRef: React.RefObject<HTMLTextAreaElement>;
@@ -66,8 +64,6 @@ export function NodeContentSection({
     onChange,
     isOpen,
     onToggle,
-    isWireframeApp,
-    isWireframeMisc,
     onBold,
     onItalic,
     labelInputRef,
@@ -87,7 +83,7 @@ export function NodeContentSection({
         delegate(event);
     }
 
-    const showDescriptionInput = !isWireframeApp && !isWireframeMisc;
+    const showDescriptionInput = true;
     const hasSubLabel = Boolean(selectedNode.data?.subLabel && selectedNode.data.subLabel.trim().length > 0);
 
     return (
