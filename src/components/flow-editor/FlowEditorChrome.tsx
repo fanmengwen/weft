@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from 'react';
-import type { NodeData } from '@/lib/types';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import type { FlowEditorPanelsProps } from '@/components/FlowEditorPanels';
 import type { CinematicExportRequest } from '@/services/export/cinematicExport';
 import type {
@@ -108,7 +108,7 @@ export interface FlowEditorChromeProps {
     onToggleStudio: () => void;
     isStudioOpen: boolean;
     onOpenAssets: () => void;
-    onAddShape: (shape: NodeData['shape'], position: { x: number; y: number }) => void;
+    onAddShape: (input: AddShapeInput, position: { x: number; y: number }) => void;
     onAddAnnotation: (position: { x: number; y: number }) => void;
     onAddSection: (position: { x: number; y: number }) => void;
     onAddArchitectureNode: (position: { x: number; y: number }) => void;

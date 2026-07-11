@@ -60,7 +60,7 @@ describe('useFlowCanvasDragDrop', () => {
     executeAddItem.mockClear();
     const addItemActions = createAddItemActions();
     const screenToFlowPosition = vi.fn(() => ({ x: 40, y: 60 }));
-    const dataTransfer = createDataTransfer({ mime: 'rounded' });
+    const dataTransfer = createDataTransfer({ mime: 'process' });
     const event = createDragEvent(dataTransfer);
 
     const { result } = renderHook(() =>
@@ -74,7 +74,7 @@ describe('useFlowCanvasDragDrop', () => {
       result.current.onDrop(event);
     });
 
-    expect(executeAddItem).toHaveBeenCalledWith('rounded', addItemActions, { x: 40, y: 60 });
+    expect(executeAddItem).toHaveBeenCalledWith('process', addItemActions, { x: 40, y: 60 });
   });
 
   it('ignores image file drops', () => {

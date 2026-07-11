@@ -1,24 +1,34 @@
 import React from 'react';
 import {
-  Boxes,
-  StickyNote,
+  CheckCircle,
+  Database,
+  Download,
+  HelpCircle,
+  Pencil,
+  Play,
+  Square,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
-import type { NodeData } from '@/lib/types';
+import type { FlowNode, NodeData } from '@/lib/types';
 
 export type AddItemId =
-  | 'rectangle'
-  | 'rounded'
-  | 'capsule'
-  | 'diamond'
-  | 'hexagon'
-  | 'cylinder'
-  | 'circle'
-  | 'sticky-note'
-  | 'architecture';
+  | 'start'
+  | 'end'
+  | 'process'
+  | 'decision'
+  | 'io'
+  | 'database'
+  | 'annotation';
 
 export type AddItemSectionId = 'shapes' | 'diagrams' | 'other';
 export type AddItemScope = 'toolbar' | 'assets';
+
+export interface AddShapeSpec {
+  type: FlowNode['type'];
+  shape?: NodeData['shape'];
+}
+
+export type AddShapeInput = NodeData['shape'] | AddShapeSpec;
 
 export interface AddItemDefinition {
   id: AddItemId;
@@ -29,78 +39,11 @@ export interface AddItemDefinition {
   renderIcon: (className?: string) => React.ReactElement;
 }
 
-interface ShapeGlyphProps {
-  shape: Extract<NodeData['shape'], 'rectangle' | 'rounded' | 'capsule' | 'diamond' | 'hexagon' | 'cylinder' | 'circle'>;
-  className?: string;
-}
-
-const DEFAULT_TOOLBAR_ADD_ITEM_ID: AddItemId = 'rounded';
-
-function ShapeGlyph({ shape, className }: ShapeGlyphProps): React.ReactElement {
-  const resolvedClassName = className ?? 'h-5 w-5';
-  const commonShapeProps = {
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.75,
-    vectorEffect: 'non-scaling-stroke' as const,
-  };
-
-  function renderShape(): React.ReactNode {
-    switch (shape) {
-      case 'rectangle':
-        return <rect x="12" y="26" width="76" height="48" rx="6" {...commonShapeProps} />;
-      case 'rounded':
-        return <rect x="18" y="18" width="64" height="64" rx="14" {...commonShapeProps} />;
-      case 'capsule':
-        return <rect x="10" y="24" width="80" height="52" rx="26" {...commonShapeProps} />;
-      case 'diamond':
-        return <polygon points="50,12 80,50 50,88 20,50" {...commonShapeProps} />;
-      case 'hexagon':
-        return <polygon points="30,14 70,14 84,50 70,86 30,86 16,50" {...commonShapeProps} />;
-      case 'cylinder':
-        return (
-          <>
-            <ellipse cx="50" cy="24" rx="22" ry="8" {...commonShapeProps} />
-            <path
-              d="M28 24 V72 C28 76 38 80 50 80 C62 80 72 76 72 72 V24"
-              {...commonShapeProps}
-            />
-            <path
-              d="M28 72 C28 76 38 80 50 80 C62 80 72 76 72 72"
-              {...commonShapeProps}
-            />
-          </>
-        );
-      case 'circle':
-        return <circle cx="50" cy="50" r="34" {...commonShapeProps} />;
-      default:
-        return null;
-    }
-  }
-
-  return (
-    <svg
-      aria-hidden="true"
-      className={resolvedClassName}
-      viewBox="0 0 100 100"
-      fill="none"
-    >
-      {renderShape()}
-    </svg>
-  );
-}
+const DEFAULT_TOOLBAR_ADD_ITEM_ID: AddItemId = 'process';
 
 function makeLucideIcon(Icon: React.ComponentType<{ className?: string }>): (className?: string) => React.ReactElement {
   return function renderLucideIcon(className?: string): React.ReactElement {
     return <Icon className={className ?? 'h-5 w-5'} />;
-  };
-}
-
-function makeShapeIcon(
-  shape: ShapeGlyphProps['shape'],
-): (className?: string) => React.ReactElement {
-  return function renderShapeIcon(className?: string): React.ReactElement {
-    return <ShapeGlyph shape={shape} className={className} />;
   };
 }
 
@@ -115,76 +58,60 @@ export function getAddItemSections(t: TFunction): Array<{ id: AddItemSectionId; 
 export function getAddItemDefinitions(t: TFunction): AddItemDefinition[] {
   return [
     {
-      id: 'rectangle',
-      label: 'Rectangle',
+      id: 'start',
+      label: t('toolbar.start', 'Start'),
       section: 'shapes',
-      keywords: ['rectangle', 'shape', 'box'],
+      keywords: ['start', 'begin', 'terminal', 'stadium'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('rectangle'),
+      renderIcon: makeLucideIcon(Play),
     },
     {
-      id: 'rounded',
-      label: 'Rounded',
+      id: 'end',
+      label: t('toolbar.end', 'End'),
       section: 'shapes',
-      keywords: ['rounded', 'shape', 'box', 'square'],
+      keywords: ['end', 'finish', 'terminal', 'stadium'],
+      scope: ['toolbar'],
+      renderIcon: makeLucideIcon(CheckCircle),
+    },
+    {
+      id: 'process',
+      label: t('toolbar.process', 'Process'),
+      section: 'shapes',
+      keywords: ['process', 'action', 'step', 'block'],
       scope: ['toolbar', 'assets'],
-      renderIcon: makeShapeIcon('rounded'),
+      renderIcon: makeLucideIcon(Square),
     },
     {
-      id: 'capsule',
-      label: 'Capsule',
+      id: 'decision',
+      label: t('toolbar.decision', 'Decision'),
       section: 'shapes',
-      keywords: ['capsule', 'pill', 'shape'],
+      keywords: ['decision', 'branch', 'diamond', 'condition'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('capsule'),
+      renderIcon: makeLucideIcon(HelpCircle),
     },
     {
-      id: 'diamond',
-      label: 'Diamond',
+      id: 'io',
+      label: t('nodes.inputOutput', 'Input / Output'),
       section: 'shapes',
-      keywords: ['diamond', 'decision', 'shape'],
+      keywords: ['input', 'output', 'io', 'parallelogram'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('diamond'),
+      renderIcon: makeLucideIcon(Download),
     },
     {
-      id: 'hexagon',
-      label: 'Hexagon',
+      id: 'database',
+      label: t('nodes.database', 'Database'),
       section: 'shapes',
-      keywords: ['hexagon', 'shape'],
+      keywords: ['database', 'storage', 'cylinder', 'data'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('hexagon'),
+      renderIcon: makeLucideIcon(Database),
     },
     {
-      id: 'cylinder',
-      label: 'Database',
-      section: 'shapes',
-      keywords: ['database', 'cylinder', 'storage', 'shape'],
-      scope: ['toolbar'],
-      renderIcon: makeShapeIcon('cylinder'),
-    },
-    {
-      id: 'circle',
-      label: 'Circle',
-      section: 'shapes',
-      keywords: ['circle', 'shape'],
-      scope: ['toolbar'],
-      renderIcon: makeShapeIcon('circle'),
-    },
-    {
-      id: 'architecture',
-      label: 'Architecture',
-      section: 'diagrams',
-      keywords: ['architecture', 'service', 'system', 'cloud', 'c4'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Boxes),
-    },
-    {
-      id: 'sticky-note',
-      label: t('toolbar.stickyNote', 'Note'),
+      id: 'annotation',
+      label: t('toolbar.annotation', 'Note'),
       section: 'other',
-      keywords: ['sticky note', 'note', 'comment', 'annotation'],
+      keywords: ['annotation', 'note', 'comment', 'sticky'],
       scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(StickyNote),
+      renderIcon: makeLucideIcon(Pencil),
     },
   ];
 }
@@ -204,7 +131,7 @@ export function getAddItemDefinitionById(id: AddItemId, t: TFunction): AddItemDe
 }
 
 export interface AddItemActions {
-  onAddShape: (shape: NodeData['shape'], position?: { x: number; y: number }) => void;
+  onAddShape: (input: AddShapeInput, position?: { x: number; y: number }) => void;
   onAddAnnotation: (position?: { x: number; y: number }) => void;
   onAddSection: (position?: { x: number; y: number }) => void;
   onAddArchitectureNode: (position?: { x: number; y: number }) => void;
@@ -216,20 +143,26 @@ export function executeAddItem(
   position?: { x: number; y: number },
 ): void {
   switch (id) {
-    case 'rectangle':
-    case 'rounded':
-    case 'capsule':
-    case 'diamond':
-    case 'hexagon':
-    case 'cylinder':
-    case 'circle':
-      actions.onAddShape(id, position);
+    case 'start':
+      actions.onAddShape({ type: 'start', shape: 'capsule' }, position);
       return;
-    case 'sticky-note':
+    case 'end':
+      actions.onAddShape({ type: 'end', shape: 'capsule' }, position);
+      return;
+    case 'process':
+      actions.onAddShape({ type: 'process', shape: 'rounded' }, position);
+      return;
+    case 'decision':
+      actions.onAddShape({ type: 'decision', shape: 'diamond' }, position);
+      return;
+    case 'io':
+      actions.onAddShape({ type: 'custom', shape: 'parallelogram' }, position);
+      return;
+    case 'database':
+      actions.onAddShape({ type: 'custom', shape: 'cylinder' }, position);
+      return;
+    case 'annotation':
       actions.onAddAnnotation(position);
-      return;
-    case 'architecture':
-      actions.onAddArchitectureNode(position);
       return;
     default: {
       const exhaustiveCheck: never = id;

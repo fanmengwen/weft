@@ -12,6 +12,7 @@ import type { DomainLibraryItem } from '@/services/domainLibrary';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { Location, NavigateFunction } from 'react-router-dom';
 import type { TFunction } from 'i18next';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import type { FlowEditorChromeProps } from './FlowEditorChrome';
 import type {
     BuildFlowEditorPanelsPropsParams,
@@ -156,7 +157,7 @@ export interface UseFlowEditorChromeParams {
     onGoHome: () => void;
     collaborationTopNavState?: FlowEditorChromeProps['topNav']['collaboration'];
     openCommandBar: (view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system') => void;
-    handleAddShape: (shapeType: string, position?: { x: number; y: number }) => void;
+    handleAddShape: (input: AddShapeInput, position?: { x: number; y: number }) => void;
     undo: () => void;
     redo: () => void;
     canUndo: boolean;

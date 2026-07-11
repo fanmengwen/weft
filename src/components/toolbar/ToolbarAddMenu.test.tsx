@@ -11,7 +11,7 @@ vi.mock('react-i18next', () => ({
 
 function createProps() {
   return {
-    currentItemId: 'rounded' as const,
+    currentItemId: 'process' as const,
     isInteractive: true,
     showAddMenu: false,
     onToggleMenu: vi.fn(),
@@ -34,7 +34,7 @@ describe('ToolbarAddMenu', () => {
     expect(screen.queryByTestId('toolbar-add-primary')).toBeNull();
   });
 
-  it('uses the square tool as the default current icon', () => {
+  it('uses the process tool as the default current icon', () => {
     const props = createProps();
 
     render(<ToolbarAddMenu {...props} />);
@@ -46,33 +46,36 @@ describe('ToolbarAddMenu', () => {
 
     render(
       <ToolbarAddMenuPanel
-        currentItemId="rounded"
+        currentItemId="process"
         onSelectItem={onSelectItem}
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Circle' }));
-    expect(onSelectItem).toHaveBeenCalledWith('circle');
+    fireEvent.click(screen.getByRole('button', { name: 'Decision' }));
+    expect(onSelectItem).toHaveBeenCalledWith('decision');
   });
 
   it('menu selection updates the tool and inserts it', () => {
     const props = createProps();
     render(
       <ToolbarAddMenuPanel
-        currentItemId="rounded"
+        currentItemId="process"
         onSelectItem={(itemId) => {
           props.onCurrentItemChange(itemId);
-          if (itemId === 'circle') {
-            props.onAddShape('circle', { x: 240, y: 120 });
+          if (itemId === 'decision') {
+            props.onAddShape({ type: 'decision', shape: 'diamond' }, { x: 240, y: 120 });
           }
           props.onCloseMenu();
         }}
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Circle' }));
-    expect(props.onCurrentItemChange).toHaveBeenCalledWith('circle');
-    expect(props.onAddShape).toHaveBeenCalledWith('circle', { x: 240, y: 120 });
+    fireEvent.click(screen.getByRole('button', { name: 'Decision' }));
+    expect(props.onCurrentItemChange).toHaveBeenCalledWith('decision');
+    expect(props.onAddShape).toHaveBeenCalledWith(
+      { type: 'decision', shape: 'diamond' },
+      { x: 240, y: 120 },
+    );
     expect(props.onCloseMenu).toHaveBeenCalled();
   });
 });

@@ -11,6 +11,7 @@ import { AssetsIcon } from './icons/AssetsIcon';
 import {
   getDefaultToolbarAddItemId,
   type AddItemId,
+  type AddShapeInput,
 } from '@/components/add-items/addItemRegistry';
 
 interface ToolbarProps {
@@ -26,10 +27,7 @@ interface ToolbarProps {
   onToggleStudio: () => void;
   isStudioOpen: boolean;
   onOpenAssets: () => void;
-  onAddShape: (
-    shape: import('@/lib/types').NodeData['shape'],
-    position: { x: number; y: number }
-  ) => void;
+  onAddShape: (input: AddShapeInput, position: { x: number; y: number }) => void;
   onAddAnnotation: (position: { x: number; y: number }) => void;
   onAddSection: (position: { x: number; y: number }) => void;
   onAddArchitectureNode: (position: { x: number; y: number }) => void;

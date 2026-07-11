@@ -1,7 +1,9 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import { createId } from '@/lib/id';
 import type { FlowNode, NodeData } from '@/lib/types';
+import { NODE_DEFAULTS } from '@/theme';
 import { createDomainLibraryNode, type DomainLibraryItem } from '@/services/domainLibrary';
 import { useFlowStore } from '@/store';
 import { queueNodeLabelEditRequest } from '@/hooks/nodeLabelEditRequest';
@@ -21,6 +23,29 @@ interface UseNodeOperationAddersParams {
   nodesLength: number;
   setNodes: (updater: (nodes: FlowNode[]) => FlowNode[]) => void;
   setSelectedNodeId: (nodeId: string | null) => void;
+}
+
+function resolveAddShapeInput(input: AddShapeInput): {
+  type: FlowNode['type'];
+  shape?: NodeData['shape'];
+  color: string;
+} {
+  if (typeof input === 'string') {
+    return {
+      type: 'process',
+      shape: input,
+      color: NODE_DEFAULTS.process.color,
+    };
+  }
+
+  const type = input.type ?? 'process';
+  const defaults = NODE_DEFAULTS[type];
+
+  return {
+    type,
+    shape: input.shape,
+    color: defaults?.color ?? NODE_DEFAULTS.process.color,
+  };
 }
 
 export function useNodeOperationAdders({
@@ -73,16 +98,17 @@ export function useNodeOperationAdders({
   );
 
   const handleAddShape = useCallback(
-    (shape: NodeData['shape'], position?: { x: number; y: number }) => {
+    (input: AddShapeInput, position?: { x: number; y: number }) => {
       recordHistory();
       const id = createId();
+      const resolved = resolveAddShapeInput(input);
       commitAddedNode(
         id,
         (resolvedPosition) =>
           createGenericShapeNode(id, resolvedPosition ?? getDefaultNodePosition(nodesLength, 100, 100), {
-            type: 'process',
-            color: 'white',
-            shape,
+            type: resolved.type,
+            color: resolved.color,
+            shape: resolved.shape,
           }),
         position
       );
@@ -93,7 +119,7 @@ export function useNodeOperationAdders({
 
   const handleAddNode = useCallback(
     (position?: { x: number; y: number }) => {
-      handleAddShape('rounded', position);
+      handleAddShape({ type: 'process', shape: 'rounded' }, position);
     },
     [handleAddShape]
   );
