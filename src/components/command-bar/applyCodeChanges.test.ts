@@ -2,6 +2,11 @@ import { describe, expect, it, vi } from 'vitest';
 import { applyCodeChanges } from './applyCodeChanges';
 import { composeDiagramForDisplay } from '@/services/composeDiagramForDisplay';
 import { importMermaidToCanvas } from '@/services/mermaid/rendererFirstImport';
+import {
+  initializeDiagramTypeRuntime,
+  resetDiagramTypeRuntimeForTests,
+} from '@/diagram-types/bootstrap';
+import { unregisterDiagramPluginForTests } from '@/diagram-types/core';
 
 vi.mock('@/services/composeDiagramForDisplay', () => ({
   composeDiagramForDisplay: vi.fn(async (nodes, edges) => ({ nodes, edges })),
@@ -191,5 +196,64 @@ describe('applyCodeChanges', () => {
         ([message]) => typeof message === 'string' && message.includes('not editable yet')
       )
     ).toBe(true);
+  });
+
+  it('routes plugin-missing Mermaid families into the snapshot import branch', async () => {
+    initializeDiagramTypeRuntime();
+    unregisterDiagramPluginForTests('classDiagram');
+    vi.mocked(importMermaidToCanvas).mockResolvedValueOnce({
+      nodes: [
+        {
+          id: 'svg-1',
+          type: 'mermaid_svg',
+          position: { x: 40, y: 40 },
+          data: { label: 'Mermaid classDiagram' },
+        },
+      ],
+      edges: [],
+      visualMode: 'renderer_exact',
+      svgExtracted: true,
+      importMode: 'renderer_first',
+    });
+    const onApply = vi.fn();
+
+    try {
+      const applied = await applyCodeChanges({
+        mode: 'mermaid',
+        code: 'classDiagram\nclass Animal',
+        architectureStrictMode: false,
+        onApply,
+        onClose: vi.fn(),
+        activeTabId: 'tab-1',
+        updateTab: vi.fn(),
+        setMermaidDiagnostics: vi.fn(),
+        clearMermaidDiagnostics: vi.fn(),
+        addToast: vi.fn(),
+        setError: vi.fn(),
+        setDiagnostics: vi.fn(),
+        setIsApplying: vi.fn(),
+        setLiveStatus: vi.fn(),
+        isLiveRequestStale: vi.fn(() => false),
+        options: {
+          closeOnSuccess: false,
+          source: 'manual',
+        },
+      });
+
+      expect(applied).toBe(true);
+      expect(importMermaidToCanvas).toHaveBeenCalledWith(
+        expect.objectContaining({
+          parsed: expect.objectContaining({ nativeParseUnavailable: true }),
+          source: 'classDiagram\nclass Animal',
+        })
+      );
+      expect(onApply).toHaveBeenCalledWith(
+        [expect.objectContaining({ type: 'mermaid_svg' })],
+        []
+      );
+    } finally {
+      resetDiagramTypeRuntimeForTests();
+      initializeDiagramTypeRuntime();
+    }
   });
 });

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { DIAGRAM_TYPES } from '@/lib/types';
 import {
+  initializeDiagramTypeRuntime,
+  resetDiagramTypeRuntimeForTests,
+} from '@/diagram-types/bootstrap';
+import { unregisterDiagramPluginForTests } from '@/diagram-types/core';
+import {
   getMermaidFamilySupportMatrixEntry,
   listMermaidFamilySupportMatrix,
 } from './supportMatrix';
@@ -33,5 +38,25 @@ describe('mermaid support matrix', () => {
     expect(getMermaidFamilySupportMatrixEntry('sequence').partialConstructs).toEqual(
       expect.arrayContaining(['advanced fragment fidelity'])
     );
+  });
+
+  it('derives unsupported constructs for families without a registered plugin', () => {
+    initializeDiagramTypeRuntime();
+    unregisterDiagramPluginForTests('classDiagram');
+
+    try {
+      const entry = getMermaidFamilySupportMatrixEntry('classDiagram');
+
+      expect(entry.label).toBe('Class Diagram');
+      expect(entry.editableConstructs).toEqual([]);
+      expect(entry.partialConstructs).toEqual([]);
+      expect(entry.unsupportedConstructs.length).toBeGreaterThan(0);
+      expect(
+        getMermaidFamilySupportMatrixEntry('flowchart').editableConstructs.length
+      ).toBeGreaterThan(0);
+    } finally {
+      resetDiagramTypeRuntimeForTests();
+      initializeDiagramTypeRuntime();
+    }
   });
 });

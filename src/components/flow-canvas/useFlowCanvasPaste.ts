@@ -186,7 +186,7 @@ export function useFlowCanvasPaste({
         if (!result.error) {
           recordHistory();
 
-          if (result.nodes.length > 0) {
+          if (result.nodes.length > 0 || result.nativeParseUnavailable) {
             try {
               const layoutDirection = resolveLayoutDirection(result);
               const effectiveMermaidImportMode = resolveEffectiveMermaidImportMode(

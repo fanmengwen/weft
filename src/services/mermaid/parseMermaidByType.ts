@@ -17,6 +17,8 @@ export interface MermaidDispatchParseResult extends ParseResult {
   structuredDiagnostics?: MermaidImportDiagnostic[];
   importState?: MermaidImportStatus;
   originalSource?: string;
+  /** Set when the detected family has no registered plugin; importing must fall back to the renderer svg snapshot. */
+  nativeParseUnavailable?: boolean;
 }
 
 export interface ParseMermaidByTypeOptions {
@@ -205,11 +207,11 @@ export function parseMermaidByType(
       nodes: [],
       edges: [],
       diagramType: detectedType,
-      error: `Mermaid "${detectedType}" plugin is not registered.`,
+      nativeParseUnavailable: true,
     },
     {
       hasHeader: true,
-      isSupportedFamily: true,
+      isSupportedFamily: false,
       family: detectedType,
       officialMermaidAccepted: oracleValidation.isValid,
     }

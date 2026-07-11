@@ -207,7 +207,7 @@ export async function applyCodeChanges({
     return false;
   }
 
-  if (res.nodes.length > 0) {
+  if (res.nodes.length > 0 || ('nativeParseUnavailable' in res && res.nativeParseUnavailable)) {
     if (options.source === 'manual') {
       setIsApplying(true);
     } else {

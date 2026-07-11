@@ -44,8 +44,13 @@ export interface MermaidCanvasImportResult {
 
 export function resolveEffectiveMermaidImportMode(
   requestedMode: MermaidImportMode,
-  diagramType?: string
+  diagramType?: string,
+  parsed?: Pick<MermaidDispatchParseResult, 'nativeParseUnavailable'>
 ): MermaidImportMode {
+  if (parsed?.nativeParseUnavailable) {
+    return 'renderer_first';
+  }
+
   if (diagramType === 'flowchart') {
     return 'native_editable';
   }
@@ -237,7 +242,8 @@ export async function importMermaidToCanvas(
 ): Promise<MermaidCanvasImportResult> {
   const effectiveImportMode = resolveEffectiveMermaidImportMode(
     params.importMode,
-    params.parsed.diagramType
+    params.parsed.diagramType,
+    params.parsed
   );
 
   if (effectiveImportMode === 'renderer_first') {

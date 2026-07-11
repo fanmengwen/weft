@@ -1,4 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import {
+  initializeDiagramTypeRuntime,
+  resetDiagramTypeRuntimeForTests,
+} from '@/diagram-types/bootstrap';
+import { unregisterDiagramPluginForTests } from '@/diagram-types/core';
 import { parseMermaidByType } from './parseMermaidByType';
 
 describe('parseMermaidByType', () => {
@@ -441,5 +446,44 @@ describe('parseMermaidByType', () => {
     expect(result.error).toContain('Missing chart type declaration');
     expect(result.nodes).toHaveLength(0);
     expect(result.edges).toHaveLength(0);
+  });
+});
+
+describe('parseMermaidByType without a registered plugin', () => {
+  beforeEach(() => {
+    initializeDiagramTypeRuntime();
+    unregisterDiagramPluginForTests('classDiagram');
+  });
+
+  afterEach(() => {
+    resetDiagramTypeRuntimeForTests();
+    initializeDiagramTypeRuntime();
+  });
+
+  it('degrades to an error-free renderer-only result for the detected family', () => {
+    const result = parseMermaidByType(`
+      classDiagram
+      class Animal
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('classDiagram');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('keeps plugin-backed families natively parseable while another plugin is missing', () => {
+    const result = parseMermaidByType(`
+      flowchart TD
+      A[Start] --> B[End]
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.nativeParseUnavailable).toBeUndefined();
+    expect(result.importState).toBe('editable_full');
+    expect(result.nodes).toHaveLength(2);
+    expect(result.edges).toHaveLength(1);
   });
 });
