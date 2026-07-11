@@ -54,6 +54,28 @@ describe('diagramDocumentTransfer', () => {
     expect(result.report.status).toBe('success');
   });
 
+  it('downgrades retired node families when importing diagram json', async () => {
+    const json = buildDiagramDocumentJson({
+      nodes: [{ ...createNode('n1'), type: 'text', data: { label: 'note' } }],
+      edges: [],
+      exportSerializationMode: 'deterministic',
+      activeTab: { diagramType: 'flowchart' },
+    });
+
+    const result = await importDiagramDocumentJson({
+      json,
+      importStart: performance.now(),
+    });
+
+    expect(result.ok).toBe(true);
+    if (!result.ok) {
+      return;
+    }
+
+    expect(result.nodes[0]?.type).toBe('annotation');
+    expect(result.nodes[0]?.data.label).toBe('note');
+  });
+
   it('returns a structured failure report for invalid diagram json', async () => {
     const result = await importDiagramDocumentJson({
       json: JSON.stringify({ version: '1.0', nodes: [] }),

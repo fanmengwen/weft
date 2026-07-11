@@ -109,7 +109,9 @@ const RETIRED_NODE_TYPE_DOWNGRADES: Partial<Record<string, 'process' | 'annotati
   swimlane: 'section',
 };
 
-function downgradeRetiredNodeFamily(node: FlowTab['nodes'][number]): FlowTab['nodes'][number] {
+export function downgradeRetiredNodeFamily(
+  node: FlowTab['nodes'][number]
+): FlowTab['nodes'][number] {
   const downgradedType = node.type ? RETIRED_NODE_TYPE_DOWNGRADES[node.type] : undefined;
   if (!downgradedType) {
     return node;
@@ -160,14 +162,20 @@ function flattenLegacyContainerNodes(nodes: FlowTab['nodes']): FlowTab['nodes'] 
     });
 }
 
-export function sanitizePersistedEdge(edge: FlowTab['edges'][number]): FlowTab['edges'][number] {
-  const { selected: _selected, ...persistedEdge } = edge;
-  if (persistedEdge.type !== 'sequence_message') {
-    return persistedEdge;
+export function downgradeRetiredEdgeType(
+  edge: FlowTab['edges'][number]
+): FlowTab['edges'][number] {
+  if (edge.type !== 'sequence_message') {
+    return edge;
   }
 
-  const { type: _type, ...downgradedEdge } = persistedEdge;
+  const { type: _type, ...downgradedEdge } = edge;
   return downgradedEdge;
+}
+
+export function sanitizePersistedEdge(edge: FlowTab['edges'][number]): FlowTab['edges'][number] {
+  const { selected: _selected, ...persistedEdge } = edge;
+  return downgradeRetiredEdgeType(persistedEdge);
 }
 
 export function sanitizePersistedTab(tab: FlowTab): FlowTab {
