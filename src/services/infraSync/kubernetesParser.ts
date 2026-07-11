@@ -22,7 +22,7 @@ function getNodeType(kind: string): string {
       return 'system';
     case 'Ingress':
     case 'IngressClass':
-      return 'browser';
+      return 'process';
     case 'Namespace':
       return 'architecture';
     case 'CronJob':

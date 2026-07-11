@@ -32,8 +32,6 @@ const VALID_NODE_TYPES = new Set([
   'decision',
   'system',
   'architecture',
-  'browser',
-  'mobile',
   'note',
 ]);
 

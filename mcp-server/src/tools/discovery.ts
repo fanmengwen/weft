@@ -8,8 +8,6 @@ const NODE_TYPE_CATALOG = [
   { type: 'decision', usage: 'Branch / conditional (diamond). Exactly two outgoing labeled edges.' },
   { type: 'system', usage: 'Internal backend service or business logic.' },
   { type: 'architecture', usage: 'Cloud / infra resource (AWS, Azure, GCP, CNCF, Docker).' },
-  { type: 'browser', usage: 'Web page or frontend client.' },
-  { type: 'mobile', usage: 'Mobile screen.' },
   { type: 'note', usage: 'Callout / annotation. Connect with `..` to attach.' },
 ];
 
