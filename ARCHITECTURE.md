@@ -16,9 +16,7 @@ Weft is a local-first diagram editor built with:
 
 The main application lives in `src/`. Additional repo surfaces include:
 
-- `docs-site/` for canonical public docs content and site generation
 - `docs/` for repo-only notes and operational markdown
-- `web/` for the marketing site
 
 Main app shape:
 
@@ -42,9 +40,9 @@ Route composition is currently centered in `src/App.tsx`, not in a dedicated `pa
 
 ## Runtime Surfaces
 
-The repository contains three main product/runtime surfaces:
+The repository ships a single product surface:
 
-### 1. Main App
+### Main App
 
 The browser editor and related in-app experiences.
 
@@ -53,22 +51,6 @@ Key areas:
 - `src/App.tsx`
 - `src/components/FlowEditor.tsx`
 - `src/components/home/*`
-
-### 2. Docs Site
-
-The public docs site built with Astro/Starlight.
-
-Key area:
-
-- `docs-site/`
-
-### 3. Marketing Site
-
-The public landing/marketing site.
-
-Key area:
-
-- `web/`
 
 ---
 
@@ -246,11 +228,7 @@ Built-in diagram capabilities are now bootstrapped through a shared runtime init
 
 ## Docs Surfaces
 
-The repo currently has two documentation buckets:
-
-### Public docs
-
-- canonical content and runtime in `docs-site/`
+The repo keeps a single documentation bucket:
 
 ### Repo-only notes
 
