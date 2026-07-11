@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { AddItemId, AddShapeSpec } from '@/components/add-items/addItemRegistry';
+import { createDataTransfer } from './dataTransferTestUtils';
 import { WEFT_ADD_ITEM_MIME } from './elementPaletteDnD';
-import { createDataTransfer } from './elementPaletteDnD.test';
 import { ElementPalette } from './ElementPalette';
 
 vi.mock('react-i18next', () => ({
@@ -68,6 +68,27 @@ describe('ElementPalette', () => {
 
     expect(props.addItemActions.onAddAnnotation).toHaveBeenCalledWith({ x: 180, y: 90 });
     expect(props.addItemActions.onAddShape).not.toHaveBeenCalled();
+  });
+
+  it.each<[AddItemId, string, string]>([
+    ['start', 'var(--wf-t-out-bg)', 'var(--wf-t-out-fg)'],
+    ['end', 'var(--wf-t-end-bg)', 'var(--wf-t-end-fg)'],
+    ['process', 'var(--wf-t-web-bg)', 'var(--wf-t-web-fg)'],
+    ['decision', 'var(--wf-t-cond-bg)', 'var(--wf-t-cond-fg)'],
+    ['io', 'var(--wf-t-kb-bg)', 'var(--wf-t-kb-fg)'],
+    ['database', 'var(--wf-t-llm-bg)', 'var(--wf-t-llm-fg)'],
+    ['annotation', 'var(--wf-t-note-bg)', 'var(--wf-t-note-fg)'],
+  ])('applies crosswalk tone tokens for %s', (itemId, background, foreground) => {
+    render(<ElementPalette {...createProps()} />);
+
+    const row = screen.getByTestId(`element-palette-item-${itemId}`);
+    const chip = row.children[0];
+    if (!(chip instanceof HTMLElement)) {
+      throw new Error('expected palette chip element');
+    }
+
+    expect(chip.style.backgroundColor).toBe(background);
+    expect(chip.style.color).toBe(foreground);
   });
 
   it.each<AddItemId>([
