@@ -29,7 +29,6 @@ export {
   createArchitectureNode,
   createBrowserNode,
   createMobileNode,
-  createSequenceParticipantNode,
   createArchitectureServiceNode,
 } from './nodeFactories';
 

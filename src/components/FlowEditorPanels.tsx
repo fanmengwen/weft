@@ -140,7 +140,6 @@ export interface CommandBarPanelProps {
   onAddText: () => void;
   onAddJourney?: () => void;
   onAddArchitecture?: () => void;
-  onAddSequence?: () => void;
   onAddImage: (imageUrl: string) => void;
   onAddBrowserWireframe: () => void;
   onAddMobileWireframe: () => void;
@@ -299,7 +298,6 @@ export function FlowEditorPanels({
               onAddText={commandBar.onAddText}
               onAddJourney={commandBar.onAddJourney}
               onAddArchitecture={commandBar.onAddArchitecture}
-              onAddSequence={commandBar.onAddSequence}
               onAddImage={commandBar.onAddImage}
               onAddBrowserWireframe={commandBar.onAddBrowserWireframe}
               onAddMobileWireframe={commandBar.onAddMobileWireframe}

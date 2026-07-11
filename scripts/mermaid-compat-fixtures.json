@@ -45,28 +45,28 @@
     "name": "sequence-basic",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant Alice\nparticipant Bob\nAlice->>Bob: Hello"
   },
   {
     "name": "sequence-activation-and-alt",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nA->>B: Request\nactivate B\nalt success\n  B-->>A: Response\nelse failure\n  B-->>A: Error\nend\ndeactivate B"
   },
   {
     "name": "sequence-invalid-message",
     "family": "sequence",
     "expectedOfficial": "invalid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nA->>"
   },
   {
     "name": "sequence-partial-after-valid-message",
     "family": "sequence",
     "expectedOfficial": "invalid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nA->>B: Hello\nA->>"
   },
   {
@@ -283,21 +283,21 @@
     "name": "sequence-par-and",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nparticipant C\npar fast lane\n  A->>B: Request\nand slow lane\n  A->>C: Request\nend"
   },
   {
     "name": "sequence-note-inside-alt",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nalt success\n  note over A, B: Shared context\n  A->>B: Request\nelse failure\n  B-->>A: Error\nend"
   },
   {
     "name": "sequence-critical-option",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\ncritical primary path\n  A->>B: Request\noption fallback path\n  B-->>A: Error\nend"
   },
   {

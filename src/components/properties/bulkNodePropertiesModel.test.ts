@@ -45,7 +45,6 @@ describe('bulkNodePropertiesModel', () => {
         variant: 0,
         architecture: 0,
         journey: 0,
-        sequence: 0,
         labels: 2,
         findReplace: 2,
       })

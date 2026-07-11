@@ -64,7 +64,7 @@ describe('composeDiagramForDisplay', () => {
     });
   });
 
-  it('uses ELK fallback composition for imported non-sequence diagrams when SVG extraction is unavailable', async () => {
+  it('uses ELK fallback composition for imported diagrams when SVG extraction is unavailable', async () => {
     const nodes = [createNode('a'), createNode('b')];
     const edges = [createEdge('e1', 'a', 'b')];
 

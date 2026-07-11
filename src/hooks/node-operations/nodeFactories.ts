@@ -217,19 +217,6 @@ export function createMobileNode(
   };
 }
 
-export function createSequenceParticipantNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Actor'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', seqParticipantKind: 'participant' },
-    type: 'sequence_participant',
-  };
-}
-
 export function createArchitectureServiceNode({
   id,
   position,

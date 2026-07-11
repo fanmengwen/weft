@@ -18,8 +18,6 @@ describe('flowCanvasNodeTypes', () => {
         "mobile",
         "process",
         "section",
-        "sequence_note",
-        "sequence_participant",
         "start",
         "swimlane",
         "text",
@@ -43,7 +41,6 @@ describe('flowCanvasEdgeTypes', () => {
       [
         "bezier",
         "default",
-        "sequence_message",
         "smoothstep",
         "step",
         "straight",

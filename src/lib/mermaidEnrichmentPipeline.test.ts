@@ -77,63 +77,6 @@ describe('Mermaid → Enrichment Pipeline (E2E)', () => {
     expect(dbNode?.data.color).toBe('violet');
   });
 
-  it('sequence diagram: parses participants and messages', async () => {
-    const mermaid = `
-      sequenceDiagram
-        participant Client
-        participant Server
-        participant Database
-        Client->>Server: HTTP Request
-        Server->>Database: SQL Query
-        Database-->>Server: Results
-        Server-->>Client: JSON Response
-    `;
-
-    const parsed = parseMermaidByType(mermaid);
-    expect(parsed.error).toBeUndefined();
-    expect(parsed.diagramType).toBe('sequence');
-    expect(parsed.nodes.length).toBeGreaterThanOrEqual(3);
-    expect(parsed.edges.length).toBeGreaterThanOrEqual(4);
-  });
-
-  it('sequence diagram: handles fragments (alt/loop) and activations', async () => {
-    const mermaid = `
-      sequenceDiagram
-        participant A
-        participant B
-        A->>B: Request
-        activate B
-        alt success
-          B-->>A: 200 OK
-        else failure
-          B-->>A: 500 Error
-        end
-        loop every minute
-          A->>B: Heartbeat
-        end
-        deactivate B
-    `;
-
-    const parsed = parseMermaidByType(mermaid);
-    expect(parsed.error).toBeUndefined();
-    expect(parsed.diagramType).toBe('sequence');
-    expect(parsed.nodes.length).toBeGreaterThanOrEqual(2);
-  });
-
-  it('sequence diagram: handles notes over participants', async () => {
-    const mermaid = `
-      sequenceDiagram
-        participant A
-        participant B
-        Note over A,B: This is a note
-        A->>B: Message
-    `;
-
-    const parsed = parseMermaidByType(mermaid);
-    expect(parsed.error).toBeUndefined();
-    expect(parsed.nodes.length).toBeGreaterThanOrEqual(2);
-  });
-
   it('architecture diagram: preserves archIconPackId when set by AI', async () => {
     // Simulate AI-generated nodes with provider icons already set
     const aiGeneratedNodes = [

@@ -156,21 +156,6 @@ describe('parseMermaidByType', () => {
     ).toBe(true);
   });
 
-  it('parses sequenceDiagram through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      sequenceDiagram
-      participant Alice
-      participant Bob
-      Alice->>Bob: Hello
-      Bob-->>Alice: Hi
-    `);
-
-    expect(result.diagramType).toBe('sequence');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
-  });
-
   it('parses architecture through plugin dispatcher', () => {
     const result = parseMermaidByType(`
       architecture-beta
@@ -356,6 +341,23 @@ describe('parseMermaidByType', () => {
     expect(result.nodes).toHaveLength(0);
     expect(result.edges).toHaveLength(0);
   });
+
+  it('degrades sequenceDiagram sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      sequenceDiagram
+      participant Alice
+      participant Bob
+      Alice->>Bob: Hello
+      Bob-->>Alice: Hi
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('sequence');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
 });
 
 describe('parseMermaidByType without a registered plugin', () => {
@@ -398,3 +400,33 @@ describe('parseMermaidByType without a registered plugin', () => {
     expect(result.edges).toHaveLength(1);
   });
 });
+
+describe('parseMermaidByType without sequence plugin', () => {
+  beforeEach(() => {
+    initializeDiagramTypeRuntime();
+    unregisterDiagramPluginForTests('sequence');
+  });
+
+  afterEach(() => {
+    resetDiagramTypeRuntimeForTests();
+    initializeDiagramTypeRuntime();
+  });
+
+  it('degrades to an error-free renderer-only result for sequence diagrams', () => {
+    const result = parseMermaidByType(`
+      sequenceDiagram
+      participant Alice
+      participant Bob
+      Alice->>Bob: Hello
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('sequence');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+});
+
+

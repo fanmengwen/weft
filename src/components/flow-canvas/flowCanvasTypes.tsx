@@ -7,7 +7,6 @@ import {
   CustomStepEdge,
   CustomStraightEdge,
 } from '@/components/CustomEdge';
-import SequenceMessageEdge from '@/components/custom-edge/SequenceMessageEdge';
 import ImageNode from '@/components/ImageNode';
 import MermaidSvgNode from '@/components/MermaidSvgNode';
 import SwimlaneNode from '@/components/SwimlaneNode';
@@ -16,8 +15,6 @@ import BrowserNode from '@/components/custom-nodes/BrowserNode';
 import MobileNode from '@/components/custom-nodes/MobileNode';
 import JourneyNode from '@/components/custom-nodes/JourneyNode';
 import ArchitectureNode from '@/components/custom-nodes/ArchitectureNode';
-import SequenceParticipantNode from '@/components/custom-nodes/SequenceParticipantNode';
-import SequenceNoteNode from '@/components/custom-nodes/SequenceNoteNode';
 import SectionNode from '@/components/SectionNode';
 
 export const flowCanvasNodeTypes: NodeTypes = {
@@ -36,8 +33,6 @@ export const flowCanvasNodeTypes: NodeTypes = {
   mermaid_svg: MermaidSvgNode,
   browser: BrowserNode,
   mobile: MobileNode,
-  sequence_participant: SequenceParticipantNode,
-  sequence_note: SequenceNoteNode,
 };
 
 export const flowCanvasEdgeTypes: EdgeTypes = {
@@ -46,7 +41,6 @@ export const flowCanvasEdgeTypes: EdgeTypes = {
   step: CustomStepEdge,
   bezier: CustomBezierEdge,
   straight: CustomStraightEdge,
-  sequence_message: SequenceMessageEdge,
 };
 
 interface ConnectionLike {

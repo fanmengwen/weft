@@ -246,40 +246,6 @@ export function useNodeOperationAdders({
     [commitAddedNode, nodesLength, recordHistory, t]
   );
 
-  const handleAddSequenceParticipant = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('seq');
-      const { activeLayerId, nodes: currentNodes } = useFlowStore.getState();
-
-      // Align with the existing participant row — place to the right of the last participant.
-      const seqNodes = currentNodes.filter((n) => n.type === 'sequence_participant');
-      const rowY = seqNodes.length > 0 ? seqNodes[0].position.y : 0;
-      const rowX = seqNodes.length > 0 ? Math.max(...seqNodes.map((n) => n.position.x)) + 220 : 0;
-
-      const newNode: FlowNode = {
-        id,
-        type: 'sequence_participant',
-        position: position ? { ...position, y: rowY } : { x: rowX, y: rowY },
-        data: {
-          label: 'Participant',
-          seqParticipantKind: 'participant',
-          layerId: activeLayerId,
-        },
-        selected: true,
-      };
-      setNodes((nds) => {
-        const selectedSectionId = useFlowStore.getState().selectedNodeId;
-        return nds.concat(
-          insertNodeIntoNearestSection(nds, newNode, position, selectedSectionId)
-        );
-      });
-      setSelectedNodeId(id);
-      queueNodeLabelEditRequest(id, { replaceExisting: true });
-    },
-    [recordHistory, setNodes, setSelectedNodeId]
-  );
-
   const handleAddWireframe = useCallback(
     (type: 'browser' | 'mobile', position?: { x: number; y: number }) => {
       recordHistory();
@@ -337,7 +303,6 @@ export function useNodeOperationAdders({
     handleAddAnnotation,
     handleAddJourneyNode,
     handleAddArchitectureNode,
-    handleAddSequenceParticipant,
     handleAddSection,
     handleAddTextNode,
     handleAddImage,

@@ -15,11 +15,11 @@ describe('importStatePresentation', () => {
     expect(
       getMermaidImportStateDetail({
         importState: 'editable_partial',
-        diagramType: 'sequence',
+        diagramType: 'stateDiagram',
         nodeCount: 4,
         edgeCount: 3,
       })
-    ).toBe('4 nodes, 3 edges, partial editability (advanced fragment fidelity)');
+    ).toBe('4 nodes, 3 edges, partial editability (advanced state semantics beyond current editable model)');
     expect(
       getMermaidImportToastMessage({
         importState: 'editable_partial',
@@ -77,17 +77,17 @@ describe('importStatePresentation', () => {
   });
 
   it('uses family-specific guidance for partial imports when support matrix data exists', () => {
-    expect(getMermaidImportStateGuidance('editable_partial', 'sequence')).toContain(
-      'advanced fragment fidelity'
+    expect(getMermaidImportStateGuidance('editable_partial', 'stateDiagram')).toContain(
+      'advanced state semantics beyond current editable model'
     );
     expect(
       appendMermaidImportGuidance({
         message: 'Some fragments could not be mapped cleanly.',
         importState: 'unsupported_construct',
-        diagramType: 'sequence',
+        diagramType: 'stateDiagram',
       })
     ).toContain(
-      'Current partial areas for Sequence include advanced fragment fidelity and visual semantics for complex nested fragments'
+      'Current partial areas for State Diagram include advanced state semantics beyond current editable model'
     );
   });
 });

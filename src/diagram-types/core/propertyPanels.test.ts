@@ -17,6 +17,6 @@ describe('diagram property panel registry', () => {
 
   it('returns undefined when no component is registered', () => {
     resetDiagramNodePropertiesRegistryForTests();
-    expect(getDiagramNodeProperties('sequence')).toBeUndefined();
+    expect(getDiagramNodeProperties('mindmap')).toBeUndefined();
   });
 });

@@ -332,7 +332,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       handleAddTextNode: operations.handleAddTextNode,
       handleAddJourneyNode: operations.handleAddJourneyNode,
       handleAddArchitectureNode: operations.handleAddArchitectureNode,
-      handleAddSequenceParticipant: operations.handleAddSequenceParticipant,
       handleAddImage: operations.handleAddImage,
       handleAddWireframe: operations.handleAddWireframe,
       handleAddDomainLibraryItem: operations.handleAddDomainLibraryItem,

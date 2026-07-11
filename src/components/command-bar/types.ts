@@ -55,7 +55,6 @@ export interface CommandBarProps {
   onAddText?: () => void;
   onAddJourney?: () => void;
   onAddArchitecture?: () => void;
-  onAddSequence?: () => void;
   onAddImage?: (imageUrl: string) => void;
   onAddBrowserWireframe?: () => void;
   onAddMobileWireframe?: () => void;

@@ -67,7 +67,7 @@ export async function importDiagramDocumentJson(params: {
       diagramType: parsed.diagramType,
     });
     // Downgrade retired families after layout so type-specific composition
-    // (sequence) still runs against the original imported graph.
+    // still runs against the original imported graph.
     const nodes = composed.nodes.map(downgradeRetiredNodeFamily);
     const edges = composed.edges.map(downgradeRetiredEdgeType);
     const report = buildImportFidelityReport({

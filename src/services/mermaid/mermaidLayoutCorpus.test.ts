@@ -13,9 +13,6 @@ interface MermaidLayoutFixture {
     maxBoundingHeight?: number;
     requireUniquePositions?: boolean;
     minSections?: number;
-    minParticipants?: number;
-    requireSequenceLaneAlignment?: boolean;
-    requireNotesBelowParticipants?: boolean;
     orderedLabelsLeftToRight?: string[];
     orderedLabelsTopToBottom?: string[];
     sameRowLabels?: string[];
@@ -105,24 +102,6 @@ describe('Mermaid layout corpus invariants', () => {
           layouted.nodes.filter((node) => node.type === 'section').length,
           fixture.name
         ).toBeGreaterThanOrEqual(assertions.minSections);
-      }
-      if (typeof assertions.minParticipants === 'number') {
-        const participants = layouted.nodes.filter((node) => node.type === 'sequence_participant');
-        expect(participants.length, fixture.name).toBeGreaterThanOrEqual(assertions.minParticipants);
-
-        if (assertions.requireSequenceLaneAlignment) {
-          const yValues = new Set(participants.map((node) => Math.round(node.position.y)));
-          expect(yValues.size, fixture.name).toBeLessThanOrEqual(2);
-          const xValues = participants.map((node) => node.position.x);
-          expect([...xValues].sort((a, b) => a - b), fixture.name).toEqual(xValues);
-        }
-      }
-      if (assertions.requireNotesBelowParticipants) {
-        const participants = layouted.nodes.filter((node) => node.type === 'sequence_participant');
-        const notes = layouted.nodes.filter((node) => node.type === 'sequence_note');
-        const participantBottom = Math.max(...participants.map((node) => node.position.y));
-        expect(notes.length, fixture.name).toBeGreaterThan(0);
-        expect(notes.every((node) => node.position.y >= participantBottom), fixture.name).toBe(true);
       }
       if (Array.isArray(assertions.orderedLabelsLeftToRight)) {
         const orderedNodes = assertions.orderedLabelsLeftToRight.map((label) => {

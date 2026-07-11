@@ -7,7 +7,7 @@ export interface TemplateGraphSnapshot {
 
 export type TemplateDifficulty = 'starter' | 'intermediate' | 'advanced';
 
-export type TemplatePreviewVariant = 'diagram' | 'asset-rich' | 'sequence';
+export type TemplatePreviewVariant = 'diagram' | 'asset-rich';
 
 export interface TemplateManifest {
   id: string;

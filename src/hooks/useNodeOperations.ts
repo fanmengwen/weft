@@ -16,12 +16,11 @@ import {
 import { useNodeOperationAdders } from './node-operations/useNodeOperationAdders';
 import { useArchitectureNodeOperations } from './node-operations/useArchitectureNodeOperations';
 import { useNodeDragOperations } from './node-operations/useNodeDragOperations';
-import { syncSequenceEdgeParticipantKinds } from '@/services/sequence/sequenceMessage';
 import { filterBulkUpdatesForNode } from '@/lib/nodeBulkEditing';
 
 export const useNodeOperations = (recordHistory: () => void) => {
   useTranslation();
-  const { nodes, setNodes, setEdges, setSelectedNodeId } = useFlowStore();
+  const { nodes, setNodes, setSelectedNodeId } = useFlowStore();
   useReactFlow();
 
   const archOps = useArchitectureNodeOperations(recordHistory);
@@ -36,11 +35,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
         return;
       }
 
-      const updatesSequenceParticipantKind =
-        existingNode.type === 'sequence_participant' &&
-        typeof data.seqParticipantKind === 'string' &&
-        data.seqParticipantKind !== existingNode.data.seqParticipantKind;
-
       setNodes((nds) => {
         return reassignArchitectureNodeBoundary({
           nodes: nds,
@@ -48,17 +42,8 @@ export const useNodeOperations = (recordHistory: () => void) => {
           data,
         });
       });
-
-      if (updatesSequenceParticipantKind) {
-        setEdges((existingEdges) => {
-          const nextNodes = state.nodes.map((node) =>
-            node.id === id ? { ...node, data: { ...node.data, ...data } } : node
-          );
-          return syncSequenceEdgeParticipantKinds(nextNodes, existingEdges);
-        });
-      }
     },
-    [setEdges, setNodes]
+    [setNodes]
   );
 
   const applyBulkNodeData = useCallback(
@@ -258,7 +243,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddAnnotation,
     handleAddJourneyNode,
     handleAddArchitectureNode,
-    handleAddSequenceParticipant,
     handleAddSection,
     handleAddTextNode,
     handleAddImage,
@@ -286,7 +270,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddAnnotation,
     handleAddJourneyNode,
     handleAddArchitectureNode,
-    handleAddSequenceParticipant,
     handleAddSection,
     handleAddTextNode,
     handleAddImage,

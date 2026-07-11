@@ -8,7 +8,6 @@ interface PartialCorpusCase {
     | 'flowchart'
     | 'stateDiagram'
     | 'architecture'
-    | 'sequence'
     | 'journey';
   diagnosticIncludes: string[];
   expectedDiagnosticCodes?: string[];
@@ -53,19 +52,6 @@ const PARTIAL_CORPUS: PartialCorpusCase[] = [
     `,
     diagnosticIncludes: ['Recovered implicit service node "cache"'],
     expectedDiagnosticCodes: ['MERMAID_RECOVERY'],
-  },
-  {
-    name: 'sequence malformed message still recovers',
-    diagramType: 'sequence',
-    source: `
-      sequenceDiagram
-      participant A
-      participant B
-      A->>B: Hello
-      A->>
-    `,
-    diagnosticIncludes: ['Invalid message at line'],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
   },
   {
     name: 'journey invalid score still recovers',

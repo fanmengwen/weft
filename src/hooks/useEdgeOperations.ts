@@ -13,10 +13,6 @@ import { normalizeNodeHandleId } from '@/lib/nodeHandles';
 import { buildReconnectedEdge, shouldRespectExplicitReconnectHandles } from '@/lib/reconnectEdge';
 import { queueNodeLabelEditRequest } from './nodeLabelEditRequest';
 import {
-    buildSequenceMessageEdge,
-    isSequenceConnection,
-} from '@/services/sequence/sequenceMessage';
-import {
     buildConnectedEdge,
     buildConnectedNode,
     type ConnectedEdgePreset,
@@ -97,16 +93,6 @@ export const useEdgeOperations = (
         const { viewSettings } = useFlowStore.getState();
         recordHistory();
         setEdges((eds) => {
-            if (isSequenceConnection(sourceNode, targetNode, resolvedConnection)) {
-                return eds.concat(buildSequenceMessageEdge(
-                    resolvedConnection,
-                    sourceNode,
-                    targetNode,
-                    eds,
-                    t('connectionPanel.messagePlaceholder', 'Message')
-                ));
-            }
-
             const inserted = addEdge({
                 ...resolvedConnection,
                 data: {
@@ -128,7 +114,7 @@ export const useEdgeOperations = (
                 getSmartRoutingOptionsFromViewSettings(viewSettings)
             );
         });
-    }, [edges, nodes, recordHistory, setEdges, t]);
+    }, [edges, nodes, recordHistory, setEdges]);
 
     const onConnectStart = useCallback((_, { nodeId, handleId }: { nodeId: string | null; handleId: string | null }) => {
         connectingNodeId.current = nodeId;

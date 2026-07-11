@@ -36,7 +36,6 @@ export interface CommandBarPanelBuilderParams {
   handleAddTextNode: () => void;
   handleAddJourneyNode: () => void;
   handleAddArchitectureNode: () => void;
-  handleAddSequenceParticipant: () => void;
   handleAddImage: (imageUrl: string) => void;
   handleAddWireframe: (surface: 'browser' | 'mobile') => void;
   handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
@@ -159,7 +158,6 @@ export function buildCommandBarPanelProps({
   handleAddTextNode,
   handleAddJourneyNode,
   handleAddArchitectureNode,
-  handleAddSequenceParticipant,
   handleAddImage,
   handleAddWireframe,
   handleAddDomainLibraryItem,
@@ -192,7 +190,6 @@ export function buildCommandBarPanelProps({
     onAddText: handleAddTextNode,
     onAddJourney: handleAddJourneyNode,
     onAddArchitecture: handleAddArchitectureNode,
-    onAddSequence: handleAddSequenceParticipant,
     onAddImage: handleAddImage,
     onAddBrowserWireframe: () => handleAddWireframe('browser'),
     onAddMobileWireframe: () => handleAddWireframe('mobile'),

@@ -261,7 +261,6 @@ export interface AddItemActions {
   onAddTextNode: (position?: { x: number; y: number }) => void;
   onAddJourneyNode: (position?: { x: number; y: number }) => void;
   onAddArchitectureNode: (position?: { x: number; y: number }) => void;
-  onAddSequenceParticipant: (position?: { x: number; y: number }) => void;
   onAddWireframe: (variant: 'browser' | 'mobile', position?: { x: number; y: number }) => void;
   onRequestImageUpload?: () => void;
 }

@@ -85,7 +85,7 @@ describe('flowDocumentModel', () => {
         {
           id: 'doc-1:page:deployment',
           name: 'Deployment',
-          diagramType: 'sequence',
+          diagramType: 'flowchart',
           updatedAt: '2026-03-27T00:00:00.000Z',
           content: {
             nodes: [],

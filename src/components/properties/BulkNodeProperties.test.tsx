@@ -80,13 +80,13 @@ describe('BulkNodeProperties', () => {
       <BulkNodeProperties
         selectedNodes={[
           createNode(NodeType.JOURNEY),
-          createNode(NodeType.SEQUENCE_PARTICIPANT),
+          createNode(NodeType.ARCHITECTURE),
         ]}
         onApply={vi.fn()}
       />
     );
 
     expect(screen.getByText('Journey Step (1/2)')).toBeTruthy();
-    expect(screen.getByText('Participant (1/2)')).toBeTruthy();
+    expect(screen.getByText('Architecture Deployment (1/2)')).toBeTruthy();
   });
 });

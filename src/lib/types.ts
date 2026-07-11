@@ -41,8 +41,6 @@ export enum NodeType {
   TEXT = 'text',
   BROWSER = 'browser',
   MOBILE = 'mobile',
-  SEQUENCE_PARTICIPANT = 'sequence_participant',
-  SEQUENCE_MESSAGE = 'sequence_message',
 }
 
 export interface NodeLabelData {
@@ -125,28 +123,6 @@ export interface ArchitectureNodeData {
   assetCategory?: string;
 }
 
-export interface SequenceNodeData {
-  seqParticipantKind?: 'participant' | 'actor';
-  seqParticipantAlias?: string;
-  seqMessageKind?: 'sync' | 'async' | 'return' | 'self' | 'create' | 'destroy';
-  seqMessageFrom?: string;
-  seqMessageTo?: string;
-  seqMessageOrder?: number;
-  seqActivations?: Array<{
-    order: number;
-    activate: boolean;
-  }>;
-  seqNoteTarget?: string;
-  seqNotePosition?: 'over' | 'left' | 'right';
-  seqFragment?: {
-    type: 'alt' | 'loop' | 'opt' | 'par' | 'break' | 'critical';
-    condition: string;
-    branchKind?: 'start' | 'else' | 'and' | 'option';
-    edgeIds: string[];
-  } | null;
-  seqFragmentId?: string;
-}
-
 export interface SectionNodeData {
   sectionSizingMode?: 'manual' | 'fit';
   sectionLayoutMode?: 'freeform';
@@ -174,7 +150,6 @@ export interface NodeData
     NodeCanvasMetadata,
     JourneyNodeData,
     ArchitectureNodeData,
-    SequenceNodeData,
     SectionNodeData,
     MermaidSvgNodeData {
   [key: string]: unknown;
@@ -231,14 +206,7 @@ export interface EdgeData {
     y: number;
   }[];
   importRoutePath?: string;
-  seqMessageKind?: 'sync' | 'async' | 'return' | 'self' | 'create' | 'destroy';
   connectionType?: 'fixed' | 'dynamic';
-  seqFragment?: {
-    type: 'alt' | 'loop' | 'opt' | 'par' | 'break' | 'critical';
-    condition: string;
-    branchKind?: 'start' | 'else' | 'and' | 'option';
-    edgeIds: string[];
-  } | null;
   waypoint?: {
     x: number;
     y: number;

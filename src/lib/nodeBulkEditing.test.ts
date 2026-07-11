@@ -31,9 +31,6 @@ describe('nodeBulkEditing', () => {
       true
     );
     expect(getNodeBulkEditCapabilities(createNode(NodeType.JOURNEY)).has('journey')).toBe(true);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.SEQUENCE_PARTICIPANT)).has('sequence')).toBe(
-      true
-    );
   });
 
   it('filters unsupported updates per node during bulk apply', () => {
@@ -73,15 +70,6 @@ describe('nodeBulkEditing', () => {
     ).toEqual({
       journeySection: 'Onboarding',
       journeyScore: 4,
-    });
-
-    expect(
-      filterBulkUpdatesForNode(createNode(NodeType.SEQUENCE_PARTICIPANT), {
-        seqParticipantAlias: 'API',
-        icon: 'Server',
-      })
-    ).toEqual({
-      seqParticipantAlias: 'API',
     });
 
     expect(

@@ -25,17 +25,17 @@ describe('mermaid support matrix', () => {
   });
 
   it('exposes partial-support guidance for richer technical families', () => {
-    expect(getMermaidFamilySupportMatrixEntry('sequence').partialConstructs).toEqual(
-      expect.arrayContaining(['advanced fragment fidelity'])
+    expect(getMermaidFamilySupportMatrixEntry('stateDiagram').partialConstructs).toEqual(
+      expect.arrayContaining(['advanced state semantics beyond current editable model'])
     );
   });
 
   it('derives unsupported constructs for families without a registered plugin', () => {
     initializeDiagramTypeRuntime();
 
-    const entry = getMermaidFamilySupportMatrixEntry('classDiagram');
+    const entry = getMermaidFamilySupportMatrixEntry('sequence');
 
-    expect(entry.label).toBe('Class Diagram');
+    expect(entry.label).toBe('Sequence');
     expect(entry.editableConstructs).toEqual([]);
     expect(entry.partialConstructs).toEqual([]);
     expect(entry.unsupportedConstructs.length).toBeGreaterThan(0);

@@ -60,7 +60,7 @@ describe('persistedDocumentAdapters', () => {
         {
           id: 'page-2',
           name: 'Deployment',
-          diagramType: 'sequence',
+          diagramType: 'flowchart',
           updatedAt: '2026-03-27T00:00:00.000Z',
           nodes: [],
           edges: [],

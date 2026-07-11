@@ -114,7 +114,6 @@ export interface FlowEditorChromeProps {
     onAddTextNode: (position: { x: number; y: number }) => void;
     onAddJourneyNode: (position: { x: number; y: number }) => void;
     onAddArchitectureNode: (position: { x: number; y: number }) => void;
-    onAddSequenceParticipant: (position: { x: number; y: number }) => void;
     onAddWireframe: (variant: string, position: { x: number; y: number }) => void;
     onUndo: () => void;
     onRedo: () => void;
@@ -196,7 +195,6 @@ export function FlowEditorChrome({
     onAddTextNode: toolbar.onAddTextNode,
     onAddJourneyNode: toolbar.onAddJourneyNode,
     onAddArchitectureNode: toolbar.onAddArchitectureNode,
-    onAddSequenceParticipant: toolbar.onAddSequenceParticipant,
     onAddWireframe: toolbar.onAddWireframe,
     onUndo: toolbar.onUndo,
     onRedo: toolbar.onRedo,

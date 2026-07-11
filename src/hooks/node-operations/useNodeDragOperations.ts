@@ -100,18 +100,6 @@ export const useNodeDragOperations = (recordHistory: () => void) => {
             : draggedNode;
         altDragDuplicateRef.current = null;
 
-        // Sequence participants must stay in their horizontal row — lock Y position.
-        if (effectiveDraggedNode.type === 'sequence_participant') {
-            const { nodes: snapNodes } = useFlowStore.getState();
-            const rowY = snapNodes.find((n) => n.type === 'sequence_participant' && n.id !== effectiveDraggedNode.id)?.position.y ?? 0;
-            setNodes((currentNodes) => currentNodes.map((node) =>
-                node.id === effectiveDraggedNode.id
-                    ? { ...node, position: { ...node.position, y: rowY } }
-                    : node
-            ));
-            return;
-        }
-
         setHoveredSectionId(null);
 
         const { nodes: currentNodes } = useFlowStore.getState();

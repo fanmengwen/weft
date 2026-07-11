@@ -27,7 +27,6 @@ import {
   JourneyBulkSection,
   LabelTransformBulkSection,
   SelectionSummary,
-  SequenceBulkSection,
   WireframeVariantBulkSection,
 } from './BulkNodePropertiesSections';
 import {
@@ -112,7 +111,6 @@ export function BulkNodeProperties({
     variant: capabilityCounts.variant,
     architecture: capabilityCounts.architecture,
     journey: capabilityCounts.journey,
-    sequence: capabilityCounts.sequence,
     labels: selectedNodes.length,
     findReplace: selectedNodes.length,
   });
@@ -321,17 +319,6 @@ export function BulkNodeProperties({
           journeyScore={form.journeyScore}
           onJourneySectionChange={(value) => updateForm('journeySection', value)}
           onJourneyScoreChange={(value) => updateForm('journeyScore', value)}
-          onInputKeyDown={handleInputKeyDown}
-        />
-      ) : null}
-
-      {capabilityCounts.sequence > 0 ? (
-        <SequenceBulkSection
-          title={getScopedSectionTitle('Participant', capabilityCounts.sequence, selectedNodes.length)}
-          isOpen={resolvedActiveSection === 'sequence'}
-          onToggle={() => toggleSection('sequence')}
-          sequenceAlias={form.sequenceAlias}
-          onChange={(value) => updateForm('sequenceAlias', value)}
           onInputKeyDown={handleInputKeyDown}
         />
       ) : null}

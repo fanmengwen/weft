@@ -16,7 +16,6 @@ export type BulkSectionId =
   | 'variant'
   | 'architecture'
   | 'journey'
-  | 'sequence'
   | 'labels'
   | 'findReplace'
   | '';
@@ -29,7 +28,6 @@ export interface BulkCapabilityCounts {
   variant: number;
   architecture: number;
   journey: number;
-  sequence: number;
 }
 
 type AvailableBulkSectionCounts = Record<Exclude<BulkSectionId, ''>, number>;
@@ -53,7 +51,6 @@ export interface BulkNodePropertiesFormState {
   archTrustDomain: string;
   journeySection: string;
   journeyScore: string;
-  sequenceAlias: string;
   labelPrefix: string;
   labelSuffix: string;
   labelFind: string;
@@ -80,7 +77,6 @@ export const INITIAL_BULK_NODE_PROPERTIES_FORM_STATE: BulkNodePropertiesFormStat
   archTrustDomain: '',
   journeySection: '',
   journeyScore: '',
-  sequenceAlias: '',
   labelPrefix: '',
   labelSuffix: '',
   labelFind: '',
@@ -97,7 +93,6 @@ export function getBulkCapabilityCounts(selectedNodes: Node<NodeData>[]): BulkCa
     variant: getCapabilityTargetNodeIds(selectedNodes, 'variant').length,
     architecture: getCapabilityTargetNodeIds(selectedNodes, 'architecture').length,
     journey: getCapabilityTargetNodeIds(selectedNodes, 'journey').length,
-    sequence: getCapabilityTargetNodeIds(selectedNodes, 'sequence').length,
   };
 }
 
@@ -109,7 +104,6 @@ export function getAvailableBulkSections(counts: AvailableBulkSectionCounts): Bu
     counts.variant > 0 ? 'variant' : null,
     counts.architecture > 0 ? 'architecture' : null,
     counts.journey > 0 ? 'journey' : null,
-    counts.sequence > 0 ? 'sequence' : null,
     'labels',
     'findReplace',
   ].filter((value): value is BulkSectionId => value !== null);
@@ -200,10 +194,6 @@ export function buildBulkUpdates(
     if (!Number.isNaN(scoreValue)) {
       updates.journeyScore = scoreValue;
     }
-  }
-
-  if (form.sequenceAlias) {
-    updates.seqParticipantAlias = form.sequenceAlias;
   }
 
   return updates;
@@ -297,12 +287,6 @@ export function buildChangeSummary(
 
   if (typeof updates.journeyScore === 'number') {
     items.push(`journey score: ${updates.journeyScore} (${supportCount('journey')}/${totalCount})`);
-  }
-
-  if (updates.seqParticipantAlias) {
-    items.push(
-      `participant alias: ${updates.seqParticipantAlias} (${supportCount('sequence')}/${totalCount})`
-    );
   }
 
   if (labelOptions.labelPrefix) {

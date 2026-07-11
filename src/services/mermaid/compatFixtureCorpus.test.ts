@@ -100,17 +100,6 @@ describe('Mermaid compat fixture corpus', () => {
           assertions.minSections
         );
       }
-      if (typeof assertions.minParticipants === 'number') {
-        expect(
-          countNodesOfType(result.nodes, 'sequence_participant'),
-          fixture.name
-        ).toBeGreaterThanOrEqual(assertions.minParticipants);
-      }
-      if (typeof assertions.minNotes === 'number') {
-        expect(countNodesOfType(result.nodes, 'sequence_note'), fixture.name).toBeGreaterThanOrEqual(
-          assertions.minNotes
-        );
-      }
       if (typeof assertions.minAnnotations === 'number') {
         expect(countNodesOfType(result.nodes, 'annotation'), fixture.name).toBeGreaterThanOrEqual(
           assertions.minAnnotations

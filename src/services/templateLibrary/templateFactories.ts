@@ -10,8 +10,7 @@ export type TemplateCategory =
   | 'azure'
   | 'cncf'
   | 'journey'
-  | 'wireframe'
-  | 'sequence';
+  | 'wireframe';
 
 export type ProviderKey = 'aws' | 'azure' | 'cncf';
 

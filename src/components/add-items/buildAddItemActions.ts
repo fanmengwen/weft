@@ -7,7 +7,6 @@ export interface FlowAddItemHandlers {
   handleAddTextNode: AddItemActions['onAddTextNode'];
   handleAddJourneyNode: AddItemActions['onAddJourneyNode'];
   handleAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
-  handleAddSequenceParticipant: AddItemActions['onAddSequenceParticipant'];
   handleAddWireframe: AddItemActions['onAddWireframe'];
 }
 
@@ -19,7 +18,6 @@ export function buildAddItemActions(handlers: FlowAddItemHandlers): AddItemActio
     onAddTextNode: handlers.handleAddTextNode,
     onAddJourneyNode: handlers.handleAddJourneyNode,
     onAddArchitectureNode: handlers.handleAddArchitectureNode,
-    onAddSequenceParticipant: handlers.handleAddSequenceParticipant,
     onAddWireframe: handlers.handleAddWireframe,
   };
 }
@@ -31,7 +29,6 @@ export function buildAddItemActionsFromToolbar(toolbar: {
   onAddTextNode: AddItemActions['onAddTextNode'];
   onAddJourneyNode: AddItemActions['onAddJourneyNode'];
   onAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
-  onAddSequenceParticipant: AddItemActions['onAddSequenceParticipant'];
   onAddWireframe: AddItemActions['onAddWireframe'];
 }): AddItemActions {
   return {
@@ -41,7 +38,6 @@ export function buildAddItemActionsFromToolbar(toolbar: {
     onAddTextNode: toolbar.onAddTextNode,
     onAddJourneyNode: toolbar.onAddJourneyNode,
     onAddArchitectureNode: toolbar.onAddArchitectureNode,
-    onAddSequenceParticipant: toolbar.onAddSequenceParticipant,
     onAddWireframe: toolbar.onAddWireframe,
   };
 }

@@ -2,7 +2,7 @@ import type { DiagramType, FlowEdge, FlowNode } from '@/lib/types';
 import { autoFitSectionsToChildren } from '@/hooks/node-operations/sectionOperations';
 import { clearStoredRouteData } from '@/lib/edgeRouteData';
 import type { LayoutAlgorithm, LayoutOptions } from '@/services/elkLayout';
-import { relayoutSequenceDiagram } from '@/services/sequenceLayout';
+
 import type { ExtractedMermaidLayout } from '@/services/mermaid/extractLayoutFromSvg';
 import { estimateWrappedTextBox } from '@/services/elk-layout/textSizing';
 
@@ -434,17 +434,6 @@ export async function composeDiagramForDisplay(
 ): Promise<LayoutResult> {
   if (nodes.length === 0) {
     return { nodes, edges };
-  }
-
-  if (options.diagramType === 'sequence') {
-    return {
-      ...relayoutSequenceDiagram(nodes, edges),
-      layoutMode: options.source === 'import' ? 'elk_fallback' : undefined,
-      layoutFallbackReason:
-        options.source === 'import'
-          ? 'Sequence diagrams use the dedicated sequence layout engine'
-          : undefined,
-    };
   }
 
   if (options.source === 'import') {
