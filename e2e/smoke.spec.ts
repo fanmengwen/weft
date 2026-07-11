@@ -44,7 +44,7 @@ test('saves and restores snapshot state', async ({ page }) => {
   const canvasNodes = page.locator('.react-flow__node');
 
   await page.getByTestId('toolbar-add-toggle').click();
-  await page.getByRole('button', { name: 'Rectangle' }).click();
+  await page.getByRole('button', { name: 'Process' }).click();
   await expect(canvasNodes).toHaveCount(1);
 
   await page.getByTestId('topnav-menu-toggle').click();
@@ -57,7 +57,7 @@ test('saves and restores snapshot state', async ({ page }) => {
   await expect(restoreButton).toBeVisible();
 
   await page.getByTestId('toolbar-add-toggle').click();
-  await page.getByRole('button', { name: 'Rectangle' }).click();
+  await page.getByRole('button', { name: 'Process' }).click();
   await expect(canvasNodes).toHaveCount(2);
 
   await restoreButton.dispatchEvent('click');
