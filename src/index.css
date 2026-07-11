@@ -307,6 +307,67 @@ html {
   --color-surface-info-text: #1d4ed8;
 }
 
+/* ===== Workflow mode (flat light) — self-contained token set.
+   Chart mode keeps --brand-*; workflow components consume only --wf-*.
+   Static values by design: workflow stays light regardless of theme. ===== */
+:root {
+  --wf-acc: #3b63d3;
+  --wf-acc-soft: color-mix(in srgb, var(--wf-acc) 8%, #fff);
+  --wf-acc-soft-hover: color-mix(in srgb, var(--wf-acc) 13%, #fff);
+  --wf-acc-border: color-mix(in srgb, var(--wf-acc) 22%, #fff);
+  --wf-acc-focus: color-mix(in srgb, var(--wf-acc) 10%, transparent);
+  --wf-bg: #f6f7f9;
+  --wf-surface: #ffffff;
+  --wf-border: #e6e8ec;
+  --wf-node-border: #e1e4ea;
+  --wf-input-border: #d8dce2;
+  --wf-divider: #f0f2f5;
+  --wf-hairline: #eef0f4;
+  --wf-node-divider: #eff1f5;
+  --wf-hover: #f3f5f8;
+  --wf-seg-bg: #f0f2f5;
+  --wf-chip-bg: #f5f7fb;
+  --wf-chip-hover: #edf1f8;
+  --wf-dot: #dee1e7;
+  --wf-edge: #c3c9d3;
+  --wf-handle-border: #c6ccd6;
+  --wf-panel-card-border: #e9ebef;
+  --wf-panel-card-bg: #fcfcfd;
+  --wf-text: #171d26;
+  --wf-text-mid: #3e4753;
+  --wf-text-btn: #4a5361;
+  --wf-text-label: #5c6572;
+  --wf-text-type: #6b7484;
+  --wf-text-muted: #8b93a0;
+  --wf-text-faint: #98a1ae;
+  --wf-placeholder: #9ba3ae;
+  --wf-success: #1f7d4d;
+  --wf-danger: #c4443c;
+  --wf-danger-soft: #fbefee;
+  --wf-danger-tint-bg: #fdf2f1;
+  --wf-danger-tint-border: #f4dbd8;
+  --wf-danger-tint-hover: #fae7e5;
+  --wf-shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --wf-shadow-node-selected:
+    0 0 0 3px color-mix(in srgb, var(--wf-acc) 12%, transparent),
+    0 6px 16px rgba(16, 24, 40, 0.08);
+  /* Node tone pairs (bg/fg); mono swap pair would be #eef1f5 / #5a6472 */
+  --wf-t-input-bg: #f6eedc;
+  --wf-t-input-fg: #8a6410;
+  --wf-t-llm-bg: #ece9fa;
+  --wf-t-llm-fg: #6250c9;
+  --wf-t-web-bg: #e4ebfa;
+  --wf-t-web-fg: #3663c9;
+  --wf-t-kb-bg: #dff0f2;
+  --wf-t-kb-fg: #16788a;
+  --wf-t-cond-bg: #f9eadc;
+  --wf-t-cond-fg: #b05617;
+  --wf-t-code-bg: #ebeef2;
+  --wf-t-code-fg: #4a5568;
+  --wf-t-out-bg: #e2f2e8;
+  --wf-t-out-fg: #1f7d4d;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     --brand-primary: #2dd4bf;
@@ -440,17 +501,65 @@ body {
   transform: translate(-50%, -50%) scale(1.2) !important;
 }
 
-/* Workflow mode: stable handles, no hover scale jitter */
+/* Workflow kind "output" collides with React Flow's built-in node type of the
+   same name — neutralize the stock dark-bordered wrapper inside workflow mode. */
+.workflow-flow .react-flow__node-output {
+  width: auto;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  font-size: inherit;
+  text-align: inherit;
+  color: inherit;
+}
+
+.workflow-flow .react-flow__node-output.selectable:hover,
+.workflow-flow .react-flow__node-output.selectable.selected {
+  box-shadow: none;
+}
+
+/* Workflow mode: flat 11px handles; connection-state classes come from WorkflowNodeShell */
 .react-flow__handle.workflow-handle {
+  width: 11px !important;
+  height: 11px !important;
+  border: 2px solid #ffffff !important;
+  background: var(--wf-acc) !important;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.18) !important;
   transition: opacity 0.15s !important;
 }
 
-.react-flow__handle.workflow-handle:hover {
+.react-flow__handle.workflow-handle.wf-handle-true {
+  background: var(--wf-success) !important;
+}
+
+.react-flow__handle.workflow-handle.wf-handle-false {
+  background: var(--wf-danger) !important;
+}
+
+.react-flow__handle.workflow-handle.wf-handle-open {
+  background: #ffffff !important;
+  border-color: var(--wf-handle-border) !important;
+  box-shadow: none !important;
+}
+
+/* Connected target handles hide behind the edge's arrowhead; visibility (not
+   display) keeps their geometry so React Flow can still anchor the edge. */
+.react-flow__handle.workflow-handle.wf-handle-hidden {
+  visibility: hidden !important;
+}
+
+/* Cancel the chart-mode hover/connect scale without moving the dot: restore
+   React Flow's per-side base transform (right-side handles sit at +50%). */
+.react-flow__handle.workflow-handle.react-flow__handle-left:hover,
+.is-connecting .react-flow__handle.workflow-handle.react-flow__handle-left {
   transform: translate(-50%, -50%) !important;
 }
 
-.is-connecting .react-flow__handle.workflow-handle {
-  transform: translate(-50%, -50%) !important;
+.react-flow__handle.workflow-handle.react-flow__handle-right:hover,
+.is-connecting .react-flow__handle.workflow-handle.react-flow__handle-right {
+  transform: translate(50%, -50%) !important;
 }
 
 /* ===== Node Resizer Bounding Box (Miro/Figma style) ===== */
