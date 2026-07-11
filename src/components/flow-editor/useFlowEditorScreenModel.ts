@@ -93,7 +93,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
   ]);
 
   const {
-    handleGenerateEntityFields,
     handleSuggestArchitectureNode,
     applyArchitectureTemplate,
   } = useFlowEditorPanelActions({
@@ -242,10 +241,7 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
         handleAddArchitectureService: operations.handleAddArchitectureService,
         handleCreateArchitectureBoundary: operations.handleCreateArchitectureBoundary,
         handleApplyArchitectureTemplate: applyArchitectureTemplate,
-        handleGenerateEntityFields,
         handleSuggestArchitectureNode,
-        handleConvertEntitySelectionToClassDiagram:
-          operations.handleConvertEntitySelectionToClassDiagram,
       },
       studio: {
         handleCommandBarApply: callbacks.handleCommandBarApply,
@@ -337,8 +333,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       handleAddJourneyNode: operations.handleAddJourneyNode,
       handleAddArchitectureNode: operations.handleAddArchitectureNode,
       handleAddSequenceParticipant: operations.handleAddSequenceParticipant,
-      handleAddClassNode: operations.handleAddClassNode,
-      handleAddEntityNode: operations.handleAddEntityNode,
       handleAddImage: operations.handleAddImage,
       handleAddWireframe: operations.handleAddWireframe,
       handleAddDomainLibraryItem: operations.handleAddDomainLibraryItem,

@@ -1,7 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { ClassDiagramNodeProperties } from './ClassDiagramNodeProperties';
-import { ERDiagramNodeProperties } from './ERDiagramNodeProperties';
 import { JourneyNodeProperties } from './JourneyNodeProperties';
 import { SequenceNodeProperties } from './SequenceNodeProperties';
 
@@ -9,8 +7,6 @@ const baseHandlers = {
   onChange: vi.fn(),
   onDuplicate: vi.fn(),
   onDelete: vi.fn(),
-  onGenerateEntityFields: vi.fn(),
-  onConvertEntitySelectionToClassDiagram: vi.fn(),
 };
 
 function expectSharedColorSection(title: string): void {
@@ -52,35 +48,4 @@ describe('specialized node property panels', () => {
     expectSharedColorSection('Color');
   });
 
-  it('shows the shared color section for class nodes', () => {
-    render(
-      <ClassDiagramNodeProperties
-        selectedNode={{
-          id: 'class-1',
-          type: 'class',
-          position: { x: 0, y: 0 },
-          data: { label: 'User', classAttributes: [], classMethods: [] },
-        }}
-        {...baseHandlers}
-      />
-    );
-
-    expectSharedColorSection('Color');
-  });
-
-  it('shows the shared color section for ER nodes', () => {
-    render(
-      <ERDiagramNodeProperties
-        selectedNode={{
-          id: 'entity-1',
-          type: 'er_entity',
-          position: { x: 0, y: 0 },
-          data: { label: 'Orders', erFields: [] },
-        }}
-        {...baseHandlers}
-      />
-    );
-
-    expectSharedColorSection('Color');
-  });
 });

@@ -77,15 +77,17 @@ describe('importStatePresentation', () => {
   });
 
   it('uses family-specific guidance for partial imports when support matrix data exists', () => {
-    expect(getMermaidImportStateGuidance('editable_partial', 'classDiagram')).toContain(
-      'generics and visibility richness'
+    expect(getMermaidImportStateGuidance('editable_partial', 'sequence')).toContain(
+      'advanced fragment fidelity'
     );
     expect(
       appendMermaidImportGuidance({
-        message: 'Some class members could not be mapped cleanly.',
+        message: 'Some fragments could not be mapped cleanly.',
         importState: 'unsupported_construct',
-        diagramType: 'classDiagram',
+        diagramType: 'sequence',
       })
-    ).toContain('Current partial areas for Class Diagram include generics and visibility richness');
+    ).toContain(
+      'Current partial areas for Sequence include advanced fragment fidelity and visual semantics for complex nested fragments'
+    );
   });
 });

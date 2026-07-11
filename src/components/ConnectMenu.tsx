@@ -26,22 +26,6 @@ interface ConnectMenuProps {
 
 function getContextualOptions(sourceType?: string | null): ConnectMenuOption[] {
     switch (sourceType) {
-        case 'class':
-            return [{
-                type: 'class',
-                title: 'Class Node',
-                description: 'Create a connected class',
-                toneClassName: 'bg-sky-50 text-sky-600 border-sky-100',
-                icon: <Settings className="w-4.5 h-4.5" />,
-            }];
-        case 'er_entity':
-            return [{
-                type: 'er_entity',
-                title: 'Entity',
-                description: 'Create a connected entity',
-                toneClassName: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-                icon: <Database className="w-4.5 h-4.5" />,
-            }];
         case 'architecture':
             return [{
                 type: 'architecture',

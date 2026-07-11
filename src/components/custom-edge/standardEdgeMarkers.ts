@@ -16,7 +16,6 @@ interface StandardMarkerDef {
 }
 
 interface ResolveStandardEdgeMarkersParams {
-    connectorModelEnabled: boolean;
     edgeId: string;
     markerStartUrl?: string;
     markerEndUrl?: string;
@@ -80,7 +79,6 @@ function toMarkerDef(
 }
 
 export function resolveStandardEdgeMarkers({
-    connectorModelEnabled,
     edgeId,
     markerStartUrl,
     markerEndUrl,
@@ -88,14 +86,6 @@ export function resolveStandardEdgeMarkers({
     markerEndConfig,
     stroke,
 }: ResolveStandardEdgeMarkersParams): ResolveStandardEdgeMarkersResult {
-    if (!connectorModelEnabled) {
-        return {
-            defs: [],
-            markerStartUrl,
-            markerEndUrl,
-        };
-    }
-
     const defs = [
         toMarkerDef(edgeId, 'start', markerStartConfig, stroke),
         toMarkerDef(edgeId, 'end', markerEndConfig, stroke),

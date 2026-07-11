@@ -114,24 +114,6 @@ describe('ConnectMenu', () => {
     expect(await screen.findByRole('menuitem', { name: /Analytics Glue/i })).toBeTruthy();
   });
 
-  it('surfaces contextual class creation first for class connectors', () => {
-    const onSelect = vi.fn();
-    render(
-      <ConnectMenu
-        position={{ x: 100, y: 100 }}
-        sourceId="class-1"
-        sourceType="class"
-        onSelect={onSelect}
-        onSelectAsset={vi.fn()}
-        onClose={vi.fn()}
-      />
-    );
-
-    fireEvent.click(screen.getByText('Class Node'));
-
-    expect(onSelect).toHaveBeenCalledWith('class', undefined, undefined);
-  });
-
   it('passes yes-branch edge metadata for decision sources', () => {
     const onSelect = vi.fn();
     render(

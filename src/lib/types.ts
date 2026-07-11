@@ -1,16 +1,4 @@
 import { type LegacyEdge, type LegacyNode } from '@/lib/reactflowCompat';
-import type { ClassRelationToken, ERRelationToken } from '@/lib/relationSemantics';
-
-export interface ErField {
-  name: string;
-  dataType: string;
-  isPrimaryKey: boolean;
-  isForeignKey: boolean;
-  isNotNull?: boolean;
-  isUnique?: boolean;
-  referencesTable?: string;
-  referencesField?: string;
-}
 
 export const DIAGRAM_TYPES = [
   'flowchart',
@@ -41,8 +29,6 @@ export enum NodeType {
   PROCESS = 'process',
   JOURNEY = 'journey',
   ARCHITECTURE = 'architecture',
-  CLASS = 'class',
-  ER_ENTITY = 'er_entity',
   DECISION = 'decision',
   END = 'end',
   CUSTOM = 'custom',
@@ -111,16 +97,6 @@ export interface NodeCanvasMetadata {
   // When true, auto-layout treats this node as a fixed anchor — its position is
   // preserved and other nodes are arranged around it.
   pinned?: boolean;
-}
-
-export interface ClassNodeData {
-  classStereotype?: string;
-  classAttributes?: string[];
-  classMethods?: string[];
-}
-
-export interface EntityNodeData {
-  erFields?: Array<string | ErField>;
 }
 
 export interface JourneyNodeData {
@@ -196,8 +172,6 @@ export interface NodeData
     NodeIconData,
     NodeVisualStyleData,
     NodeCanvasMetadata,
-    ClassNodeData,
-    EntityNodeData,
     JourneyNodeData,
     ArchitectureNodeData,
     SequenceNodeData,
@@ -248,10 +222,6 @@ export interface EdgeData {
   archDirection?: '-->' | '<--' | '<-->';
   archSourceSide?: 'L' | 'R' | 'T' | 'B';
   archTargetSide?: 'L' | 'R' | 'T' | 'B';
-  classRelation?: ClassRelationToken;
-  classRelationLabel?: string;
-  erRelation?: ERRelationToken;
-  erRelationLabel?: string;
   elkPoints?: {
     x: number;
     y: number;

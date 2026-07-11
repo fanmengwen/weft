@@ -1,6 +1,5 @@
 export {
   ArchitectureBulkSection,
-  ClassBulkSection,
   JourneyBulkSection,
   SequenceBulkSection,
   WireframeVariantBulkSection,

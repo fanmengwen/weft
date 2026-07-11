@@ -4,10 +4,8 @@ import {
   Boxes,
   GitBranch,
   Image as ImageIcon,
-  LayoutList,
   Smartphone,
   StickyNote,
-  Table2,
   Type,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
@@ -26,8 +24,6 @@ export type AddItemId =
   | 'journey'
   | 'architecture'
   | 'image'
-  | 'class'
-  | 'entity'
   | 'browser'
   | 'mobile';
 
@@ -186,22 +182,6 @@ export function getAddItemDefinitions(t: TFunction): AddItemDefinition[] {
       renderIcon: makeShapeIcon('circle'),
     },
     {
-      id: 'class',
-      label: 'Class',
-      section: 'diagrams',
-      keywords: ['class', 'uml', 'object', 'oop'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(LayoutList),
-    },
-    {
-      id: 'entity',
-      label: 'Entity',
-      section: 'diagrams',
-      keywords: ['entity', 'er', 'erd', 'table', 'database', 'schema'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Table2),
-    },
-    {
       id: 'journey',
       label: 'Journey',
       section: 'diagrams',
@@ -279,8 +259,6 @@ export interface AddItemActions {
   onAddAnnotation: (position?: { x: number; y: number }) => void;
   onAddSection: (position?: { x: number; y: number }) => void;
   onAddTextNode: (position?: { x: number; y: number }) => void;
-  onAddClassNode: (position?: { x: number; y: number }) => void;
-  onAddEntityNode: (position?: { x: number; y: number }) => void;
   onAddJourneyNode: (position?: { x: number; y: number }) => void;
   onAddArchitectureNode: (position?: { x: number; y: number }) => void;
   onAddSequenceParticipant: (position?: { x: number; y: number }) => void;
@@ -317,12 +295,6 @@ export function executeAddItem(
       return;
     case 'image':
       actions.onRequestImageUpload?.();
-      return;
-    case 'class':
-      actions.onAddClassNode(position);
-      return;
-    case 'entity':
-      actions.onAddEntityNode(position);
       return;
     case 'browser':
       actions.onAddWireframe('browser', position);

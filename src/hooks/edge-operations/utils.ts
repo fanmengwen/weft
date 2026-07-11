@@ -167,41 +167,6 @@ export function buildConnectedNode({
         };
     }
 
-    if (type === 'class') {
-        return {
-            newNode: {
-                id,
-                type: 'class',
-                position,
-                data: {
-                    label: 'ClassName',
-                    color: 'white',
-                    shape: 'rectangle',
-                    classAttributes: ['+ attribute: Type'],
-                    classMethods: ['+ method(): void'],
-                },
-            },
-            isGenericShape: false,
-        };
-    }
-
-    if (type === 'er_entity') {
-        return {
-            newNode: {
-                id,
-                type: 'er_entity',
-                position,
-                data: {
-                    label: 'EntityName',
-                    color: 'white',
-                    shape: 'rectangle',
-                    erFields: ['id: INT PK', 'name: VARCHAR'],
-                },
-            },
-            isGenericShape: false,
-        };
-    }
-
     if (type === 'architecture') {
         const sourceProvider = sourceNode?.data?.archProvider || 'custom';
         return {

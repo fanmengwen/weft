@@ -31,22 +31,6 @@ describe('toMermaid', () => {
         expect(result).toContain('service');
     });
 
-    it('class diagram — two class nodes starts with classDiagram', () => {
-        const result = toMermaid(
-            [node('ClassA', 'class', 'ClassA'), node('ClassB', 'class', 'ClassB')],
-            []
-        );
-        expect(result).toMatch(/^classDiagram/);
-    });
-
-    it('ER diagram — two entity nodes starts with erDiagram', () => {
-        const result = toMermaid(
-            [node('User', 'er_entity', 'User'), node('Order', 'er_entity', 'Order')],
-            []
-        );
-        expect(result).toMatch(/^erDiagram/);
-    });
-
     it('sequence diagram — participants and messages export to sequenceDiagram syntax', () => {
         const result = toMermaid(
             [

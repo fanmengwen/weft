@@ -10,7 +10,5 @@ describe('resolveNodePropertiesPanelDiagramType', () => {
   it('routes other specialized node families to their dedicated property panels', () => {
     expect(resolveNodePropertiesPanelDiagramType(NodeType.JOURNEY, 'flowchart')).toBe('journey');
     expect(resolveNodePropertiesPanelDiagramType(NodeType.ARCHITECTURE, 'flowchart')).toBe('architecture');
-    expect(resolveNodePropertiesPanelDiagramType(NodeType.CLASS, 'flowchart')).toBe('classDiagram');
-    expect(resolveNodePropertiesPanelDiagramType(NodeType.ER_ENTITY, 'flowchart')).toBe('erDiagram');
   });
 });

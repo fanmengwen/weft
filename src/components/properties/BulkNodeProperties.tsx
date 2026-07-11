@@ -23,7 +23,6 @@ import { createPropertyInputKeyDownHandler } from './propertyInputBehavior';
 import { getWireframeVariants } from './wireframeVariants';
 import {
   ArchitectureBulkSection,
-  ClassBulkSection,
   FindReplaceBulkSection,
   JourneyBulkSection,
   LabelTransformBulkSection,
@@ -113,7 +112,6 @@ export function BulkNodeProperties({
     variant: capabilityCounts.variant,
     architecture: capabilityCounts.architecture,
     journey: capabilityCounts.journey,
-    class: capabilityCounts.class,
     sequence: capabilityCounts.sequence,
     labels: selectedNodes.length,
     findReplace: selectedNodes.length,
@@ -323,17 +321,6 @@ export function BulkNodeProperties({
           journeyScore={form.journeyScore}
           onJourneySectionChange={(value) => updateForm('journeySection', value)}
           onJourneyScoreChange={(value) => updateForm('journeyScore', value)}
-          onInputKeyDown={handleInputKeyDown}
-        />
-      ) : null}
-
-      {capabilityCounts.class > 0 ? (
-        <ClassBulkSection
-          title={getScopedSectionTitle('Class Definition', capabilityCounts.class, selectedNodes.length)}
-          isOpen={resolvedActiveSection === 'class'}
-          onToggle={() => toggleSection('class')}
-          classStereotype={form.classStereotype}
-          onChange={(value) => updateForm('classStereotype', value)}
           onInputKeyDown={handleInputKeyDown}
         />
       ) : null}

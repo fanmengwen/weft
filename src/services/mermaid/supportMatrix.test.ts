@@ -1,10 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DIAGRAM_TYPES } from '@/lib/types';
-import {
-  initializeDiagramTypeRuntime,
-  resetDiagramTypeRuntimeForTests,
-} from '@/diagram-types/bootstrap';
-import { unregisterDiagramPluginForTests } from '@/diagram-types/core';
+import { initializeDiagramTypeRuntime } from '@/diagram-types/bootstrap';
 import {
   getMermaidFamilySupportMatrixEntry,
   listMermaidFamilySupportMatrix,
@@ -29,12 +25,6 @@ describe('mermaid support matrix', () => {
   });
 
   it('exposes partial-support guidance for richer technical families', () => {
-    expect(getMermaidFamilySupportMatrixEntry('classDiagram').partialConstructs).toEqual(
-      expect.arrayContaining(['generics', 'visibility richness'])
-    );
-    expect(getMermaidFamilySupportMatrixEntry('erDiagram').partialConstructs).toEqual(
-      expect.arrayContaining(['constraint richness'])
-    );
     expect(getMermaidFamilySupportMatrixEntry('sequence').partialConstructs).toEqual(
       expect.arrayContaining(['advanced fragment fidelity'])
     );
@@ -42,21 +32,15 @@ describe('mermaid support matrix', () => {
 
   it('derives unsupported constructs for families without a registered plugin', () => {
     initializeDiagramTypeRuntime();
-    unregisterDiagramPluginForTests('classDiagram');
 
-    try {
-      const entry = getMermaidFamilySupportMatrixEntry('classDiagram');
+    const entry = getMermaidFamilySupportMatrixEntry('classDiagram');
 
-      expect(entry.label).toBe('Class Diagram');
-      expect(entry.editableConstructs).toEqual([]);
-      expect(entry.partialConstructs).toEqual([]);
-      expect(entry.unsupportedConstructs.length).toBeGreaterThan(0);
-      expect(
-        getMermaidFamilySupportMatrixEntry('flowchart').editableConstructs.length
-      ).toBeGreaterThan(0);
-    } finally {
-      resetDiagramTypeRuntimeForTests();
-      initializeDiagramTypeRuntime();
-    }
+    expect(entry.label).toBe('Class Diagram');
+    expect(entry.editableConstructs).toEqual([]);
+    expect(entry.partialConstructs).toEqual([]);
+    expect(entry.unsupportedConstructs.length).toBeGreaterThan(0);
+    expect(
+      getMermaidFamilySupportMatrixEntry('flowchart').editableConstructs.length
+    ).toBeGreaterThan(0);
   });
 });

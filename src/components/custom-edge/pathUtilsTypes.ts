@@ -41,7 +41,6 @@ export type LoopDirection = 'right' | 'top' | 'left' | 'bottom';
 export type { EdgeCurve } from './edgeCurve';
 
 export interface EdgePathOptions {
-  forceOrthogonal?: boolean;
   mermaidPreservedEndpoints?: boolean;
   mermaidSourceContainer?: boolean;
   mermaidTargetContainer?: boolean;

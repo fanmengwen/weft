@@ -9,7 +9,6 @@ export type BulkEditableCapability =
   | 'variant'
   | 'architecture'
   | 'journey'
-  | 'class'
   | 'sequence';
 
 export interface BulkLabelTransformOptions {
@@ -27,8 +26,6 @@ export interface BulkSelectionFamilySummary {
 type NodeFamilyId =
   | 'architecture'
   | 'journey'
-  | 'class'
-  | 'entity'
   | 'sequence'
   | 'wireframe'
   | 'text'
@@ -49,8 +46,6 @@ const FLOW_NODE_LABEL = 'Flow node';
 const NODE_FAMILY_LABELS: Record<NodeFamilyId, string> = {
   architecture: 'Architecture',
   journey: 'Journey',
-  class: 'Class',
-  entity: 'Entity',
   sequence: 'Sequence',
   wireframe: 'Wireframe',
   text: 'Text',
@@ -109,11 +104,6 @@ const BULK_CAPABILITY_RULES: CapabilityRule[] = [
     capability: 'journey',
     keys: ['journeySection', 'journeyScore'],
     supports: (node) => node.type === NodeType.JOURNEY,
-  },
-  {
-    capability: 'class',
-    keys: ['classStereotype'],
-    supports: (node) => node.type === NodeType.CLASS,
   },
   {
     capability: 'sequence',
@@ -178,10 +168,6 @@ function getNodeFamilyId(node: Node<NodeData>): NodeFamilyId {
       return 'architecture';
     case NodeType.JOURNEY:
       return 'journey';
-    case NodeType.CLASS:
-      return 'class';
-    case NodeType.ER_ENTITY:
-      return 'entity';
     case NodeType.SEQUENCE_PARTICIPANT:
       return 'sequence';
     case NodeType.BROWSER:

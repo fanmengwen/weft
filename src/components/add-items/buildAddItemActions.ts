@@ -5,8 +5,6 @@ export interface FlowAddItemHandlers {
   handleAddAnnotation: AddItemActions['onAddAnnotation'];
   handleAddSection: AddItemActions['onAddSection'];
   handleAddTextNode: AddItemActions['onAddTextNode'];
-  handleAddClassNode: AddItemActions['onAddClassNode'];
-  handleAddEntityNode: AddItemActions['onAddEntityNode'];
   handleAddJourneyNode: AddItemActions['onAddJourneyNode'];
   handleAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
   handleAddSequenceParticipant: AddItemActions['onAddSequenceParticipant'];
@@ -19,8 +17,6 @@ export function buildAddItemActions(handlers: FlowAddItemHandlers): AddItemActio
     onAddAnnotation: handlers.handleAddAnnotation,
     onAddSection: handlers.handleAddSection,
     onAddTextNode: handlers.handleAddTextNode,
-    onAddClassNode: handlers.handleAddClassNode,
-    onAddEntityNode: handlers.handleAddEntityNode,
     onAddJourneyNode: handlers.handleAddJourneyNode,
     onAddArchitectureNode: handlers.handleAddArchitectureNode,
     onAddSequenceParticipant: handlers.handleAddSequenceParticipant,
@@ -33,8 +29,6 @@ export function buildAddItemActionsFromToolbar(toolbar: {
   onAddAnnotation: AddItemActions['onAddAnnotation'];
   onAddSection: AddItemActions['onAddSection'];
   onAddTextNode: AddItemActions['onAddTextNode'];
-  onAddClassNode: AddItemActions['onAddClassNode'];
-  onAddEntityNode: AddItemActions['onAddEntityNode'];
   onAddJourneyNode: AddItemActions['onAddJourneyNode'];
   onAddArchitectureNode: AddItemActions['onAddArchitectureNode'];
   onAddSequenceParticipant: AddItemActions['onAddSequenceParticipant'];
@@ -45,8 +39,6 @@ export function buildAddItemActionsFromToolbar(toolbar: {
     onAddAnnotation: toolbar.onAddAnnotation,
     onAddSection: toolbar.onAddSection,
     onAddTextNode: toolbar.onAddTextNode,
-    onAddClassNode: toolbar.onAddClassNode,
-    onAddEntityNode: toolbar.onAddEntityNode,
     onAddJourneyNode: toolbar.onAddJourneyNode,
     onAddArchitectureNode: toolbar.onAddArchitectureNode,
     onAddSequenceParticipant: toolbar.onAddSequenceParticipant,

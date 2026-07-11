@@ -3,25 +3,8 @@ import { MarkerType } from '@/lib/reactflowCompat';
 import { resolveStandardEdgeMarkers } from './standardEdgeMarkers';
 
 describe('resolveStandardEdgeMarkers', () => {
-  it('keeps upstream marker urls when local marker generation is disabled', () => {
+  it('creates local arrow markers for closed-arrow configs', () => {
     const result = resolveStandardEdgeMarkers({
-      connectorModelEnabled: false,
-      edgeId: 'edge-1',
-      markerStartUrl: 'url(#rf-start)',
-      markerEndUrl: 'url(#rf-end)',
-      markerStartConfig: { type: MarkerType.ArrowClosed, color: '#111827' },
-      markerEndConfig: { type: MarkerType.ArrowClosed, color: '#111827' },
-      stroke: '#111827',
-    });
-
-    expect(result.defs).toEqual([]);
-    expect(result.markerStartUrl).toBe('url(#rf-start)');
-    expect(result.markerEndUrl).toBe('url(#rf-end)');
-  });
-
-  it('creates local arrow markers for closed-arrow configs when local marker generation is enabled', () => {
-    const result = resolveStandardEdgeMarkers({
-      connectorModelEnabled: true,
       edgeId: 'edge-1',
       markerStartConfig: { type: MarkerType.ArrowClosed, color: '#0f172a', width: 18, height: 18 },
       markerEndConfig: { type: MarkerType.ArrowClosed, color: '#0f172a' },
@@ -38,7 +21,6 @@ describe('resolveStandardEdgeMarkers', () => {
 
   it('falls back to the edge stroke when marker color is omitted', () => {
     const result = resolveStandardEdgeMarkers({
-      connectorModelEnabled: true,
       edgeId: 'edge-2',
       markerEndConfig: { type: MarkerType.ArrowClosed },
       stroke: '#334155',

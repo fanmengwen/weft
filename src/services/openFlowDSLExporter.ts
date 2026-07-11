@@ -59,10 +59,6 @@ const EDGE_ATTRIBUTE_KEYS = [
     'archDirection',
     'archSourceSide',
     'archTargetSide',
-    'classRelation',
-    'classRelationLabel',
-    'erRelation',
-    'erRelationLabel',
     'connectionType',
 ] as const;
 

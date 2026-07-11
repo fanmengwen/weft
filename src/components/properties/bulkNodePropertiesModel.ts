@@ -16,7 +16,6 @@ export type BulkSectionId =
   | 'variant'
   | 'architecture'
   | 'journey'
-  | 'class'
   | 'sequence'
   | 'labels'
   | 'findReplace'
@@ -30,7 +29,6 @@ export interface BulkCapabilityCounts {
   variant: number;
   architecture: number;
   journey: number;
-  class: number;
   sequence: number;
 }
 
@@ -55,7 +53,6 @@ export interface BulkNodePropertiesFormState {
   archTrustDomain: string;
   journeySection: string;
   journeyScore: string;
-  classStereotype: string;
   sequenceAlias: string;
   labelPrefix: string;
   labelSuffix: string;
@@ -83,7 +80,6 @@ export const INITIAL_BULK_NODE_PROPERTIES_FORM_STATE: BulkNodePropertiesFormStat
   archTrustDomain: '',
   journeySection: '',
   journeyScore: '',
-  classStereotype: '',
   sequenceAlias: '',
   labelPrefix: '',
   labelSuffix: '',
@@ -101,7 +97,6 @@ export function getBulkCapabilityCounts(selectedNodes: Node<NodeData>[]): BulkCa
     variant: getCapabilityTargetNodeIds(selectedNodes, 'variant').length,
     architecture: getCapabilityTargetNodeIds(selectedNodes, 'architecture').length,
     journey: getCapabilityTargetNodeIds(selectedNodes, 'journey').length,
-    class: getCapabilityTargetNodeIds(selectedNodes, 'class').length,
     sequence: getCapabilityTargetNodeIds(selectedNodes, 'sequence').length,
   };
 }
@@ -114,7 +109,6 @@ export function getAvailableBulkSections(counts: AvailableBulkSectionCounts): Bu
     counts.variant > 0 ? 'variant' : null,
     counts.architecture > 0 ? 'architecture' : null,
     counts.journey > 0 ? 'journey' : null,
-    counts.class > 0 ? 'class' : null,
     counts.sequence > 0 ? 'sequence' : null,
     'labels',
     'findReplace',
@@ -206,10 +200,6 @@ export function buildBulkUpdates(
     if (!Number.isNaN(scoreValue)) {
       updates.journeyScore = scoreValue;
     }
-  }
-
-  if (form.classStereotype) {
-    updates.classStereotype = form.classStereotype;
   }
 
   if (form.sequenceAlias) {
@@ -307,12 +297,6 @@ export function buildChangeSummary(
 
   if (typeof updates.journeyScore === 'number') {
     items.push(`journey score: ${updates.journeyScore} (${supportCount('journey')}/${totalCount})`);
-  }
-
-  if (updates.classStereotype) {
-    items.push(
-      `class stereotype: ${updates.classStereotype} (${supportCount('class')}/${totalCount})`
-    );
   }
 
   if (updates.seqParticipantAlias) {

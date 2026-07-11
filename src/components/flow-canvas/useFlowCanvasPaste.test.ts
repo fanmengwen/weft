@@ -6,7 +6,6 @@ import {
   initializeDiagramTypeRuntime,
   resetDiagramTypeRuntimeForTests,
 } from '@/diagram-types/bootstrap';
-import { unregisterDiagramPluginForTests } from '@/diagram-types/core';
 import type { MermaidImportMode } from '@/lib/types';
 
 vi.mock('@/services/mermaid/rendererFirstImport', async (importOriginal) => {
@@ -72,7 +71,6 @@ describe('useFlowCanvasPaste', () => {
   beforeEach(() => {
     vi.mocked(importMermaidToCanvas).mockClear();
     initializeDiagramTypeRuntime();
-    unregisterDiagramPluginForTests('classDiagram');
   });
 
   afterEach(() => {

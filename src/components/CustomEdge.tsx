@@ -1,6 +1,5 @@
 import React from 'react';
 import { useReactFlow } from '@/lib/reactflowCompat';
-import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import type { LegacyEdgeProps } from '@/lib/reactflowCompat';
 import type { EdgeData } from '@/lib/types';
 import type { FlowEdge } from '@/lib/types';
@@ -9,7 +8,6 @@ import { useCinematicExportState } from '@/context/CinematicExportContext';
 import { CustomEdgeWrapper } from './custom-edge/CustomEdgeWrapper';
 import { buildEdgePath } from './custom-edge/pathUtils';
 import { curveFromLegacyVariant, coerceEdgeCurve, type EdgeCurve } from './custom-edge/edgeCurve';
-import { shouldUseOrthogonalRelationRouting } from './custom-edge/relationRoutingSemantics';
 import { readMermaidImportedEdgeMetadata } from '@/services/mermaid/importProvenance';
 import { readMermaidImportedNodeMetadataFromData } from '@/services/mermaid/importProvenance';
 import { useFlowStore } from '@/store';
@@ -23,19 +21,12 @@ function createEdgeRenderer(variant: 'bezier' | 'smoothstep' | 'step' | 'straigh
         const allNodes = getNodes();
         const currentEdge = allEdges.find((edge) => edge.id === props.id) as FlowEdge | undefined;
         const importedEdgeMetadata = currentEdge ? readMermaidImportedEdgeMetadata(currentEdge) : null;
-        const relationSemanticsV1Enabled = ROLLOUT_FLAGS.relationSemanticsV1;
         const sourceNode = allNodes.find((node) => node.id === props.source);
         const targetNode = allNodes.find((node) => node.id === props.target);
         const sourceIsImportedMermaidContainer =
             readMermaidImportedNodeMetadataFromData(sourceNode?.data as NodeData | undefined)?.role === 'container';
         const targetIsImportedMermaidContainer =
             readMermaidImportedNodeMetadataFromData(targetNode?.data as NodeData | undefined)?.role === 'container';
-        const forceOrthogonal = shouldUseOrthogonalRelationRouting(
-            relationSemanticsV1Enabled,
-            props.data,
-            sourceNode,
-            targetNode
-        );
         const perEdgeCurveRaw = (props.data as EdgeData | undefined)?.curve;
         const perEdgeCurve: EdgeCurve | undefined = perEdgeCurveRaw
             ? coerceEdgeCurve(perEdgeCurveRaw)
@@ -61,7 +52,6 @@ function createEdgeRenderer(variant: 'bezier' | 'smoothstep' | 'step' | 'straigh
             allNodes,
             variant,
             {
-                forceOrthogonal,
                 mermaidPreservedEndpoints:
                   importedEdgeMetadata?.hasFixedRoute === false,
                 mermaidSourceContainer: sourceIsImportedMermaidContainer,

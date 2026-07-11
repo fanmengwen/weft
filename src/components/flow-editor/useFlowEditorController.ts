@@ -77,8 +77,6 @@ type FlowEditorCommandBarConfig = Omit<
     | 'handleAddJourneyNode'
     | 'handleAddArchitectureNode'
     | 'handleAddSequenceParticipant'
-    | 'handleAddClassNode'
-    | 'handleAddEntityNode'
     | 'handleAddImage'
     | 'handleAddWireframe'
     | 'handleAddDomainLibraryItem'
@@ -188,8 +186,6 @@ export interface UseFlowEditorChromeParams {
     handleAddJourneyNode: () => void;
     handleAddArchitectureNode: () => void;
     handleAddSequenceParticipant: () => void;
-    handleAddClassNode: () => void;
-    handleAddEntityNode: () => void;
     handleAddImage: (imageUrl: string) => void;
     handleAddWireframe: (surface: 'browser' | 'mobile') => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
@@ -248,8 +244,6 @@ export function useFlowEditorController({
             handleAddJourneyNode: chromeParams.handleAddJourneyNode,
             handleAddArchitectureNode: chromeParams.handleAddArchitectureNode,
             handleAddSequenceParticipant: chromeParams.handleAddSequenceParticipant,
-            handleAddClassNode: chromeParams.handleAddClassNode,
-            handleAddEntityNode: chromeParams.handleAddEntityNode,
             handleAddImage: chromeParams.handleAddImage,
             handleAddWireframe: chromeParams.handleAddWireframe,
             handleAddDomainLibraryItem: chromeParams.handleAddDomainLibraryItem,

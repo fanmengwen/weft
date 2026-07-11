@@ -22,15 +22,11 @@ interface DiagramNodePropertiesRouterProps {
     sourceId: string,
     templateId: import('@/lib/architectureTemplates').ArchitectureTemplateId
   ) => void;
-  onGenerateEntityFields?: (nodeId: string) => Promise<void> | void;
   onSuggestArchitectureNode?: (nodeId: string) => Promise<void> | void;
-  onConvertEntitySelectionToClassDiagram?: () => void;
 }
 
 const NODE_TYPE_PANEL_MAP: Partial<Record<NodeType, DiagramType>> = {
   [NodeType.ARCHITECTURE]: 'architecture',
-  [NodeType.CLASS]: 'classDiagram',
-  [NodeType.ER_ENTITY]: 'erDiagram',
   [NodeType.JOURNEY]: 'journey',
   [NodeType.SEQUENCE_PARTICIPANT]: 'sequence',
 };
@@ -53,9 +49,7 @@ export function DiagramNodePropertiesRouter({
   onAddArchitectureService,
   onCreateArchitectureBoundary,
   onApplyArchitectureTemplate,
-  onGenerateEntityFields,
   onSuggestArchitectureNode,
-  onConvertEntitySelectionToClassDiagram,
 }: DiagramNodePropertiesRouterProps): ReactElement {
   const tabs = useFlowStore((state) => state.tabs);
   const activeTabId = useFlowStore((state) => state.activeTabId);
@@ -92,8 +86,6 @@ export function DiagramNodePropertiesRouter({
     onAddArchitectureService,
     onCreateArchitectureBoundary,
     onApplyArchitectureTemplate,
-    onGenerateEntityFields,
     onSuggestArchitectureNode,
-    onConvertEntitySelectionToClassDiagram,
   });
 }

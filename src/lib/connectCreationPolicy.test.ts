@@ -10,8 +10,6 @@ describe('connectCreationPolicy', () => {
   });
 
   it('propagates structured node families through connector creation', () => {
-    expect(getDefaultConnectedNodeSpec('class')).toEqual({ type: 'class' });
-    expect(getDefaultConnectedNodeSpec('er_entity')).toEqual({ type: 'er_entity' });
     expect(getDefaultConnectedNodeSpec('architecture')).toEqual({ type: 'architecture' });
     expect(getDefaultConnectedNodeSpec('journey')).toEqual({ type: 'journey' });
     expect(getDefaultConnectedNodeSpec('annotation')).toEqual({ type: 'annotation' });

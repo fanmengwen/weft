@@ -17,7 +17,7 @@ export function EdgeLabelSection({ selectedEdge, onChange }: EdgeLabelSectionPro
             <Input
                 label="Label"
                 value={editableLabel}
-                onChange={(event) => onChange(selectedEdge.id, buildEdgeLabelUpdates(selectedEdge, event.target.value))}
+                onChange={(event) => onChange(selectedEdge.id, buildEdgeLabelUpdates(event.target.value))}
                 placeholder="e.g., 'If yes', 'On success'"
             />
 

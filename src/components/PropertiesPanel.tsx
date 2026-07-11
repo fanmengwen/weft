@@ -31,9 +31,7 @@ interface PropertiesPanelProps {
   onAddArchitectureService: (sourceId: string) => void;
   onCreateArchitectureBoundary: (sourceId: string) => void;
   onApplyArchitectureTemplate: (sourceId: string, templateId: ArchitectureTemplateId) => void;
-  onGenerateEntityFields: (nodeId: string) => Promise<void> | void;
   onSuggestArchitectureNode: (nodeId: string) => Promise<void> | void;
-  onConvertEntitySelectionToClassDiagram: () => void;
   onClose: () => void;
 }
 
@@ -53,9 +51,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   onAddArchitectureService,
   onCreateArchitectureBoundary,
   onApplyArchitectureTemplate,
-  onGenerateEntityFields,
   onSuggestArchitectureNode,
-  onConvertEntitySelectionToClassDiagram,
   onClose,
 }) => {
   const { t } = useTranslation();
@@ -107,9 +103,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
             onAddArchitectureService={onAddArchitectureService}
             onCreateArchitectureBoundary={onCreateArchitectureBoundary}
             onApplyArchitectureTemplate={onApplyArchitectureTemplate}
-            onGenerateEntityFields={onGenerateEntityFields}
             onSuggestArchitectureNode={onSuggestArchitectureNode}
-            onConvertEntitySelectionToClassDiagram={onConvertEntitySelectionToClassDiagram}
           />
         )}
 

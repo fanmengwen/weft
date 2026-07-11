@@ -1,13 +1,8 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BaseEdge, EdgeLabelRenderer, useReactFlow } from '@/lib/reactflowCompat';
-import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
 import { MarkerType } from '@/lib/reactflowCompat';
 import { useDesignSystem } from '@/hooks/useDesignSystem';
 import type { EdgeData, FlowEdge } from '@/lib/types';
-import {
-  resolveRelationVisualSpec,
-  toMarkerUrl,
-} from './classRelationSemantics';
 import { resolveStandardEdgeMarkers } from './standardEdgeMarkers';
 import { resolveAnimatedEdgePresentation } from './animatedEdgePresentation';
 import {
@@ -70,7 +65,6 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [labelDraft, setLabelDraft] = useState('');
   const designSystem = useDesignSystem();
-  const relationSemanticsV1Enabled = ROLLOUT_FLAGS.relationSemanticsV1;
 
   const beginLabelEdit = useCallback(() => {
     const current = getEditableEdgeLabel({
@@ -87,7 +81,7 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   const commitLabelEdit = useCallback(() => {
     setEdges((edges) =>
       edges.map((e) =>
-        e.id !== id ? e : { ...e, ...buildEdgeLabelUpdates(e as FlowEdge, labelDraft) }
+        e.id !== id ? e : { ...e, ...buildEdgeLabelUpdates(labelDraft) }
       )
     );
     setIsEditingLabel(false);
@@ -107,36 +101,21 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   const showCinematicLabel =
     isBuiltCinematicEdge || (isActiveCinematicEdge && cinematicEdgeProgress >= 0.85);
 
-  const relationVisualSpec = resolveRelationVisualSpec(relationSemanticsV1Enabled, data, label);
-
-  const relationStyle = useMemo<React.CSSProperties>(
-    () => (relationVisualSpec?.dashed ? { strokeDasharray: '6 4' } : {}),
-    [relationVisualSpec?.dashed]
-  );
-
   const resolvedStyle = useMemo<React.CSSProperties>(
     () => ({
       stroke: designSystem.colors.edge,
       strokeWidth: designSystem.components.edge.strokeWidth,
       ...style,
-      ...relationStyle,
     }),
-    [designSystem.colors.edge, designSystem.components.edge.strokeWidth, style, relationStyle]
+    [designSystem.colors.edge, designSystem.components.edge.strokeWidth, style]
   );
 
-  const relationResolvedMarkerStart = relationVisualSpec
-    ? toMarkerUrl(relationVisualSpec.markerStartId)
-    : markerStart;
-  const relationResolvedMarkerEnd = relationVisualSpec
-    ? toMarkerUrl(relationVisualSpec.markerEndId)
-    : markerEnd;
   const standardMarkers = useMemo(
     () =>
       resolveStandardEdgeMarkers({
-        connectorModelEnabled: !relationVisualSpec,
         edgeId: id,
-        markerStartUrl: relationResolvedMarkerStart,
-        markerEndUrl: relationResolvedMarkerEnd,
+        markerStartUrl: markerStart,
+        markerEndUrl: markerEnd,
         markerStartConfig:
           typeof markerStartConfig === 'object'
             ? (markerStartConfig as {
@@ -158,10 +137,9 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
         stroke: String(resolvedStyle.stroke ?? designSystem.colors.edge),
       }),
     [
-      relationVisualSpec,
       id,
-      relationResolvedMarkerStart,
-      relationResolvedMarkerEnd,
+      markerStart,
+      markerEnd,
       markerStartConfig,
       markerEndConfig,
       resolvedStyle.stroke,

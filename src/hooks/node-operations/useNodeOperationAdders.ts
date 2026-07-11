@@ -246,31 +246,6 @@ export function useNodeOperationAdders({
     [commitAddedNode, nodesLength, recordHistory, t]
   );
 
-  const handleAddClassNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('class');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'class',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'ClassName',
-            color: 'white',
-            shape: 'rectangle',
-            classAttributes: ['+ attribute: Type'],
-            classMethods: ['+ method(): void'],
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
-  );
-
   const handleAddSequenceParticipant = useCallback(
     (position?: { x: number; y: number }) => {
       recordHistory();
@@ -303,30 +278,6 @@ export function useNodeOperationAdders({
       queueNodeLabelEditRequest(id, { replaceExisting: true });
     },
     [recordHistory, setNodes, setSelectedNodeId]
-  );
-
-  const handleAddEntityNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('er');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'er_entity',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'EntityName',
-            color: 'white',
-            shape: 'rectangle',
-            erFields: ['id: INT PK', 'name: VARCHAR'],
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
   );
 
   const handleAddWireframe = useCallback(
@@ -387,8 +338,6 @@ export function useNodeOperationAdders({
     handleAddJourneyNode,
     handleAddArchitectureNode,
     handleAddSequenceParticipant,
-    handleAddClassNode,
-    handleAddEntityNode,
     handleAddSection,
     handleAddTextNode,
     handleAddImage,

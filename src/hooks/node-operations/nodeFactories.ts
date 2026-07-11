@@ -156,32 +156,6 @@ export function createMermaidSvgNode(
   };
 }
 
-export function createClassNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'ClassName'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', classStereotype: '', classAttributes: [], classMethods: [] },
-    type: 'class',
-  };
-}
-
-export function createEntityNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'entity'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'blue', erFields: [] },
-    type: 'er_entity',
-  };
-}
-
 export function createJourneyNode(
   id: string,
   position: { x: number; y: number },

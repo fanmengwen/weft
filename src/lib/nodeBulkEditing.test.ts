@@ -31,7 +31,6 @@ describe('nodeBulkEditing', () => {
       true
     );
     expect(getNodeBulkEditCapabilities(createNode(NodeType.JOURNEY)).has('journey')).toBe(true);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.CLASS)).has('class')).toBe(true);
     expect(getNodeBulkEditCapabilities(createNode(NodeType.SEQUENCE_PARTICIPANT)).has('sequence')).toBe(
       true
     );
@@ -74,15 +73,6 @@ describe('nodeBulkEditing', () => {
     ).toEqual({
       journeySection: 'Onboarding',
       journeyScore: 4,
-    });
-
-    expect(
-      filterBulkUpdatesForNode(createNode(NodeType.CLASS), {
-        classStereotype: 'service',
-        color: 'blue',
-      })
-    ).toEqual({
-      classStereotype: 'service',
     });
 
     expect(

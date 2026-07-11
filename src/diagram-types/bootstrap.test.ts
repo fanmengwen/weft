@@ -21,7 +21,7 @@ describe('diagram type bootstrap', () => {
 
     expect(getDiagramPlugin('flowchart')?.id).toBe('flowchart');
     expect(getDiagramPlugin('sequence')?.id).toBe('sequence');
-    expect(getDiagramNodeProperties('classDiagram')).toBeDefined();
+    expect(getDiagramNodeProperties('journey')).toBeDefined();
     expect(getDiagramNodeProperties('sequence')).toBeDefined();
   });
 

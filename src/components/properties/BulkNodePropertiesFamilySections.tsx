@@ -1,5 +1,5 @@
 import React from 'react';
-import { Braces, Footprints, Layout, ServerCog, Users } from 'lucide-react';
+import { Footprints, Layout, ServerCog, Users } from 'lucide-react';
 import { CollapsibleSection } from '../ui/CollapsibleSection';
 import { Select } from '../ui/Select';
 import { INSPECTOR_INPUT_CLASSNAME, InspectorField } from './InspectorPrimitives';
@@ -39,12 +39,6 @@ interface JourneyBulkSectionProps extends CommonSectionProps {
   journeyScore: string;
   onJourneySectionChange: (value: string) => void;
   onJourneyScoreChange: (value: string) => void;
-  onInputKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
-}
-
-interface ClassBulkSectionProps extends CommonSectionProps {
-  classStereotype: string;
-  onChange: (value: string) => void;
   onInputKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
@@ -193,34 +187,6 @@ export function JourneyBulkSection({
           />
         </InspectorField>
       </div>
-    </CollapsibleSection>
-  );
-}
-
-export function ClassBulkSection({
-  title,
-  isOpen,
-  onToggle,
-  classStereotype,
-  onChange,
-  onInputKeyDown,
-}: ClassBulkSectionProps): React.ReactElement {
-  return (
-    <CollapsibleSection
-      title={title}
-      icon={<Braces className="w-3.5 h-3.5" />}
-      isOpen={isOpen}
-      onToggle={onToggle}
-    >
-      <InspectorField label="Stereotype">
-        <input
-          value={classStereotype}
-          onChange={(event) => onChange(event.target.value)}
-          onKeyDown={onInputKeyDown}
-          className={INSPECTOR_INPUT_CLASSNAME}
-          placeholder="interface, abstract, service..."
-        />
-      </InspectorField>
     </CollapsibleSection>
   );
 }

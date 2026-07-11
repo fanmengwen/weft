@@ -6,7 +6,6 @@ import {
   initializeDiagramTypeRuntime,
   resetDiagramTypeRuntimeForTests,
 } from '@/diagram-types/bootstrap';
-import { unregisterDiagramPluginForTests } from '@/diagram-types/core';
 
 vi.mock('@/services/composeDiagramForDisplay', () => ({
   composeDiagramForDisplay: vi.fn(async (nodes, edges) => ({ nodes, edges })),
@@ -204,7 +203,6 @@ describe('applyCodeChanges', () => {
 
   it('routes plugin-missing Mermaid families into the snapshot import branch', async () => {
     initializeDiagramTypeRuntime();
-    unregisterDiagramPluginForTests('classDiagram');
     vi.mocked(importMermaidToCanvas).mockResolvedValueOnce({
       nodes: [
         {
@@ -263,7 +261,6 @@ describe('applyCodeChanges', () => {
 
   it('derives renderer-first mode from the parse result when the plugin is missing', async () => {
     initializeDiagramTypeRuntime();
-    unregisterDiagramPluginForTests('classDiagram');
     vi.mocked(importMermaidToCanvas).mockClear();
 
     try {

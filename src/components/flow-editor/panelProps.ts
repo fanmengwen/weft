@@ -37,8 +37,6 @@ export interface CommandBarPanelBuilderParams {
   handleAddJourneyNode: () => void;
   handleAddArchitectureNode: () => void;
   handleAddSequenceParticipant: () => void;
-  handleAddClassNode: () => void;
-  handleAddEntityNode: () => void;
   handleAddImage: (imageUrl: string) => void;
   handleAddWireframe: (surface: 'browser' | 'mobile') => void;
   handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
@@ -89,9 +87,7 @@ export interface PropertiesRailBuilderParams {
   handleAddArchitectureService: FlowEditorPanelsProps['properties']['onAddArchitectureService'];
   handleCreateArchitectureBoundary: FlowEditorPanelsProps['properties']['onCreateArchitectureBoundary'];
   handleApplyArchitectureTemplate: FlowEditorPanelsProps['properties']['onApplyArchitectureTemplate'];
-  handleGenerateEntityFields: FlowEditorPanelsProps['properties']['onGenerateEntityFields'];
   handleSuggestArchitectureNode: FlowEditorPanelsProps['properties']['onSuggestArchitectureNode'];
-  handleConvertEntitySelectionToClassDiagram: FlowEditorPanelsProps['properties']['onConvertEntitySelectionToClassDiagram'];
   clearSelection: () => void;
 }
 
@@ -164,8 +160,6 @@ export function buildCommandBarPanelProps({
   handleAddJourneyNode,
   handleAddArchitectureNode,
   handleAddSequenceParticipant,
-  handleAddClassNode,
-  handleAddEntityNode,
   handleAddImage,
   handleAddWireframe,
   handleAddDomainLibraryItem,
@@ -199,8 +193,6 @@ export function buildCommandBarPanelProps({
     onAddJourney: handleAddJourneyNode,
     onAddArchitecture: handleAddArchitectureNode,
     onAddSequence: handleAddSequenceParticipant,
-    onAddClassNode: handleAddClassNode,
-    onAddEntityNode: handleAddEntityNode,
     onAddImage: handleAddImage,
     onAddBrowserWireframe: () => handleAddWireframe('browser'),
     onAddMobileWireframe: () => handleAddWireframe('mobile'),
@@ -268,9 +260,7 @@ export function buildPropertiesRailProps({
   handleAddArchitectureService,
   handleCreateArchitectureBoundary,
   handleApplyArchitectureTemplate,
-  handleGenerateEntityFields,
   handleSuggestArchitectureNode,
-  handleConvertEntitySelectionToClassDiagram,
   clearSelection,
 }: PropertiesRailBuilderParams): FlowEditorPanelsProps['properties'] {
   return {
@@ -291,9 +281,7 @@ export function buildPropertiesRailProps({
     onAddArchitectureService: handleAddArchitectureService,
     onCreateArchitectureBoundary: handleCreateArchitectureBoundary,
     onApplyArchitectureTemplate: handleApplyArchitectureTemplate,
-    onGenerateEntityFields: handleGenerateEntityFields,
     onSuggestArchitectureNode: handleSuggestArchitectureNode,
-    onConvertEntitySelectionToClassDiagram: handleConvertEntitySelectionToClassDiagram,
     onClose: clearSelection,
   };
 }

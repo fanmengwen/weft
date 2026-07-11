@@ -57,8 +57,4 @@ describe('useArchitectureNodeOperations', () => {
         expect(result.current.handleApplyArchitectureTemplate('n1', 'nonexistent-template' as never)).toBe(false);
     });
 
-    it('handleConvertEntitySelectionToClassDiagram returns false when no ER nodes selected', () => {
-        const { result } = renderHook(() => useArchitectureNodeOperations(recordHistory));
-        expect(result.current.handleConvertEntitySelectionToClassDiagram()).toBe(false);
-    });
 });

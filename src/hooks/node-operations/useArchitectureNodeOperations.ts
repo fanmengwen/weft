@@ -5,7 +5,6 @@ import { createId } from '../../lib/id';
 import { createDefaultEdge } from '@/constants';
 import { assignSmartHandlesWithOptions, getSmartRoutingOptionsFromViewSettings } from '../../services/smartEdgeRouting';
 import { buildArchitectureTemplate, type ArchitectureTemplateId } from '@/lib/architectureTemplates';
-import { convertSelectedErNodesToClassDiagram } from '@/lib/erToClassConversion';
 import { createArchitectureServiceNode } from './utils';
 
 export const useArchitectureNodeOperations = (recordHistory: () => void) => {
@@ -110,28 +109,9 @@ export const useArchitectureNodeOperations = (recordHistory: () => void) => {
         return true;
     }, [recordHistory, setEdges, setNodes, setSelectedNodeId]);
 
-    const handleConvertEntitySelectionToClassDiagram = useCallback((): boolean => {
-        const state = useFlowStore.getState();
-        const result = convertSelectedErNodesToClassDiagram(state.nodes, state.edges);
-        if (result.changedNodeIds.length === 0) {
-            return false;
-        }
-
-        recordHistory();
-        setNodes(() => result.nodes);
-        setEdges(() => result.edges);
-
-        if (state.activeTabId) {
-            state.updateTab(state.activeTabId, { diagramType: 'classDiagram' });
-        }
-
-        return true;
-    }, [recordHistory, setEdges, setNodes]);
-
     return {
         handleAddArchitectureService,
         handleCreateArchitectureBoundary,
         handleApplyArchitectureTemplate,
-        handleConvertEntitySelectionToClassDiagram,
     };
 };

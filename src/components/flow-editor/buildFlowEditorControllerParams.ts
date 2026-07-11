@@ -102,8 +102,6 @@ interface BuildFlowEditorControllerChromeParams {
     handleAddJourneyNode: () => void;
     handleAddArchitectureNode: () => void;
     handleAddSequenceParticipant: () => void;
-    handleAddClassNode: () => void;
-    handleAddEntityNode: () => void;
     handleAddImage: (imageUrl: string) => void;
     handleAddWireframe: (surface: 'browser' | 'mobile') => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;

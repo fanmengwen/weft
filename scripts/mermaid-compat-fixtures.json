@@ -73,56 +73,56 @@
     "name": "class-basic",
     "family": "classDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass Animal\nclass Duck\nAnimal <|-- Duck"
   },
   {
     "name": "class-cardinality-generic",
     "family": "classDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass Repository~T~\nclass User\nRepository~T~ \"1\" --> \"*\" User : stores"
   },
   {
     "name": "class-generic-multi-param",
     "family": "classDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass Map~K, V~\nclass Entry\nMap~K, V~ --> Entry : stores"
   },
   {
     "name": "class-invalid-relation",
     "family": "classDiagram",
     "expectedOfficial": "environment_limited",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass User\nUser -> Account"
   },
   {
     "name": "er-basic",
     "family": "erDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nCUSTOMER ||--o{ ORDER : places"
   },
   {
     "name": "er-field-metadata",
     "family": "erDiagram",
     "expectedOfficial": "invalid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nORDER {\n  uuid id PK\n  uuid customer_id FK REFERENCES CUSTOMER.id\n  string external_id UNIQUE\n}"
   },
   {
     "name": "er-field-references-table-only",
     "family": "erDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nORDER {\n  uuid customer_id FK REFERENCES CUSTOMER\n  string external_id UK\n}"
   },
   {
     "name": "er-field-dotted-reference",
     "family": "erDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nORDER {\n  uuid customer_id FK REFERENCES billing.Customer.id\n}"
   },
   {

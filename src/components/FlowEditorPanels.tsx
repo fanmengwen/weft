@@ -141,8 +141,6 @@ export interface CommandBarPanelProps {
   onAddJourney?: () => void;
   onAddArchitecture?: () => void;
   onAddSequence?: () => void;
-  onAddClassNode?: () => void;
-  onAddEntityNode?: () => void;
   onAddImage: (imageUrl: string) => void;
   onAddBrowserWireframe: () => void;
   onAddMobileWireframe: () => void;
@@ -198,15 +196,9 @@ export interface PropertiesRailProps {
   onApplyArchitectureTemplate: React.ComponentProps<
     typeof PropertiesPanelComponent
   >['onApplyArchitectureTemplate'];
-  onGenerateEntityFields: React.ComponentProps<
-    typeof PropertiesPanelComponent
-  >['onGenerateEntityFields'];
   onSuggestArchitectureNode: React.ComponentProps<
     typeof PropertiesPanelComponent
   >['onSuggestArchitectureNode'];
-  onConvertEntitySelectionToClassDiagram: React.ComponentProps<
-    typeof PropertiesPanelComponent
-  >['onConvertEntitySelectionToClassDiagram'];
   onClose: () => void;
 }
 
@@ -308,8 +300,6 @@ export function FlowEditorPanels({
               onAddJourney={commandBar.onAddJourney}
               onAddArchitecture={commandBar.onAddArchitecture}
               onAddSequence={commandBar.onAddSequence}
-              onAddClassNode={commandBar.onAddClassNode}
-              onAddEntityNode={commandBar.onAddEntityNode}
               onAddImage={commandBar.onAddImage}
               onAddBrowserWireframe={commandBar.onAddBrowserWireframe}
               onAddMobileWireframe={commandBar.onAddMobileWireframe}
@@ -461,9 +451,7 @@ export function FlowEditorPanels({
                 onAddArchitectureService={properties.onAddArchitectureService}
                 onCreateArchitectureBoundary={properties.onCreateArchitectureBoundary}
                 onApplyArchitectureTemplate={properties.onApplyArchitectureTemplate}
-                onGenerateEntityFields={properties.onGenerateEntityFields}
                 onSuggestArchitectureNode={properties.onSuggestArchitectureNode}
-                onConvertEntitySelectionToClassDiagram={properties.onConvertEntitySelectionToClassDiagram}
                 onClose={properties.onClose}
               />
             </Suspense>

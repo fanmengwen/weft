@@ -10,13 +10,13 @@ describe('diagram property panel registry', () => {
   it('registers and resolves a diagram-specific node properties component', () => {
     resetDiagramNodePropertiesRegistryForTests();
     const component = (() => null) as DiagramNodePropertiesComponent;
-    registerDiagramNodeProperties('classDiagram', component);
+    registerDiagramNodeProperties('journey', component);
 
-    expect(getDiagramNodeProperties('classDiagram')).toBe(component);
+    expect(getDiagramNodeProperties('journey')).toBe(component);
   });
 
   it('returns undefined when no component is registered', () => {
     resetDiagramNodePropertiesRegistryForTests();
-    expect(getDiagramNodeProperties('journey')).toBeUndefined();
+    expect(getDiagramNodeProperties('sequence')).toBeUndefined();
   });
 });

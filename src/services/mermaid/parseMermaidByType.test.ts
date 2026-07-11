@@ -120,90 +120,6 @@ describe('parseMermaidByType', () => {
     expect(result.nodes.find((node) => node.id === 'Idle')?.parentId).toBe('Working');
   });
 
-  it('parses classDiagram through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      classDiagram
-      class Animal {
-        +name: String
-      }
-      class Duck
-      Animal <|-- Duck
-    `);
-
-    expect(result.diagramType).toBe('classDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
-  });
-
-  it('returns classDiagram diagnostics for malformed declarations without failing parse', () => {
-    const result = parseMermaidByType(`
-      classDiagram
-      class User {
-        +id: UUID
-      }
-      malformed text
-      class Broken ???
-      User -> Account
-    `);
-
-    expect(result.diagramType).toBe('classDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Invalid class declaration at line'))
-    ).toBe(true);
-    expect(result.importState).toBe('editable_partial');
-    expect(result.structuredDiagnostics?.some((diagnostic) => diagnostic.code === 'MERMAID_SYNTAX')).toBe(true);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Invalid class relation syntax at line')
-      )
-    ).toBe(true);
-  });
-
-  it('parses erDiagram through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      erDiagram
-      CUSTOMER {
-        string name
-      }
-      ORDER {
-        string id
-      }
-      CUSTOMER ||--o{ ORDER : places
-    `);
-
-    expect(result.diagramType).toBe('erDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
-  });
-
-  it('returns erDiagram diagnostics for malformed declarations without failing parse', () => {
-    const result = parseMermaidByType(`
-      erDiagram
-      CUSTOMER {
-        string id PK
-      }
-      entity ORDER {
-      CUSTOMER -> ORDER
-      random noise
-    `);
-
-    expect(result.diagramType).toBe('erDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Invalid entity declaration at line'))
-    ).toBe(true);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Invalid erDiagram relation syntax at line')
-      )
-    ).toBe(true);
-  });
-
   it('parses journey through plugin dispatcher', () => {
     const result = parseMermaidByType(`
       journey
@@ -405,12 +321,47 @@ describe('parseMermaidByType', () => {
     expect(result.nodes).toHaveLength(0);
     expect(result.edges).toHaveLength(0);
   });
+
+  it('degrades classDiagram sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      classDiagram
+      class Animal {
+        +name: String
+      }
+      class Duck
+      Animal <|-- Duck
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('classDiagram');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('degrades erDiagram sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      erDiagram
+      CUSTOMER {
+        string name
+      }
+      CUSTOMER ||--o{ ORDER : places
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('erDiagram');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
 });
 
 describe('parseMermaidByType without a registered plugin', () => {
   beforeEach(() => {
     initializeDiagramTypeRuntime();
-    unregisterDiagramPluginForTests('classDiagram');
+    unregisterDiagramPluginForTests('journey');
   });
 
   afterEach(() => {
@@ -420,12 +371,14 @@ describe('parseMermaidByType without a registered plugin', () => {
 
   it('degrades to an error-free renderer-only result for the detected family', () => {
     const result = parseMermaidByType(`
-      classDiagram
-      class Animal
+      journey
+      title Checkout
+      section Happy
+        Search: 5: User
     `);
 
     expect(result.error).toBeUndefined();
-    expect(result.diagramType).toBe('classDiagram');
+    expect(result.diagramType).toBe('journey');
     expect(result.nativeParseUnavailable).toBe(true);
     expect(result.importState).toBe('unsupported_family');
     expect(result.nodes).toHaveLength(0);

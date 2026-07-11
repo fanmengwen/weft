@@ -7,8 +7,6 @@ interface PartialCorpusCase {
   diagramType:
     | 'flowchart'
     | 'stateDiagram'
-    | 'classDiagram'
-    | 'erDiagram'
     | 'architecture'
     | 'sequence'
     | 'journey';
@@ -43,38 +41,6 @@ const PARTIAL_CORPUS: PartialCorpusCase[] = [
       [*] --> Idle
     `,
     diagnosticIncludes: ['Invalid stateDiagram direction syntax at line'],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
-  },
-  {
-    name: 'class malformed relation still recovers',
-    diagramType: 'classDiagram',
-    source: `
-      classDiagram
-      class User
-      User -> Account
-      stray words
-    `,
-    diagnosticIncludes: [
-      'Invalid class relation syntax at line',
-      'Unrecognized classDiagram line at line',
-    ],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
-  },
-  {
-    name: 'er malformed declaration still recovers',
-    diagramType: 'erDiagram',
-    source: `
-      erDiagram
-      CUSTOMER {
-        string id PK
-      }
-      entity ORDER {
-      CUSTOMER -> ORDER
-    `,
-    diagnosticIncludes: [
-      'Invalid entity declaration at line',
-      'Invalid erDiagram relation syntax at line',
-    ],
     expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
   },
   {

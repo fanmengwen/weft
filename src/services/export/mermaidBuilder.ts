@@ -2,8 +2,6 @@ import type { FlowEdge, FlowNode } from '@/lib/types';
 import { sanitizeId, sanitizeLabel, sanitizeEdgeLabel } from './formatting';
 import { toArchitectureMermaid } from './mermaid/architectureMermaid';
 import { toJourneyMermaid } from './mermaid/journeyMermaid';
-import { toClassDiagramMermaid } from './mermaid/classDiagramMermaid';
-import { toERDiagramMermaid } from './mermaid/erDiagramMermaid';
 import { toStateDiagramMermaid, looksLikeStateDiagram } from './mermaid/stateDiagramMermaid';
 import { toSequenceMermaid } from './mermaid/sequenceMermaid';
 
@@ -252,16 +250,6 @@ export function toMermaid(nodes: FlowNode[], edges: FlowEdge[], direction?: stri
   const journeyNodeCount = nodes.filter((node) => node.type === 'journey').length;
   if (nodes.length > 0 && journeyNodeCount === nodes.length) {
     return toJourneyMermaid(nodes);
-  }
-
-  const classNodeCount = nodes.filter((node) => node.type === 'class').length;
-  if (nodes.length > 0 && classNodeCount === nodes.length) {
-    return toClassDiagramMermaid(nodes, edges);
-  }
-
-  const erNodeCount = nodes.filter((node) => node.type === 'er_entity').length;
-  if (nodes.length > 0 && erNodeCount === nodes.length) {
-    return toERDiagramMermaid(nodes, edges);
   }
 
   const seqNodeCount = nodes.filter(
