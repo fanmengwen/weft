@@ -63,12 +63,15 @@ export function WorkflowNodeShell(props: LegacyNodeProps<WorkflowNodeData>): Rea
   return (
     <div className={`w-[236px] bg-white p-3 transition-shadow ${cardClass}`}>
       {showTarget ? (
+        // A connected target handle disappears — the edge's arrowhead marks
+        // the entry point instead (per design). visibility keeps the handle's
+        // geometry so React Flow can still anchor the edge to it.
         <Handle
           id="in"
           type="target"
           position={Position.Left}
           style={{ top: HANDLE_TOP }}
-          className={handleClass(inConnected)}
+          className={`${handleClass(inConnected)}${inConnected ? ' wf-handle-hidden' : ''}`}
         />
       ) : null}
       {showSource ? (

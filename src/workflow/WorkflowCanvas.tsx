@@ -11,9 +11,13 @@ import { useToast } from '@/components/ui/ToastContext';
 import { createWorkflowNode } from './dnd/createWorkflowNode';
 import { useWorkflowDnD } from './dnd/useWorkflowDnD';
 import { isValidWorkflowConnection } from './graph/workflowConnectionRules';
+import { WorkflowEdge } from './graph/WorkflowEdge';
+import { WORKFLOW_EDGE_STYLE } from './graph/workflowEdgeStyle';
 import { workflowNodeTypes } from './nodes/workflowNodeTypes';
 import { WorkflowLogPanel } from './panels/WorkflowLogPanel';
 import { useWorkflowStore } from './store/workflowStore';
+
+const workflowEdgeTypes = { workflow: WorkflowEdge };
 
 function WorkflowCanvasInner(): React.ReactElement {
   const { t } = useTranslation();
@@ -38,6 +42,21 @@ function WorkflowCanvasInner(): React.ReactElement {
         selected: node.id === selectedNodeId,
       })),
     [selectedNodeId, workflowNodes]
+  );
+
+  // Normalize every edge to the workflow edge type at render time, so edges
+  // from older persisted graphs and imported files shed their baked-in style;
+  // the WorkflowEdge component owns the look, including selection.
+  const edges = useMemo(
+    () =>
+      workflowEdges.map((edge) => ({
+        ...edge,
+        type: 'workflow' as const,
+        animated: false,
+        style: undefined,
+        markerEnd: undefined,
+      })),
+    [workflowEdges]
   );
 
   useEffect(() => {
@@ -102,14 +121,16 @@ function WorkflowCanvasInner(): React.ReactElement {
     <div ref={wrapperRef} className="relative min-h-0 flex-1 bg-[var(--wf-bg)]">
       <ReactFlow
         nodes={nodes}
-        edges={workflowEdges}
+        edges={edges}
         nodeTypes={workflowNodeTypes}
+        edgeTypes={workflowEdgeTypes}
         onNodesChange={onWorkflowNodesChange}
         onEdgesChange={onWorkflowEdgesChange}
         onConnect={handleConnect}
         isValidConnection={isValidConnection}
         onNodeClick={onNodeClick}
         onPaneClick={onPaneClick}
+        connectionLineStyle={WORKFLOW_EDGE_STYLE}
         autoPanOnNodeDrag={false}
         autoPanOnConnect={false}
         proOptions={{ hideAttribution: true }}
