@@ -63,8 +63,10 @@ function WorkflowCanvasInner(): React.ReactElement {
     [selectedEdgeId, workflowEdges]
   );
 
+  // Center the persisted graph but keep the default 100% zoom; the zoom
+  // controls then step in flat 20% increments from there.
   useEffect(() => {
-    fitView({ padding: 0.2, duration: 0 });
+    fitView({ padding: 0.2, minZoom: 1, maxZoom: 1, duration: 0 });
   }, [fitView]);
 
   useEffect(() => {
@@ -144,6 +146,7 @@ function WorkflowCanvasInner(): React.ReactElement {
         onEdgeClick={onEdgeClick}
         onPaneClick={onPaneClick}
         connectionLineStyle={WORKFLOW_EDGE_STYLE}
+        minZoom={0.2}
         autoPanOnNodeDrag={false}
         autoPanOnConnect={false}
         proOptions={{ hideAttribution: true }}
