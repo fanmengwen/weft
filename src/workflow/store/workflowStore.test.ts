@@ -11,6 +11,7 @@ describe('useWorkflowStore', () => {
       workflowNodes: [],
       workflowEdges: [],
       selectedNodeId: null,
+      selectedEdgeId: null,
     });
   });
 
@@ -57,14 +58,80 @@ describe('useWorkflowStore', () => {
       ...useWorkflowStore.getState(),
       mode: 'workflow',
       workflowNodes: [node],
-      workflowEdges: [],
-    }) as { mode: string; workflowNodes: FlowNode[]; workflowEdges: unknown[] };
+      workflowEdges: [
+        { id: 'e1', source: 'a', target: 'b', selected: true },
+      ] as unknown as ReturnType<typeof useWorkflowStore.getState>['workflowEdges'],
+    }) as {
+      mode: string;
+      workflowNodes: FlowNode[];
+      workflowEdges: { selected?: boolean }[];
+    };
 
     expect(partial.mode).toBe('workflow');
     expect(partial.workflowNodes).toHaveLength(1);
     expect(partial.workflowNodes[0].selected).toBe(false);
-    expect(partial.workflowEdges).toEqual([]);
+    expect(partial.workflowEdges[0].selected).toBe(false);
     expect('selectedNodeId' in partial).toBe(false);
+    expect('selectedEdgeId' in partial).toBe(false);
+  });
+
+  it('keeps node and edge selection mutually exclusive', () => {
+    const a = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const b = createWorkflowNode('llm', { x: 200, y: 0 });
+    useWorkflowStore.getState().setWorkflowNodes([a, b]);
+    useWorkflowStore.getState().onWorkflowConnect({
+      source: a.id,
+      target: b.id,
+      sourceHandle: 'out',
+      targetHandle: 'in',
+    });
+    const edgeId = useWorkflowStore.getState().workflowEdges[0].id;
+
+    useWorkflowStore.getState().setSelectedNodeId(a.id);
+    useWorkflowStore.getState().setSelectedEdgeId(edgeId);
+    expect(useWorkflowStore.getState().selectedNodeId).toBeNull();
+    expect(useWorkflowStore.getState().selectedEdgeId).toBe(edgeId);
+
+    useWorkflowStore.getState().setSelectedNodeId(b.id);
+    expect(useWorkflowStore.getState().selectedEdgeId).toBeNull();
+    expect(useWorkflowStore.getState().selectedNodeId).toBe(b.id);
+  });
+
+  it('deletes an edge and clears its selection', () => {
+    const a = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const b = createWorkflowNode('llm', { x: 200, y: 0 });
+    useWorkflowStore.getState().setWorkflowNodes([a, b]);
+    useWorkflowStore.getState().onWorkflowConnect({
+      source: a.id,
+      target: b.id,
+      sourceHandle: 'out',
+      targetHandle: 'in',
+    });
+    const edgeId = useWorkflowStore.getState().workflowEdges[0].id;
+    useWorkflowStore.getState().setSelectedEdgeId(edgeId);
+
+    useWorkflowStore.getState().deleteWorkflowEdge(edgeId);
+
+    expect(useWorkflowStore.getState().workflowEdges).toHaveLength(0);
+    expect(useWorkflowStore.getState().selectedEdgeId).toBeNull();
+  });
+
+  it('clears edge selection when deleting an endpoint node cascades', () => {
+    const a = createWorkflowNode('textInput', { x: 0, y: 0 });
+    const b = createWorkflowNode('llm', { x: 200, y: 0 });
+    useWorkflowStore.getState().setWorkflowNodes([a, b]);
+    useWorkflowStore.getState().onWorkflowConnect({
+      source: a.id,
+      target: b.id,
+      sourceHandle: 'out',
+      targetHandle: 'in',
+    });
+    useWorkflowStore.getState().setSelectedEdgeId(useWorkflowStore.getState().workflowEdges[0].id);
+
+    useWorkflowStore.getState().deleteWorkflowNode(a.id);
+
+    expect(useWorkflowStore.getState().workflowEdges).toHaveLength(0);
+    expect(useWorkflowStore.getState().selectedEdgeId).toBeNull();
   });
 
   it('deletes a node, its edges, and clears selection', () => {
