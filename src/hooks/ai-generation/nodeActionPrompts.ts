@@ -14,7 +14,7 @@ export function buildEntityFieldGenerationPrompt(node: FlowNode): string {
     `Generate a realistic ER entity field list for the selected table "${node.data.label || 'Entity'}".`,
     'Only update the selected ER entity.',
     'Preserve all other nodes and edges exactly as they are.',
-    'Return valid OpenFlow DSL for the full updated diagram.',
+    'Return valid Weft DSL for the full updated diagram.',
     'Use concise, production-style table fields with types and PK/FK/NN/UNIQUE markers when appropriate.',
     'If there is an obvious created/updated timestamp pattern, include it.',
     fieldContext,
@@ -36,7 +36,7 @@ export function buildArchitectureServiceSuggestionPrompt(node: FlowNode): string
     'Only update the selected architecture node and, if needed, its direct metadata.',
     'Do not add unrelated nodes or edges.',
     'Choose a more specific label, icon, provider-aligned service metadata, and a short subLabel.',
-    'Return valid OpenFlow DSL for the full updated diagram.',
+    'Return valid Weft DSL for the full updated diagram.',
     context,
   ].join('\n\n');
 }

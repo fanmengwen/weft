@@ -6,13 +6,13 @@ export function registerValidateDsl(server: McpServer): void {
   server.registerTool(
     'validate_openflow_dsl',
     {
-      title: 'Validate OpenFlow DSL',
+      title: 'Validate Weft DSL',
       description:
-        'Lint an OpenFlow DSL document. Returns structured diagnostics ' +
+        'Lint an Weft DSL document. Returns structured diagnostics ' +
         '(errors + warnings), declared node ids, and edge count. ' +
         'No network access; runs locally.',
       inputSchema: {
-        dsl: z.string().describe('OpenFlow DSL source to validate.'),
+        dsl: z.string().describe('Weft DSL source to validate.'),
       },
     },
     async (args) => {

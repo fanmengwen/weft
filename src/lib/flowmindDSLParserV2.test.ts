@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { parseOpenFlowDslV2 } from './openFlowDslParserV2';
 
-describe('OpenFlow DSL V2 Parser', () => {
+describe('Weft DSL V2 Parser', () => {
   it('parses basic nodes and edges', () => {
     const input = `
             [start] Start

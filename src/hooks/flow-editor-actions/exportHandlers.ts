@@ -222,8 +222,8 @@ export function downloadOpenFlowDSLToFile({
         text: toOpenFlowDSL(nodes, edges, { mode: exportSerializationMode }),
         fileName: buildExportFileName(baseFileName, 'ofk'),
         processingMessage: t('export.progress.preparingDslDownload'),
-        successMessage: 'OpenFlow DSL downloaded.',
-        errorMessage: 'Failed to download OpenFlow DSL.',
+        successMessage: 'Weft DSL downloaded.',
+        errorMessage: 'Failed to download Weft DSL.',
         addToast,
     });
 }

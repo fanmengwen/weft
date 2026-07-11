@@ -74,7 +74,7 @@ describe('exportHandlers', () => {
     expect(addToast).toHaveBeenCalledWith('flowEditor.plantUMLCopied', 'success');
   });
 
-  it('copies OpenFlow DSL and emits warning toast for skipped edges', async () => {
+  it('copies Weft DSL and emits warning toast for skipped edges', async () => {
     const addToast = vi.fn();
     vi.mocked(getOpenFlowDSLExportDiagnostics).mockReturnValueOnce([
       {

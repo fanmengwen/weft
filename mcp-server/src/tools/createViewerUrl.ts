@@ -9,11 +9,11 @@ export function registerCreateViewerUrl(server: McpServer): void {
     {
       title: 'Create an Weft viewer URL',
       description:
-        'Build a shareable Weft viewer URL for agent-authored OpenFlow DSL. ' +
+        'Build a shareable Weft viewer URL for agent-authored Weft DSL. ' +
         'No AI provider, network call, account, or API key is required. Always validate ' +
         'the DSL first or inspect the returned lint report before showing the URL.',
       inputSchema: {
-        dsl: z.string().min(3).describe('OpenFlow DSL source to encode into a viewer URL.'),
+        dsl: z.string().min(3).describe('Weft DSL source to encode into a viewer URL.'),
       },
     },
     async (args) => {

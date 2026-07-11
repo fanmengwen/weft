@@ -297,7 +297,7 @@
     "json": "导出为 JSON",
     "mermaid": "导出为 Mermaid",
     "plantuml": "导出为 PlantUML",
-    "openflowdsl": "导出为 OpenFlow DSL",
+    "openflowdsl": "导出为 Weft DSL",
     "figma": "导出到 Figma",
     "hintTransparent4K": "透明 (4K)",
     "hintWhiteBg4K": "白色背景 (4K)",
@@ -354,8 +354,8 @@
       "copyingMermaid": "正在复制 Mermaid…",
       "preparingPlantUmlDownload": "正在准备 PlantUML 下载…",
       "copyingPlantUml": "正在复制 PlantUML…",
-      "preparingDslDownload": "正在准备 OpenFlow DSL 下载…",
-      "copyingDsl": "正在复制 OpenFlow DSL…",
+      "preparingDslDownload": "正在准备 Weft DSL 下载…",
+      "copyingDsl": "正在复制 Weft DSL…",
       "preparingFigmaDownload": "正在准备 Figma SVG 下载…",
       "copyingFigmaSvg": "正在复制 Figma SVG…"
     }
@@ -1596,7 +1596,7 @@
     "cannotCloseLastTab": "无法关闭最后一个标签页。",
     "mermaidCopied": "Mermaid 图表已复制到剪贴板！",
     "plantUMLCopied": "PlantUML 图表已复制到剪贴板！",
-    "dslCopied": "OpenFlow DSL 已复制到剪贴板！",
+    "dslCopied": "Weft DSL 已复制到剪贴板！",
     "dslCopyFailed": "复制 DSL 失败",
     "figmaCopied": "图表已复制，可粘贴到 Figma！",
     "figmaExportFailed": "Figma 导出失败：{{message}}",

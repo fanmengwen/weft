@@ -297,7 +297,7 @@
     "json": "JSON Olarak Dışa Aktar",
     "mermaid": "Mermaid Olarak Dışa Aktar",
     "plantuml": "PlantUML Olarak Dışa Aktar",
-    "openflowdsl": "OpenFlow DSL Olarak Dışa Aktar",
+    "openflowdsl": "Weft DSL Olarak Dışa Aktar",
     "figma": "Figma'ya Aktar",
     "exportDiagram": "Diyagramı Dışa Aktar",
     "exportAs": "Farklı Dışa Aktar",
@@ -354,8 +354,8 @@
       "copyingMermaid": "Mermaid kopyalanıyor…",
       "preparingPlantUmlDownload": "PlantUML indirmesi hazırlanıyor…",
       "copyingPlantUml": "PlantUML kopyalanıyor…",
-      "preparingDslDownload": "OpenFlow DSL indirmesi hazırlanıyor…",
-      "copyingDsl": "OpenFlow DSL kopyalanıyor…",
+      "preparingDslDownload": "Weft DSL indirmesi hazırlanıyor…",
+      "copyingDsl": "Weft DSL kopyalanıyor…",
       "preparingFigmaDownload": "Figma SVG indirmesi hazırlanıyor…",
       "copyingFigmaSvg": "Figma SVG kopyalanıyor…"
     }
@@ -1582,7 +1582,7 @@
     "cannotCloseLastTab": "Son sekmeyi kapatamazsınız.",
     "mermaidCopied": "Mermaid diyagramı panoya kopyalandı!",
     "plantUMLCopied": "PlantUML diyagramı panoya kopyalandı!",
-    "dslCopied": "OpenFlow DSL panoya kopyalandı!",
+    "dslCopied": "Weft DSL panoya kopyalandı!",
     "dslCopyFailed": "DSL kopyalanamadı",
     "figmaCopied": "Diyagram Figma için kopyalandı! Artık Figma'da yapıştırabilirsiniz (Cmd+V).",
     "figmaExportFailed": "Figma Dışa Aktarma Başarısız: {{message}}",

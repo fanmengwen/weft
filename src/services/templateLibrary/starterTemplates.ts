@@ -206,7 +206,7 @@ export const STARTER_TEMPLATE_MANIFESTS: TemplateManifest[] = [
     [
       createArchitectureNode('c4-user', 'Platform Engineer', 'person', 'User', 'blue', -420, 220, 'Uses the product to create and share diagrams'),
       createArchitectureNode('c4-team', 'Product Team', 'person', 'Users', 'cyan', -420, 420, 'Maintains templates, docs, and release flow'),
-      createArchitectureNode('c4-core', 'OpenFlow Workspace', 'system', 'Box', 'slate', 40, 320, 'Primary system boundary'),
+      createArchitectureNode('c4-core', 'Weft Workspace', 'system', 'Box', 'slate', 40, 320, 'Primary system boundary'),
       createArchitectureNode('c4-auth', 'Identity Provider', 'system', 'ShieldCheck', 'violet', 480, 120, 'Authentication and access policy'),
       createArchitectureNode('c4-docs', 'Documentation Site', 'container', 'BookOpen', 'emerald', 480, 320, 'Embeds guides, examples, and exported diagrams'),
       createArchitectureNode('c4-ci', 'Release Pipeline', 'container', 'GitBranch', 'orange', 480, 520, 'Builds, tests, and publishes changes'),

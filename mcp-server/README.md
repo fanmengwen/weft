@@ -14,7 +14,7 @@
 
 The Weft MCP server is **local-first by design** — it runs on your machine over stdio with no API key and no cloud round-trip, and its tools return deterministic output. Your MCP client already has an LLM; this server gives it diagram-specific powers:
 
-- read the OpenFlow DSL reference
+- read the Weft DSL reference
 - inspect starter templates
 - analyze local codebases
 - find exact cloud and developer icon slugs
@@ -26,7 +26,7 @@ No API keys, no telemetry, no account, no server-side storage.
 ```
 You:    Create a checkout flow with a promo-code branch
 Claude: reads weft://docs/dsl-cheatsheet
-        writes OpenFlow DSL itself
+        writes Weft DSL itself
         calls validate_openflow_dsl
         fixes any issues
         calls create_viewer_url
@@ -87,8 +87,8 @@ All tools run locally and require no provider key.
 
 | Tool | What it does |
 |---|---|
-| `validate_openflow_dsl` | Lint OpenFlow DSL with structured diagnostics |
-| `create_viewer_url` | Encode OpenFlow DSL into a shareable Weft viewer URL |
+| `validate_openflow_dsl` | Lint Weft DSL with structured diagnostics |
+| `create_viewer_url` | Encode Weft DSL into a shareable Weft viewer URL |
 | `analyze_codebase` | Detect platforms, services, top-level structure, and language mix from a local repo |
 | `find_icon` | Fuzzy-search 1,600+ AWS, Azure, GCP, CNCF, and developer icons |
 | `list_starter_templates` | Browse built-in starter templates |
@@ -104,7 +104,7 @@ Agents can read these directly:
 
 | URI | Description |
 |---|---|
-| `weft://docs/dsl-cheatsheet` | OpenFlow DSL syntax reference |
+| `weft://docs/dsl-cheatsheet` | Weft DSL syntax reference |
 | `weft://templates` | Starter template catalog |
 | `weft://templates/{name}` | DSL for a named starter template |
 | `weft://icons` | Full icon catalog |
@@ -119,7 +119,7 @@ Provider packs are `aws`, `azure`, `gcp`, `cncf`, and `developer`.
 Clients can surface three prompt templates:
 
 - `flowchart_from_description` — agent writes, validates, and links a flowchart
-- `convert_mermaid_to_openflow` — agent converts Mermaid into OpenFlow DSL, validates it, and links it
+- `convert_mermaid_to_openflow` — agent converts Mermaid into Weft DSL, validates it, and links it
 - `architecture_from_codebase` — agent scans a local repo, picks icon slugs, validates DSL, and links the result
 
 ---
@@ -129,13 +129,13 @@ Clients can surface three prompt templates:
 Ask your MCP client:
 
 ```text
-Using the weft MCP server: read weft://docs/dsl-cheatsheet, then write an OpenFlow DSL flowchart for checkout with cart, shipping, promo-code decision, payment, Stripe webhook, and confirmation. Call validate_openflow_dsl, fix any issues, then call create_viewer_url. Return the final DSL and viewer URL.
+Using the weft MCP server: read weft://docs/dsl-cheatsheet, then write an Weft DSL flowchart for checkout with cart, shipping, promo-code decision, payment, Stripe webhook, and confirmation. Call validate_openflow_dsl, fix any issues, then call create_viewer_url. Return the final DSL and viewer URL.
 ```
 
 For architecture diagrams:
 
 ```text
-Using weft: call analyze_codebase on /path/to/project, read weft://docs/dsl-cheatsheet, use find_icon for exact architecture icons, write OpenFlow DSL, validate it, then create a viewer URL.
+Using weft: call analyze_codebase on /path/to/project, read weft://docs/dsl-cheatsheet, use find_icon for exact architecture icons, write Weft DSL, validate it, then create a viewer URL.
 ```
 
 ---

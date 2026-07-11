@@ -289,7 +289,7 @@ Current formats and related capabilities include:
 - SVG export
 - JSON export
 - Mermaid export
-- OpenFlow DSL export
+- Weft DSL export
 - animated export / playback-related export
 
 ---

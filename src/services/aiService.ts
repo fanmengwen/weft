@@ -282,8 +282,8 @@ export async function generateDiagramFromChat(
     const modelId = resolveModelId(provider, modelIdSetting);
 
     const userPrompt = isEditMode && currentDSL
-        ? `User Request: ${newMessage}\n\nCURRENT DIAGRAM — output the complete updated OpenFlow DSL:\n${currentDSL}\n\nIMPORTANT: Preserve ALL unchanged node IDs and attributes exactly. Only modify what was requested.`
-        : `User Request: ${newMessage}\n\nGenerate a new OpenFlow DSL diagram.`;
+        ? `User Request: ${newMessage}\n\nCURRENT DIAGRAM — output the complete updated Weft DSL:\n${currentDSL}\n\nIMPORTANT: Preserve ALL unchanged node IDs and attributes exactly. Only modify what was requested.`
+        : `User Request: ${newMessage}\n\nGenerate a new Weft DSL diagram.`;
 
     if (provider === 'gemini') {
         return generateDiagramFromChatGemini(history, newMessage, currentDSL, imageBase64, apiKey, modelId, isEditMode, onChunk, signal, temperature);

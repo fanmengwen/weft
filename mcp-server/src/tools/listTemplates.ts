@@ -7,7 +7,7 @@ export function registerListTemplates(server: McpServer): void {
     {
       title: 'List starter templates',
       description:
-        'List built-in OpenFlow starter templates that can be loaded without any AI ' +
+        'List built-in Weft starter templates that can be loaded without any AI ' +
         'call. Returns names, titles, categories, and one-line summaries.',
     },
     async () => ({
