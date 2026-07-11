@@ -1,4 +1,4 @@
-# Contributing to OpenFlowKit
+# Contributing to Weft
 
 First off, thanks for taking the time to contribute! ❤️
 
@@ -18,7 +18,7 @@ All types of contributions are encouraged and valued. See the [Table of Contents
 
 > If you want to ask a question, we assume that you have read the available documentation.
 
-Before you ask a question, it is best to search for existing [Issues](https://github.com/Vrun-design/OpenFlowKit/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
+Before you ask a question, it is best to search for existing [Issues](https://github.com/fanmengwen/weft/issues) that might help you. In case you have found a suitable issue and still need clarification, you can write your question in this issue. It is also advisable to search the internet for answers first.
 
 ## I Want To Contribute
 
@@ -39,7 +39,7 @@ A good bug report shouldn't leave others needing to chase you up for more inform
 
 ### Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for OpenFlowKit, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community to understand your suggestion and find related suggestions.
+This section guides you through submitting an enhancement suggestion for Weft, **including completely new features and minor improvements to existing functionality**. Following these guidelines will help maintainers and the community to understand your suggestion and find related suggestions.
 
 ### Your First Code Contribution
 

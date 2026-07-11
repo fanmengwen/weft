@@ -1,4 +1,4 @@
-# OpenFlowKit Architecture Guide
+# Weft Architecture Guide
 
 This document is a current high-level map of the codebase. It is intentionally narrower than a full design spec and should stay aligned with the implementation in `src/`.
 
@@ -6,7 +6,7 @@ This document is a current high-level map of the codebase. It is intentionally n
 
 ## Overview
 
-OpenFlowKit is a local-first diagram editor built with:
+Weft is a local-first diagram editor built with:
 
 - React 19
 - TypeScript 5

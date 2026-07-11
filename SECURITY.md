@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-OpenFlowKit is currently a pre-1.0 project. Security fixes are applied on a best-effort basis to the latest active code line only.
+Weft is currently a pre-1.0 project. Security fixes are applied on a best-effort basis to the latest active code line only.
 
 Current support policy:
 
@@ -32,7 +32,7 @@ When possible, include:
 
 ## Scope Notes
 
-OpenFlowKit is a browser-first, local-first application. Relevant security areas include:
+Weft is a browser-first, local-first application. Relevant security areas include:
 
 - persisted local application data
 - imported/exported files
@@ -42,7 +42,7 @@ OpenFlowKit is a browser-first, local-first application. Relevant security areas
 
 ## Data Storage Model
 
-OpenFlowKit is **fully local-first**. No diagram data, API keys, or user content is sent to OpenFlowKit servers. There are no OpenFlowKit servers.
+Weft is **fully local-first**. No diagram data, API keys, or user content is sent to Weft servers. There are no Weft servers.
 
 ### Diagram data
 
@@ -50,10 +50,10 @@ Diagram state is persisted in **IndexedDB** (with localStorage as a fallback). I
 
 ### AI provider API keys (BYOK)
 
-OpenFlowKit uses a Bring-Your-Own-Key (BYOK) model:
+Weft uses a Bring-Your-Own-Key (BYOK) model:
 
 - API keys are entered in **Settings → AI** and stored in **localStorage** under a dedicated namespace.
-- Keys are sent **directly from your browser to the AI provider** (OpenAI, Anthropic, Google, etc.) — not proxied through any OpenFlowKit service.
+- Keys are sent **directly from your browser to the AI provider** (OpenAI, Anthropic, Google, etc.) — not proxied through any Weft service.
 - Keys are never logged, never included in exports, and never transmitted to anyone other than the provider you configured.
 
 **Important:** Do not put API keys in `.env` or `.env.local` files. The settings modal is the only supported key entry point. Keys set via environment variables are a development-only convenience and should not be used in shared or deployed environments.
