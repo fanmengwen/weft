@@ -4,8 +4,8 @@ import type { AISettings } from './types';
 import { parsePersistedAISettingsJson } from './aiSettingsSchemas';
 import { reportStorageTelemetry } from '@/services/storage/storageTelemetry';
 
-const AI_SETTINGS_STORAGE_KEY = 'openflowkit-ai-settings';
-const AI_SETTINGS_SECRET_STORAGE_KEY = 'openflowkit-ai-settings-secret';
+const AI_SETTINGS_STORAGE_KEY = 'weft-ai-settings';
+const AI_SETTINGS_SECRET_STORAGE_KEY = 'weft-ai-settings-secret';
 const SECRET_PAYLOAD_VERSION = 'v1';
 
 function getStorageSafe(storageType: 'local' | 'session'): Storage | null {

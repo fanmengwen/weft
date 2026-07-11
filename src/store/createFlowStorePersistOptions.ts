@@ -13,7 +13,7 @@ export function createFlowStorePersistOptions(): PersistOptions<
   PersistedFlowStateHydration
 > {
   return {
-    name: 'openflowkit-storage',
+    name: 'weft-storage',
     storage: createFlowPersistStorage() as PersistStorage<PersistedFlowStateHydration>,
     version: 2,
     migrate: (persistedState: unknown) => migratePersistedFlowState(persistedState),

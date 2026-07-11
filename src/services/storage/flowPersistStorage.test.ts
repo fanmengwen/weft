@@ -67,8 +67,8 @@ describe('flowPersistStorage', () => {
     } as unknown as Storage;
 
     const storage = createFlowPersistStorage();
-    const firstWrite = storage.setItem('openflowkit-storage', { state: { activeTabId: 'tab-1' } as never, version: 1 });
-    const secondWrite = storage.setItem('openflowkit-storage', { state: { activeTabId: 'tab-2' } as never, version: 1 });
+    const firstWrite = storage.setItem('weft-storage', { state: { activeTabId: 'tab-1' } as never, version: 1 });
+    const secondWrite = storage.setItem('weft-storage', { state: { activeTabId: 'tab-2' } as never, version: 1 });
 
     expect(setItem).not.toHaveBeenCalled();
 
@@ -93,8 +93,8 @@ describe('flowPersistStorage', () => {
     } as unknown as Storage;
 
     const storage = createFlowPersistStorage();
-    const write = storage.setItem('openflowkit-storage', { state: { activeTabId: 'tab-2' } as never, version: 1 });
-    const read = storage.getItem('openflowkit-storage');
+    const write = storage.setItem('weft-storage', { state: { activeTabId: 'tab-2' } as never, version: 1 });
+    const read = storage.getItem('weft-storage');
 
     await Promise.all([write, read]);
 

@@ -55,7 +55,7 @@ import {
 } from './fallbackStorage';
 
 const WORKSPACE_META_ID = 'workspace';
-const AI_SETTINGS_STORAGE_KEY = 'openflowkit-ai-settings';
+const AI_SETTINGS_STORAGE_KEY = 'weft-ai-settings';
 const PERSISTENT_AI_SETTINGS_RECORD_ID = 'default';
 
 export interface PersistedChatThread {

@@ -5,10 +5,10 @@ import { DEFAULT_AI_SETTINGS } from './defaults';
 
 describe('aiSettings', () => {
   afterEach(() => {
-    localStorage.removeItem('openflowkit-ai-settings');
-    localStorage.removeItem('openflowkit-ai-settings-secret');
-    sessionStorage.removeItem('openflowkit-ai-settings');
-    sessionStorage.removeItem('openflowkit-ai-settings-secret');
+    localStorage.removeItem('weft-ai-settings');
+    localStorage.removeItem('weft-ai-settings-secret');
+    sessionStorage.removeItem('weft-ai-settings');
+    sessionStorage.removeItem('weft-ai-settings-secret');
   });
 
   it('falls back to defaults for invalid provider values', () => {
@@ -59,8 +59,8 @@ describe('aiSettings', () => {
       customHeaders: [{ key: ' Authorization ', value: 'Bearer token', enabled: true }],
     });
 
-    expect(localStorage.getItem('openflowkit-ai-settings')).not.toContain('secret');
-    expect(localStorage.getItem('openflowkit-ai-settings-secret')).toBeTruthy();
+    expect(localStorage.getItem('weft-ai-settings')).not.toContain('secret');
+    expect(localStorage.getItem('weft-ai-settings-secret')).toBeTruthy();
 
     expect(loadPersistedAISettings()).toEqual({
       provider: 'custom',
@@ -73,7 +73,7 @@ describe('aiSettings', () => {
   });
 
   it('persists session-only AI settings in sessionStorage and clears local copy', () => {
-    localStorage.setItem('openflowkit-ai-settings', JSON.stringify({
+    localStorage.setItem('weft-ai-settings', JSON.stringify({
       provider: 'gemini',
       storageMode: 'local',
       apiKey: 'local-secret',
@@ -88,19 +88,19 @@ describe('aiSettings', () => {
       customHeaders: [],
     });
 
-    expect(localStorage.getItem('openflowkit-ai-settings')).toBeNull();
-    expect(JSON.parse(sessionStorage.getItem('openflowkit-ai-settings') ?? '{}')).toMatchObject({
+    expect(localStorage.getItem('weft-ai-settings')).toBeNull();
+    expect(JSON.parse(sessionStorage.getItem('weft-ai-settings') ?? '{}')).toMatchObject({
       provider: 'openai',
       storageMode: 'session',
       model: 'gpt-4o',
     });
-    expect(sessionStorage.getItem('openflowkit-ai-settings')).not.toContain('session-secret');
-    expect(sessionStorage.getItem('openflowkit-ai-settings-secret')).toBeTruthy();
+    expect(sessionStorage.getItem('weft-ai-settings')).not.toContain('session-secret');
+    expect(sessionStorage.getItem('weft-ai-settings-secret')).toBeTruthy();
     expect(loadPersistedAISettings().storageMode).toBe('session');
   });
 
   it('reloads legacy plaintext api keys for compatibility while rewriting newer writes to secret storage', () => {
-    localStorage.setItem('openflowkit-ai-settings', JSON.stringify({
+    localStorage.setItem('weft-ai-settings', JSON.stringify({
       provider: 'gemini',
       storageMode: 'local',
       apiKey: 'legacy-secret',
@@ -118,12 +118,12 @@ describe('aiSettings', () => {
 
     persistAISettings(loadPersistedAISettings());
 
-    expect(localStorage.getItem('openflowkit-ai-settings')).not.toContain('legacy-secret');
-    expect(localStorage.getItem('openflowkit-ai-settings-secret')).toBeTruthy();
+    expect(localStorage.getItem('weft-ai-settings')).not.toContain('legacy-secret');
+    expect(localStorage.getItem('weft-ai-settings-secret')).toBeTruthy();
   });
 
   it('ignores malformed persisted AI settings payloads', () => {
-    localStorage.setItem('openflowkit-ai-settings', JSON.stringify({
+    localStorage.setItem('weft-ai-settings', JSON.stringify({
       provider: 'invalid-provider',
       storageMode: 'local',
       model: 42,
@@ -133,12 +133,12 @@ describe('aiSettings', () => {
   });
 
   it('can clear persisted AI settings from both storage buckets', () => {
-    localStorage.setItem('openflowkit-ai-settings', JSON.stringify({
+    localStorage.setItem('weft-ai-settings', JSON.stringify({
       provider: 'gemini',
       storageMode: 'local',
       apiKey: 'local-secret',
     }));
-    sessionStorage.setItem('openflowkit-ai-settings', JSON.stringify({
+    sessionStorage.setItem('weft-ai-settings', JSON.stringify({
       provider: 'openai',
       storageMode: 'session',
       apiKey: 'session-secret',
@@ -146,8 +146,8 @@ describe('aiSettings', () => {
 
     clearPersistedAISettings();
 
-    expect(localStorage.getItem('openflowkit-ai-settings')).toBeNull();
-    expect(sessionStorage.getItem('openflowkit-ai-settings')).toBeNull();
+    expect(localStorage.getItem('weft-ai-settings')).toBeNull();
+    expect(sessionStorage.getItem('weft-ai-settings')).toBeNull();
     expect(loadPersistedAISettings()).toEqual(DEFAULT_AI_SETTINGS);
   });
 });
