@@ -229,7 +229,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       properties: {
         updateNodeData: operations.updateNodeData,
         applyBulkNodeData: operations.applyBulkNodeData,
-        updateNodeType: operations.updateNodeType,
         updateEdge: operations.updateEdge,
         deleteNode: operations.deleteNode,
         duplicateNode: operations.duplicateNode,

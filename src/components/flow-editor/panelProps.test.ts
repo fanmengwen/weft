@@ -79,7 +79,6 @@ describe('buildFlowEditorPanelsProps', () => {
       selectedEdge: edges[0],
       updateNodeData: vi.fn(),
       applyBulkNodeData: vi.fn(),
-      updateNodeType: vi.fn(),
       updateEdge: vi.fn(),
       deleteNode: vi.fn(),
       duplicateNode: vi.fn(),

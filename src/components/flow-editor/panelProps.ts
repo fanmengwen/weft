@@ -70,7 +70,6 @@ export interface PropertiesRailBuilderParams {
   selectedEdge: FlowEdge | null;
   updateNodeData: (id: string, data: Record<string, unknown>) => void;
   applyBulkNodeData: FlowEditorPanelsProps['properties']['onBulkChangeNodes'];
-  updateNodeType: (id: string, type: string) => void;
   updateEdge: (id: string, data: Record<string, unknown>) => void;
   deleteNode: (id: string) => void;
   duplicateNode: (id: string) => void;
@@ -232,7 +231,6 @@ export function buildPropertiesRailProps({
   selectedEdge,
   updateNodeData,
   applyBulkNodeData,
-  updateNodeType,
   updateEdge,
   deleteNode,
   duplicateNode,
@@ -253,7 +251,6 @@ export function buildPropertiesRailProps({
     selectedEdge,
     onChangeNode: updateNodeData,
     onBulkChangeNodes: applyBulkNodeData,
-    onChangeNodeType: updateNodeType,
     onChangeEdge: updateEdge,
     onDeleteNode: deleteNode,
     onDuplicateNode: duplicateNode,

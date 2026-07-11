@@ -172,7 +172,6 @@ export interface PropertiesRailProps {
   selectedEdge: FlowEdge | null;
   onChangeNode: (id: string, data: Partial<NodeData>) => void;
   onBulkChangeNodes: React.ComponentProps<typeof PropertiesPanelComponent>['onBulkChangeNodes'];
-  onChangeNodeType: (id: string, type: string) => void;
   onChangeEdge: (id: string, data: Partial<EdgeData>) => void;
   onDeleteNode: (id: string) => void;
   onDuplicateNode: (id: string) => void;
@@ -427,7 +426,6 @@ export function FlowEditorPanels({
                 selectedEdge={properties.selectedEdge}
                 onChangeNode={properties.onChangeNode}
                 onBulkChangeNodes={properties.onBulkChangeNodes}
-                onChangeNodeType={properties.onChangeNodeType}
                 onChangeEdge={properties.onChangeEdge}
                 onDeleteNode={properties.onDeleteNode}
                 onDuplicateNode={properties.onDuplicateNode}

@@ -19,7 +19,6 @@ interface PropertiesPanelProps {
     labelPrefix?: string,
     labelSuffix?: string
   ) => number;
-  onChangeNodeType: (id: string, type: string) => void;
   onChangeEdge: (id: string, updates: Partial<Edge>) => void;
   onDeleteNode: (id: string) => void;
   onDuplicateNode: (id: string) => void;

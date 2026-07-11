@@ -121,14 +121,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
     [recordHistory, setNodes]
   );
 
-  const updateNodeType = useCallback(
-    (id: string, type: string) => {
-      recordHistory();
-      setNodes((nds) => nds.map((node) => (node.id === id ? { ...node, type } : node)));
-    },
-    [setNodes, recordHistory]
-  );
-
   const updateNodeZIndex = useCallback(
     (id: string, action: 'front' | 'back') => {
       recordHistory();
@@ -254,7 +246,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
   return {
     updateNodeData,
     applyBulkNodeData,
-    updateNodeType,
     updateNodeZIndex,
     deleteNode,
     duplicateNode,

@@ -98,7 +98,6 @@ const baseProps = {
     selectedEdge: null,
     onChangeNode: vi.fn(),
     onBulkChangeNodes: vi.fn(),
-    onChangeNodeType: vi.fn(),
     onChangeEdge: vi.fn(),
     onDeleteNode: vi.fn(),
     onDuplicateNode: vi.fn(),
