@@ -1,6 +1,7 @@
 import type { ReactElement, RefObject } from 'react';
 import {
   AlertTriangle,
+  ArrowUp,
   Check,
   Crosshair,
   Info,
@@ -226,7 +227,6 @@ interface ComposerSectionProps {
   placeholder: string;
   isGenerating: boolean;
   isInputEmpty: boolean;
-  isBeveled: boolean;
   aiReadiness: AIReadinessState;
   lastError: string | null;
   fileInputRef: RefObject<HTMLInputElement | null>;
@@ -241,12 +241,14 @@ interface ComposerSectionProps {
   onCancelGeneration: () => void;
   onSubmit: () => void;
   sendButtonLabel: string;
-  sendButtonIcon: ReactElement;
-  getGenerationModeButtonClassName: (isActive: boolean) => string;
-  getInfoIconClassName: (isActive: boolean) => string;
-  getPrimaryComposerClassName: (isInputEmpty: boolean, isBeveled: boolean) => string;
   t: TranslateFn;
 }
+
+const GENERATION_MODE_ACTIVE_CLASS =
+  'flex flex-1 items-center justify-center gap-1 py-[5px] text-center text-[12.5px] font-semibold text-[var(--wf-text)] bg-white rounded-[7px] shadow-[0_1px_2px_rgba(16,24,40,0.10)]';
+const GENERATION_MODE_INACTIVE_CLASS =
+  'flex flex-1 items-center justify-center gap-1 py-[5px] text-center text-[12.5px] text-[var(--wf-text-label)] rounded-[7px]';
+const INFO_ICON_CLASS = 'h-3.5 w-3.5 focus:outline-none text-[var(--wf-text-label)]';
 
 function isLikelyNetworkFailure(message: string): boolean {
   const normalized = message.toLowerCase();
@@ -333,7 +335,6 @@ export function ComposerSection({
   placeholder,
   isGenerating,
   isInputEmpty,
-  isBeveled,
   aiReadiness,
   lastError,
   fileInputRef,
@@ -348,14 +349,10 @@ export function ComposerSection({
   onCancelGeneration,
   onSubmit,
   sendButtonLabel,
-  sendButtonIcon,
-  getGenerationModeButtonClassName,
-  getInfoIconClassName,
-  getPrimaryComposerClassName,
   t,
 }: ComposerSectionProps): ReactElement {
   return (
-    <div className="shrink-0 border-t border-[var(--color-brand-border)] px-1 pt-3">
+    <div className="mt-2.5">
       {lastError ? (
         <AIRecoveryBanner
           aiReadiness={aiReadiness}
@@ -367,10 +364,15 @@ export function ComposerSection({
         />
       ) : null}
       {nodeCount > 0 ? (
-        <div className="mb-3 flex rounded-[var(--radius-md)] border border-[var(--color-brand-border)]/80 bg-[var(--brand-background)]/80 p-1">
+        <div className="mb-3 flex bg-[#F0F2F5] rounded-[9px] p-0.5 gap-0.5">
           <button
+            type="button"
             onClick={() => onSetGenerationMode('edit')}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-[var(--radius-sm)] py-1.5 text-[13px] font-semibold transition-all ${getGenerationModeButtonClassName(effectiveGenerationMode === 'edit')}`}
+            className={
+              effectiveGenerationMode === 'edit'
+                ? GENERATION_MODE_ACTIVE_CLASS
+                : GENERATION_MODE_INACTIVE_CLASS
+            }
             aria-pressed={effectiveGenerationMode === 'edit'}
           >
             {t('commandBar.aiStudio.editCurrent', 'Edit current')}
@@ -379,12 +381,17 @@ export function ComposerSection({
               side="top"
               className="flex items-center"
             >
-              <Info className={getInfoIconClassName(effectiveGenerationMode === 'edit')} />
+              <Info className={INFO_ICON_CLASS} />
             </Tooltip>
           </button>
           <button
+            type="button"
             onClick={() => onSetGenerationMode('create')}
-            className={`flex flex-1 items-center justify-center gap-1.5 rounded-[var(--radius-sm)] py-1.5 text-[13px] font-semibold transition-all ${getGenerationModeButtonClassName(effectiveGenerationMode === 'create')}`}
+            className={
+              effectiveGenerationMode === 'create'
+                ? GENERATION_MODE_ACTIVE_CLASS
+                : GENERATION_MODE_INACTIVE_CLASS
+            }
             aria-pressed={effectiveGenerationMode === 'create'}
           >
             {t('commandBar.aiStudio.createNew', 'Create new')}
@@ -393,7 +400,7 @@ export function ComposerSection({
               side="top"
               className="flex items-center"
             >
-              <Info className={getInfoIconClassName(effectiveGenerationMode === 'create')} />
+              <Info className={INFO_ICON_CLASS} />
             </Tooltip>
           </button>
         </div>
@@ -427,7 +434,7 @@ export function ComposerSection({
         </div>
       ) : null}
 
-      <div className="relative flex w-full flex-col rounded-[var(--brand-radius)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] shadow-sm transition-[border-color,box-shadow] focus-within:border-[var(--brand-primary)] focus-within:shadow-[0_0_0_1px_var(--brand-primary),0_0_0_4px_color-mix(in_srgb,var(--brand-primary)_16%,transparent)]">
+      <div className="flex w-full flex-col rounded-[10px] border border-[#D8DCE2] bg-white focus-within:border-[var(--wf-acc)]">
         <textarea
           value={prompt}
           onChange={(event) => {
@@ -438,32 +445,32 @@ export function ComposerSection({
           }}
           onKeyDown={onPromptKeyDown}
           placeholder={placeholder}
-          className="w-full resize-none rounded-[var(--brand-radius)] bg-transparent px-4 pb-12 pt-4 text-sm text-[var(--brand-text)] placeholder-[var(--brand-secondary)] outline-none custom-scrollbar"
-          style={{ minHeight: '100px', maxHeight: '180px' }}
+          className="w-full resize-none bg-transparent px-3 pt-2.5 pb-1 text-[13px] leading-[1.55] text-[var(--wf-text)] placeholder-[#98A1AE] outline-none custom-scrollbar"
+          style={{ minHeight: '76px', maxHeight: '180px' }}
           rows={3}
         />
-        <div className="absolute bottom-2 left-2 flex items-center gap-1">
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={onImageSelect}
-          />
-          <button
-            onClick={onAttachImage}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-[var(--brand-secondary)] transition-colors hover:bg-[var(--brand-background)] hover:text-[var(--brand-secondary)]"
-            title={t('commandBar.aiStudio.attachImage', 'Attach image')}
-            type="button"
-          >
-            <Paperclip className="h-4 w-4" />
-          </button>
-        </div>
-        <div className="absolute bottom-2 right-2 flex items-center gap-1.5">
+        <div className="flex items-center justify-between px-2 pb-2 pt-1">
+          <div className="flex items-center gap-1">
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              ref={fileInputRef}
+              onChange={onImageSelect}
+            />
+            <button
+              onClick={onAttachImage}
+              className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[#8B93A0] hover:bg-[#F3F5F8]"
+              title={t('commandBar.aiStudio.attachImage', 'Attach image')}
+              type="button"
+            >
+              <Paperclip className="h-3.5 w-3.5" />
+            </button>
+          </div>
           {isGenerating ? (
             <button
               onClick={onCancelGeneration}
-              className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-red-500 text-white shadow-sm transition-all hover:bg-red-600 active:scale-95"
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-[8px] bg-[#C4443C] text-white hover:brightness-[0.94]"
               aria-label={t('commandBar.aiStudio.cancelGeneration', 'Cancel generation')}
               type="button"
             >
@@ -473,14 +480,14 @@ export function ComposerSection({
             <button
               onClick={onSubmit}
               disabled={isInputEmpty}
-              className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all flex-shrink-0 ${getPrimaryComposerClassName(isInputEmpty, isBeveled)} ${!isInputEmpty ? 'active:scale-95' : ''}`}
+              className="flex h-[30px] w-[30px] items-center justify-center rounded-[8px] bg-[var(--wf-acc)] text-white hover:brightness-[0.94] disabled:cursor-not-allowed disabled:opacity-50"
               aria-label={t('flowEditor.emptyState.generateWithFlowpilot', {
                 defaultValue: 'Generate with AI',
               })}
               title={sendButtonLabel}
               type="button"
             >
-              {sendButtonIcon}
+              <ArrowUp className="h-3.5 w-3.5" />
             </button>
           )}
         </div>

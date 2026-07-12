@@ -1,10 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
-import {
-  ArrowUp,
-  Edit3,
-} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { IS_BEVELED } from '@/lib/brand';
 import type { ChatMessage } from '@/services/aiService';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
 import type { ImportDiff } from '@/hooks/useAIGeneration';
@@ -84,26 +79,6 @@ function getPromptPlaceholder(
   );
 }
 
-function getPrimaryComposerClassName(isInputEmpty: boolean, isBeveled: boolean): string {
-  if (isInputEmpty) {
-    return 'cursor-not-allowed border-[var(--color-brand-border)] bg-[var(--brand-background)] text-[var(--brand-secondary)] shadow-none';
-  }
-
-  return `border-[color-mix(in_srgb,var(--brand-primary),black_18%)] bg-[var(--brand-primary)] text-white shadow-sm hover:-translate-y-px hover:bg-[var(--brand-primary-600)] hover:shadow-md ${isBeveled ? 'btn-beveled' : ''}`;
-}
-
-function getGenerationModeButtonClassName(isActive: boolean): string {
-  if (isActive) {
-    return 'bg-[var(--brand-surface)] text-orange-600 border border-orange-200 shadow-sm';
-  }
-
-  return 'text-[var(--brand-secondary)] hover:bg-[var(--brand-surface)]/50 hover:text-[var(--brand-text)] border border-transparent';
-}
-
-function getInfoIconClassName(isActive: boolean): string {
-  return `h-3.5 w-3.5 focus:outline-none ${isActive ? 'text-orange-400' : 'text-[var(--brand-secondary)]'}`;
-}
-
 export function StudioAIPanel({
   onAIGenerate,
   isGenerating,
@@ -125,7 +100,6 @@ export function StudioAIPanel({
   onInitialPromptConsumed,
 }: StudioAIPanelProps): ReactElement {
   const { t } = useTranslation();
-  const isBeveled = IS_BEVELED;
   const [generationMode, setGenerationMode] = useState<AIGenerationMode>(
     nodeCount === 0 ? 'create' : 'edit'
   );
@@ -160,11 +134,6 @@ export function StudioAIPanel({
   const sendButtonLabel = isEditMode
     ? t('commandBar.aiStudio.applyEdit', 'Apply AI edit')
     : t('commandBar.aiStudio.generateDiagram', 'Generate diagram');
-  const sendButtonIcon = isEditMode ? (
-    <Edit3 className="h-4 w-4" />
-  ) : (
-    <ArrowUp className="h-4 w-4" />
-  );
 
   async function submitPrompt(promptText?: string): Promise<void> {
     const resolvedPrompt = promptText ?? prompt;
@@ -235,7 +204,6 @@ export function StudioAIPanel({
             )}
             isGenerating={isGenerating}
             isInputEmpty={isInputEmpty}
-            isBeveled={isBeveled}
             aiReadiness={aiReadiness}
             lastError={lastError}
             fileInputRef={fileInputRef}
@@ -255,10 +223,6 @@ export function StudioAIPanel({
             onCancelGeneration={onCancelGeneration}
             onSubmit={handleSubmit}
             sendButtonLabel={sendButtonLabel}
-            sendButtonIcon={sendButtonIcon}
-            getGenerationModeButtonClassName={getGenerationModeButtonClassName}
-            getInfoIconClassName={getInfoIconClassName}
-            getPrimaryComposerClassName={getPrimaryComposerClassName}
             t={t}
           />
         </div>
