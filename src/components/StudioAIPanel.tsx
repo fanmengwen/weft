@@ -213,7 +213,6 @@ export function StudioAIPanel({
             pendingDiff={pendingDiff}
             nodeCount={nodeCount}
             edgeCount={edgeCount}
-            isCanvasEmpty={isCanvasEmpty}
             canGenerate={aiReadiness.canGenerate}
             onOpenAISettings={openAISettings}
             t={t}

@@ -113,7 +113,6 @@ interface StatusSectionProps {
   pendingDiff: ImportDiff | null;
   nodeCount: number;
   edgeCount: number;
-  isCanvasEmpty: boolean;
   canGenerate: boolean;
   onOpenAISettings: () => void;
   t: TranslateFn;
@@ -128,16 +127,13 @@ function getLastConversationalModelItem(
       continue;
     }
 
-    if (item.type === 'assistant_error') {
-      return item;
-    }
+    const conversational =
+      item.type === 'assistant_lookup_result' ||
+      item.type === 'assistant_recommendation' ||
+      item.type === 'assistant_error' ||
+      (item.type === 'assistant_plan' && item.responseMode === 'clarification');
 
-    if (item.type === 'assistant_plan') {
-      const mode = item.responseMode ?? item.plan?.mode;
-      if (mode === 'answer' || mode === 'clarification') {
-        return item;
-      }
-    }
+    return conversational ? item : null;
   }
 
   return null;
@@ -156,7 +152,6 @@ export function StatusSection({
   pendingDiff,
   nodeCount,
   edgeCount,
-  isCanvasEmpty: _isCanvasEmpty,
   canGenerate,
   onOpenAISettings,
   t,

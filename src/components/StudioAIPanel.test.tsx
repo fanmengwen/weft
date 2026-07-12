@@ -4,6 +4,12 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { StudioAIPanel } from './StudioAIPanel';
 import { createStudioAIPanelTestT } from './studioAIPanelTestI18n';
+import {
+  createAnswerThreadItem,
+  createAppliedThreadItem,
+  createPlanThreadItem,
+} from '@/services/flowpilot/thread';
+import type { AgentPlan } from '@/services/flowpilot/types';
 
 const handleGenerateMock = vi.fn();
 
@@ -378,6 +384,115 @@ describe('StudioAIPanel', () => {
     expect(
       screen.getByText('Understanding the request and preparing a diagram preview.')
     ).toBeInTheDocument();
+  });
+
+  it('surfaces answer-mode lookup results instead of the routing plan summary', () => {
+    const localizedAnswer = 'Redis 适合作为 API 与数据库之间的缓存层。';
+    const answerPlan: AgentPlan = {
+      goal: 'Answer the user question',
+      mode: 'answer',
+      steps: ['lookup'],
+      requiresApproval: false,
+      intendedOutput: 'localized answer',
+      confidence: 0.9,
+      reasoningSummary: 'Routing to answer_question skill for direct lookup.',
+      skillId: 'answer_question',
+    };
+
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[
+          createPlanThreadItem(answerPlan),
+          createAnswerThreadItem(localizedAnswer, 'answer'),
+        ]}
+        nodeCount={0}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.getByText(localizedAnswer)).toBeInTheDocument();
+    expect(screen.queryByText(answerPlan.reasoningSummary)).not.toBeInTheDocument();
+  });
+
+  it('surfaces asset suggestion recommendations in the status section', () => {
+    const recommendation = 'Amazon ElastiCache 适合托管 Redis 缓存。';
+
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[createAnswerThreadItem(recommendation, 'asset_suggestions')]}
+        nodeCount={0}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.getByText(recommendation)).toBeInTheDocument();
+  });
+
+  it('shows the applied card instead of a stale conversational reply', () => {
+    const staleAnswer = '先前的解释不应再显示。';
+
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[
+          createAnswerThreadItem(staleAnswer, 'answer'),
+          createAppliedThreadItem(),
+        ]}
+        nodeCount={3}
+        edgeCount={1}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.getByText('已应用到画布')).toBeInTheDocument();
+    expect(screen.queryByText(staleAnswer)).not.toBeInTheDocument();
   });
 
   it('renders three labeled studio sections', () => {
