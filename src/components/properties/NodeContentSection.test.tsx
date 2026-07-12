@@ -84,4 +84,68 @@ describe('NodeContentSection', () => {
 
     expect(onChange).toHaveBeenCalledWith('node-1', { subLabel: 'y < 1' });
   });
+
+  it('renders annotation content fields without legacy font controls', () => {
+    const { container } = render(
+      <NodeContentSection
+        selectedNode={createNode({
+          type: 'annotation',
+          data: { label: 'Note', subLabel: 'Comment body', color: 'yellow' },
+        })}
+        onChange={vi.fn()}
+        embedded
+      />
+    );
+
+    expect(screen.getByText('文本内容')).toBeTruthy();
+    expect(screen.getByText('字号')).toBeTruthy();
+    expect(screen.getByText('便签色')).toBeTruthy();
+    expect(screen.getByDisplayValue('Comment body')).toBeTruthy();
+    expect(screen.getByRole('button', { name: '小' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '中' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '大' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '黄' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '绿' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: '蓝' })).toBeTruthy();
+    expect(container.querySelector('select')).toBeNull();
+    expect(screen.queryByTitle('Bold (Cmd+B)')).toBeNull();
+    expect(screen.queryByText('Secondary Style')).toBeNull();
+  });
+
+  it('writes fontSize and color from annotation content controls', () => {
+    const onChange = vi.fn();
+    render(
+      <NodeContentSection
+        selectedNode={createNode({
+          type: 'annotation',
+          data: { label: 'Note', subLabel: 'Body', color: 'yellow', fontSize: '12' },
+        })}
+        onChange={onChange}
+        embedded
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '大' }));
+    expect(onChange).toHaveBeenCalledWith('node-1', { fontSize: '18' });
+
+    fireEvent.click(screen.getByRole('button', { name: '绿' }));
+    expect(onChange).toHaveBeenCalledWith('node-1', { color: 'emerald' });
+  });
+
+  it('highlights the large font size segment when fontSize is 18', () => {
+    render(
+      <NodeContentSection
+        selectedNode={createNode({
+          type: 'annotation',
+          data: { label: 'Note', subLabel: 'Body', fontSize: '18' },
+        })}
+        onChange={vi.fn()}
+        embedded
+      />
+    );
+
+    const largeButton = screen.getByRole('button', { name: '大' });
+    expect(largeButton.className).toContain('bg-white');
+    expect(largeButton.className).toContain('font-semibold');
+  });
 });

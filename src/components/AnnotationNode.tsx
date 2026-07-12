@@ -125,7 +125,7 @@ function AnnotationNode({ id, data, selected }: LegacyNodeProps<NodeData>): Reac
               onCommit={subLabelEdit.commit}
               onKeyDown={subLabelEdit.handleKeyDown}
               className="font-medium leading-relaxed markdown-content flow-lod-secondary"
-              style={{ color: stickyTheme.bodyText, fontSize: '12px' }}
+              style={{ color: stickyTheme.bodyText, fontSize: `${data.fontSize || '12'}px` }}
               inputMode="multiline"
               isSelected={Boolean(selected)}
             />

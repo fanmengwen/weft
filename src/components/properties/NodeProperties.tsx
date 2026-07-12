@@ -2,7 +2,6 @@ import React, { useId, useState } from 'react';
 import { Node } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
-import { ColorPicker } from './ColorPicker';
 import { IconPicker, type ProviderIconSelection } from './IconPicker';
 import { ToneSwatch } from './ToneSwatch';
 import { NodeContentSection } from './NodeContentSection';
@@ -83,7 +82,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
 }) => {
   const isAnnotation = selectedNode.type === 'annotation';
   const isSection = selectedNode.type === 'section';
-  const isGroup = selectedNode.type === 'group';
   const normalizedIconData = normalizeNodeIconData(selectedNode.data);
   const isIconAssetNode = normalizedIconData?.assetPresentation === 'icon';
   const assetProvider = normalizedIconData?.assetProvider as DomainLibraryCategory | undefined;
@@ -91,12 +89,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
     typeof normalizedIconData?.assetCategory === 'string'
       ? normalizedIconData.assetCategory
       : undefined;
-  const supportsAdvancedColorTheme = ['process', 'start', 'end', 'decision', 'custom'].includes(
-    selectedNode.type || ''
-  );
-  const supportsColorMode =
-    supportsAdvancedColorTheme || isSection || isGroup;
-  const supportsCustomColor = supportsAdvancedColorTheme || isSection || isGroup || isAnnotation;
   const parentSectionId = getNodeParentId(selectedNode);
   const sectionActions = buildSectionActions({
     isSection,
@@ -184,84 +176,62 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         ) : null}
       </div>
 
-      <PropertiesGroupDivider />
+      {!isAnnotation ? (
+        <>
+          <PropertiesGroupDivider />
 
-      <div className="px-4">
-        <PropertiesAccordionHeader
-          label="外观"
-          isOpen={isAppearanceOpen}
-          onToggle={() => toggleSection('appearance')}
-          contentId={appearanceGroupId}
-          trailing={
-            !isAppearanceOpen ? (
-              <span
-                className="h-3.5 w-3.5 rounded-full border-2 border-white ring-1 ring-[#E1E4EA]"
-                style={{ background: toneVars.color }}
-              />
-            ) : null
-          }
-        />
-        {isAppearanceOpen ? (
-          <div id={appearanceGroupId} role="region" className="space-y-5 pb-4">
-            {!isAnnotation && !isIconAssetNode ? (
-              <ToneSwatch
-                selectedTone={resolveNodeTone(selectedNode)}
-                onSelect={(tone) => onChange(selectedNode.id, { tone })}
-              />
-            ) : null}
+          <div className="px-4">
+            <PropertiesAccordionHeader
+              label="外观"
+              isOpen={isAppearanceOpen}
+              onToggle={() => toggleSection('appearance')}
+              contentId={appearanceGroupId}
+              trailing={
+                !isAppearanceOpen ? (
+                  <span
+                    className="h-3.5 w-3.5 rounded-full border-2 border-white ring-1 ring-[#E1E4EA]"
+                    style={{ background: toneVars.color }}
+                  />
+                ) : null
+              }
+            />
+            {isAppearanceOpen ? (
+              <div id={appearanceGroupId} role="region" className="space-y-5 pb-4">
+                {!isIconAssetNode ? (
+                  <ToneSwatch
+                    selectedTone={resolveNodeTone(selectedNode)}
+                    onSelect={(tone) => onChange(selectedNode.id, { tone })}
+                  />
+                ) : null}
 
-            {isAnnotation ? (
-              <ColorPicker
-                selectedColor={selectedNode.data?.color}
-                selectedColorMode={selectedNode.data?.colorMode}
-                selectedCustomColor={selectedNode.data?.customColor}
-                onChange={(color) =>
-                  onChange(selectedNode.id, {
-                    color,
-                    ...(color === 'custom' ? {} : { customColor: undefined }),
-                  })
-                }
-                onColorModeChange={
-                  supportsColorMode
-                    ? (colorMode) => onChange(selectedNode.id, { colorMode })
-                    : undefined
-                }
-                onCustomColorChange={
-                  supportsCustomColor
-                    ? (customColor) => onChange(selectedNode.id, { color: 'custom', customColor })
-                    : undefined
-                }
-                allowModes={supportsColorMode}
-                allowCustom={supportsCustomColor}
-              />
-            ) : null}
-
-            {showIconPicker ? (
-              <div className="space-y-3">
-                <IconPicker
-                  selectedIcon={normalizedIconData?.icon}
-                  customIconUrl={normalizedIconData?.customIconUrl}
-                  selectedProvider={assetProvider}
-                  selectedProviderCategory={assetCategory}
-                  selectedProviderPackId={normalizedIconData?.archIconPackId as string | undefined}
-                  selectedProviderShapeId={normalizedIconData?.archIconShapeId as string | undefined}
-                  onSelectBuiltInIcon={handleBuiltInIconChange}
-                  onSelectProviderIcon={handleProviderIconChange}
-                  onCustomIconChange={handleCustomIconChange}
-                />
-                {isIconAssetNode && (assetProvider || assetCategory) ? (
-                  <div className="rounded-[var(--brand-radius)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-3 py-2">
-                    <div className="text-[11px] font-medium text-[var(--brand-secondary)]">
-                      {assetProvider ? getAssetCategoryDisplayName(assetProvider) : 'Icons'}
-                      {assetCategory ? ` • ${assetCategory}` : ''}
-                    </div>
+                {showIconPicker ? (
+                  <div className="space-y-3">
+                    <IconPicker
+                      selectedIcon={normalizedIconData?.icon}
+                      customIconUrl={normalizedIconData?.customIconUrl}
+                      selectedProvider={assetProvider}
+                      selectedProviderCategory={assetCategory}
+                      selectedProviderPackId={normalizedIconData?.archIconPackId as string | undefined}
+                      selectedProviderShapeId={normalizedIconData?.archIconShapeId as string | undefined}
+                      onSelectBuiltInIcon={handleBuiltInIconChange}
+                      onSelectProviderIcon={handleProviderIconChange}
+                      onCustomIconChange={handleCustomIconChange}
+                    />
+                    {isIconAssetNode && (assetProvider || assetCategory) ? (
+                      <div className="rounded-[var(--brand-radius)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-3 py-2">
+                        <div className="text-[11px] font-medium text-[var(--brand-secondary)]">
+                          {assetProvider ? getAssetCategoryDisplayName(assetProvider) : 'Icons'}
+                          {assetCategory ? ` • ${assetCategory}` : ''}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 ) : null}
               </div>
             ) : null}
           </div>
-        ) : null}
-      </div>
+        </>
+      ) : null}
 
       <PropertiesGroupDivider />
 

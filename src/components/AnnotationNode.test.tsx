@@ -110,4 +110,47 @@ describe('AnnotationNode sticky note repaint', () => {
     const purpleSurface = queryHTMLElement(purple.container, '[data-annotation-surface="1"]');
     expect(purpleSurface?.style.background).toBe('linear-gradient(180deg, rgb(254, 250, 235), rgb(253, 246, 220))');
   });
+
+  it('applies data.fontSize to annotation body text', () => {
+    const { container, unmount } = render(
+      <AnnotationNode
+        id="note-1"
+        type="annotation"
+        selected={false}
+        dragging={false}
+        zIndex={1}
+        data={{ label: 'Title', subLabel: 'Body copy', fontSize: '18' }}
+        isConnectable={true}
+        xPos={0}
+        yPos={0}
+        sourcePosition={Position.Right}
+        targetPosition={Position.Left}
+      />
+    );
+
+    const body = parentHTMLElement(screen.getByText('Body copy'));
+    expect(body?.style.fontSize).toBe('18px');
+
+    unmount();
+
+    render(
+      <AnnotationNode
+        id="note-2"
+        type="annotation"
+        selected={false}
+        dragging={false}
+        zIndex={1}
+        data={{ label: 'Title', subLabel: 'Default size' }}
+        isConnectable={true}
+        xPos={0}
+        yPos={0}
+        sourcePosition={Position.Right}
+        targetPosition={Position.Left}
+      />
+    );
+
+    const defaultBody = parentHTMLElement(screen.getByText('Default size'));
+    expect(defaultBody?.style.fontSize).toBe('12px');
+    expect(container).toBeTruthy();
+  });
 });

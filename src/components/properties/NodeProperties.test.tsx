@@ -134,7 +134,7 @@ describe('NodeProperties', () => {
     expect(screen.getByText('icon-picker')).toBeTruthy();
   });
 
-  it('renders color picker for annotation nodes without tone swatch', () => {
+  it('hides appearance group and color controls for annotation nodes', () => {
     render(
       <NodeProperties
         selectedNode={createNode({ type: 'annotation' })}
@@ -144,11 +144,12 @@ describe('NodeProperties', () => {
       />
     );
 
-    openAppearanceGroup();
-
-    expect(screen.getByText('color-picker')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: '外观' })).toBeNull();
+    expect(screen.queryByText('color-picker')).toBeNull();
     expect(screen.queryByText('tone-swatch')).toBeNull();
     expect(screen.queryByText('icon-picker')).toBeNull();
+    expect(screen.getByText('文本内容')).toBeTruthy();
+    expect(screen.getByText('便签色')).toBeTruthy();
   });
 
   it('renders icon picker for icon-asset nodes without tone swatch', () => {

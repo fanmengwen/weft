@@ -70,3 +70,16 @@ export const ANNOTATION_COLOR_OPTIONS = [
   { id: 'blue', label: 'Blue' },
 ] as const satisfies ReadonlyArray<{ id: Exclude<NodeColorKey, 'custom'>; label: string }>;
 
+export type AnnotationFontSizeBucket = 'small' | 'medium' | 'large';
+
+export function bucketAnnotationFontSize(fontSize?: string): AnnotationFontSizeBucket {
+  const parsed = parseInt(fontSize ?? '12', 10);
+  if (Number.isNaN(parsed) || parsed < 13) {
+    return 'small';
+  }
+  if (parsed < 16) {
+    return 'medium';
+  }
+  return 'large';
+}
+
