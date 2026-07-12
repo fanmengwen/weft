@@ -127,9 +127,8 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   const showEndDart = shouldRenderDartMarker(
     typeof markerEndConfig === 'object' ? markerEndConfig : undefined
   );
-  const showStartDart = shouldRenderDartMarker(
-    typeof markerStartConfig === 'object' ? markerStartConfig : undefined
-  );
+  const showStartDart =
+    typeof markerStartConfig === 'object' && shouldRenderDartMarker(markerStartConfig);
   const edgeStrokeColor = String(resolvedStyle.stroke ?? designSystem.colors.edge);
   const edgeStrokeWidth = Number(
     resolvedStyle.strokeWidth ?? designSystem.components.edge.strokeWidth

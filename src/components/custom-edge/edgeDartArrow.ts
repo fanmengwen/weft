@@ -9,12 +9,17 @@ export interface PathEndpoint {
   angleDeg: number;
 }
 
+export interface PathLengthMeasurable {
+  getTotalLength(): number;
+  getPointAtLength(distance: number): { x: number; y: number };
+}
+
 interface MarkerConfigLike {
   type?: MarkerType | string;
 }
 
 export function computePathEndpoint(
-  pathElement: SVGPathElement,
+  pathElement: PathLengthMeasurable,
   side: 'start' | 'end'
 ): PathEndpoint {
   const length = pathElement.getTotalLength();
