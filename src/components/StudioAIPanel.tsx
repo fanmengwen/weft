@@ -209,75 +209,88 @@ export function StudioAIPanel({
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
-      {pendingDiff ? (
-        <PendingDiffBanner
-          pendingDiff={pendingDiff}
-          onConfirmDiff={onConfirmDiff}
-          onDiscardDiff={onDiscardDiff}
-          t={t}
-        />
-      ) : null}
-        <ChatHistoryView
-        hasHistory={hasHistory}
-        chatMessages={chatMessages}
-        assistantThread={assistantThread}
-        isGenerating={isGenerating}
-        streamingText={streamingText}
-        retryCount={retryCount}
-        isCanvasEmpty={isCanvasEmpty}
-        canGenerate={aiReadiness.canGenerate}
-        examplePrompts={examplePrompts}
-        getExampleIconColor={getExampleIconColor}
-        onSelectExample={(examplePrompt) => {
-          setPrompt(examplePrompt);
-          void submitPrompt(examplePrompt);
-        }}
-        onOpenAISettings={openAISettings}
-        onClearChat={onClearChat}
-        scrollRef={scrollRef}
-        selectedNodeCount={selectedNodeCount}
-        t={t}
-      />
-      <ComposerSection
-        nodeCount={nodeCount}
-        selectedNodeCount={selectedNodeCount}
-        effectiveGenerationMode={effectiveGenerationMode}
-        selectedImage={selectedImage}
-        prompt={prompt}
-        placeholder={getPromptPlaceholder(
-          t,
-          effectiveGenerationMode,
-          nodeCount,
-          selectedNodeCount
-        )}
-        isGenerating={isGenerating}
-        isInputEmpty={isInputEmpty}
-        isBeveled={isBeveled}
-        aiReadiness={aiReadiness}
-        lastError={lastError}
-        fileInputRef={fileInputRef}
-        onSetGenerationMode={setGenerationMode}
-        onRemoveImage={() => setSelectedImage(null)}
-        onPromptChange={(value) => {
-          if (lastError) {
-            onClearError();
-          }
-          setPrompt(value);
-        }}
-        onPromptKeyDown={handleKeyDown}
-        onAttachImage={() => fileInputRef.current?.click()}
-        onImageSelect={handleImageSelect}
-        onOpenAISettings={openAISettings}
-        onClearError={onClearError}
-        onCancelGeneration={onCancelGeneration}
-        onSubmit={handleSubmit}
-        sendButtonLabel={sendButtonLabel}
-        sendButtonIcon={sendButtonIcon}
-        getGenerationModeButtonClassName={getGenerationModeButtonClassName}
-        getInfoIconClassName={getInfoIconClassName}
-        getPrimaryComposerClassName={getPrimaryComposerClassName}
-        t={t}
-      />
+      <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto px-4 pb-4 pt-3.5">
+        <div>
+          <div className="text-[11px] tracking-[0.05em] text-[#98A1AE]">导入内容</div>
+          {pendingDiff ? (
+            <PendingDiffBanner
+              pendingDiff={pendingDiff}
+              onConfirmDiff={onConfirmDiff}
+              onDiscardDiff={onDiscardDiff}
+              t={t}
+            />
+          ) : null}
+        </div>
+        <div className="-mx-4 mt-4 h-px bg-[#F0F2F5]" />
+        <div className="flex min-h-0 flex-col">
+          <div className="text-[11px] tracking-[0.05em] text-[#98A1AE]">状态</div>
+          <ChatHistoryView
+            hasHistory={hasHistory}
+            chatMessages={chatMessages}
+            assistantThread={assistantThread}
+            isGenerating={isGenerating}
+            streamingText={streamingText}
+            retryCount={retryCount}
+            isCanvasEmpty={isCanvasEmpty}
+            canGenerate={aiReadiness.canGenerate}
+            examplePrompts={examplePrompts}
+            getExampleIconColor={getExampleIconColor}
+            onSelectExample={(examplePrompt) => {
+              setPrompt(examplePrompt);
+              void submitPrompt(examplePrompt);
+            }}
+            onOpenAISettings={openAISettings}
+            onClearChat={onClearChat}
+            scrollRef={scrollRef}
+            selectedNodeCount={selectedNodeCount}
+            t={t}
+          />
+        </div>
+        <div className="-mx-4 mt-4 h-px bg-[#F0F2F5]" />
+        <div>
+          <div className="text-[11px] tracking-[0.05em] text-[#98A1AE]">AI 修改</div>
+          <ComposerSection
+            nodeCount={nodeCount}
+            selectedNodeCount={selectedNodeCount}
+            effectiveGenerationMode={effectiveGenerationMode}
+            selectedImage={selectedImage}
+            prompt={prompt}
+            placeholder={getPromptPlaceholder(
+              t,
+              effectiveGenerationMode,
+              nodeCount,
+              selectedNodeCount
+            )}
+            isGenerating={isGenerating}
+            isInputEmpty={isInputEmpty}
+            isBeveled={isBeveled}
+            aiReadiness={aiReadiness}
+            lastError={lastError}
+            fileInputRef={fileInputRef}
+            onSetGenerationMode={setGenerationMode}
+            onRemoveImage={() => setSelectedImage(null)}
+            onPromptChange={(value) => {
+              if (lastError) {
+                onClearError();
+              }
+              setPrompt(value);
+            }}
+            onPromptKeyDown={handleKeyDown}
+            onAttachImage={() => fileInputRef.current?.click()}
+            onImageSelect={handleImageSelect}
+            onOpenAISettings={openAISettings}
+            onClearError={onClearError}
+            onCancelGeneration={onCancelGeneration}
+            onSubmit={handleSubmit}
+            sendButtonLabel={sendButtonLabel}
+            sendButtonIcon={sendButtonIcon}
+            getGenerationModeButtonClassName={getGenerationModeButtonClassName}
+            getInfoIconClassName={getInfoIconClassName}
+            getPrimaryComposerClassName={getPrimaryComposerClassName}
+            t={t}
+          />
+        </div>
+      </div>
     </div>
   );
 }

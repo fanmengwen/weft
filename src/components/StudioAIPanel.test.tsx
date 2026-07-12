@@ -482,4 +482,35 @@ describe('StudioAIPanel', () => {
     expect(screen.queryByText('Architecture Group Corporate Data Center')).not.toBeInTheDocument();
     expect(screen.getByText('导入已就绪，请检查变更后再应用')).toBeInTheDocument();
   });
+
+  it('renders three labeled studio sections', () => {
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[]}
+        onClearChat={vi.fn()}
+        nodeCount={0}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.getByText('导入内容')).toBeInTheDocument();
+    expect(screen.getByText('状态')).toBeInTheDocument();
+    expect(screen.getByText('AI 修改')).toBeInTheDocument();
+  });
 });
