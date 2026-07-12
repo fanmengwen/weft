@@ -119,7 +119,7 @@ export function StudioPanel({
                 </button>
             )}
 
-            <SidebarBody scrollable={false} className="px-4 py-3">
+            <SidebarBody scrollable={false} padded={false}>
                 <Suspense fallback={null}>
                     <LazyStudioAIPanel
                         onAIGenerate={onAIGenerate}

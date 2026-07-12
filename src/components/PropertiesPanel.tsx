@@ -85,7 +85,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   if (isSingleNode) {
     return (
       <SidebarShell>
-        <SidebarBody className="space-y-5 px-0 py-3">
+        <SidebarBody padded={false} className="space-y-5 pb-3">
           <DiagramNodePropertiesRouter
             selectedNode={selectedNode}
             onChange={onChangeNode}

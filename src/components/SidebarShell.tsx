@@ -24,6 +24,7 @@ interface SidebarBodyProps {
   children: React.ReactNode;
   className?: string;
   scrollable?: boolean;
+  padded?: boolean;
 }
 
 interface SidebarSegmentedTabsProps {
@@ -88,13 +89,14 @@ export function SidebarBody({
   children,
   className = '',
   scrollable = true,
+  padded = true,
 }: SidebarBodyProps): React.ReactElement {
   const overflowClassName = scrollable ? 'overflow-y-auto' : 'overflow-hidden';
+  const base = `min-h-0 flex-1 ${overflowClassName} custom-scrollbar`;
+  const paddingClass = padded ? 'px-4 py-3' : '';
 
   return (
-    <div
-      className={`min-h-0 flex-1 ${overflowClassName} px-4 py-3 custom-scrollbar ${className}`.trim()}
-    >
+    <div className={`${base} ${paddingClass} ${className}`.trim().replace(/\s+/g, ' ')}>
       {children}
     </div>
   );
