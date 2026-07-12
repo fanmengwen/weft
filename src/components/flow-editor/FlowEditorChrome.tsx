@@ -2,10 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import type { FlowEditorPanelsProps } from '@/components/FlowEditorPanels';
 import type { CinematicExportRequest } from '@/services/export/cinematicExport';
-import type {
-  CollaborationRemotePresence,
-  FlowEditorCollaborationTopNavState,
-} from '@/hooks/useFlowEditorCollaboration';
+import type { CollaborationRemotePresence } from '@/hooks/useFlowEditorCollaboration';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import type { EditorPage } from '@/store/editorPageHooks';
 
@@ -83,7 +80,6 @@ export interface FlowEditorChromeProps {
     onHistory: () => void;
     onGoHome: () => void;
     onPlay: () => void;
-    collaboration?: FlowEditorCollaborationTopNavState;
   };
   canvas: React.ReactNode;
   shouldRenderPanels: boolean;
@@ -155,7 +151,6 @@ export function FlowEditorChrome({
   const topNavProps = {
     pages,
     activePageId,
-    collaboration: topNav.collaboration,
     onSwitchPage: topNav.onSwitchPage,
     onAddPage: topNav.onAddPage,
     onClosePage: topNav.onClosePage,

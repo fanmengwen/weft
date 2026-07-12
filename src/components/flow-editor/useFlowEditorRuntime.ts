@@ -48,7 +48,6 @@ export function useFlowEditorRuntime({
     }, [edges, nodes, queueAutoSnapshot]);
 
     const {
-        collaborationTopNavState,
         remotePresence,
     } = useFlowEditorCollaboration({
         collaborationEnabled,
@@ -81,7 +80,6 @@ export function useFlowEditorRuntime({
     });
 
     return {
-        collaborationTopNavState,
         remotePresence,
         collaborationNodePositions,
         ...actions,

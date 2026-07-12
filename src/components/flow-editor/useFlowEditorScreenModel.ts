@@ -133,7 +133,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
   });
 
   const {
-    collaborationTopNavState,
     remotePresence,
     collaborationNodePositions,
     isLayouting,
@@ -305,7 +304,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       handleImportJSON,
       openHistory: screenState.openHistory,
       onGoHome,
-      collaborationTopNavState,
       openCommandBar: screenState.openCommandBar,
       handleAddShape: operations.handleAddShape,
       undo: screenState.undo,

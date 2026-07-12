@@ -10,7 +10,6 @@ import type {
     UseFlowEditorStudioParams,
 } from './useFlowEditorController';
 import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
-import type { FlowEditorChromeProps } from './FlowEditorChrome';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { Location, NavigateFunction } from 'react-router-dom';
 
@@ -76,7 +75,6 @@ interface BuildFlowEditorControllerChromeParams {
     handleImportJSON: () => void;
     openHistory: () => void;
     onGoHome: () => void;
-    collaborationTopNavState?: FlowEditorChromeProps['topNav']['collaboration'];
     openCommandBar: (view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system') => void;
     handleAddShape: (input: AddShapeInput, position?: { x: number; y: number }) => void;
     undo: () => void;

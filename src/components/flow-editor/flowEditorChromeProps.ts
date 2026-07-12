@@ -33,7 +33,6 @@ export function buildFlowEditorTopNavProps({
   openHistory,
   onGoHome,
   startPlayback,
-  collaborationTopNavState,
 }: BuildTopNavParams): FlowEditorChromeProps['topNav'] {
   return {
     onSwitchPage: handleSwitchPage,
@@ -60,7 +59,6 @@ export function buildFlowEditorTopNavProps({
     onHistory: openHistory,
     onGoHome,
     onPlay: startPlayback,
-    collaboration: collaborationTopNavState,
   };
 }
 
@@ -195,7 +193,6 @@ export function useFlowEditorChromeProps(
     openHistory,
     onGoHome,
     startPlayback,
-    collaborationTopNavState,
     currentStepIndex,
     editorMode,
     handleAddShape,
@@ -255,7 +252,6 @@ export function useFlowEditorChromeProps(
         openHistory,
         onGoHome,
         startPlayback,
-        collaborationTopNavState,
       }),
     [
       handleSwitchPage,
@@ -282,7 +278,6 @@ export function useFlowEditorChromeProps(
       openHistory,
       onGoHome,
       startPlayback,
-      collaborationTopNavState,
     ]
   );
   const toolbar = useMemo(

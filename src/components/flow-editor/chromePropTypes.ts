@@ -28,7 +28,6 @@ export interface BuildTopNavParams {
   openHistory: () => void;
   onGoHome: () => void;
   startPlayback: () => void;
-  collaborationTopNavState?: FlowEditorChromeProps['topNav']['collaboration'];
 }
 
 export interface BuildToolbarParams {

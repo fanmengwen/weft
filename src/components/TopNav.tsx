@@ -7,7 +7,7 @@ import { TopNavBrand } from './top-nav/TopNavBrand';
 import { ModeSelector } from './top-nav/ModeSelector';
 import { TopNavActions } from './top-nav/TopNavActions';
 import { useTopNavState } from './top-nav/useTopNavState';
-import { APP_NAME, IS_BEVELED } from '@/lib/brand';
+import { APP_NAME } from '@/lib/brand';
 
 const OPEN_AI_SETTINGS_EVENT = 'open-ai-settings';
 
@@ -45,20 +45,6 @@ interface TopNavProps {
     onHistory: () => void;
     onGoHome: () => void;
     onPlay: () => void;
-    collaboration?: {
-        roomId: string;
-        inviteUrl: string;
-        viewerCount: number;
-        status: 'realtime' | 'waiting' | 'fallback';
-        cacheState: 'unavailable' | 'syncing' | 'ready' | 'hydrated';
-        participants: Array<{
-            clientId: string;
-            name: string;
-            color: string;
-            isLocal: boolean;
-        }>;
-        onCopyShareLink: () => void;
-    };
 }
 
 export function TopNav({
@@ -88,9 +74,7 @@ export function TopNav({
     onHistory,
     onGoHome,
     onPlay,
-    collaboration,
 }: TopNavProps): React.ReactElement {
-    const isBeveled = IS_BEVELED;
     const {
         isMenuOpen,
         isSettingsOpen,
@@ -164,8 +148,6 @@ export function TopNav({
                     onDownloadOpenFlowDSL={onDownloadOpenFlowDSL}
                     onExportFigma={onExportFigma}
                     onDownloadFigma={onDownloadFigma}
-                    collaboration={collaboration}
-                    isBeveled={isBeveled}
                 />
             </div>
 
