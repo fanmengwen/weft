@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { Plus, X } from 'lucide-react';
-import { IS_BEVELED } from '@/lib/brand';
 import { getFlowDisplayName } from '@/lib/flowDisplayName';
 import { useTranslation } from 'react-i18next';
-import { getSegmentedTabButtonClass } from './ui/SegmentedTabs';
 import type { EditorPage } from '@/store/editorPageHooks';
 
 interface FlowTabsProps {
@@ -26,13 +24,14 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
   onReorderPage,
 }) => {
   const { t } = useTranslation();
-  const isBeveled = IS_BEVELED;
   const [editingTabId, setEditingTabId] = useState<string | null>(null);
   const [editName, setEditName] = useState('');
   const [draggedPageId, setDraggedPageId] = useState<string | null>(null);
   const [dropTargetPageId, setDropTargetPageId] = useState<string | null>(null);
-  const activeTabClassName = `${getSegmentedTabButtonClass(true, 'sm')} h-10 sm:h-9 border-transparent bg-[image:var(--brand-primary-grad)] text-white shadow-[var(--shadow-sm)]`;
-  const inactiveTabClassName = `${getSegmentedTabButtonClass(false, 'sm')} h-10 sm:h-9 border-[var(--color-brand-border)] bg-[var(--brand-surface)] text-[var(--brand-secondary)] hover:border-[var(--color-brand-border)] hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)]`;
+  const activeTabClassName =
+    'h-[30px] inline-flex items-center gap-2 rounded-[9px] border border-[var(--wf-acc-border)] bg-[color-mix(in_srgb,var(--wf-acc)_9%,#fff)] px-3 text-[13px] font-semibold text-[var(--wf-acc)] transition-colors shrink-0 cursor-pointer select-none';
+  const inactiveTabClassName =
+    'h-[30px] inline-flex items-center gap-2 rounded-[9px] border border-transparent px-3 text-[13px] font-medium text-[var(--brand-secondary)] transition-colors shrink-0 cursor-pointer select-none hover:bg-[#F3F5F8]';
 
   const handleStartEdit = (page: EditorPage) => {
     setEditingTabId(page.id);
@@ -82,8 +81,8 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
             tabIndex={activePageId === page.id ? 0 : -1}
             aria-selected={activePageId === page.id}
             className={`
-              group relative flex items-center gap-2 cursor-pointer select-none transition-all
-              ${dropTargetPageId === page.id && draggedPageId !== page.id ? 'ring-2 ring-[var(--brand-primary-300)] ring-offset-1 ring-offset-transparent' : ''}
+              group relative
+              ${dropTargetPageId === page.id && draggedPageId !== page.id ? 'ring-2 ring-[var(--wf-acc)] ring-offset-1 ring-offset-transparent' : ''}
               ${activePageId === page.id ? activeTabClassName : inactiveTabClassName}
             `}
             draggable={editingTabId !== page.id}
@@ -125,12 +124,12 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
                 onChange={(e) => setEditName(e.target.value)}
                 onBlur={handleFinishEdit}
                 onKeyDown={handleKeyDown}
-                className="bg-[var(--brand-surface)] border border-[var(--brand-primary-300)] rounded-[var(--radius-xs)] px-1 py-0 text-xs font-medium w-24 outline-none focus:ring-1 focus:ring-[var(--brand-primary)]"
+                className="w-24 rounded-[var(--radius-xs)] border border-[var(--wf-acc-border)] bg-[var(--brand-surface)] px-1 py-0 text-[13px] font-medium outline-none focus:ring-1 focus:ring-[var(--wf-acc)]"
                 autoFocus
                 onClick={(e) => e.stopPropagation()}
               />
             ) : (
-              <span className="max-w-[96px] truncate text-xs sm:max-w-[120px]">
+              <span className="max-w-[96px] truncate sm:max-w-[120px]">
                 {getFlowDisplayName(page.name, t)}
               </span>
             )}
@@ -142,11 +141,11 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
               }}
               title={t('flowTabs.closeTab', 'Close page')}
               className={`
-                rounded-full p-1 transition-colors opacity-0 group-hover:opacity-100 hover:bg-[var(--color-brand-border)]
-                ${activePageId === page.id ? 'text-white/70 hover:text-white' : 'text-[var(--brand-secondary)] hover:text-[var(--brand-secondary)]'}
+                rounded-full p-1 opacity-0 transition-colors group-hover:opacity-100
+                ${activePageId === page.id ? 'text-[var(--wf-acc)] hover:bg-[color-mix(in_srgb,var(--wf-acc)_12%,#fff)]' : 'text-[var(--brand-secondary)]'}
               `}
             >
-              <X className="w-3 h-3" />
+              <X className="h-3 w-3" />
             </button>
           </div>
         ))}
@@ -154,10 +153,10 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
         <button
           onClick={onAddPage}
           data-testid="flow-page-add"
-          className={`ml-1 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--color-brand-border)] bg-[var(--brand-surface)] text-[var(--brand-secondary)] transition-all dark:bg-[color-mix(in_srgb,var(--brand-surface),white_6%)] dark:border-[color-mix(in_srgb,var(--color-brand-border),white_16%)] hover:border-[var(--brand-primary-200)] hover:bg-[var(--brand-primary-50)] hover:text-[var(--brand-primary)] sm:h-9 sm:w-9 ${isBeveled ? 'btn-beveled-secondary' : 'shadow-sm hover:shadow-md'}`}
+          className="ml-1 flex h-[30px] w-[30px] items-center justify-center rounded-[9px] border border-[#E6E8EC] bg-[#FFFFFF] text-[var(--brand-secondary)] transition-colors hover:bg-[#F3F5F8]"
           title={t('flowTabs.newFlowTab', 'New page')}
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="h-4 w-4" />
         </button>
       </div>
     </div>
