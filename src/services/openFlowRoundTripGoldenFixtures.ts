@@ -40,6 +40,18 @@ function createEdge(id: string, source: string, target: string, label?: string):
   } as Edge;
 }
 
+function createShapedNode(id: string, label: string, shape: string): Node {
+  return {
+    id,
+    type: 'custom',
+    position: { x: 0, y: 0 },
+    data: {
+      label,
+      shape,
+    },
+  } as Node;
+}
+
 function createArchNode(
   id: string,
   label: string,
@@ -141,5 +153,13 @@ export const OPENFLOW_ROUND_TRIP_GOLDEN_FIXTURES: OpenFlowRoundTripGoldenFixture
       createEdgeWithStyle('e1', 'n1', 'n2', undefined, { strokeDasharray: '5 5' }),
       createEdgeWithStyle('e2', 'n1', 'n3', 'flow', { type: 'smoothstep' }),
     ],
+  },
+  {
+    name: 'io-database',
+    nodes: [
+      createShapedNode('in', 'User Input', 'parallelogram'),
+      createShapedNode('store', 'User Store', 'cylinder'),
+    ],
+    edges: [createEdge('e1', 'in', 'store')],
   },
 ];

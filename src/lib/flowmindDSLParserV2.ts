@@ -14,6 +14,7 @@ export interface DSLNode {
   type: string;
   label: string;
   parentId?: string;
+  shape?: NodeData['shape'];
   attributes: Record<string, DSLAttributeValue>;
 }
 
@@ -49,6 +50,14 @@ const NODE_TYPE_MAP: Record<string, string> = {
   mobile: 'process',
   container: 'container',
   architecture: 'custom',
+  io: 'custom',
+  database: 'custom',
+  operation: 'process',
+};
+
+const NODE_SHAPE_BY_KEYWORD: Record<string, NonNullable<NodeData['shape']>> = {
+  io: 'parallelogram',
+  database: 'cylinder',
 };
 
 // --- Helpers ---
@@ -278,7 +287,9 @@ export function parseOpenFlowDslV2(input: string): DSLResult {
     );
     if (nodeMatch) {
       const [, typeRaw, idRaw, labelRaw, attrsRaw] = nodeMatch;
-      const type = NODE_TYPE_MAP[typeRaw.toLowerCase()] || 'process';
+      const typeKeyword = typeRaw.toLowerCase();
+      const type = NODE_TYPE_MAP[typeKeyword] || 'process';
+      const injectedShape = NODE_SHAPE_BY_KEYWORD[typeKeyword];
       const label = labelRaw.trim();
       const id = idRaw ? idRaw.trim() : label; // If no explicit ID, use label (backward compact)
 
@@ -289,6 +300,7 @@ export function parseOpenFlowDslV2(input: string): DSLResult {
         type,
         label,
         attributes,
+        ...(injectedShape ? { shape: injectedShape } : {}),
       };
 
       dslNodes.push(node);
@@ -331,6 +343,7 @@ export function parseOpenFlowDslV2(input: string): DSLResult {
           ? { archIconShapeId: String(n.attributes.archResourceType) }
           : {}),
         ...(n.attributes.archResourceType ? { assetPresentation: 'icon' as const } : {}),
+        ...(n.shape ? { shape: n.shape } : {}),
       },
     };
     if (n.parentId) {

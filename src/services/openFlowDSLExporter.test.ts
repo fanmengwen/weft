@@ -97,4 +97,43 @@ describe('toOpenFlowDSL', () => {
       'n1 ->|async| n2 { style: "curved", condition: "success", strokeWidth: 3, archProtocol: "https" }'
     );
   });
+
+  it('exports custom parallelogram nodes as [io] without shape attribute', () => {
+    const node = {
+      id: 'in',
+      type: 'custom',
+      position: { x: 0, y: 0 },
+      data: { label: 'User Input', shape: 'parallelogram' },
+    } as Node;
+
+    const dsl = toOpenFlowDSL([node], []);
+    expect(dsl).toContain('[io] in: User Input');
+    expect(dsl).not.toContain('shape:');
+  });
+
+  it('exports custom cylinder nodes as [database]', () => {
+    const node = {
+      id: 'store',
+      type: 'custom',
+      position: { x: 0, y: 0 },
+      data: { label: 'User Store', shape: 'cylinder' },
+    } as Node;
+
+    const dsl = toOpenFlowDSL([node], []);
+    expect(dsl).toContain('[database] store: User Store');
+    expect(dsl).not.toContain('shape:');
+  });
+
+  it('exports custom rounded nodes as [system]', () => {
+    const node = {
+      id: 'svc',
+      type: 'custom',
+      position: { x: 0, y: 0 },
+      data: { label: 'Service', shape: 'rounded' },
+    } as Node;
+
+    const dsl = toOpenFlowDSL([node], []);
+    expect(dsl).toContain('[system] svc: Service');
+    expect(dsl).not.toContain('shape:');
+  });
 });

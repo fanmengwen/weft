@@ -197,4 +197,42 @@ describe('OpenFlow DSL V2 Parser', () => {
     expect(app?.type).toBe('process');
     expect(app?.data.label).toBe('Mobile App');
   });
+
+  it('maps [io] to custom with parallelogram shape', () => {
+    const result = parseOpenFlowDslV2('[io] x: In');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 'x');
+    expect(node?.type).toBe('custom');
+    expect(node?.data.shape).toBe('parallelogram');
+    expect(node?.data.label).toBe('In');
+  });
+
+  it('maps [database] to custom with cylinder shape', () => {
+    const result = parseOpenFlowDslV2('[database] y: DB');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 'y');
+    expect(node?.type).toBe('custom');
+    expect(node?.data.shape).toBe('cylinder');
+    expect(node?.data.label).toBe('DB');
+  });
+
+  it('maps [operation] to process', () => {
+    const result = parseOpenFlowDslV2('[operation] z: Step');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 'z');
+    expect(node?.type).toBe('process');
+    expect(node?.data.label).toBe('Step');
+  });
+
+  it('maps [system] to custom', () => {
+    const result = parseOpenFlowDslV2('[system] s: Service');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 's');
+    expect(node?.type).toBe('custom');
+    expect(node?.data.label).toBe('Service');
+  });
 });
