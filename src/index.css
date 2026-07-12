@@ -894,8 +894,8 @@ body {
 }
 
 .exporting .react-flow__edge-path {
-  stroke: #94a3b8 !important;
-  stroke-width: 2 !important;
+  stroke: #c3c9d3 !important;
+  stroke-width: 1.6 !important;
   opacity: 1 !important;
   stroke-dasharray: none !important;
 }
@@ -914,8 +914,8 @@ body {
 
 /* Ensure markers (arrows) render correctly */
 .exporting .react-flow__marker {
-  fill: #94a3b8 !important;
-  stroke: #94a3b8 !important;
+  fill: #c3c9d3 !important;
+  stroke: #c3c9d3 !important;
 }
 
 /* Markdown Styles inside Nodes */

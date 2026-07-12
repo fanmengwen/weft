@@ -78,7 +78,7 @@ export function useEdgeInteractions() {
                             ...e,
                             markerStart: isBidirectional
                                 ? undefined
-                                : { type: MarkerType.ArrowClosed, color: (e.style?.stroke as string) || '#94a3b8' },
+                                : { type: MarkerType.ArrowClosed, color: (e.style?.stroke as string) || '#c3c9d3' },
                             ...architectureUpdates,
                         };
                     })

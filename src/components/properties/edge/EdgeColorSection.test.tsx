@@ -10,8 +10,8 @@ function createEdge(overrides?: Partial<FlowEdge>): FlowEdge {
     source: 'a',
     target: 'b',
     type: 'smoothstep',
-    style: { stroke: '#94a3b8', strokeWidth: 2 },
-    markerEnd: { type: 'arrowclosed', color: '#94a3b8' } as FlowEdge['markerEnd'],
+    style: { stroke: '#c3c9d3', strokeWidth: 1.6 },
+    markerEnd: { type: 'arrowclosed', color: '#c3c9d3' } as FlowEdge['markerEnd'],
     data: {},
     ...overrides,
   } as FlowEdge;

@@ -33,8 +33,8 @@ export function EdgeColorSection({
 }: EdgeColorSectionProps): React.ReactElement {
   const [customPickerOpen, setCustomPickerOpen] = useState(false);
   const customTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const selectedStroke = selectedEdge.style?.stroke || '#94a3b8';
-  const customStroke = normalizeHex(selectedStroke) || '#94a3b8';
+  const selectedStroke = selectedEdge.style?.stroke || '#c3c9d3';
+  const customStroke = normalizeHex(selectedStroke) || '#c3c9d3';
 
   function closeCustomPicker(): void {
     setCustomPickerOpen(false);

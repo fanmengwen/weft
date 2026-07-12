@@ -38,7 +38,7 @@ export const FLOW_CANVAS_BASE_BEHAVIOR: {
 export const FLOW_CANVAS_STYLE_PRESETS = {
     enhanced: {
         defaultEdgeOptions: {
-            style: { stroke: 'var(--brand-secondary)', strokeWidth: 1.5 },
+            style: { stroke: 'var(--brand-secondary)', strokeWidth: 1.6 },
             animated: false,
             markerEnd: { type: MarkerType.ArrowClosed, color: 'var(--brand-secondary)', width: 20, height: 20 },
         },

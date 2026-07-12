@@ -3,7 +3,7 @@ import { type FlowEdge } from '@/lib/types';
 import { createId } from '@/lib/id';
 
 // --- Edge Styles (inline for reliable SVG rendering) ---
-export const EDGE_STYLE = { stroke: '#94a3b8', strokeWidth: 2 };
+export const EDGE_STYLE = { stroke: '#c3c9d3', strokeWidth: 1.6 };
 export const EDGE_LABEL_STYLE = { fill: '#334155', fontWeight: 500, fontSize: 12 };
 export const EDGE_LABEL_BG_STYLE = { fill: '#ffffff', stroke: '#cbd5e1', strokeWidth: 1 };
 
@@ -34,7 +34,7 @@ export const createDefaultEdge = (
 });
 
 export const EDGE_CONDITION_STYLES = {
-  default: { stroke: '#94a3b8', strokeWidth: 2 },
+  default: { stroke: '#c3c9d3', strokeWidth: 1.6 },
   yes: { stroke: '#10b981', strokeWidth: 2 },
   no: { stroke: '#ef4444', strokeWidth: 2 },
   success: { stroke: '#10b981', strokeWidth: 2 },

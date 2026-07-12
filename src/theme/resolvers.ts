@@ -8,7 +8,7 @@ import type {
   NodeExportColor,
 } from './types';
 
-const DEFAULT_EDGE_COLOR = '#94a3b8';
+const DEFAULT_EDGE_COLOR = '#c3c9d3';
 
 const ANNOTATION_COLOR_ALIASES: Record<string, NodeColorKey> = {
   green: 'emerald',

@@ -25,7 +25,7 @@ interface EdgeStyleSectionProps {
 
 export function EdgeStyleSection({ selectedEdge, onChange }: EdgeStyleSectionProps): React.ReactElement {
     const [advancedOpen, setAdvancedOpen] = useState(false);
-    const selectedStroke = selectedEdge.style?.stroke || '#94a3b8';
+    const selectedStroke = selectedEdge.style?.stroke || '#c3c9d3';
 
     return (
         <div className="space-y-3">
@@ -84,7 +84,7 @@ export function EdgeStyleSection({ selectedEdge, onChange }: EdgeStyleSectionPro
                                             y1="2"
                                             x2="32"
                                             y2="2"
-                                            stroke={(selectedEdge.data?.dashPattern || 'solid') === pattern ? 'var(--brand-primary)' : '#94a3b8'}
+                                            stroke={(selectedEdge.data?.dashPattern || 'solid') === pattern ? 'var(--brand-primary)' : '#c3c9d3'}
                                             strokeWidth="2"
                                             strokeDasharray={{
                                                 solid: '',
