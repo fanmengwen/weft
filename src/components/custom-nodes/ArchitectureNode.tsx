@@ -71,7 +71,6 @@ function ArchitectureNode({ id, data, selected }: LegacyNodeProps<NodeData>): Re
       selected={Boolean(selected)}
       minWidth={180}
       minHeight={architectureMinHeight}
-      handleClassName=""
     >
       <div
         className="group min-w-[180px] rounded-xl border px-3 py-2 shadow-sm"

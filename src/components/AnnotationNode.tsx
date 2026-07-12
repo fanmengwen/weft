@@ -45,7 +45,6 @@ function AnnotationNode({ id, data, selected }: LegacyNodeProps<NodeData>): Reac
       selected={Boolean(selected)}
       minWidth={150}
       minHeight={100}
-      handleClassName=""
       handleVisibilityOptions={{ includeConnectingState: false }}
     >
       <div

@@ -18,7 +18,6 @@ interface InlineEditLike {
 interface IconAssetNodeBodyProps {
   nodeId: string;
   selected: boolean;
-  connectionHandleClass: string;
   explicitWidth: number | string | undefined;
   nodeHeightPx: number | undefined;
   hasLabel: boolean;
@@ -41,7 +40,6 @@ const ICON_HANDLE_STYLE_EXTRAS = { left: { top: 42 }, right: { top: 42 } };
 export function IconAssetNodeBody({
   nodeId,
   selected,
-  connectionHandleClass,
   explicitWidth,
   nodeHeightPx,
   hasLabel,
@@ -61,7 +59,6 @@ export function IconAssetNodeBody({
       minHeight={minHeight}
       keepAspectRatio={false}
       showQuickCreateButtons={false}
-      handleClassName={connectionHandleClass}
       handleStyleExtras={ICON_HANDLE_STYLE_EXTRAS}
     >
       <div

@@ -95,7 +95,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         : designSystem.components.node.padding;
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '', { multiline: true });
   const subLabelEdit = useInlineNodeTextEdit(id, 'subLabel', data.subLabel || '');
-  const connectionHandleClass = '';
   const emptyLabelPrompt = t('nodes.addText', 'Add text');
   const showEmptyLabelPrompt = !hasLabel && isActiveSelected;
   const lodPreserveClass = isActiveSelected ? 'flow-lod-preserve' : '';
@@ -177,7 +176,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
       <IconAssetNodeBody
         nodeId={id}
         selected={Boolean(selected)}
-        connectionHandleClass={connectionHandleClass}
         explicitWidth={explicitWidth}
         nodeHeightPx={nodeHeightPx}
         hasLabel={hasLabel}
@@ -232,7 +230,6 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         minWidth={minWidth}
         minHeight={effectiveMinHeight}
         keepAspectRatio={shiftHeld || needsSquareAspect}
-        handleClassName={connectionHandleClass}
       >
         {nodeUsesDivShape ? (
           <ChartDivShapeSurface

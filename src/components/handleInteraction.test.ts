@@ -1,11 +1,15 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import {
-  CHART_HANDLE_SIZE_PX,
+  type HandleSide,
   getChartHandleClassName,
   getConnectorHandleStyle,
   getHandlePointerEvents,
   getV2HandleVisibilityClass,
 } from './handleInteraction';
+
+const CHART_HANDLE_STYLESHEET = readFileSync(join(process.cwd(), 'src/index.css'), 'utf8');
 
 describe('handle interaction policy', () => {
   it('keeps pointer events enabled so selected nodes remain connectable', () => {
@@ -39,37 +43,34 @@ describe('handle interaction policy', () => {
     expect(unselectedRight.left).toBe('100%');
   });
 
-  it('renders selected left target ports as white circles with #C6CCD6 borders', () => {
+  it('keeps connector handle styles limited to positioning and interaction', () => {
     const style = getConnectorHandleStyle('left', true, 'all');
     expect(style.zIndex).toBe(100);
-    expect(style.width).toBe(CHART_HANDLE_SIZE_PX);
-    expect(style.height).toBe(CHART_HANDLE_SIZE_PX);
-    expect(style.backgroundColor).toBe('#FFFFFF');
-    expect(style.border).toBe('2px solid #C6CCD6');
-    expect(style.borderRadius).toBe('50%');
-    expect(style.boxShadow).toBe('none');
+    expect(style.pointerEvents).toBe('all');
+    expect(style.left).toBe(0);
+    expect(style.backgroundColor).toBeUndefined();
+    expect(style.border).toBeUndefined();
+    expect(style.width).toBeUndefined();
     expect(getChartHandleClassName('left')).toBe('chart-handle chart-handle--target chart-handle--left');
   });
 
-  it('renders selected right source ports as accent circles with white borders', () => {
-    const style = getConnectorHandleStyle('right', true, 'all');
-    expect(style.width).toBe(CHART_HANDLE_SIZE_PX);
-    expect(style.height).toBe(CHART_HANDLE_SIZE_PX);
-    expect(style.backgroundColor).toBe('var(--wf-acc)');
-    expect(style.border).toBe('2px solid #FFFFFF');
-    expect(style.borderRadius).toBe('50%');
-    expect(style.boxShadow).toBe('0 1px 3px rgba(16, 24, 40, 0.2)');
+  it('pins chart port visuals to stylesheet selectors', () => {
+    expect(CHART_HANDLE_STYLESHEET).toContain('.react-flow__handle.chart-handle');
+    expect(CHART_HANDLE_STYLESHEET).toContain('width: 11px');
+    expect(CHART_HANDLE_STYLESHEET).toContain('height: 11px');
+    expect(CHART_HANDLE_STYLESHEET).toContain('.react-flow__handle.chart-handle.chart-handle--target');
+    expect(CHART_HANDLE_STYLESHEET).toContain('background: #ffffff');
+    expect(CHART_HANDLE_STYLESHEET).toContain('border: 2px solid #c6ccd6');
+    expect(CHART_HANDLE_STYLESHEET).toContain('.react-flow__handle.chart-handle.chart-handle--source');
+    expect(CHART_HANDLE_STYLESHEET).toContain('background: var(--wf-acc)');
+    expect(CHART_HANDLE_STYLESHEET).toContain('border: 2px solid #ffffff');
+    expect(CHART_HANDLE_STYLESHEET).toContain('box-shadow: 0 1px 3px rgba(16, 24, 40, 0.2)');
     expect(getChartHandleClassName('right')).toBe('chart-handle chart-handle--source chart-handle--right');
   });
 
-  it('keeps source-side ports at 11px with white borders and accent shadow', () => {
-    for (const side of ['top', 'right', 'bottom'] as const) {
-      const style = getConnectorHandleStyle(side, true, 'all');
-      expect(style.width).toBe(11);
-      expect(style.height).toBe(11);
-      expect(style.border).toBe('2px solid #FFFFFF');
-      expect(style.backgroundColor).toBe('var(--wf-acc)');
-      expect(style.boxShadow).toBe('0 1px 3px rgba(16, 24, 40, 0.2)');
+  it('keeps source-side port classes on top, right, and bottom handles', () => {
+    const sides: HandleSide[] = ['top', 'right', 'bottom'];
+    for (const side of sides) {
       expect(getChartHandleClassName(side)).toContain('chart-handle--source');
     }
   });

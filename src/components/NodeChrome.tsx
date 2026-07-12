@@ -26,7 +26,6 @@ type NodeChromeProps = {
   minHeight: number;
   keepAspectRatio?: boolean;
   showQuickCreateButtons?: boolean;
-  handleClassName: string;
   handleVisibilityOptions?: {
     includeConnectingState?: boolean;
     includeScale?: boolean;
@@ -86,7 +85,6 @@ export const NodeChrome = memo(function NodeChrome({
   minHeight,
   keepAspectRatio = false,
   showQuickCreateButtons = true,
-  handleClassName,
   handleVisibilityOptions,
   handleStyleExtras,
   handles = DEFAULT_HANDLES,
@@ -140,7 +138,7 @@ export const NodeChrome = memo(function NodeChrome({
           position={position}
           isConnectableStart
           isConnectableEnd
-          className={`${getChartHandleClassName(side)} ${handleClassName} ${handleVisibilityClass}`.trim()}
+          className={`${getChartHandleClassName(side)} ${handleVisibilityClass}`.trim()}
           style={getConnectorHandleStyle(
             side,
             isActiveSelected,
