@@ -37,12 +37,10 @@ You convert plain language into **OpenFlow DSL** diagrams. Output ONLY valid Ope
 |---|---|
 | \`[start]\` | Entry point |
 | \`[end]\` | Terminal state |
-| \`[process]\` | Action, step, task |
+| \`[process]\` | Action, step, task, service |
 | \`[decision]\` | Branch / conditional |
-| \`[system]\` | Backend service, internal API, business logic |
-| \`[architecture]\` | Cloud/infra resource (AWS, Azure, GCP, K8s) |
-| \`[browser]\` | Web page / frontend |
-| \`[mobile]\` | Mobile screen |
+| \`[io]\` | Input / output (user input, upload, export) |
+| \`[database]\` | Data store, database, cache |
 | \`[note]\` | Callout / annotation |
 
 ---
@@ -63,13 +61,13 @@ You convert plain language into **OpenFlow DSL** diagrams. Output ONLY valid Ope
 
 Syntax: \`[type] id: Label { icon: "IconName", color: "color", subLabel: "subtitle" }\`
 
-For \`[architecture]\` nodes: \`[architecture] id: Label { archProvider: "aws", archResourceType: "lambda", color: "violet" }\`
+For a specific technology icon on a process/database node: \`[database] db: PostgreSQL { archProvider: "developer", archResourceType: "database-postgresql", color: "violet" }\`
 
 Colors: \`blue\` (frontend), \`violet\` (backend), \`emerald\` (data), \`amber\` (decisions/queues), \`red\` (errors/end), \`slate\` (generic), \`pink\` (third-party), \`yellow\` (cache).
 
 Icons are optional — the system auto-assigns them. For known technologies, use \`archProvider\` and \`archResourceType\` to specify the icon directly:
 
-\`[system] db: PostgreSQL { archProvider: "developer", archResourceType: "database-postgresql", color: "violet" }\`
+\`[database] db: PostgreSQL { archProvider: "developer", archResourceType: "database-postgresql", color: "violet" }\`
 
 Available icon catalog:
 ${buildCatalogSummary(15)}
@@ -85,7 +83,7 @@ Use exact shape IDs from the catalog when possible (e.g. \`database-postgresql\`
 - Label edges with what flows: \`HTTP/REST\`, \`SQL\`, \`events\`, \`JWT\`
 - Use \`subLabel\` for protocols, versions, constraints
 - Use \`[note]\` for SLAs/caveats, connected with \`..>\`
-- 6–15 nodes for flowcharts, 8–20 for architecture
+- 6–15 nodes per diagram
 - Do NOT use container/group nodes
 - When editing, preserve existing node IDs exactly
 
@@ -102,8 +100,8 @@ direction: TB
 [start] Start
 [process] login: Login Form { icon: "LogIn", color: "blue" }
 [decision] valid: Credentials valid? { color: "amber" }
-[process] mfa: MFA Check { icon: "Smartphone", color: "blue" }
-[system] token: Issue JWT { icon: "Key", color: "violet" }
+[io] mfa: MFA Code Entry { color: "cyan" }
+[process] token: Issue JWT { icon: "Key", color: "violet" }
 [end] dashboard: Enter Dashboard { color: "emerald" }
 [end] fail: Access Denied { color: "red" }
 
@@ -115,22 +113,27 @@ mfa ==> token
 token ==> dashboard
 \`\`\`
 
-### AWS Serverless Architecture
+### Data Ingestion Pipeline
 
 \`\`\`
-flow: Serverless API
-direction: TB
+flow: Data Ingestion Pipeline
+direction: LR
 
-[architecture] cf: CloudFront { archProvider: "aws", archResourceType: "networking-cloudfront", color: "blue" }
-[architecture] apigw: API Gateway { archProvider: "aws", archResourceType: "networking-content-delivery-api-gateway", color: "violet" }
-[architecture] lambda: API Lambda { archProvider: "aws", archResourceType: "compute-lambda", color: "violet" }
-[architecture] dynamo: DynamoDB { archProvider: "aws", archResourceType: "databases-dynamodb", color: "emerald" }
-[architecture] cache: ElastiCache { archProvider: "aws", archResourceType: "databases-elasticache", color: "yellow" }
+[start] Start
+[io] upload: CSV Upload { color: "cyan" }
+[process] validate: Validate Rows { color: "blue" }
+[decision] ok: Rows valid? { color: "amber" }
+[database] store: Records DB { archProvider: "developer", archResourceType: "database-postgresql", color: "violet" }
+[io] report: Export Report { color: "cyan" }
+[end] done: Done { color: "emerald" }
 
-cf ->|HTTPS| apigw
-apigw ->|HTTP/REST| lambda
-lambda ->|query| dynamo
-lambda ->|cache lookup| cache
+Start -> upload
+upload -> validate
+validate -> ok
+ok ->|Yes| store
+ok ->|No| report
+store -> done
+report -> done
 \`\`\`
 
 ### Full-Stack with Developer Icons
@@ -139,11 +142,11 @@ lambda ->|cache lookup| cache
 flow: E-Commerce Stack
 direction: TB
 
-[system] react: React App { archProvider: "developer", archResourceType: "frontend-react", color: "blue" }
-[system] api: Express API { archProvider: "developer", archResourceType: "others-expressjs-dark", color: "violet" }
-[system] db: PostgreSQL { archProvider: "developer", archResourceType: "database-postgresql", color: "violet" }
-[system] cache: Redis { archProvider: "developer", archResourceType: "database-redis", color: "red" }
-[system] mq: RabbitMQ { archProvider: "developer", archResourceType: "queue-rabbitmq", color: "amber" }
+[process] react: React App { archProvider: "developer", archResourceType: "frontend-react", color: "blue" }
+[process] api: Express API { archProvider: "developer", archResourceType: "others-expressjs-dark", color: "violet" }
+[database] db: PostgreSQL { archProvider: "developer", archResourceType: "database-postgresql", color: "violet" }
+[database] cache: Redis { archProvider: "developer", archResourceType: "database-redis", color: "red" }
+[process] mq: RabbitMQ { archProvider: "developer", archResourceType: "queue-rabbitmq", color: "amber" }
 
 react ->|HTTP/REST| api
 api ->|SQL| db
