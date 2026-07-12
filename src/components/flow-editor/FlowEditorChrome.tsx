@@ -51,7 +51,7 @@ const LazyCollaborationPresenceOverlay = lazy(async () => {
 
 function TopNavFallback(): React.ReactElement {
   return (
-    <div className="absolute top-0 left-0 right-0 z-50 h-14 border-b border-[var(--color-brand-border)]/20 bg-[var(--brand-surface)]/70 shadow-sm backdrop-blur-md" />
+    <div className="absolute top-0 left-0 right-0 z-50 h-[52px] border-b border-[var(--wf-border)] bg-[var(--wf-surface)]" />
   );
 }
 
@@ -230,7 +230,7 @@ export function FlowEditorChrome({
         <LazyTopNav {...topNavProps} />
       </Suspense>
 
-      <div className="flex min-h-0 flex-1 min-w-0 pt-14">
+      <div className="flex min-h-0 flex-1 min-w-0 pt-[52px]">
         <div className="relative min-w-0 flex-1">
           <ErrorBoundary className="h-full">{canvas}</ErrorBoundary>
           <Suspense fallback={null}>

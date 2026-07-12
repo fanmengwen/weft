@@ -113,9 +113,8 @@ export function TopNav({
     }, [openAISettings]);
 
     return (
-        <div className="absolute top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-4 transition-all sm:px-6">
-            {/* Left: Menu & Brand */}
-            <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+        <div className="absolute top-0 left-0 right-0 z-50 flex h-[52px] items-center justify-between gap-3 border-b border-[var(--wf-border)] bg-[var(--wf-surface)] px-3">
+            <div className="flex min-w-0 flex-1 items-center gap-1.5">
                 <TopNavMenu
                     isOpen={isMenuOpen}
                     isBeveled={isBeveled}
@@ -132,11 +131,11 @@ export function TopNav({
                     logoStyle="text"
                     ui={{ showBeta: true }}
                 />
-                <ModeSelector />
+                <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" />
+                <ModeSelector variant="flat" />
             </div>
 
-            {/* Center: Tabs */}
-            <div className="flex min-w-0 flex-[1.2] justify-center px-2 sm:px-3">
+            <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                 <FlowTabs
                     pages={pages}
                     activePageId={activePageId}
