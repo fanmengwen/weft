@@ -10,7 +10,6 @@ describe('TopNavMenu', () => {
             <div>
                 <TopNavMenu
                     isOpen={true}
-                    isBeveled={false}
                     onToggle={vi.fn()}
                     onClose={onClose}
                     onGoHome={vi.fn()}

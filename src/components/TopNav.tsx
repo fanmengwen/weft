@@ -117,7 +117,6 @@ export function TopNav({
             <div className="flex min-w-0 flex-1 items-center gap-1.5">
                 <TopNavMenu
                     isOpen={isMenuOpen}
-                    isBeveled={isBeveled}
                     onToggle={toggleMenu}
                     onClose={closeMenu}
                     onGoHome={onGoHome}
