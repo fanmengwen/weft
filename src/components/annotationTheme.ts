@@ -1,3 +1,5 @@
+import type { NodeColorKey } from '@/theme';
+
 export type AnnotationStickyColor = 'yellow' | 'green' | 'blue';
 
 export interface AnnotationStickyTheme {
@@ -66,11 +68,5 @@ export const ANNOTATION_COLOR_OPTIONS = [
   { id: 'yellow', label: 'Yellow' },
   { id: 'emerald', label: 'Green' },
   { id: 'blue', label: 'Blue' },
-] as const;
-
-export type AnnotationColorId = (typeof ANNOTATION_COLOR_OPTIONS)[number]['id'];
-
-export function resolveAnnotationTheme(color?: string): AnnotationStickyTheme {
-  return resolveAnnotationStickyTheme(color);
-}
+] as const satisfies ReadonlyArray<{ id: Exclude<NodeColorKey, 'custom'>; label: string }>;
 
