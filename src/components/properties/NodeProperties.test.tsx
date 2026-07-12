@@ -108,7 +108,7 @@ describe('NodeProperties', () => {
       />
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    fireEvent.click(screen.getByRole('button', { name: '删除节点' }));
 
     expect(onDelete).toHaveBeenCalledWith('node-1');
   });

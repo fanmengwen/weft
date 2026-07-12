@@ -103,6 +103,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
           {selectedEdge ? (
             <div className="px-4">
               <EdgeProperties
+                key={selectedEdge.id}
                 selectedEdge={selectedEdge}
                 onChange={onChangeEdge}
                 onDelete={onDeleteEdge}
@@ -125,6 +126,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
 
         {selectedEdge && (
           <EdgeProperties
+            key={selectedEdge.id}
             selectedEdge={selectedEdge}
             onChange={onChangeEdge}
             onDelete={onDeleteEdge}

@@ -63,7 +63,7 @@ Syntax: \`[type] id: Label { icon: "IconName", color: "color", subLabel: "subtit
 
 For a specific technology icon on a process/database node: \`[database] db: PostgreSQL { archProvider: "developer", archResourceType: "database-postgresql", color: "violet" }\`
 
-Colors: \`blue\` (frontend), \`violet\` (backend), \`emerald\` (data), \`amber\` (decisions/queues), \`red\` (errors/end), \`slate\` (generic), \`pink\` (third-party), \`yellow\` (cache).
+Colors: \`blue\` (frontend), \`violet\` (backend), \`emerald\` (data), \`amber\` (decisions/queues), \`red\` (errors/end), \`slate\` (generic), \`pink\` (third-party), \`yellow\` (cache), \`cyan\` (input/output).
 
 Icons are optional — the system auto-assigns them. For known technologies, use \`archProvider\` and \`archResourceType\` to specify the icon directly:
 

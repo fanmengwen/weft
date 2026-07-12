@@ -264,7 +264,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
           className="inline-flex items-center gap-1.5 rounded-[7px] px-2 py-1.5 text-[12.5px] font-medium text-[#C4443C] hover:bg-[#FBEFEE]"
         >
           <Trash2 className="h-3.5 w-3.5" />
-          Delete
+          删除节点
         </button>
       </div>
     </>

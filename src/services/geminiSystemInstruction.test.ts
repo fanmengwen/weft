@@ -11,5 +11,6 @@ describe('getGeminiSystemInstruction', () => {
     expect(instruction).not.toContain('[architecture]');
     expect(instruction).not.toContain('[browser]');
     expect(instruction).not.toContain('[mobile]');
+    expect(instruction).toContain('cyan');
   });
 });
