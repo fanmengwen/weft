@@ -129,7 +129,6 @@ export function TopNavActions({
     const visibleViewerCount = Math.min(viewerCount, 4);
     const visibleParticipants = collaboration?.participants.slice(0, visibleViewerCount) ?? [];
     const shareButtonClassName = `ml-1 h-10 w-10 rounded-[var(--radius-md)] sm:h-9 sm:w-9 ${isBeveled ? 'btn-beveled-secondary' : ''}`;
-    const playButtonClassName = 'h-10 px-2.5 font-medium sm:h-9 sm:px-3';
 
     return (
         <div className="flex min-w-0 items-center justify-end gap-2 sm:gap-3">
@@ -174,17 +173,16 @@ export function TopNavActions({
                 )}
 
                 <Tooltip text={t('nav.playbackMode', 'Preview playback')} side="bottom">
-                    <Button
-                        variant="secondary"
-                        size="sm"
+                    <button
+                        type="button"
                         onClick={onPlay}
                         data-testid="topnav-play"
                         aria-label={playLabel}
-                        className={playButtonClassName}
-                        icon={<Play className="h-3.5 w-3.5 sm:mr-1" />}
+                        className="inline-flex h-8 items-center gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium text-[var(--wf-text-btn)] transition-colors hover:bg-[var(--wf-hover)]"
                     >
+                        <Play className="h-3.5 w-3.5" />
                         <span className="hidden sm:inline">{playLabel}</span>
-                    </Button>
+                    </button>
                 </Tooltip>
 
                 <ExportMenu
