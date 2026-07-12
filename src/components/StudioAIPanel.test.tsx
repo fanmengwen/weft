@@ -49,7 +49,6 @@ describe('StudioAIPanel', () => {
         onClearError={vi.fn()}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={0}
         selectedNodeCount={0}
       />
@@ -84,7 +83,6 @@ describe('StudioAIPanel', () => {
         onClearError={vi.fn()}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={3}
         selectedNodeCount={0}
       />
@@ -123,7 +121,6 @@ describe('StudioAIPanel', () => {
         onClearError={onClearError}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={1}
         selectedNodeCount={0}
       />
@@ -158,7 +155,6 @@ describe('StudioAIPanel', () => {
         onClearError={onClearError}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={1}
         selectedNodeCount={0}
       />
@@ -200,7 +196,6 @@ describe('StudioAIPanel', () => {
         onClearError={vi.fn()}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={1}
         selectedNodeCount={0}
       />
@@ -237,7 +232,6 @@ describe('StudioAIPanel', () => {
         onClearError={vi.fn()}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={0}
         selectedNodeCount={0}
       />
@@ -272,7 +266,6 @@ describe('StudioAIPanel', () => {
         onClearError={vi.fn()}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={3}
         selectedNodeCount={0}
       />
@@ -316,18 +309,18 @@ describe('StudioAIPanel', () => {
         onClearError={vi.fn()}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={0}
         selectedNodeCount={0}
       />
     );
 
     expect(screen.getByText('flow: "Repo Enhancement"')).toBeInTheDocument();
+    expect(screen.getByText('导入已就绪，请检查变更后再应用')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Apply to canvas' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Discard' })).toBeInTheDocument();
   });
 
-  it('renders assistant plan cards from the richer thread model', () => {
+  it('renders the applied status card when the canvas has nodes and edges', () => {
     render(
       <StudioAIPanel
         onAIGenerate={vi.fn().mockResolvedValue(false)}
@@ -346,43 +339,22 @@ describe('StudioAIPanel', () => {
         lastError={null}
         onClearError={vi.fn()}
         chatMessages={[]}
-        assistantThread={[
-          {
-            id: 'plan-1',
-            role: 'model',
-            type: 'assistant_plan',
-            content: 'The request needs a plan before changing the canvas.',
-            createdAt: '2026-03-31T00:00:00.000Z',
-            responseMode: 'plan',
-            thinkingState: 'planning',
-            plan: {
-              goal: 'Plan the architecture',
-              mode: 'plan',
-              steps: ['Inspect the current diagram', 'Outline the recommended structure'],
-              requiresApproval: false,
-              intendedOutput: 'Structured plan and next-step options',
-              confidence: 0.88,
-              reasoningSummary: 'The request needs a plan before changing the canvas.',
-              skillId: 'plan_diagram',
-            },
-          },
-        ]}
-        onClearChat={vi.fn()}
+        assistantThread={[]}
         nodeCount={4}
+        edgeCount={2}
         selectedNodeCount={0}
       />
     );
 
-    expect(screen.getByText('处理步骤')).toBeInTheDocument();
-    expect(screen.getByText('模式: 计划')).toBeInTheDocument();
-    expect(screen.getByText('1. 检查当前画布上下文')).toBeInTheDocument();
+    expect(screen.getByText('已应用到画布')).toBeInTheDocument();
+    expect(screen.getByText('4 个节点 · 2 条连线')).toBeInTheDocument();
   });
 
-  it('renders a minimal localized plan card for diagram preview routes', () => {
+  it('renders a generating indicator while AI is working', () => {
     render(
       <StudioAIPanel
         onAIGenerate={vi.fn().mockResolvedValue(false)}
-        isGenerating={false}
+        isGenerating={true}
         streamingText={null}
         retryCount={0}
         onCancelGeneration={vi.fn()}
@@ -397,90 +369,15 @@ describe('StudioAIPanel', () => {
         lastError={null}
         onClearError={vi.fn()}
         chatMessages={[]}
-        assistantThread={[
-          {
-            id: 'plan-diagram',
-            role: 'model',
-            type: 'assistant_plan',
-            content: 'The request should produce a diagram preview for review before applying to the canvas.',
-            createdAt: '2026-03-31T00:00:00.000Z',
-            responseMode: 'diagram_preview',
-            thinkingState: 'planning',
-            plan: {
-              goal: 'Draw two boxes',
-              mode: 'diagram_preview',
-              steps: ['Inspect the current canvas context', 'Outline the recommended structure'],
-              requiresApproval: true,
-              intendedOutput: 'Canvas preview with review/apply controls',
-              confidence: 0.84,
-              reasoningSummary:
-                'The request should produce a diagram preview for review before applying to the canvas.',
-              skillId: 'plan_diagram',
-            },
-          },
-        ]}
-        onClearChat={vi.fn()}
+        assistantThread={[]}
         nodeCount={0}
         selectedNodeCount={0}
       />
     );
 
-    expect(screen.getByText('图表生成')).toBeInTheDocument();
     expect(
-      screen.getByText('图表草稿已就绪，请在上方确认后应用到画布。')
+      screen.getByText('Understanding the request and preparing a diagram preview.')
     ).toBeInTheDocument();
-    expect(screen.queryByText(/Mode:/)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Confidence:/)).not.toBeInTheDocument();
-  });
-
-  it('hides asset grounding labels on diagram preview messages', () => {
-    render(
-      <StudioAIPanel
-        onAIGenerate={vi.fn().mockResolvedValue(false)}
-        isGenerating={false}
-        streamingText={null}
-        retryCount={0}
-        onCancelGeneration={vi.fn()}
-        pendingDiff={null}
-        onConfirmDiff={vi.fn()}
-        onDiscardDiff={vi.fn()}
-        aiReadiness={{
-          canGenerate: true,
-          blockingIssue: null,
-          advisory: null,
-        }}
-        lastError={null}
-        onClearError={vi.fn()}
-        chatMessages={[]}
-        assistantThread={[
-          {
-            id: 'preview-1',
-            role: 'model',
-            type: 'assistant_canvas_preview',
-            content: 'flow: "Untitled Flow"',
-            createdAt: '2026-03-31T00:00:00.000Z',
-            responseMode: 'diagram_preview',
-            copyKey: 'importReady',
-            assetMatches: [
-              {
-                id: 'aws-datacenter',
-                label: 'Architecture Group Corporate Data Center',
-                description: 'AWS grouping icon',
-                category: 'aws',
-                confidence: 0.82,
-                reasoning: 'Matched local asset',
-              },
-            ],
-          },
-        ]}
-        onClearChat={vi.fn()}
-        nodeCount={0}
-        selectedNodeCount={0}
-      />
-    );
-
-    expect(screen.queryByText('Architecture Group Corporate Data Center')).not.toBeInTheDocument();
-    expect(screen.getByText('导入已就绪，请检查变更后再应用')).toBeInTheDocument();
   });
 
   it('renders three labeled studio sections', () => {
@@ -503,7 +400,6 @@ describe('StudioAIPanel', () => {
         onClearError={vi.fn()}
         chatMessages={[]}
         assistantThread={[]}
-        onClearChat={vi.fn()}
         nodeCount={0}
         selectedNodeCount={0}
       />

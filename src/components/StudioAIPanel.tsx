@@ -11,21 +11,11 @@ import type { ImportDiff } from '@/hooks/useAIGeneration';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
 import { useAIViewState } from './command-bar/useAIViewState';
 import {
-  EMPTY_CANVAS_EXAMPLE_DEFINITIONS,
-  ITERATION_EXAMPLE_DEFINITIONS,
-  EXAMPLE_ICON_COLORS,
-  type AIStudioExample,
-} from './studioAiPanelExamples';
-import {
   type AIGenerationMode,
-  ChatHistoryView,
   ComposerSection,
   ImportContentSection,
+  StatusSection,
 } from './StudioAIPanelSections';
-
-function getExampleIconColor(index: number): string {
-  return EXAMPLE_ICON_COLORS[index % EXAMPLE_ICON_COLORS.length];
-}
 
 interface StudioAIPanelProps {
   onAIGenerate: (prompt: string, imageBase64?: string) => Promise<boolean>;
@@ -41,8 +31,8 @@ interface StudioAIPanelProps {
   onClearError: () => void;
   chatMessages: ChatMessage[];
   assistantThread: AssistantThreadItem[];
-  onClearChat: () => void;
   nodeCount?: number;
+  edgeCount?: number;
   selectedNodeCount?: number;
   initialPrompt?: string;
   onInitialPromptConsumed?: () => void;
@@ -128,8 +118,8 @@ export function StudioAIPanel({
   onClearError,
   chatMessages,
   assistantThread,
-  onClearChat,
   nodeCount = 0,
+  edgeCount = 0,
   selectedNodeCount = 0,
   initialPrompt,
   onInitialPromptConsumed,
@@ -146,7 +136,6 @@ export function StudioAIPanel({
     selectedImage,
     setSelectedImage,
     fileInputRef,
-    scrollRef,
     handleGenerate,
     handleKeyDown,
     handleImageSelect,
@@ -165,17 +154,8 @@ export function StudioAIPanel({
     }
   }, [initialPrompt, onInitialPromptConsumed, setPrompt]);
 
-  const hasHistory = assistantThread.length > 0;
   const isCanvasEmpty = nodeCount === 0;
   const effectiveGenerationMode: AIGenerationMode = nodeCount === 0 ? 'create' : generationMode;
-  const exampleDefinitions = isCanvasEmpty
-    ? EMPTY_CANVAS_EXAMPLE_DEFINITIONS
-    : ITERATION_EXAMPLE_DEFINITIONS;
-  const examplePrompts: AIStudioExample[] = exampleDefinitions.map((example) => ({
-    label: t(example.labelKey),
-    prompt: t(example.promptKey),
-    icon: example.icon,
-  }));
   const isEditMode = effectiveGenerationMode === 'edit' && !isCanvasEmpty;
   const sendButtonLabel = isEditMode
     ? t('commandBar.aiStudio.applyEdit', 'Apply AI edit')
@@ -224,25 +204,18 @@ export function StudioAIPanel({
         <div className="-mx-4 mt-4 h-px bg-[#F0F2F5]" />
         <div className="flex min-h-0 flex-col">
           <div className="text-[11px] tracking-[0.05em] text-[#98A1AE]">状态</div>
-          <ChatHistoryView
-            hasHistory={hasHistory}
-            chatMessages={chatMessages}
-            assistantThread={assistantThread}
+          <StatusSection
             isGenerating={isGenerating}
             streamingText={streamingText}
             retryCount={retryCount}
+            chatMessages={chatMessages}
+            assistantThread={assistantThread}
+            pendingDiff={pendingDiff}
+            nodeCount={nodeCount}
+            edgeCount={edgeCount}
             isCanvasEmpty={isCanvasEmpty}
             canGenerate={aiReadiness.canGenerate}
-            examplePrompts={examplePrompts}
-            getExampleIconColor={getExampleIconColor}
-            onSelectExample={(examplePrompt) => {
-              setPrompt(examplePrompt);
-              void submitPrompt(examplePrompt);
-            }}
             onOpenAISettings={openAISettings}
-            onClearChat={onClearChat}
-            scrollRef={scrollRef}
-            selectedNodeCount={selectedNodeCount}
             t={t}
           />
         </div>

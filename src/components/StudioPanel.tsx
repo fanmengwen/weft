@@ -55,6 +55,7 @@ interface StudioPanelProps {
 export function StudioPanel({
     onClose,
     nodes,
+    edges,
     onApply: _onApply,
     onAIGenerate,
     isGenerating,
@@ -69,7 +70,6 @@ export function StudioPanel({
     onClearAIError,
     chatMessages,
     assistantThread,
-    onClearChat,
     selectedNode,
     selectedNodeCount,
     onViewProperties,
@@ -111,8 +111,8 @@ export function StudioPanel({
                         onClearError={onClearAIError}
                         chatMessages={chatMessages}
                         assistantThread={assistantThread}
-                        onClearChat={onClearChat}
                         nodeCount={nodes.length}
+                        edgeCount={edges.length}
                         selectedNodeCount={selectedNodeCount}
                         initialPrompt={initialPrompt}
                         onInitialPromptConsumed={onInitialPromptConsumed}

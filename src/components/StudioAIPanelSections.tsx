@@ -1,35 +1,21 @@
 import type { ReactElement, RefObject } from 'react';
-import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
+  Check,
   Crosshair,
   Info,
   Key,
   Loader2,
   Paperclip,
   Square,
-  Trash2,
-  WandSparkles,
   X,
 } from 'lucide-react';
 import { Tooltip } from './Tooltip';
-import { AI_ASSISTANT_NAME } from '@/lib/brand';
 import type { ChatMessage } from '@/services/aiService';
-import {
-  getPlanCardVariant,
-  getPlanStepKeys,
-  getPlanSummaryKey,
-  getPlanTitleKey,
-  getResponseModeLabelKey,
-  resolvePreviewDetailCopy,
-  resolvePreviewTitleCopy,
-  resolveThreadCopy,
-  type TranslateFn as FlowpilotTranslateFn,
-} from '@/services/flowpilot/flowpilotThreadCopy';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
 import type { ImportDiff } from '@/hooks/useAIGeneration';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
-import { SECTION_CARD_CLASS, SECTION_SURFACE_CLASS, STATUS_SURFACE_CLASS } from '@/lib/designTokens';
+import { SECTION_SURFACE_CLASS, STATUS_SURFACE_CLASS } from '@/lib/designTokens';
 import { STUDIO_AI_COPY } from './studioAICopy';
 
 export type AIGenerationMode = 'edit' | 'create';
@@ -57,7 +43,7 @@ export function ImportContentSection({
         {pendingDiff.dslText}
       </pre>
       <div
-        className="mt-2.5 flex items-center gap-[7px] rounded-lg px-2.5 py-2"
+        className="mt-2.5 flex items-center gap-[7px] rounded-[8px] px-2.5 py-2"
         style={{
           background: 'color-mix(in srgb, var(--wf-acc) 7%, #FFFFFF)',
           border: '1px solid color-mix(in srgb, var(--wf-acc) 18%, #FFFFFF)',
@@ -86,184 +72,6 @@ export function ImportContentSection({
       </div>
     </div>
   );
-}
-
-interface ChatHistoryViewProps {
-  hasHistory: boolean;
-  chatMessages: ChatMessage[];
-  assistantThread: AssistantThreadItem[];
-  isGenerating: boolean;
-  streamingText: string | null;
-  retryCount: number;
-  isCanvasEmpty: boolean;
-  canGenerate: boolean;
-  examplePrompts: Array<{ label: string; prompt: string; icon: LucideIcon }>;
-  getExampleIconColor: (index: number) => string;
-  onSelectExample: (prompt: string) => void;
-  onOpenAISettings: () => void;
-  onClearChat: () => void;
-  scrollRef: RefObject<HTMLDivElement | null>;
-  selectedNodeCount: number;
-  t: TranslateFn;
-}
-
-function getThreadBubbleClassName(isUser: boolean): string {
-  if (isUser) {
-    return 'rounded-br-sm bg-[var(--brand-primary)] text-white shadow-sm';
-  }
-
-  return 'rounded-bl-sm border border-[var(--color-brand-border)]/70 bg-[var(--brand-surface)] text-[var(--brand-text)] shadow-sm';
-}
-
-function shouldShowThreadAssetMatches(item: AssistantThreadItem): boolean {
-  return (
-    item.responseMode === 'asset_suggestions' ||
-    item.type === 'assistant_recommendation'
-  );
-}
-
-function renderThreadAssetMatches(item: AssistantThreadItem): ReactElement | null {
-  if (
-    !shouldShowThreadAssetMatches(item) ||
-    !item.assetMatches ||
-    item.assetMatches.length === 0
-  ) {
-    return null;
-  }
-
-  return (
-    <div className="mt-3 flex flex-wrap gap-1.5">
-      {item.assetMatches.slice(0, 4).map((match) => (
-        <span
-          key={match.id}
-          className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}
-        >
-          {match.label}
-        </span>
-      ))}
-    </div>
-  );
-}
-
-function renderThreadPreview(item: AssistantThreadItem, t: TranslateFn): ReactElement | null {
-  const previewTitle = resolvePreviewTitleCopy(t as FlowpilotTranslateFn, {
-    copyKey: item.copyKey,
-    previewTitle: item.previewTitle,
-  });
-  const previewDetail = resolvePreviewDetailCopy(
-    t as FlowpilotTranslateFn,
-    item.previewDetailKey,
-    item.previewDetail
-  );
-
-  if (!previewTitle && !previewDetail) {
-    return null;
-  }
-
-  return (
-    <div className="mt-3 rounded-[var(--radius-sm)] border border-[var(--color-brand-border)]/70 bg-[var(--brand-background)] px-2.5 py-2">
-      {previewTitle ? (
-        <div className="text-[11px] font-semibold text-[var(--brand-text)]">{previewTitle}</div>
-      ) : null}
-      {previewDetail ? (
-        <div className="mt-1 text-[11px] leading-4 text-[var(--brand-secondary)]">
-          {previewDetail}
-        </div>
-      ) : null}
-      {item.previewStats && item.previewStats.length > 0 ? (
-        <div className="mt-2 flex flex-wrap gap-1.5">
-          {item.previewStats.map((stat) => (
-            <span
-              key={`${item.id}-${stat}`}
-              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}
-            >
-              {stat}
-            </span>
-          ))}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
-function renderPlanContent(
-  item: AssistantThreadItem,
-  t: TranslateFn,
-  selectedNodeCount: number
-): ReactElement {
-  const plan = item.plan;
-  if (!plan) {
-    return <div className="leading-relaxed">{item.content}</div>;
-  }
-
-  const variant = getPlanCardVariant(plan.mode);
-  const summary =
-    t(getPlanSummaryKey(plan.mode, plan.skillId), {
-      defaultValue: plan.reasoningSummary,
-    }) || plan.reasoningSummary;
-
-  return (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">
-        <WandSparkles className="h-3.5 w-3.5" />
-        {t(getPlanTitleKey(plan.mode), { defaultValue: 'Plan' })}
-      </div>
-      <div className="leading-relaxed">{summary}</div>
-      {variant === 'full' ? (
-        <>
-          <div className="flex flex-wrap gap-1.5">
-            {getResponseModeLabelKey(plan.mode) ? (
-              <span
-                className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}
-              >
-                {t('commandBar.aiStudio.thread.modeLabel', { defaultValue: 'Mode' })}:{' '}
-                {t(getResponseModeLabelKey(plan.mode)!, {
-                  defaultValue: plan.mode.replaceAll('_', ' '),
-                })}
-              </span>
-            ) : null}
-            <span
-              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}
-            >
-              {t('commandBar.aiStudio.thread.confidenceLabel', { defaultValue: 'Confidence' })}:{' '}
-              {Math.round((plan.confidence ?? 0) * 100)}%
-            </span>
-          </div>
-          <div className="space-y-1 text-[12px] leading-relaxed text-[var(--brand-secondary)]">
-            {getPlanStepKeys(plan.skillId, selectedNodeCount).map((step, index) => (
-              <div key={`${item.id}-step-${index}`}>
-                {index + 1}.{' '}
-                {t(step.key, {
-                  count: step.count,
-                  defaultValue: plan.steps[index] ?? '',
-                })}
-              </div>
-            ))}
-          </div>
-        </>
-      ) : null}
-    </div>
-  );
-}
-
-function renderThreadContent(
-  item: AssistantThreadItem,
-  t: TranslateFn,
-  selectedNodeCount: number
-): ReactElement {
-  if (item.role !== 'user' && item.type === 'assistant_plan' && item.plan) {
-    return renderPlanContent(item, t, selectedNodeCount);
-  }
-
-  if (item.type === 'assistant_applied_result') {
-    return (
-      <div className="leading-relaxed">
-        {resolveThreadCopy(t as FlowpilotTranslateFn, item.copyKey ?? 'appliedToCanvas', item.content)}
-      </div>
-    );
-  }
-
-  return <div className="leading-relaxed">{item.content}</div>;
 }
 
 function getStreamingStatusCopy(
@@ -296,140 +104,122 @@ function getStreamingStatusCopy(
   });
 }
 
-function renderThreadItem(
-  item: AssistantThreadItem,
-  t: TranslateFn,
-  selectedNodeCount: number
-): ReactElement {
-  const isUser = item.role === 'user';
-
-  return (
-    <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`} key={item.id}>
-      <div
-        className={`max-w-[88%] rounded-[var(--radius-md)] px-3.5 py-2.5 text-sm whitespace-pre-wrap ${getThreadBubbleClassName(isUser)}`}
-      >
-        {renderThreadContent(item, t, selectedNodeCount)}
-        {isUser ? null : renderThreadAssetMatches(item)}
-        {isUser ? null : renderThreadPreview(item, t)}
-      </div>
-    </div>
-  );
+interface StatusSectionProps {
+  isGenerating: boolean;
+  streamingText: string | null;
+  retryCount: number;
+  chatMessages: ChatMessage[];
+  assistantThread: AssistantThreadItem[];
+  pendingDiff: ImportDiff | null;
+  nodeCount: number;
+  edgeCount: number;
+  isCanvasEmpty: boolean;
+  canGenerate: boolean;
+  onOpenAISettings: () => void;
+  t: TranslateFn;
 }
 
-export function ChatHistoryView({
-  hasHistory,
-  chatMessages,
-  assistantThread,
+function getLastConversationalModelItem(
+  assistantThread: AssistantThreadItem[]
+): AssistantThreadItem | null {
+  for (let index = assistantThread.length - 1; index >= 0; index -= 1) {
+    const item = assistantThread[index];
+    if (item.role !== 'model') {
+      continue;
+    }
+
+    if (item.type === 'assistant_error') {
+      return item;
+    }
+
+    if (item.type === 'assistant_plan') {
+      const mode = item.responseMode ?? item.plan?.mode;
+      if (mode === 'answer' || mode === 'clarification') {
+        return item;
+      }
+    }
+  }
+
+  return null;
+}
+
+function getConversationalContent(item: AssistantThreadItem): string {
+  return item.plan?.reasoningSummary ?? item.summary ?? item.content;
+}
+
+export function StatusSection({
   isGenerating,
   streamingText,
   retryCount,
-  isCanvasEmpty,
+  chatMessages,
+  assistantThread,
+  pendingDiff,
+  nodeCount,
+  edgeCount,
+  isCanvasEmpty: _isCanvasEmpty,
   canGenerate,
-  examplePrompts,
-  getExampleIconColor,
-  onSelectExample,
   onOpenAISettings,
-  onClearChat,
-  scrollRef,
-  selectedNodeCount,
   t,
-}: ChatHistoryViewProps): ReactElement {
-  if (hasHistory) {
+}: StatusSectionProps): ReactElement | null {
+  if (pendingDiff != null) {
+    return null;
+  }
+
+  if (isGenerating) {
     return (
-      <>
-        <div className="flex items-center justify-end px-1 pb-2">
-          <button
-            onClick={onClearChat}
-            className="rounded-full p-2 text-[var(--brand-secondary)] transition-colors hover:bg-red-50 hover:text-red-500 active:scale-95"
-            title={t('commandBar.ai.clearChat')}
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
+      <div className="rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] p-3 text-[12px]">
+        <div className="flex items-center gap-1.5">
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          {getStreamingStatusCopy(streamingText, retryCount, chatMessages.length, t)}
         </div>
-        <div
-          ref={scrollRef}
-          className="min-h-0 flex-1 space-y-4 overflow-y-auto px-1 py-4 custom-scrollbar"
-        >
-          {assistantThread.map((item) => renderThreadItem(item, t, selectedNodeCount))}
-          {isGenerating ? (
-            <div className="flex justify-start">
-              <div className="max-w-[88%] rounded-[var(--radius-md)] rounded-bl-sm border border-[var(--color-brand-border)]/70 bg-[var(--brand-surface)] px-3.5 py-2.5 text-sm text-[var(--brand-text)] shadow-sm">
-                <div className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wide text-[var(--brand-secondary)]">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  {streamingText
-                    ? t('commandBar.aiStudio.thread.drafting', { defaultValue: 'Drafting' })
-                    : t('commandBar.aiStudio.thread.thinking', { defaultValue: 'Thinking' })}
-                </div>
-                <div className="mt-2 text-[12px] leading-relaxed text-[var(--brand-secondary)]">
-                  {getStreamingStatusCopy(streamingText, retryCount, chatMessages.length, t)}
-                </div>
-                {streamingText ? (
-                  <div className="mt-3 whitespace-pre-wrap leading-relaxed">{streamingText}</div>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      </>
+        {streamingText ? (
+          <div className="mt-2 whitespace-pre-wrap text-[#8B93A0]">{streamingText}</div>
+        ) : null}
+      </div>
     );
   }
 
-  return (
-    <div
-      ref={scrollRef}
-      className="min-h-0 flex-1 space-y-4 overflow-y-auto px-1 py-4 custom-scrollbar"
-    >
-      <div className="flex h-full flex-col items-center justify-center py-8 text-center px-4">
-        <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-[var(--radius-lg)] text-[var(--color-surface-warning-text)] ${SECTION_CARD_CLASS} ring-1 ring-[var(--color-surface-warning-border)]`}>
-          <WandSparkles className="h-6 w-6" />
-        </div>
-        <h3 className="text-xl font-bold tracking-tight text-[var(--brand-text)]">
-          {t('settings.aiAssistant', AI_ASSISTANT_NAME)}
-        </h3>
-        <p className="mt-2.5 mb-8 max-w-[280px] text-[13px] leading-relaxed text-[var(--brand-secondary)]">
-          {isCanvasEmpty
-            ? t('commandBar.aiStudio.emptyDescription', {
-                defaultValue:
-                  'Describe the diagram you want and the AI assistant will draft the first version for you.',
-              })
-            : t('commandBar.aiStudio.editDescription', {
-                defaultValue:
-                  'Describe the changes you want and the AI assistant will update the diagram for you.',
-              })}
-        </p>
-
-        {canGenerate ? (
-          <div className="flex max-w-[360px] flex-wrap justify-center gap-2">
-            {examplePrompts.map((skill, index) => {
-              const Icon = skill.icon;
-              return (
-                <button
-                  key={skill.label}
-                  onClick={() => onSelectExample(skill.prompt)}
-                  className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[var(--brand-surface)] bg-[var(--brand-surface)] px-3 py-2 text-left text-[12px] font-semibold leading-none text-[var(--brand-text)] shadow-sm shadow-[var(--color-brand-border)]/70 ring-1 ring-[var(--color-brand-border)]/70 transition-all duration-200 hover:-translate-y-px hover:border-[var(--brand-primary-100)] hover:text-[var(--brand-primary)] hover:shadow-md active:scale-95"
-                >
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--brand-background)]">
-                    <Icon className={`h-3.5 w-3.5 ${getExampleIconColor(index)}`} />
-                  </span>
-                  <span>{skill.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="mt-8 flex justify-center">
-            <button
-              onClick={onOpenAISettings}
-              className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-[var(--brand-secondary)] transition-all hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)] active:scale-95 ${SECTION_SURFACE_CLASS}`}
-            >
-              <Key className="h-3.5 w-3.5" />
-              {t('commandBar.aiStudio.addKeyCta', 'Add AI key to start generating')}
-            </button>
-          </div>
-        )}
+  const lastModelItem = getLastConversationalModelItem(assistantThread);
+  if (lastModelItem) {
+    return (
+      <div className="rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] p-3 text-[12px] leading-[1.5] text-[#4A5361] whitespace-pre-wrap">
+        {getConversationalContent(lastModelItem)}
       </div>
-    </div>
-  );
+    );
+  }
+
+  if (!canGenerate) {
+    return (
+      <div className="mt-2 flex justify-center">
+        <button
+          type="button"
+          onClick={onOpenAISettings}
+          className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-[var(--brand-secondary)] transition-all hover:bg-[var(--brand-background)] hover:text-[var(--brand-text)] active:scale-95 ${SECTION_SURFACE_CLASS}`}
+        >
+          <Key className="h-3.5 w-3.5" />
+          {t('commandBar.aiStudio.addKeyCta', 'Add AI key to start generating')}
+        </button>
+      </div>
+    );
+  }
+
+  if (nodeCount > 0) {
+    return (
+      <div className="flex items-center gap-2.5 rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] px-3 py-2.5">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px] bg-[var(--wf-t-out-bg)] text-[var(--wf-t-out-fg)]">
+          <Check className="h-3.5 w-3.5" />
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-[13px] font-medium">已应用到画布</div>
+          <div className="text-[11.5px] text-[#8B93A0]">
+            {nodeCount} 个节点 · {edgeCount} 条连线
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
 }
 
 interface ComposerSectionProps {
