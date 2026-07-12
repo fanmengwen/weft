@@ -50,7 +50,11 @@ export interface NodeIconData {
   mermaidSvg?: string; // Rendered Mermaid SVG markup
 }
 
+export type ChartNodeTone = 'out' | 'end' | 'web' | 'cond' | 'kb' | 'llm' | 'note';
+
 export interface NodeVisualStyleData {
+  /** User-selected tone override from the appearance swatch; falls back to type+shape when absent. */
+  tone?: ChartNodeTone;
   color?: string; // Preset color key (e.g., 'white', 'blue', 'custom')
   colorMode?: 'subtle' | 'filled';
   customColor?: string; // Hex color for the "custom" preset

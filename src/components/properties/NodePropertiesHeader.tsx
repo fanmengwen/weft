@@ -7,7 +7,7 @@ import {
   chartNodeToneVars,
   getNodeDefaults,
   resolveChartNodeChipIcon,
-  resolveChartNodeTone,
+  resolveNodeTone,
   type NodeShape,
 } from '../nodeHelpers';
 import {
@@ -126,8 +126,7 @@ export function NodePropertiesHeader({
   const shape = (selectedNode.data?.shape || defaults.shape) as NodeShape;
   const dataIcon =
     selectedNode.data?.icon === 'none' ? null : selectedNode.data?.icon || defaults.icon;
-  const tone = resolveChartNodeTone(nodeType, shape);
-  const toneVars = chartNodeToneVars(tone);
+  const toneVars = chartNodeToneVars(resolveNodeTone(selectedNode));
   const chipIcon = resolveHeaderChipIcon(nodeType, shape, dataIcon);
   const addItemId = resolveAddItemIdFromNode(nodeType, shape);
   const typeLabel = addItemId ? getAddItemDefinitionById(addItemId, t).label : null;

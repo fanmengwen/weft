@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import type { FlowNode } from '@/lib/types';
-import { getIconAssetNodeMinSize, resolveNodeSize } from './nodeHelpers';
+import {
+  CHART_NODE_TONES,
+  getIconAssetNodeMinSize,
+  isChartNodeTone,
+  resolveNodeSize,
+  resolveNodeTone,
+  resolveNodeToneVars,
+} from './nodeHelpers';
 
 function createNode(data: Partial<FlowNode['data']> = {}): FlowNode {
   return {
@@ -13,6 +20,44 @@ function createNode(data: Partial<FlowNode['data']> = {}): FlowNode {
     },
   } as FlowNode;
 }
+
+describe('resolveNodeTone', () => {
+  it('derives kb tone for custom parallelogram nodes', () => {
+    expect(resolveNodeTone({ type: 'custom', data: { label: '', shape: 'parallelogram' } })).toBe(
+      'kb'
+    );
+  });
+
+  it('uses stored tone override when valid', () => {
+    expect(resolveNodeTone({ type: 'process', data: { label: '', tone: 'llm' } })).toBe('llm');
+  });
+
+  it('falls back to derived tone when stored tone is invalid', () => {
+    expect(
+      resolveNodeTone({ type: 'process', data: { label: '', tone: 'bogus' as never } })
+    ).toBe('web');
+  });
+
+  it('maps tone to CSS variables via resolveNodeToneVars', () => {
+    expect(resolveNodeToneVars({ type: 'start' })).toEqual({
+      background: 'var(--wf-t-out-bg)',
+      color: 'var(--wf-t-out-fg)',
+    });
+  });
+});
+
+describe('isChartNodeTone', () => {
+  it.each(CHART_NODE_TONES.map((tone) => [tone, true] as const))(
+    'returns true for %s',
+    (tone, expected) => {
+      expect(isChartNodeTone(tone)).toBe(expected);
+    }
+  );
+
+  it.each(['bogus', '', null, undefined, 42])('returns false for %s', (value) => {
+    expect(isChartNodeTone(value)).toBe(false);
+  });
+});
 
 describe('nodeHelpers sizing', () => {
   it('returns stable icon asset minimums without a label', () => {

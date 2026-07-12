@@ -26,6 +26,14 @@ vi.mock('./IconPicker', () => ({
   IconPicker: () => <div>icon-picker</div>,
 }));
 
+vi.mock('./ColorPicker', () => ({
+  ColorPicker: () => <div>color-picker</div>,
+}));
+
+vi.mock('./ToneSwatch', () => ({
+  ToneSwatch: () => <div>tone-swatch</div>,
+}));
+
 function createNode(overrides: Partial<Node<NodeData>> = {}): Node<NodeData> {
   return {
     id: 'node-1',
@@ -105,17 +113,50 @@ describe('NodeProperties', () => {
     expect(onDelete).toHaveBeenCalledWith('node-1');
   });
 
-  it('uses the shared icon picker for icon-backed asset nodes inside the appearance group', () => {
+  function openAppearanceGroup(): void {
+    fireEvent.click(screen.getByRole('button', { name: '外观' }));
+  }
+
+  it('renders tone swatch for process nodes without shape selector or image upload', () => {
     render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'process' })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    openAppearanceGroup();
+
+    expect(screen.getByText('tone-swatch')).toBeTruthy();
+    expect(screen.queryByText('color-picker')).toBeNull();
+    expect(screen.getByText('icon-picker')).toBeTruthy();
+  });
+
+  it('renders color picker for annotation nodes without tone swatch', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'annotation' })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    openAppearanceGroup();
+
+    expect(screen.getByText('color-picker')).toBeTruthy();
+    expect(screen.queryByText('tone-swatch')).toBeNull();
+    expect(screen.queryByText('icon-picker')).toBeNull();
+  });
+
+  it('hides icon picker for io nodes and shows it for database nodes', () => {
+    const { rerender } = render(
       <NodeProperties
         selectedNode={createNode({
           type: 'custom',
-          data: {
-            label: 'Lambda',
-            assetPresentation: 'icon',
-            archIconPackId: 'aws-official-starter-v1',
-            archIconShapeId: 'compute-lambda',
-          },
+          data: { label: 'IO', shape: 'parallelogram' },
         })}
         onChange={vi.fn()}
         onDuplicate={vi.fn()}
@@ -123,10 +164,20 @@ describe('NodeProperties', () => {
       />
     );
 
-    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'true');
+    openAppearanceGroup();
     expect(screen.queryByText('icon-picker')).toBeNull();
 
-    fireEvent.click(screen.getByRole('button', { name: '外观' }));
+    rerender(
+      <NodeProperties
+        selectedNode={createNode({
+          type: 'custom',
+          data: { label: 'Database', shape: 'cylinder' },
+        })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
 
     expect(screen.getByText('icon-picker')).toBeTruthy();
   });

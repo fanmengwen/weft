@@ -29,7 +29,7 @@ import {
   isDivShape,
   resolveChartNodeChipIcon,
   resolveChartNodeSurfaceVariant,
-  resolveChartNodeTone,
+  resolveNodeTone,
   toCssSize,
   getNodeBorderRadius,
   NEEDS_SQUARE_ASPECT,
@@ -64,7 +64,7 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
   const isMermaidImportedLeaf = mermaidImportedNodeMetadata?.role === 'leaf';
   const nodeUsesDivShape = isDivShape(activeShape);
   const surfaceVariant = resolveChartNodeSurfaceVariant(type || 'process', activeShape);
-  const nodeTone = resolveChartNodeTone(type || 'process', activeShape);
+  const nodeTone = resolveNodeTone({ type, data });
   const chipIcon = resolveChartNodeChipIcon(type || 'process', activeShape, activeIconKey);
   const { minWidth: baseMinWidth, minHeight: baseMinHeight } = getMinNodeSize(activeShape);
   const hasSubLabel = Boolean(data.subLabel);

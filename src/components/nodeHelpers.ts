@@ -1,4 +1,22 @@
-import type { DesignSystem, FlowNode, NodeData } from '@/lib/types';
+import type { ChartNodeTone, DesignSystem, FlowNode, NodeData } from '@/lib/types';
+
+export type { ChartNodeTone } from '@/lib/types';
+
+export const CHART_NODE_TONES: readonly ChartNodeTone[] = [
+  'out',
+  'end',
+  'web',
+  'cond',
+  'kb',
+  'llm',
+  'note',
+] as const;
+
+const CHART_NODE_TONE_SET = new Set<string>(CHART_NODE_TONES);
+
+export function isChartNodeTone(value: unknown): value is ChartNodeTone {
+  return typeof value === 'string' && CHART_NODE_TONE_SET.has(value);
+}
 
 export type NodeShape = NonNullable<NodeData['shape']>;
 
@@ -148,8 +166,6 @@ export function fontSizeClassFor(fontSize: string | undefined): string {
 
 export const NEEDS_SQUARE_ASPECT: Set<NodeShape> = new Set(['diamond']);
 
-export type ChartNodeTone = 'out' | 'end' | 'web' | 'cond' | 'kb' | 'llm';
-
 export type ChartNodeSurfaceVariant = 'stadium' | 'rounded';
 
 export const CHART_NODE_SURFACE_GRADIENT =
@@ -242,5 +258,23 @@ export function chartNodeToneVars(tone: ChartNodeTone): { background: string; co
     background: `var(--wf-t-${tone}-bg)`,
     color: `var(--wf-t-${tone}-fg)`,
   };
+}
+
+export function resolveNodeTone(node: { type?: string; data?: NodeData }): ChartNodeTone {
+  const nodeType = node.type || 'process';
+  const storedTone = node.data?.tone;
+  if (isChartNodeTone(storedTone)) {
+    return storedTone;
+  }
+  const defaults = getNodeDefaults(nodeType);
+  const shape = (node.data?.shape || defaults.shape) as NodeShape;
+  return resolveChartNodeTone(nodeType, shape);
+}
+
+export function resolveNodeToneVars(node: {
+  type?: string;
+  data?: NodeData;
+}): { background: string; color: string } {
+  return chartNodeToneVars(resolveNodeTone(node));
 }
 

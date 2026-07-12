@@ -2,10 +2,9 @@ import React, { useId, useRef, useState } from 'react';
 import { Node } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
-import { ShapeSelector } from './ShapeSelector';
 import { ColorPicker } from './ColorPicker';
 import { IconPicker, type ProviderIconSelection } from './IconPicker';
-import { ImageUpload } from './ImageUpload';
+import { ToneSwatch } from './ToneSwatch';
 import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
 import { NodeContentSection } from './NodeContentSection';
 import type { DomainLibraryCategory } from '@/services/domainLibrary';
@@ -20,12 +19,7 @@ import { getNodeParentId } from '@/lib/nodeParent';
 import { buildSectionActions } from './sectionActionBuilder';
 import { NodePropertiesHeader } from './NodePropertiesHeader';
 import { Button } from '../ui/Button';
-import {
-  chartNodeToneVars,
-  getNodeDefaults,
-  resolveChartNodeTone,
-  type NodeShape,
-} from '../nodeHelpers';
+import { resolveNodeTone, resolveNodeToneVars } from '../nodeHelpers';
 
 type NodePropertiesSection = 'content' | 'appearance';
 
@@ -118,9 +112,10 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
   });
 
   const nodeType = selectedNode.type || 'process';
-  const defaults = getNodeDefaults(nodeType);
-  const shape = (selectedNode.data?.shape || defaults.shape) as NodeShape;
-  const toneVars = chartNodeToneVars(resolveChartNodeTone(nodeType, shape));
+  const toneVars = resolveNodeToneVars(selectedNode);
+  const showIconPicker =
+    nodeType === 'process' ||
+    (nodeType === 'custom' && selectedNode.data?.shape === 'cylinder');
 
   const [activeSectionsByNode, setActiveSectionsByNode] = useState<
     Record<string, NodePropertiesSection | ''>
@@ -253,14 +248,14 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         />
         {isAppearanceOpen ? (
           <div id={appearanceGroupId} role="region" className="space-y-5 pb-4">
-            {!isAnnotation && !isSection && !isIconAssetNode ? (
-              <ShapeSelector
-                selectedShape={selectedNode.data?.shape}
-                onChange={(nextShape) => onChange(selectedNode.id, { shape: nextShape })}
+            {!isAnnotation ? (
+              <ToneSwatch
+                selectedTone={resolveNodeTone(selectedNode)}
+                onSelect={(tone) => onChange(selectedNode.id, { tone })}
               />
             ) : null}
 
-            {!isIconAssetNode ? (
+            {isAnnotation ? (
               <ColorPicker
                 selectedColor={selectedNode.data?.color}
                 selectedColorMode={selectedNode.data?.colorMode}
@@ -286,7 +281,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
               />
             ) : null}
 
-            {!isAnnotation ? (
+            {showIconPicker ? (
               <div className="space-y-3">
                 <IconPicker
                   selectedIcon={normalizedIconData?.icon}
@@ -308,13 +303,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
                   </div>
                 ) : null}
               </div>
-            ) : null}
-
-            {!isIconAssetNode ? (
-              <ImageUpload
-                imageUrl={selectedNode.data?.imageUrl}
-                onChange={(url) => onChange(selectedNode.id, { imageUrl: url })}
-              />
             ) : null}
           </div>
         ) : null}
