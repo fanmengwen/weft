@@ -215,6 +215,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
             playback={flowEditorController.chrome.playback}
             toolbar={flowEditorController.chrome.toolbar}
             emptyState={flowEditorController.chrome.emptyState}
+            onOpenStudio={flowEditorController.openStudioAI}
           />
 
           <input

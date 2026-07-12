@@ -4,6 +4,7 @@ import type { FlowEditorPanelsProps } from '@/components/FlowEditorPanels';
 import type { CinematicExportRequest } from '@/services/export/cinematicExport';
 import type { CollaborationRemotePresence } from '@/hooks/useFlowEditorCollaboration';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { StudioLauncher } from '@/components/StudioLauncher';
 import type { EditorPage } from '@/store/editorPageHooks';
 
 const LazyFlowEditorPanels = lazy(async () => {
@@ -130,6 +131,7 @@ export interface FlowEditorChromeProps {
     onAddNode: () => void;
     onSuggestionClick?: (prompt: string) => void;
   };
+  onOpenStudio: () => void;
 }
 
 export function FlowEditorChrome({
@@ -147,6 +149,7 @@ export function FlowEditorChrome({
   playback,
   toolbar,
   emptyState,
+  onOpenStudio,
 }: FlowEditorChromeProps): React.ReactElement {
   const topNavProps = {
     pages,
@@ -231,6 +234,9 @@ export function FlowEditorChrome({
           <Suspense fallback={null}>
             <LazyDiffModeBanner />
           </Suspense>
+          {toolbar.editorMode !== 'studio' ? (
+            <StudioLauncher onOpen={onOpenStudio} />
+          ) : null}
         </div>
         {shouldRenderPanels ? (
           <Suspense fallback={null}>

@@ -333,6 +333,7 @@ export function useFlowEditorController({
     return {
         shouldRenderPanels,
         handleCanvasEntityIntent,
+        openStudioAI,
         panels,
         chrome,
     };
