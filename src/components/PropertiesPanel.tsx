@@ -98,6 +98,7 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
             onCreateArchitectureBoundary={onCreateArchitectureBoundary}
             onApplyArchitectureTemplate={onApplyArchitectureTemplate}
             onSuggestArchitectureNode={onSuggestArchitectureNode}
+            onChangeEdge={onChangeEdge}
           />
           {selectedEdge ? (
             <div className="px-4">

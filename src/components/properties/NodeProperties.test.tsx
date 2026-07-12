@@ -176,6 +176,35 @@ describe('NodeProperties', () => {
     expect(screen.queryByText('tone-swatch')).toBeNull();
   });
 
+  it('renders decision branch labels for decision nodes inside the content group', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'decision', data: { label: 'Check', subLabel: 'x > 0' } })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+        onChangeEdge={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText('分支标签')).toBeTruthy();
+    expect(screen.getByText('条件文本')).toBeTruthy();
+  });
+
+  it('does not render decision branch labels for process nodes', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'process' })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+        onChangeEdge={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByText('分支标签')).toBeNull();
+  });
+
   it('hides icon picker for io nodes and shows it for database nodes', () => {
     const { rerender } = render(
       <NodeProperties

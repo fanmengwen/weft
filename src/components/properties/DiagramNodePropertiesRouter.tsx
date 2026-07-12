@@ -1,6 +1,6 @@
 import { createElement, useMemo, type ReactElement } from 'react';
 import { useFlowStore } from '@/store';
-import type { Node } from '@/lib/reactflowCompat';
+import type { Edge, Node } from '@/lib/reactflowCompat';
 import { NodeType, type DiagramType, type NodeData } from '@/lib/types';
 import { initializeDiagramTypeRuntime } from '@/diagram-types/bootstrap';
 import { getDiagramNodeProperties } from '@/diagram-types/core';
@@ -23,6 +23,7 @@ interface DiagramNodePropertiesRouterProps {
     templateId: import('@/lib/architectureTemplates').ArchitectureTemplateId
   ) => void;
   onSuggestArchitectureNode?: (nodeId: string) => Promise<void> | void;
+  onChangeEdge?: (id: string, updates: Partial<Edge>) => void;
 }
 
 const NODE_TYPE_PANEL_MAP: Partial<Record<NodeType, DiagramType>> = {
@@ -48,6 +49,7 @@ export function DiagramNodePropertiesRouter({
   onCreateArchitectureBoundary,
   onApplyArchitectureTemplate,
   onSuggestArchitectureNode,
+  onChangeEdge,
 }: DiagramNodePropertiesRouterProps): ReactElement {
   const tabs = useFlowStore((state) => state.tabs);
   const activeTabId = useFlowStore((state) => state.activeTabId);
@@ -72,6 +74,7 @@ export function DiagramNodePropertiesRouter({
         onFitSectionToContents={onFitSectionToContents}
         onReleaseFromSection={onReleaseFromSection}
         onBringContentsIntoSection={onBringContentsIntoSection}
+        onChangeEdge={onChangeEdge}
       />
     );
   }

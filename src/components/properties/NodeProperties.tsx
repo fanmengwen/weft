@@ -1,10 +1,11 @@
 import React, { useId, useState } from 'react';
-import { Node } from '@/lib/reactflowCompat';
+import { Node, type Edge } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { IconPicker, type ProviderIconSelection } from './IconPicker';
 import { ToneSwatch } from './ToneSwatch';
 import { NodeContentSection } from './NodeContentSection';
+import { DecisionBranchLabels } from './DecisionBranchLabels';
 import type { DomainLibraryCategory } from '@/services/domainLibrary';
 import { getAssetCategoryDisplayName } from '@/services/assetPresentation';
 import {
@@ -29,6 +30,7 @@ interface NodePropertiesProps {
   onFitSectionToContents?: (id: string) => void;
   onReleaseFromSection?: (id: string) => void;
   onBringContentsIntoSection?: (id: string) => void;
+  onChangeEdge?: (id: string, updates: Partial<Edge>) => void;
 }
 
 function PropertiesGroupDivider(): React.ReactElement {
@@ -79,6 +81,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
   onFitSectionToContents,
   onReleaseFromSection,
   onBringContentsIntoSection,
+  onChangeEdge,
 }) => {
   const isAnnotation = selectedNode.type === 'annotation';
   const isSection = selectedNode.type === 'section';
@@ -172,6 +175,9 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
               onChange={onChange}
               embedded
             />
+            {selectedNode.type === 'decision' ? (
+              <DecisionBranchLabels nodeId={selectedNode.id} onChangeEdge={onChangeEdge} />
+            ) : null}
           </div>
         ) : null}
       </div>
