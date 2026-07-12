@@ -1,11 +1,11 @@
 import React, { lazy, Suspense } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Sparkles, Trash2, X } from 'lucide-react';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { ChatMessage } from '@/services/aiService';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
 import type { ImportDiff } from '@/hooks/useAIGeneration';
-import { SidebarBody, SidebarHeader, SidebarShell } from './SidebarShell';
+import { SidebarBody, SidebarShell } from './SidebarShell';
 
 const LazyStudioAIPanel = lazy(async () => {
     const module = await import('./StudioAIPanel');
@@ -54,6 +54,7 @@ interface StudioPanelProps {
 
 export function StudioPanel({
     onClose,
+    onClearChat,
     nodes,
     edges,
     onApply: _onApply,
@@ -79,7 +80,30 @@ export function StudioPanel({
 }: StudioPanelProps): React.ReactElement {
     return (
         <SidebarShell>
-            <SidebarHeader title="Studio" onClose={onClose} />
+            <div className="flex h-12 items-center justify-between border-b border-[#EEF0F4] pl-4 pr-3">
+                <div className="flex items-center gap-[7px]">
+                    <Sparkles className="h-3.5 w-3.5 text-[var(--wf-acc)]" />
+                    <span className="text-[14px] font-semibold text-[var(--wf-text)]">Studio</span>
+                </div>
+                <div className="flex items-center gap-0.5">
+                    <button
+                        type="button"
+                        onClick={onClearChat}
+                        aria-label="Clear conversation"
+                        className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[#8B93A0] transition-colors hover:bg-[#FBEFEE] hover:text-[#C4443C]"
+                    >
+                        <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                        type="button"
+                        onClick={onClose}
+                        aria-label="Close"
+                        className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[#8B93A0] transition-colors hover:bg-[#F3F5F8] hover:text-[#4A5361]"
+                    >
+                        <X className="h-3.5 w-3.5" />
+                    </button>
+                </div>
+            </div>
 
             {selectedNode && (
                 <button
