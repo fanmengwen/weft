@@ -55,6 +55,8 @@ export type ChartNodeTone = 'out' | 'end' | 'web' | 'cond' | 'kb' | 'llm' | 'not
 export interface NodeVisualStyleData {
   /** User-selected tone override from the appearance swatch; falls back to type+shape when absent. */
   tone?: ChartNodeTone;
+  /** IO node flow direction metadata; rendering flip is deferred to a later pass. */
+  ioDirection?: 'input' | 'output';
   color?: string; // Preset color key (e.g., 'white', 'blue', 'custom')
   colorMode?: 'subtle' | 'filled';
   customColor?: string; // Hex color for the "custom" preset

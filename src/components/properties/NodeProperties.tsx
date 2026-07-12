@@ -1,11 +1,10 @@
-import React, { useId, useRef, useState } from 'react';
+import React, { useId, useState } from 'react';
 import { Node } from '@/lib/reactflowCompat';
 import { NodeData } from '@/lib/types';
 import { ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 import { ColorPicker } from './ColorPicker';
 import { IconPicker, type ProviderIconSelection } from './IconPicker';
 import { ToneSwatch } from './ToneSwatch';
-import { useMarkdownEditor } from '@/hooks/useMarkdownEditor';
 import { NodeContentSection } from './NodeContentSection';
 import type { DomainLibraryCategory } from '@/services/domainLibrary';
 import { getAssetCategoryDisplayName } from '@/services/assetPresentation';
@@ -114,6 +113,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
   const nodeType = selectedNode.type || 'process';
   const toneVars = resolveNodeToneVars(selectedNode);
   const showIconPicker =
+    isIconAssetNode ||
     nodeType === 'process' ||
     (nodeType === 'custom' && selectedNode.data?.shape === 'cylinder');
 
@@ -133,41 +133,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
 
   const contentGroupId = useId();
   const appearanceGroupId = useId();
-
-  const labelInputRef = useRef<HTMLTextAreaElement>(null);
-  const descInputRef = useRef<HTMLTextAreaElement>(null);
-  const [activeField, setActiveField] = useState<'label' | 'subLabel' | null>(null);
-
-  const labelEditor = useMarkdownEditor(
-    labelInputRef,
-    (val) => onChange(selectedNode.id, { label: val }),
-    selectedNode.data?.label || ''
-  );
-  const descEditor = useMarkdownEditor(
-    descInputRef,
-    (val) => onChange(selectedNode.id, { subLabel: val }),
-    selectedNode.data?.subLabel || ''
-  );
-
-  function handleStyleAction(action: 'bold' | 'italic'): void {
-    if (activeField === 'label') {
-      if (action === 'bold') labelEditor.insert('**', '**');
-      else labelEditor.insert('_', '_');
-    } else if (activeField === 'subLabel') {
-      if (action === 'bold') descEditor.insert('**', '**');
-      else descEditor.insert('_', '_');
-    } else {
-      if (action === 'bold') {
-        onChange(selectedNode.id, {
-          fontWeight: selectedNode.data?.fontWeight === 'bold' ? 'normal' : 'bold',
-        });
-      } else {
-        onChange(selectedNode.id, {
-          fontStyle: selectedNode.data?.fontStyle === 'italic' ? 'normal' : 'italic',
-        });
-      }
-    }
-  }
 
   function handleBuiltInIconChange(icon: string): void {
     onChange(selectedNode.id, createBuiltInIconData(icon));
@@ -214,16 +179,6 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
               selectedNode={selectedNode}
               onChange={onChange}
               embedded
-              onBold={() => handleStyleAction('bold')}
-              onItalic={() => handleStyleAction('italic')}
-              labelInputRef={labelInputRef}
-              descInputRef={descInputRef}
-              onLabelFocus={() => setActiveField('label')}
-              onLabelBlur={() => setTimeout(() => setActiveField(null), 200)}
-              onDescFocus={() => setActiveField('subLabel')}
-              onDescBlur={() => setTimeout(() => setActiveField(null), 200)}
-              onLabelKeyDown={labelEditor.handleKeyDown}
-              onDescKeyDown={descEditor.handleKeyDown}
             />
           </div>
         ) : null}
@@ -248,7 +203,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         />
         {isAppearanceOpen ? (
           <div id={appearanceGroupId} role="region" className="space-y-5 pb-4">
-            {!isAnnotation ? (
+            {!isAnnotation && !isIconAssetNode ? (
               <ToneSwatch
                 selectedTone={resolveNodeTone(selectedNode)}
                 onSelect={(tone) => onChange(selectedNode.id, { tone })}

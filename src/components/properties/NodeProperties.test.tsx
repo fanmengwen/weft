@@ -49,7 +49,7 @@ function createNode(overrides: Partial<Node<NodeData>> = {}): Node<NodeData> {
 }
 
 describe('NodeProperties', () => {
-  it('keeps content editing controls inside the content group without native selects', () => {
+  it('keeps per-type content fields inside the content group without native selects', () => {
     const { container } = render(
       <NodeProperties
         selectedNode={createNode()}
@@ -61,10 +61,10 @@ describe('NodeProperties', () => {
 
     expect(container.querySelector('select')).toBeNull();
     expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByPlaceholderText('Enter primary text...')).toBeTruthy();
-    expect(screen.getByPlaceholderText('Add descriptive text (Markdown supported)...')).toBeTruthy();
-    expect(screen.getByText('Secondary Style')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: 'Text Style' })).toBeNull();
+    expect(screen.getByText('显示名称')).toBeTruthy();
+    expect(screen.getByText('说明')).toBeTruthy();
+    expect(screen.queryByText('Secondary Style')).toBeNull();
+    expect(screen.queryByTitle('Bold (Cmd+B)')).toBeNull();
   });
 
   it('opens the content group by default and keeps the appearance group collapsed', () => {
@@ -149,6 +149,30 @@ describe('NodeProperties', () => {
     expect(screen.getByText('color-picker')).toBeTruthy();
     expect(screen.queryByText('tone-swatch')).toBeNull();
     expect(screen.queryByText('icon-picker')).toBeNull();
+  });
+
+  it('renders icon picker for icon-asset nodes without tone swatch', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({
+          type: 'custom',
+          data: {
+            label: 'Athena',
+            assetPresentation: 'icon',
+            archIconPackId: 'aws',
+            archIconShapeId: 'athena',
+          },
+        })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    openAppearanceGroup();
+
+    expect(screen.getByText('icon-picker')).toBeTruthy();
+    expect(screen.queryByText('tone-swatch')).toBeNull();
   });
 
   it('hides icon picker for io nodes and shows it for database nodes', () => {
