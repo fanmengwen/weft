@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { Node } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
@@ -41,7 +41,7 @@ function createNode(overrides: Partial<Node<NodeData>> = {}): Node<NodeData> {
 }
 
 describe('NodeProperties', () => {
-  it('keeps content editing controls inside the Content section without native selects', () => {
+  it('keeps content editing controls inside the content group without native selects', () => {
     const { container } = render(
       <NodeProperties
         selectedNode={createNode()}
@@ -52,14 +52,60 @@ describe('NodeProperties', () => {
     );
 
     expect(container.querySelector('select')).toBeNull();
-    expect(screen.getByRole('button', { name: 'Content' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'true');
     expect(screen.getByPlaceholderText('Enter primary text...')).toBeTruthy();
     expect(screen.getByPlaceholderText('Add descriptive text (Markdown supported)...')).toBeTruthy();
     expect(screen.getByText('Secondary Style')).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Text Style' })).toBeNull();
   });
 
-  it('uses the shared icon picker for icon-backed asset nodes', () => {
+  it('opens the content group by default and keeps the appearance group collapsed', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode()}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: '外观' })).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('collapses the content group when the appearance group is opened', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode()}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '外观' }));
+
+    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: '外观' })).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('calls onDelete when the delete button is clicked', () => {
+    const onDelete = vi.fn();
+    render(
+      <NodeProperties
+        selectedNode={createNode()}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={onDelete}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+
+    expect(onDelete).toHaveBeenCalledWith('node-1');
+  });
+
+  it('uses the shared icon picker for icon-backed asset nodes inside the appearance group', () => {
     render(
       <NodeProperties
         selectedNode={createNode({
@@ -77,7 +123,11 @@ describe('NodeProperties', () => {
       />
     );
 
-    expect(screen.getByRole('button', { name: 'Icon' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.queryByText('icon-picker')).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: '外观' }));
+
     expect(screen.getByText('icon-picker')).toBeTruthy();
   });
 });

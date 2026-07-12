@@ -9,8 +9,9 @@ import { handlePropertyInputKeyDown } from './propertyInputBehavior';
 interface NodeContentSectionProps {
     selectedNode: Node<NodeData>;
     onChange: (id: string, data: Partial<NodeData>) => void;
-    isOpen: boolean;
-    onToggle: () => void;
+    isOpen?: boolean;
+    onToggle?: () => void;
+    embedded?: boolean;
     onBold: () => void;
     onItalic: () => void;
     labelInputRef: React.RefObject<HTMLTextAreaElement>;
@@ -62,8 +63,9 @@ function getSegmentButtonClassName(active: boolean): string {
 export function NodeContentSection({
     selectedNode,
     onChange,
-    isOpen,
-    onToggle,
+    isOpen = true,
+    onToggle = () => {},
+    embedded = false,
     onBold,
     onItalic,
     labelInputRef,
@@ -86,14 +88,8 @@ export function NodeContentSection({
     const showDescriptionInput = true;
     const hasSubLabel = Boolean(selectedNode.data?.subLabel && selectedNode.data.subLabel.trim().length > 0);
 
-    return (
-        <CollapsibleSection
-            title="Content"
-            icon={<FileText className="h-4 w-4" />}
-            isOpen={isOpen}
-            onToggle={onToggle}
-        >
-            <div className="px-1 pb-4 pt-2">
+    const fields = (
+            <div className={embedded ? 'pb-4 pt-2' : 'px-1 pb-4 pt-2'}>
                 <div className="flex flex-col overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] shadow-sm transition-all focus-within:border-[var(--brand-primary)]/40 focus-within:ring-4 focus-within:ring-[var(--brand-primary)]/10 text-[var(--brand-text)]">
                     <textarea
                         ref={labelInputRef}
@@ -225,6 +221,20 @@ export function NodeContentSection({
                     )}
                 </div>
             </div>
+    );
+
+    if (embedded) {
+        return fields;
+    }
+
+    return (
+        <CollapsibleSection
+            title="Content"
+            icon={<FileText className="h-4 w-4" />}
+            isOpen={isOpen}
+            onToggle={onToggle}
+        >
+            {fields}
         </CollapsibleSection>
     );
 }

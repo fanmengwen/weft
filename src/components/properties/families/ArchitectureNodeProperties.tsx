@@ -38,7 +38,11 @@ export function ArchitectureNodeProperties({
 
   return (
     <>
-      <NodePropertiesHeader selectedNode={selectedNode} onChange={onChange} />
+      <NodePropertiesHeader
+        key={selectedNode.id}
+        selectedNode={selectedNode}
+        onChange={onChange}
+      />
       <div className="space-y-5 px-4">
       <InspectorSectionDivider />
 
