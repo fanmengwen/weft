@@ -75,22 +75,17 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   }
 
   const isBulkEdit = selectedNodes.length > 1;
+  const isSingleNode = Boolean(selectedNode && !isBulkEdit);
   const panelTitle = isBulkEdit
     ? `Bulk edit (${selectedNodes.length})`
     : selectedEdge
       ? t('propertiesPanel.connection')
       : t('properties.title');
 
-  return (
-    <SidebarShell>
-      <SidebarHeader title={panelTitle} onClose={onClose} />
-
-      <SidebarBody className="space-y-5">
-        {isBulkEdit && (
-          <BulkNodeProperties selectedNodes={selectedNodes} onApply={onBulkChangeNodes} />
-        )}
-
-        {selectedNode && !isBulkEdit && (
+  if (isSingleNode) {
+    return (
+      <SidebarShell>
+        <SidebarBody className="space-y-5 px-0 py-3">
           <DiagramNodePropertiesRouter
             selectedNode={selectedNode}
             onChange={onChangeNode}
@@ -104,6 +99,27 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
             onApplyArchitectureTemplate={onApplyArchitectureTemplate}
             onSuggestArchitectureNode={onSuggestArchitectureNode}
           />
+          {selectedEdge ? (
+            <div className="px-4">
+              <EdgeProperties
+                selectedEdge={selectedEdge}
+                onChange={onChangeEdge}
+                onDelete={onDeleteEdge}
+              />
+            </div>
+          ) : null}
+        </SidebarBody>
+      </SidebarShell>
+    );
+  }
+
+  return (
+    <SidebarShell>
+      <SidebarHeader title={panelTitle} onClose={onClose} />
+
+      <SidebarBody className="space-y-5">
+        {isBulkEdit && (
+          <BulkNodeProperties selectedNodes={selectedNodes} onApply={onBulkChangeNodes} />
         )}
 
         {selectedEdge && (

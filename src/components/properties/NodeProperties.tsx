@@ -22,6 +22,7 @@ import {
 } from '@/lib/nodeIconState';
 import { getNodeParentId } from '@/lib/nodeParent';
 import { buildSectionActions } from './sectionActionBuilder';
+import { NodePropertiesHeader } from './NodePropertiesHeader';
 
 interface NodePropertiesProps {
   selectedNode: Node<NodeData>;
@@ -147,6 +148,8 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
 
   return (
     <>
+      <NodePropertiesHeader selectedNode={selectedNode} onChange={onChange} />
+      <div className="space-y-5 px-4">
       <InspectorSectionDivider />
 
       {!isAnnotation &&
@@ -265,6 +268,7 @@ export const NodeProperties: React.FC<NodePropertiesProps> = ({
         onDelete={onDelete}
         secondaryActions={sectionActions}
       />
+      </div>
     </>
   );
 };
