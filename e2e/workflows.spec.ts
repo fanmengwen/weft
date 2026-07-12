@@ -24,8 +24,8 @@ async function createNewFlow(page: import('@playwright/test').Page) {
 }
 
 async function addProcessNode(page: import('@playwright/test').Page) {
-  await expect(page.getByTestId('toolbar-add-toggle')).toBeVisible({ timeout: 15000 });
-  await page.getByTestId('toolbar-add-toggle').click();
+  await expect(page.getByTestId('toolbar-add')).toBeVisible({ timeout: 15000 });
+  await page.getByTestId('toolbar-add').click();
   await page.getByRole('button', { name: 'Process' }).click();
 }
 
@@ -127,16 +127,16 @@ test('can create a second tab', async ({ page }) => {
 // Create → Duplicate selected node via Properties Panel
 // ---------------------------------------------------------------------------
 
-test('duplicates a selected node via the properties panel', async ({ page }) => {
+test('duplicates a selected node via keyboard shortcut', async ({ page }) => {
   await createNewFlow(page);
   await addProcessNode(page);
 
   const nodes = page.locator('.react-flow__node');
   await expect(nodes).toHaveCount(1);
 
-  // Click node to open the properties panel, then duplicate via the button
+  // Duplicate is keyboard-only (Cmd/Ctrl+D); there is no panel button.
   await nodes.first().click();
-  await page.getByRole('button', { name: 'Duplicate' }).click();
+  await page.keyboard.press('ControlOrMeta+d');
 
   await expect(nodes).toHaveCount(2);
 });
@@ -154,7 +154,7 @@ test('deletes a selected node via the properties panel', async ({ page }) => {
 
   // Click node to open the properties panel, then delete via the button
   await nodes.first().click();
-  await page.getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('button', { name: '删除节点' }).click();
 
   await expect(nodes).toHaveCount(0);
 });
@@ -289,7 +289,7 @@ test('flow tabs have tab role', async ({ page }) => {
 test('can navigate nodes with keyboard', async ({ page }) => {
   await createNewFlow(page);
 
-  await page.getByTestId('toolbar-add-toggle').click();
+  await page.getByTestId('toolbar-add').click();
   await page.getByRole('button', { name: 'Note' }).click();
 
   await page.keyboard.press('Tab');

@@ -25,7 +25,7 @@ async function createNewFlow(page: import('@playwright/test').Page) {
 
 test('creates a new flow and adds an extra tab', async ({ page }) => {
   await createNewFlow(page);
-  await expect(page.getByTestId('toolbar-add-toggle')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId('toolbar-add')).toBeVisible({ timeout: 15000 });
 
   const tabs = page.getByTestId('flow-page-tab');
   await expect(tabs.first()).toBeVisible();
@@ -39,11 +39,11 @@ test('creates a new flow and adds an extra tab', async ({ page }) => {
 
 test('saves and restores snapshot state', async ({ page }) => {
   await createNewFlow(page);
-  await expect(page.getByTestId('toolbar-add-toggle')).toBeVisible({ timeout: 15000 });
+  await expect(page.getByTestId('toolbar-add')).toBeVisible({ timeout: 15000 });
 
   const canvasNodes = page.locator('.react-flow__node');
 
-  await page.getByTestId('toolbar-add-toggle').click();
+  await page.getByTestId('toolbar-add').click();
   await page.getByRole('button', { name: 'Process' }).click();
   await expect(canvasNodes).toHaveCount(1);
 
@@ -56,7 +56,7 @@ test('saves and restores snapshot state', async ({ page }) => {
   const restoreButton = page.locator('[data-testid^="snapshot-restore-"]').first();
   await expect(restoreButton).toBeVisible();
 
-  await page.getByTestId('toolbar-add-toggle').click();
+  await page.getByTestId('toolbar-add').click();
   await page.getByRole('button', { name: 'Process' }).click();
   await expect(canvasNodes).toHaveCount(2);
 
