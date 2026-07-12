@@ -1,6 +1,7 @@
 import React from 'react';
 import { Handle, Position } from '@/lib/reactflowCompat';
 import {
+  getChartHandleClassName,
   getConnectorHandleStyle,
   getHandlePointerEvents,
   getV2HandleVisibilityClass,
@@ -33,7 +34,7 @@ export function StructuredNodeHandles({
           id={id}
           isConnectableStart
           isConnectableEnd
-          className={`!w-3 !h-3 !border-2 !border-white transition-all duration-150 hover:scale-125 ${handleVisibilityClass}`}
+          className={`${getChartHandleClassName(id)} ${handleVisibilityClass}`}
           style={getConnectorHandleStyle(id, isActiveSelected, handlePointerEvents)}
         />
       ))}

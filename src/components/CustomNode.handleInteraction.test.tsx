@@ -45,6 +45,11 @@ vi.mock('@/lib/reactflowCompat', async (importOriginal) => {
         data-testid={`handle-${id ?? 'unknown'}`}
         data-class={className ?? ''}
         data-pointer={String(style?.pointerEvents ?? '')}
+        data-background={String(style?.backgroundColor ?? '')}
+        data-border={String(style?.border ?? '')}
+        data-width={String(style?.width ?? '')}
+        data-height={String(style?.height ?? '')}
+        data-shadow={String(style?.boxShadow ?? '')}
       />
     ),
     NodeResizer: () => null,
@@ -90,6 +95,37 @@ describe('CustomNode handle interaction policy', () => {
       const handle = screen.getByTestId(`handle-${handleId}`);
       expect(handle.getAttribute('data-pointer')).toBe('all');
     }
+  });
+
+  it('renders selected left target and right source port dots from the shared handle hub', () => {
+    render(
+      <CustomNode
+        id="n-port-style"
+        type="process"
+        selected={true}
+        dragging={false}
+        zIndex={1}
+        data={{ label: 'Port node' }}
+        isConnectable={true}
+        xPos={0}
+        yPos={0}
+        sourcePosition={Position.Right}
+        targetPosition={Position.Left}
+      />
+    );
+
+    const leftHandle = screen.getByTestId('handle-left');
+    expect(leftHandle.getAttribute('data-class')).toContain('chart-handle--target');
+    expect(leftHandle.getAttribute('data-background')).toBe('#FFFFFF');
+    expect(leftHandle.getAttribute('data-border')).toBe('2px solid #C6CCD6');
+    expect(leftHandle.getAttribute('data-width')).toBe('11');
+    expect(leftHandle.getAttribute('data-height')).toBe('11');
+
+    const rightHandle = screen.getByTestId('handle-right');
+    expect(rightHandle.getAttribute('data-class')).toContain('chart-handle--source');
+    expect(rightHandle.getAttribute('data-background')).toBe('var(--wf-acc)');
+    expect(rightHandle.getAttribute('data-border')).toBe('2px solid #FFFFFF');
+    expect(rightHandle.getAttribute('data-shadow')).toBe('0 1px 3px rgba(16, 24, 40, 0.2)');
   });
 
   it('keeps hit-area class and pointer events enabled while not selected', () => {

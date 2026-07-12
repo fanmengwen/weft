@@ -5,6 +5,7 @@ import type { NodeData } from '@/lib/types';
 import { getNodeParentId } from '@/lib/nodeParent';
 import { ChevronDown, ChevronRight, FolderOpen, FolderClosed } from 'lucide-react';
 import {
+  getChartHandleClassName,
   getConnectorHandleStyle,
   getHandlePointerEvents,
   getV2HandleVisibilityClass,
@@ -137,7 +138,7 @@ function GroupNode({ id, data, selected }: LegacyNodeProps<NodeData>): React.Rea
           id={handleId}
           isConnectableStart
           isConnectableEnd
-          className={`!w-3 !h-3 !border-2 !border-white transition-opacity ${handleVisibilityClass}`}
+          className={`${getChartHandleClassName(side)} ${handleVisibilityClass}`}
           style={getConnectorHandleStyle(side, isActiveSelected, handlePointerEvents)}
         />
       ))}

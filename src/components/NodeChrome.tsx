@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Handle, Position } from '@/lib/reactflowCompat';
 import {
+  getChartHandleClassName,
   getConnectorHandleStyle,
   getHandlePointerEvents,
   getV2HandleVisibilityClass,
@@ -139,7 +140,7 @@ export const NodeChrome = memo(function NodeChrome({
           position={position}
           isConnectableStart
           isConnectableEnd
-          className={`${handleClassName} ${handleVisibilityClass}`}
+          className={`${getChartHandleClassName(side)} ${handleClassName} ${handleVisibilityClass}`.trim()}
           style={getConnectorHandleStyle(
             side,
             isActiveSelected,

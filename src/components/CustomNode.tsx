@@ -95,8 +95,7 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         : designSystem.components.node.padding;
   const labelEdit = useInlineNodeTextEdit(id, 'label', data.label || '', { multiline: true });
   const subLabelEdit = useInlineNodeTextEdit(id, 'subLabel', data.subLabel || '');
-  const connectionHandleClass =
-    '!w-2.5 !h-2.5 !border-2 !border-white transition-all duration-150 hover:scale-110';
+  const connectionHandleClass = '';
   const emptyLabelPrompt = t('nodes.addText', 'Add text');
   const showEmptyLabelPrompt = !hasLabel && isActiveSelected;
   const lodPreserveClass = isActiveSelected ? 'flow-lod-preserve' : '';
