@@ -63,6 +63,8 @@ export function TopNavActions({
                     </button>
                 </Tooltip>
 
+                <div className="mx-1.5 h-4 w-px bg-[var(--wf-border)]" />
+
                 <ExportMenu
                     onExportPNG={onExportPNG}
                     onCopyImage={onCopyImage}
