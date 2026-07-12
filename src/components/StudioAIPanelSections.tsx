@@ -2,15 +2,11 @@ import type { ReactElement, RefObject } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   AlertTriangle,
-  CheckCircle2,
   Crosshair,
   Info,
   Key,
   Loader2,
-  Minus,
   Paperclip,
-  Plus,
-  RefreshCw,
   Square,
   Trash2,
   WandSparkles,
@@ -39,90 +35,51 @@ import { STUDIO_AI_COPY } from './studioAICopy';
 export type AIGenerationMode = 'edit' | 'create';
 type TranslateFn = (...args: unknown[]) => string;
 
-interface PendingDiffBannerProps {
+interface ImportContentSectionProps {
   pendingDiff: ImportDiff;
   onConfirmDiff: () => void;
   onDiscardDiff: () => void;
   t: TranslateFn;
 }
 
-export function PendingDiffBanner({
+export function ImportContentSection({
   pendingDiff,
   onConfirmDiff,
   onDiscardDiff,
   t,
-}: PendingDiffBannerProps): ReactElement {
+}: ImportContentSectionProps): ReactElement {
   return (
-    <div className={`mx-1 mb-2 rounded-[var(--radius-md)] p-3 ${STATUS_SURFACE_CLASS.success}`}>
-      <div className="flex items-center gap-2 mb-2">
-        <CheckCircle2 className="h-4 w-4 shrink-0 text-[var(--color-surface-success-text)]" />
-        <p className="text-xs font-semibold text-[var(--brand-text)]">
-          {resolvePreviewTitleCopy(t as FlowpilotTranslateFn, {
-            copyKey: pendingDiff.copyKey,
-            previewTitle: pendingDiff.previewTitle,
-          })}
-        </p>
+    <div>
+      <pre
+        className="overflow-y-auto whitespace-pre-wrap break-words rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] p-3 font-[ui-monospace,SFMono-Regular,Menlo,monospace] text-[11.5px] leading-[1.65] text-[#4A5361]"
+        style={{ maxHeight: '218px' }}
+      >
+        {pendingDiff.dslText}
+      </pre>
+      <div
+        className="mt-2.5 flex items-center gap-[7px] rounded-lg px-2.5 py-2"
+        style={{
+          background: 'color-mix(in srgb, var(--wf-acc) 7%, #FFFFFF)',
+          border: '1px solid color-mix(in srgb, var(--wf-acc) 18%, #FFFFFF)',
+        }}
+      >
+        <Info className="h-[13px] w-[13px] shrink-0 text-[var(--wf-acc)]" />
+        <span className="text-[12px] leading-[1.45] text-[#3E4753]">
+          导入已就绪，请检查变更后再应用
+        </span>
       </div>
-      {pendingDiff.previewDetailKey || pendingDiff.previewDetail ? (
-        <p className="mb-3 text-[11px] leading-4 text-[var(--color-surface-success-text)]">
-          {resolvePreviewDetailCopy(
-            t as FlowpilotTranslateFn,
-            pendingDiff.previewDetailKey,
-            pendingDiff.previewDetail
-          )}
-        </p>
-      ) : null}
-      {pendingDiff.previewStats && pendingDiff.previewStats.length > 0 ? (
-        <div className="mb-3 flex flex-wrap gap-1.5">
-          {pendingDiff.previewStats.map((stat) => (
-            <span
-              key={stat}
-              className={`rounded-full px-2 py-0.5 text-[10px] font-medium ${SECTION_SURFACE_CLASS}`}
-            >
-              {stat}
-            </span>
-          ))}
-        </div>
-      ) : null}
-      <div className="flex items-center gap-3 mb-3 text-[11px]">
-        {pendingDiff.addedCount > 0 ? (
-          <span className="flex items-center gap-1 font-medium text-[var(--color-surface-success-text)]">
-            <Plus className="h-3 w-3" />
-            {t('commandBar.aiStudio.addedCount', {
-              count: pendingDiff.addedCount,
-              defaultValue: '{{count}} added',
-            })}
-          </span>
-        ) : null}
-        {pendingDiff.updatedCount > 0 ? (
-          <span className="flex items-center gap-1 font-medium text-[var(--color-surface-warning-text)]">
-            <RefreshCw className="h-3 w-3" />
-            {t('commandBar.aiStudio.updatedCount', {
-              count: pendingDiff.updatedCount,
-              defaultValue: '{{count}} updated',
-            })}
-          </span>
-        ) : null}
-        {pendingDiff.removedCount > 0 ? (
-          <span className="flex items-center gap-1 font-medium text-[var(--color-surface-danger-text)]">
-            <Minus className="h-3 w-3" />
-            {t('commandBar.aiStudio.removedCount', {
-              count: pendingDiff.removedCount,
-              defaultValue: '{{count}} removed',
-            })}
-          </span>
-        ) : null}
-      </div>
-      <div className="flex gap-2">
+      <div className="mt-2.5 flex gap-2">
         <button
+          type="button"
           onClick={onDiscardDiff}
-          className={`flex h-7 flex-1 items-center justify-center rounded text-[11px] font-medium text-[var(--brand-secondary)] hover:bg-[var(--brand-background)] ${SECTION_SURFACE_CLASS}`}
+          className="flex h-7 flex-1 items-center justify-center rounded text-[11px] font-medium text-[#5C6572] hover:bg-[#F3F5F8]"
         >
           {t('commandBar.aiStudio.discard', 'Discard')}
         </button>
         <button
+          type="button"
           onClick={onConfirmDiff}
-          className="flex h-7 flex-1 items-center justify-center rounded bg-emerald-600 text-[11px] font-medium text-white hover:bg-emerald-700"
+          className="flex h-7 flex-1 items-center justify-center rounded bg-[var(--wf-acc)] text-[11px] font-medium text-white hover:brightness-[0.94]"
         >
           {t('commandBar.aiStudio.applyToCanvas', 'Apply to canvas')}
         </button>

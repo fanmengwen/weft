@@ -20,7 +20,7 @@ import {
   type AIGenerationMode,
   ChatHistoryView,
   ComposerSection,
-  PendingDiffBanner,
+  ImportContentSection,
 } from './StudioAIPanelSections';
 
 function getExampleIconColor(index: number): string {
@@ -213,7 +213,7 @@ export function StudioAIPanel({
         <div>
           <div className="text-[11px] tracking-[0.05em] text-[#98A1AE]">导入内容</div>
           {pendingDiff ? (
-            <PendingDiffBanner
+            <ImportContentSection
               pendingDiff={pendingDiff}
               onConfirmDiff={onConfirmDiff}
               onDiscardDiff={onDiscardDiff}

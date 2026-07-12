@@ -282,7 +282,7 @@ describe('StudioAIPanel', () => {
     expect(screen.getByRole('button', { name: 'Create new' })).toHaveAttribute('aria-pressed', 'false');
   });
 
-  it('shows preview copy for repo enhancement diffs', () => {
+  it('renders the import-content dsl block with a confirm bar', () => {
     render(
       <StudioAIPanel
         onAIGenerate={vi.fn().mockResolvedValue(false)}
@@ -297,6 +297,7 @@ describe('StudioAIPanel', () => {
           copyKey: 'codeEnhancementReady',
           previewDetailKey: 'codeEnhancementWithChanges',
           previewStats: ['Platform: aws', '4 native sections', '3 platform services'],
+          dslText: 'flow: "Repo Enhancement"',
           result: {
             dslText: '',
             userMessage: { role: 'user', parts: [{ text: 'test' }] },
@@ -321,10 +322,9 @@ describe('StudioAIPanel', () => {
       />
     );
 
-    expect(screen.getByText('代码库增强预览已就绪，请检查升级后的图表')).toBeInTheDocument();
-    expect(screen.getByText('已基于原生仓库结构图叠加 AI 架构增强。')).toBeInTheDocument();
-    expect(screen.getByText('Platform: aws')).toBeInTheDocument();
-    expect(screen.getByText('4 native sections')).toBeInTheDocument();
+    expect(screen.getByText('flow: "Repo Enhancement"')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Apply to canvas' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Discard' })).toBeInTheDocument();
   });
 
   it('renders assistant plan cards from the richer thread model', () => {

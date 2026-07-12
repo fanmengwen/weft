@@ -61,6 +61,7 @@ export interface ImportDiff {
   addedCount: number;
   removedCount: number;
   updatedCount: number;
+  dslText: string;
   copyKey: FlowpilotCopyKey;
   previewTitle?: string;
   previewDetailKey?: FlowpilotPreviewDetailKey;
@@ -139,6 +140,7 @@ function computeImportDiff(
     addedCount,
     removedCount,
     updatedCount,
+    dslText: result.dslText,
     assetMatches,
     ...buildPreviewCopy(requestKind, addedCount, updatedCount, previewDescriptor),
     result,
