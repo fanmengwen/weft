@@ -21,8 +21,8 @@ export interface OnboardingEvent {
   detail?: Record<string, string | number | boolean>;
 }
 
-const EVENT_LOG_STORAGE_KEY = 'openflowkit_onboarding_events';
-const EVENT_FIRST_SEEN_STORAGE_KEY = 'openflowkit_onboarding_event_firsts';
+const EVENT_LOG_STORAGE_KEY = 'weft_onboarding_events';
+const EVENT_FIRST_SEEN_STORAGE_KEY = 'weft_onboarding_event_firsts';
 const MAX_STORED_EVENTS = 100;
 
 function readStorageValue(key: string): string | null {

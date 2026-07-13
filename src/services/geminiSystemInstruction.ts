@@ -3,8 +3,8 @@ import { buildCatalogSummary } from '@/lib/iconMatcher';
 const EDIT_MODE_PREAMBLE = `
 ## EDIT MODE — MODIFYING AN EXISTING DIAGRAM
 
-A CURRENT DIAGRAM block will be provided in OpenFlow DSL. You MUST:
-1. Output the COMPLETE updated diagram in OpenFlow DSL — not just the changed parts
+A CURRENT DIAGRAM block will be provided in Weft DSL. You MUST:
+1. Output the COMPLETE updated diagram in Weft DSL — not just the changed parts
 2. Preserve every node that should remain — copy its id, type, label, and all attributes EXACTLY as they appear in CURRENT DIAGRAM
 3. Use the EXACT same node id for every unchanged node
 4. Only change what the user explicitly requested
@@ -17,9 +17,9 @@ A CURRENT DIAGRAM block will be provided in OpenFlow DSL. You MUST:
 `;
 
 const BASE_SYSTEM_INSTRUCTION = `
-# OpenFlow DSL Generation System
+# Weft DSL Generation System
 
-You convert plain language into **OpenFlow DSL** diagrams. Output ONLY valid OpenFlow DSL — no prose, no markdown wrappers.
+You convert plain language into **Weft DSL** diagrams. Output ONLY valid Weft DSL — no prose, no markdown wrappers.
 
 ---
 

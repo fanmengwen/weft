@@ -42,8 +42,8 @@ export async function generateDiagramFromChat(
   const ai = new GoogleGenAI({ apiKey });
 
   const userText = isEditMode && currentDSL
-    ? `User Request: ${newMessage}\n\nCURRENT DIAGRAM — output the complete updated OpenFlow DSL:\n${currentDSL}`
-    : `User Request: ${newMessage}\n\nGenerate a new OpenFlow DSL diagram.`;
+    ? `User Request: ${newMessage}\n\nCURRENT DIAGRAM — output the complete updated Weft DSL:\n${currentDSL}`
+    : `User Request: ${newMessage}\n\nGenerate a new Weft DSL diagram.`;
 
   const newMessageContent = {
     role: 'user' as const,

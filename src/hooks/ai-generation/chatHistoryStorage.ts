@@ -4,7 +4,7 @@ import { parseLegacyChatMessagesJson } from '@/services/storage/storageSchemas';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
 import { assistantThreadToChatMessages } from '@/services/flowpilot/thread';
 
-const STORAGE_KEY_PREFIX = 'ofk_chat_history_';
+const STORAGE_KEY_PREFIX = 'weft_chat_history_';
 
 function storageKey(diagramId: string): string {
   return `${STORAGE_KEY_PREFIX}${diagramId}`;

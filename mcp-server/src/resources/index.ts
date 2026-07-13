@@ -3,7 +3,7 @@ import { ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { findStarterTemplate, STARTER_TEMPLATES } from '../lib/starterTemplates.js';
 import { getAllIcons, getIconProviders, getIconsByProvider } from '../lib/iconCatalog.js';
 
-const DSL_CHEATSHEET = `# OpenFlow DSL Cheatsheet
+const DSL_CHEATSHEET = `# Weft DSL Cheatsheet
 
 flow: <Title>            # required header
 direction: TB | LR       # default TB
@@ -39,8 +39,8 @@ export function registerResources(server: McpServer): void {
     'dsl-cheatsheet',
     'weft://docs/dsl-cheatsheet',
     {
-      title: 'OpenFlow DSL Cheatsheet',
-      description: 'Quick reference for OpenFlow DSL node types, attributes, and edge styles.',
+      title: 'Weft DSL Cheatsheet',
+      description: 'Quick reference for Weft DSL node types, attributes, and edge styles.',
       mimeType: 'text/markdown',
     },
     async (uri) => ({
@@ -169,7 +169,7 @@ export function registerResources(server: McpServer): void {
     }),
     {
       title: 'Starter template DSL',
-      description: 'Returns the OpenFlow DSL body of the named starter template.',
+      description: 'Returns the Weft DSL body of the named starter template.',
       mimeType: 'text/plain',
     },
     async (uri, variables) => {

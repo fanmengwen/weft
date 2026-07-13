@@ -354,8 +354,8 @@
       "copyingMermaid": "Copying Mermaid…",
       "preparingPlantUmlDownload": "Preparing PlantUML download…",
       "copyingPlantUml": "Copying PlantUML…",
-      "preparingDslDownload": "Preparing OpenFlow DSL download…",
-      "copyingDsl": "Copying OpenFlow DSL…",
+      "preparingDslDownload": "Preparing Weft DSL download…",
+      "copyingDsl": "Copying Weft DSL…",
       "preparingFigmaDownload": "Preparing Figma SVG download…",
       "copyingFigmaSvg": "Copying Figma SVG…"
     }
@@ -1649,7 +1649,7 @@
     "cannotCloseLastTab": "Cannot close the last tab.",
     "mermaidCopied": "Mermaid diagram copied to clipboard!",
     "plantUMLCopied": "PlantUML diagram copied to clipboard!",
-    "dslCopied": "OpenFlow DSL copied to clipboard!",
+    "dslCopied": "Weft DSL copied to clipboard!",
     "dslCopyFailed": "Failed to copy DSL",
     "dslExportSkippedEdges": "{{count}} invalid edge(s) were skipped in DSL export.",
     "figmaCopied": "Diagram copied for Figma! You can now paste (Cmd+V) in Figma.",

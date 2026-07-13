@@ -1,5 +1,5 @@
-const WORKSPACE_RULES_KEY = 'openflowkit:workspace-lint-rules';
-export const WORKSPACE_RULES_CHANGED_EVENT = 'openflowkit:workspace-lint-rules-changed';
+const WORKSPACE_RULES_KEY = 'weft:workspace-lint-rules';
+export const WORKSPACE_RULES_CHANGED_EVENT = 'weft:workspace-lint-rules-changed';
 
 export function loadWorkspaceRules(): string {
     try {

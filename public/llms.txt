@@ -7,7 +7,7 @@
 - App Name: Weft
 - Architecture: React (Vite), React Flow, Zustand, Tailwind CSS
 
-## OpenFlow DSL V2 Syntax Rules
+## Weft DSL V2 Syntax Rules
 If a user asks you to "Generate a diagram" or "Draw a flowchart for Weft", you MUST output the exact syntax described below. Do NOT use Mermaid syntax unless explicitly asked.
 
 Wrap your output in standard markdown code blocks, but use `openflow` as the language trigger (e.g., `\`\`\`openflow`).

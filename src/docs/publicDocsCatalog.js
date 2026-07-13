@@ -38,9 +38,9 @@ export const PUBLIC_DOC_SECTIONS = [
   {
     title: 'Imports & Code Workflows',
     items: [
-      { title: 'OpenFlow DSL', slug: 'openflow-dsl' },
+      { title: 'Weft DSL', slug: 'openflow-dsl' },
       { title: 'Mermaid Integration', slug: 'mermaid-integration' },
-      { title: 'Mermaid vs OpenFlow', slug: 'mermaid-vs-openflow' },
+      { title: 'Mermaid vs Weft', slug: 'mermaid-vs-openflow' },
       { title: 'Infrastructure Sync', slug: 'infra-sync' },
       { title: 'Figma Design Import', slug: 'figma-design-import' },
     ],

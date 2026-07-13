@@ -28,7 +28,7 @@ interface SearchViewProps {
     handleBack: () => void;
 }
 
-const QUERY_PRESETS_STORAGE_KEY = 'openflowkit-query-presets-v1';
+const QUERY_PRESETS_STORAGE_KEY = 'weft-query-presets-v1';
 export const SearchView = ({
     nodes,
     onClose,

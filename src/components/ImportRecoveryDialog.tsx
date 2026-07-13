@@ -20,7 +20,7 @@ interface ImportRecoveryDialogProps {
 
 function formatSourceLabel(source: ImportFidelityReport['source']): string {
   if (source === 'openflowdsl') {
-    return 'OpenFlow DSL';
+    return 'Weft DSL';
   }
 
   return source.toUpperCase();

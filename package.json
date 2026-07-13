@@ -1,20 +1,18 @@
 {
-  "name": "openflowkit",
+  "name": "weft",
   "private": true,
   "version": "0.1.1",
   "type": "module",
   "workspaces": [
-    "web",
-    "docs-site",
     "mcp-server"
   ],
-  "homepage": "https://openflowkit.com",
+  "homepage": "https://weft.app",
   "engines": {
     "node": ">=18.0.0"
   },
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-sitemap.js && tsc -b && vite build",
+    "build": "tsc -b && vite build",
     "build:analyze": "npm run build && node scripts/analyze-bundle.mjs",
     "bundle:check": "node scripts/check-bundle-budget.mjs",
     "icons:tighten": "node scripts/tighten-svg-viewboxes.mjs",
@@ -36,9 +34,7 @@
     "test": "vitest",
     "build:lib": "vite build -c vite.lib.config.ts",
     "build:lib:watch": "vite build -c vite.lib.config.ts --watch",
-    "lint": "eslint . --ext ts,tsx --ignore-pattern 'web/**' --ignore-pattern 'docs-site/**' --report-unused-disable-directives --max-warnings 0",
-    "build:web": "pnpm --filter openflowkit-web build",
-    "build:docs": "pnpm --filter openflowkit-docs build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "bench:harness": "node scripts/benchmark-harness.mjs",
     "bench:summary": "node scripts/benchmark-summary.mjs",
     "bench:check": "node scripts/check-benchmark-results.mjs",

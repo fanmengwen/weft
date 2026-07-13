@@ -188,7 +188,7 @@ export async function generateAIFlowResult({
         brokenSnippet,
         '```',
         '',
-        'Return the corrected OpenFlow DSL only — no prose, no markdown fences. Fix only the parse error; keep everything else identical.',
+        'Return the corrected Weft DSL only — no prose, no markdown fences. Fix only the parse error; keep everything else identical.',
       ].join('\n');
       onRetry?.(3);
     }

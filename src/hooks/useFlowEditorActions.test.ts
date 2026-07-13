@@ -49,7 +49,7 @@ describe('useFlowEditorActions', () => {
         });
     });
 
-    it('copies OpenFlow DSL and shows success toast', async () => {
+    it('copies Weft DSL and shows success toast', async () => {
         const addToast = vi.fn();
         const { result } = renderHook(() =>
             useFlowEditorActions({

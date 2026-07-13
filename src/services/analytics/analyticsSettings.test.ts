@@ -7,7 +7,7 @@ import {
 
 describe('analyticsSettings', () => {
   afterEach(() => {
-    window.localStorage.removeItem('openflowkit-analytics-enabled');
+    window.localStorage.removeItem('weft-analytics-enabled');
   });
 
   it('defaults analytics preference to enabled', () => {
@@ -18,7 +18,7 @@ describe('analyticsSettings', () => {
     setAnalyticsPreference(false);
 
     expect(getAnalyticsPreference()).toBe(false);
-    expect(window.localStorage.getItem('openflowkit-analytics-enabled')).toBe('false');
+    expect(window.localStorage.getItem('weft-analytics-enabled')).toBe('false');
   });
 
   it('notifies subscribers when preference changes', () => {

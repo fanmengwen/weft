@@ -11,7 +11,7 @@ export type AnalyticsProperties = Record<string, AnalyticsPropertyValue>;
 const POSTHOG_API_KEY = import.meta.env.VITE_POSTHOG_KEY?.trim();
 const POSTHOG_API_HOST = import.meta.env.VITE_POSTHOG_HOST?.trim() || 'https://us.i.posthog.com';
 const ANALYTICS_FEATURE_FLAG = import.meta.env.VITE_ENABLE_ANALYTICS === 'true';
-const SESSION_MARKER_KEY = 'openflowkit.analytics.session-started';
+const SESSION_MARKER_KEY = 'weft.analytics.session-started';
 
 let analyticsInitialized = false;
 let analyticsPreferenceSyncInstalled = false;

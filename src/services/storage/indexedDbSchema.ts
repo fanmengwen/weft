@@ -1,4 +1,4 @@
-export const FLOW_PERSISTENCE_DB_NAME = 'openflowkit-persistence';
+export const FLOW_PERSISTENCE_DB_NAME = 'weft-persistence';
 export const FLOW_PERSISTENCE_DB_VERSION = 3;
 export const FLOW_DOCUMENT_STORE_NAME = 'flowDocuments';
 export const FLOW_METADATA_STORE_NAME = 'flowMetadata';

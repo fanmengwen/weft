@@ -7,7 +7,7 @@ const KEYS = {
     mcp: 'MCP',
     eyebrow: 'Model Context Protocol',
     title: 'Connect AI tools (MCP)',
-    intro: 'Add the OpenFlowKit MCP server to Claude Desktop, Cursor, Windsurf, or any MCP client. Your assistant gains diagramming tools that run locally, no API keys required, no data leaves your machine.',
+    intro: 'Add the Weft MCP server to Claude Desktop, Cursor, Windsurf, or any MCP client. Your assistant gains diagramming tools that run locally, no API keys required, no data leaves your machine.',
     statTools: 'Tools',
     statClients: 'Clients',
     statTransport: 'stdio',
@@ -37,7 +37,7 @@ const KEYS = {
   },
   de: {
     mcp: 'MCP', eyebrow: 'Model Context Protocol', title: 'KI-Tools verbinden (MCP)',
-    intro: 'Füge den OpenFlowKit MCP-Server zu Claude Desktop, Cursor, Windsurf oder einem beliebigen MCP-Client hinzu. Dein Assistent erhält Diagramm-Tools, die lokal laufen, keine API-Schlüssel erforderlich, keine Daten verlassen deine Maschine.',
+    intro: 'Füge den Weft MCP-Server zu Claude Desktop, Cursor, Windsurf oder einem beliebigen MCP-Client hinzu. Dein Assistent erhält Diagramm-Tools, die lokal laufen, keine API-Schlüssel erforderlich, keine Daten verlassen deine Maschine.',
     statTools: 'Tools', statClients: 'Clients', statTransport: 'stdio', statTransportLabel: 'Transport',
     stepsLabel: 'Einrichtungsschritte', installHeading: 'Server installieren',
     installNote: 'Erfordert Node 18+. Keine globale Installation nötig, npx lädt bei Bedarf.',
@@ -59,7 +59,7 @@ const KEYS = {
   },
   es: {
     mcp: 'MCP', eyebrow: 'Model Context Protocol', title: 'Conectar herramientas de IA (MCP)',
-    intro: 'Añade el servidor MCP de OpenFlowKit a Claude Desktop, Cursor, Windsurf o cualquier cliente MCP. Tu asistente gana herramientas de diagramación que se ejecutan localmente, sin claves de API, sin que tus datos salgan de tu máquina.',
+    intro: 'Añade el servidor MCP de Weft a Claude Desktop, Cursor, Windsurf o cualquier cliente MCP. Tu asistente gana herramientas de diagramación que se ejecutan localmente, sin claves de API, sin que tus datos salgan de tu máquina.',
     statTools: 'Herramientas', statClients: 'Clientes', statTransport: 'stdio', statTransportLabel: 'Transporte',
     stepsLabel: 'Pasos de configuración', installHeading: 'Instalar el servidor',
     installNote: 'Requiere Node 18+. Sin instalación global, npx descarga bajo demanda.',
@@ -81,7 +81,7 @@ const KEYS = {
   },
   fr: {
     mcp: 'MCP', eyebrow: 'Model Context Protocol', title: 'Connecter des outils IA (MCP)',
-    intro: 'Ajoutez le serveur MCP OpenFlowKit à Claude Desktop, Cursor, Windsurf ou à tout client MCP. Votre assistant gagne des outils de diagramme qui tournent localement, aucune clé d’API requise, aucune donnée ne quitte votre machine.',
+    intro: 'Ajoutez le serveur MCP Weft à Claude Desktop, Cursor, Windsurf ou à tout client MCP. Votre assistant gagne des outils de diagramme qui tournent localement, aucune clé d’API requise, aucune donnée ne quitte votre machine.',
     statTools: 'Outils', statClients: 'Clients', statTransport: 'stdio', statTransportLabel: 'Transport',
     stepsLabel: 'Étapes de configuration', installHeading: 'Installer le serveur',
     installNote: 'Nécessite Node 18+. Aucune installation globale, npx récupère à la demande.',
@@ -103,7 +103,7 @@ const KEYS = {
   },
   ja: {
     mcp: 'MCP', eyebrow: 'Model Context Protocol', title: 'AIツールを接続（MCP）',
-    intro: 'OpenFlowKit MCP サーバーを Claude Desktop、Cursor、Windsurf、その他の MCP クライアントに追加します。アシスタントはローカルで動く図表ツールを獲得します。API キーは不要、データはマシンから外に出ません。',
+    intro: 'Weft MCP サーバーを Claude Desktop、Cursor、Windsurf、その他の MCP クライアントに追加します。アシスタントはローカルで動く図表ツールを獲得します。API キーは不要、データはマシンから外に出ません。',
     statTools: 'ツール', statClients: 'クライアント', statTransport: 'stdio', statTransportLabel: 'トランスポート',
     stepsLabel: 'セットアップ手順', installHeading: 'サーバーをインストール',
     installNote: 'Node 18+ が必要です。グローバルインストールは不要、npx が必要に応じて取得します。',
@@ -125,7 +125,7 @@ const KEYS = {
   },
   tr: {
     mcp: 'MCP', eyebrow: 'Model Context Protocol', title: 'AI araçlarını bağla (MCP)',
-    intro: 'OpenFlowKit MCP sunucusunu Claude Desktop, Cursor, Windsurf veya herhangi bir MCP istemcisine ekle. Asistanın yerel olarak çalışan diyagram araçları kazanır, API anahtarı gerekmez, veri makinenden çıkmaz.',
+    intro: 'Weft MCP sunucusunu Claude Desktop, Cursor, Windsurf veya herhangi bir MCP istemcisine ekle. Asistanın yerel olarak çalışan diyagram araçları kazanır, API anahtarı gerekmez, veri makinenden çıkmaz.',
     statTools: 'Araçlar', statClients: 'İstemciler', statTransport: 'stdio', statTransportLabel: 'Taşıma',
     stepsLabel: 'Kurulum adımları', installHeading: 'Sunucuyu kur',
     installNote: 'Node 18+ gerekir. Global kurulum gerekmez, npx isteğe bağlı indirir.',
@@ -147,7 +147,7 @@ const KEYS = {
   },
   zh: {
     mcp: 'MCP', eyebrow: 'Model Context Protocol', title: '连接 AI 工具（MCP）',
-    intro: '将 OpenFlowKit MCP 服务器添加到 Claude Desktop、Cursor、Windsurf 或任意 MCP 客户端。你的助手将获得本地运行的图表工具，无需 API 密钥，数据不会离开你的机器。',
+    intro: '将 Weft MCP 服务器添加到 Claude Desktop、Cursor、Windsurf 或任意 MCP 客户端。你的助手将获得本地运行的图表工具，无需 API 密钥，数据不会离开你的机器。',
     statTools: '工具', statClients: '客户端', statTransport: 'stdio', statTransportLabel: '传输',
     stepsLabel: '设置步骤', installHeading: '安装服务器',
     installNote: '需要 Node 18+。无需全局安装，npx 按需拉取。',

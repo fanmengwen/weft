@@ -6,9 +6,9 @@ import {
   writeLocalStorageJson,
 } from './uiLocalStorage';
 
-const DOCUMENTS_FALLBACK_KEY = 'openflowkit-documents-fallback';
-const WORKSPACE_META_FALLBACK_KEY = 'openflowkit-workspace-meta-fallback';
-const CHAT_HISTORY_STORAGE_KEY_PREFIX = 'ofk_chat_history_';
+const DOCUMENTS_FALLBACK_KEY = 'weft-documents-fallback';
+const WORKSPACE_META_FALLBACK_KEY = 'weft-workspace-meta-fallback';
+const CHAT_HISTORY_STORAGE_KEY_PREFIX = 'weft_chat_history_';
 
 export function loadFallbackDocuments(): PersistedDocument[] {
   return readLocalStorageJson<PersistedDocument[]>(DOCUMENTS_FALLBACK_KEY, []);

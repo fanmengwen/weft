@@ -297,7 +297,7 @@
     "json": "JSONとしてエクスポート",
     "mermaid": "Mermaidとしてエクスポート",
     "plantuml": "PlantUMLとしてエクスポート",
-    "openflowdsl": "OpenFlow DSLとしてエクスポート",
+    "openflowdsl": "Weft DSLとしてエクスポート",
     "figma": "Figmaにエクスポート",
     "hintTransparent4K": "透明 (4K)",
     "hintWhiteBg4K": "白背景 (4K)",
@@ -354,8 +354,8 @@
       "copyingMermaid": "Mermaid をコピー中…",
       "preparingPlantUmlDownload": "PlantUML のダウンロードを準備中…",
       "copyingPlantUml": "PlantUML をコピー中…",
-      "preparingDslDownload": "OpenFlow DSL のダウンロードを準備中…",
-      "copyingDsl": "OpenFlow DSL をコピー中…",
+      "preparingDslDownload": "Weft DSL のダウンロードを準備中…",
+      "copyingDsl": "Weft DSL をコピー中…",
       "preparingFigmaDownload": "Figma SVG のダウンロードを準備中…",
       "copyingFigmaSvg": "Figma SVG をコピー中…"
     }
@@ -1562,7 +1562,7 @@
     "cannotCloseLastTab": "最後のタブは閉じられません。",
     "mermaidCopied": "Mermaid図をクリップボードにコピーしました！",
     "plantUMLCopied": "PlantUML図をクリップボードにコピーしました！",
-    "dslCopied": "OpenFlow DSLをクリップボードにコピーしました！",
+    "dslCopied": "Weft DSLをクリップボードにコピーしました！",
     "dslCopyFailed": "DSLのコピーに失敗しました",
     "figmaCopied": "図をFigmaにコピーしました！",
     "figmaExportFailed": "Figmaエクスポート失敗：{{message}}",

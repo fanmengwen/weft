@@ -15,7 +15,7 @@ export function buildArchitectureServiceSuggestionPrompt(node: FlowNode): string
     'Only update the selected architecture node and, if needed, its direct metadata.',
     'Do not add unrelated nodes or edges.',
     'Choose a more specific label, icon, provider-aligned service metadata, and a short subLabel.',
-    'Return valid OpenFlow DSL for the full updated diagram.',
+    'Return valid Weft DSL for the full updated diagram.',
     context,
   ].join('\n\n');
 }

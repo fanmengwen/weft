@@ -297,7 +297,7 @@
     "json": "Als JSON exportieren",
     "mermaid": "Als Mermaid exportieren",
     "plantuml": "Als PlantUML exportieren",
-    "openflowdsl": "Als OpenFlow DSL exportieren",
+    "openflowdsl": "Als Weft DSL exportieren",
     "figma": "Nach Figma exportieren",
     "hintTransparent4K": "Transparent (4K)",
     "hintWhiteBg4K": "Weißer Hintergrund (4K)",
@@ -354,8 +354,8 @@
       "copyingMermaid": "Mermaid wird kopiert…",
       "preparingPlantUmlDownload": "PlantUML-Download wird vorbereitet…",
       "copyingPlantUml": "PlantUML wird kopiert…",
-      "preparingDslDownload": "OpenFlow-DSL-Download wird vorbereitet…",
-      "copyingDsl": "OpenFlow DSL wird kopiert…",
+      "preparingDslDownload": "Weft-DSL-Download wird vorbereitet…",
+      "copyingDsl": "Weft DSL wird kopiert…",
       "preparingFigmaDownload": "Figma-SVG-Download wird vorbereitet…",
       "copyingFigmaSvg": "Figma-SVG wird kopiert…"
     }
@@ -1562,7 +1562,7 @@
     "cannotCloseLastTab": "Der letzte Tab kann nicht geschlossen werden.",
     "mermaidCopied": "Mermaid-Diagramm kopiert!",
     "plantUMLCopied": "PlantUML-Diagramm kopiert!",
-    "dslCopied": "OpenFlow DSL kopiert!",
+    "dslCopied": "Weft DSL kopiert!",
     "dslCopyFailed": "DSL konnte nicht kopiert werden",
     "figmaCopied": "Diagramm für Figma kopiert!",
     "figmaExportFailed": "Figma-Export fehlgeschlagen: {{message}}",

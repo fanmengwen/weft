@@ -88,7 +88,7 @@ async function migrateLegacyStoreIntoRepositoryIfNeeded(): Promise<void> {
 
   await Promise.all(
     tabs.map(async (tab) => {
-      const legacyChatRaw = localStorage.getItem(`ofk_chat_history_${tab.id}`);
+      const legacyChatRaw = localStorage.getItem(`weft_chat_history_${tab.id}`);
       const persistedMessages = toPersistedChatMessages(tab.id, legacyChatRaw);
       if (persistedMessages.length > 0) {
         await localFirstRepository.replaceChatThread(tab.id, persistedMessages);
