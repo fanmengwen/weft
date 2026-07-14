@@ -106,8 +106,55 @@ describe('CustomNode chart div shapes', () => {
 
     const upright = queryHTMLElement(container, '[data-chart-shape-upright="1"]');
     expect(upright).not.toBeNull();
-    expect(upright?.style.transform).toContain('rotate(-45deg)');
+    expect(upright?.style.transform ?? '').not.toMatch(/rotate\(-45deg\)/);
     expect(screen.getByText('Approved?').parentElement?.style.maxWidth).toBe('92px');
+  });
+
+  it('keeps decision diamond content upright while the shell rotor stays rotated', () => {
+    const { container } = renderCustomNode({
+      id: 'decision-upright',
+      type: 'decision',
+      data: { label: 'Stay level', shape: 'diamond' },
+    });
+
+    const rotor = queryHTMLElement(container, '[data-chart-shape-rotor="1"]');
+    const upright = queryHTMLElement(container, '[data-chart-shape-upright="1"]');
+    expect(rotor?.style.transform).toContain('rotate(45deg)');
+    expect(upright?.style.transform ?? '').toBe('');
+  });
+
+  it('applies selected surface tokens to chart div shapes', () => {
+    const decisionView = renderCustomNode({
+      id: 'decision-selected',
+      type: 'decision',
+      data: { label: 'Check', shape: 'diamond' },
+      selected: true,
+    });
+    const ioView = renderCustomNode({
+      id: 'io-selected',
+      type: 'custom',
+      data: { label: 'Input', shape: 'parallelogram' },
+      selected: true,
+    });
+    const dbView = renderCustomNode({
+      id: 'db-selected',
+      type: 'custom',
+      data: { label: 'Users DB', shape: 'cylinder' },
+      selected: true,
+    });
+
+    const decisionRotor = queryHTMLElement(decisionView.container, '[data-chart-shape-rotor="1"]');
+    const ioSurface = queryHTMLElement(ioView.container, '[data-chart-div-shape="io"]');
+    const dbSurface = queryHTMLElement(dbView.container, '[data-chart-div-shape="database"]');
+
+    expect(decisionRotor?.style.borderColor).toBe('var(--wf-acc)');
+    expect(decisionRotor?.style.boxShadow).toBe('var(--wf-shadow-node-selected)');
+    expect(ioSurface?.style.borderColor).toBe('var(--wf-acc)');
+    expect(ioSurface?.style.boxShadow).toBe('var(--wf-shadow-node-selected)');
+    expect(dbSurface?.className).toContain('chart-node-surface--selected');
+    expect(queryHTMLElement(dbView.container, '[data-chart-database-body="1"]')?.style.borderColor).toBe(
+      'var(--wf-acc)'
+    );
   });
 
   it('renders io nodes with skewed container and counter-skewed content', () => {
@@ -144,7 +191,7 @@ describe('CustomNode chart div shapes', () => {
     expect(cap?.style.height).toBe('24px');
     expect(cap?.style.borderRadius).toBe('50%');
     expect(body?.style.marginTop).toBe('-12px');
-    expect(shapeRoot?.style.filter).toContain('drop-shadow');
+    expect(shapeRoot?.style.filter).toBe('drop-shadow(0 2px 4px rgba(16,24,40,0.06))');
   });
 
   it('falls back legacy hexagon shapes to rounded surfaces', () => {

@@ -56,6 +56,7 @@ export function ChartDivShapeSurface({
     <ChartDatabaseSurface
       designSystem={designSystem}
       isSelected={isSelected}
+      surfaceClassName={surfaceClassName}
       diagnosticsAttrs={diagnosticsAttrs}
       ariaLabel={ariaLabel}
     >
