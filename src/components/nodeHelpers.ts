@@ -1,4 +1,8 @@
 import type { ChartNodeTone, DesignSystem, FlowNode, NodeData } from '@/lib/types';
+import {
+  resolveChartElementChipIconFromNode,
+  resolveChartElementToneFromNode,
+} from './chartElementVisualSpec';
 
 export type { ChartNodeTone } from '@/lib/types';
 
@@ -185,22 +189,7 @@ export function resolveChartNodeSurfaceVariant(
 }
 
 export function resolveChartNodeTone(nodeType: string, shape: NodeShape): ChartNodeTone {
-  if (nodeType === 'start') {
-    return 'out';
-  }
-  if (nodeType === 'end') {
-    return 'end';
-  }
-  if (nodeType === 'decision') {
-    return 'cond';
-  }
-  if (nodeType === 'custom' && shape === 'parallelogram') {
-    return 'kb';
-  }
-  if (nodeType === 'custom' && shape === 'cylinder') {
-    return 'llm';
-  }
-  return 'web';
+  return resolveChartElementToneFromNode(nodeType, shape) ?? 'web';
 }
 
 export function resolveChartNodeChipIcon(
@@ -211,22 +200,7 @@ export function resolveChartNodeChipIcon(
   if (dataIcon) {
     return dataIcon;
   }
-  if (nodeType === 'start') {
-    return 'Play';
-  }
-  if (nodeType === 'end') {
-    return 'CheckCircle';
-  }
-  if (nodeType === 'decision') {
-    return 'HelpCircle';
-  }
-  if (nodeType === 'custom' && shape === 'parallelogram') {
-    return 'Download';
-  }
-  if (nodeType === 'custom' && shape === 'cylinder') {
-    return 'Database';
-  }
-  return 'Square';
+  return resolveChartElementChipIconFromNode(nodeType, shape) ?? 'Square';
 }
 
 export function buildChartNodeSurfaceStyle(options: {
