@@ -44,6 +44,12 @@ function queryHTMLElement(root: ParentNode, selector: string): HTMLElement | nul
   return element instanceof HTMLElement ? element : null;
 }
 
+function queryToneChipIcon(root: ParentNode): SVGElement | null {
+  const toneChip = queryHTMLElement(root, '[data-chart-node-tone-chip="1"]');
+  const icon = toneChip?.querySelector('svg');
+  return icon instanceof SVGElement ? icon : null;
+}
+
 function renderCustomNode(options: {
   id: string;
   type: string;
@@ -149,6 +155,33 @@ describe('CustomNode chart div shapes', () => {
     expect(nodeContainer?.className).toContain('chart-node-surface--rounded');
     expect(container.querySelector('[data-chart-div-shape]')).toBeNull();
     expect(container.querySelector('polygon')).toBeNull();
+  });
+
+  it('renders chart node tone chips with resolved chip icons instead of Settings fallback', () => {
+    const startView = renderCustomNode({
+      id: 'start-chip',
+      type: 'start',
+      data: { label: 'Begin' },
+    });
+    const processView = renderCustomNode({
+      id: 'process-chip',
+      type: 'process',
+      data: { label: 'Process' },
+    });
+    const ioView = renderCustomNode({
+      id: 'io-chip',
+      type: 'custom',
+      data: { label: 'Input', shape: 'parallelogram' },
+    });
+
+    const startChipIcon = queryToneChipIcon(startView.container);
+    const processChipIcon = queryToneChipIcon(processView.container);
+    const ioChipIcon = queryToneChipIcon(ioView.container);
+
+    expect(startChipIcon?.classList.contains('lucide-play')).toBe(true);
+    expect(processChipIcon?.classList.contains('lucide-square')).toBe(true);
+    expect(ioChipIcon?.classList.contains('lucide-download')).toBe(true);
+    expect(startChipIcon?.classList.contains('lucide-settings')).toBe(false);
   });
 
   it('does not render legacy NodeShapeSVG polygons for complex shapes', () => {
