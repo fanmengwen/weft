@@ -8,18 +8,8 @@ const NODE_COMPONENT_FILES = [
   'src/components/CustomNode.tsx',
   'src/components/AnnotationNode.tsx',
   'src/components/SectionNode.tsx',
-  'src/components/TextNode.tsx',
   'src/components/GroupNode.tsx',
-  'src/components/SwimlaneNode.tsx',
-  'src/components/ImageNode.tsx',
-  'src/components/custom-nodes/BrowserNode.tsx',
-  'src/components/custom-nodes/MobileNode.tsx',
-  'src/components/custom-nodes/ClassNode.tsx',
-  'src/components/custom-nodes/EntityNode.tsx',
-  'src/components/custom-nodes/MindmapNode.tsx',
-  'src/components/custom-nodes/JourneyNode.tsx',
   'src/components/custom-nodes/ArchitectureNode.tsx',
-  'src/components/custom-nodes/SequenceParticipantNode.tsx',
 ] as const;
 
 function readSource(path: string): string {

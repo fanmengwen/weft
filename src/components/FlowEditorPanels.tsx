@@ -137,16 +137,6 @@ export interface CommandBarPanelProps {
   initialView: CommandBarView;
   onAddAnnotation: () => void;
   onAddSection: () => void;
-  onAddText: () => void;
-  onAddJourney?: () => void;
-  onAddMindmap?: () => void;
-  onAddArchitecture?: () => void;
-  onAddSequence?: () => void;
-  onAddClassNode?: () => void;
-  onAddEntityNode?: () => void;
-  onAddImage: (imageUrl: string) => void;
-  onAddBrowserWireframe: () => void;
-  onAddMobileWireframe: () => void;
   onAddDomainLibraryItem?: (item: DomainLibraryItem) => void;
   onCodeAnalysis?: (code: string, language: SupportedLanguage) => Promise<void>;
   onSqlAnalysis?: (sql: string) => Promise<void>;
@@ -181,7 +171,6 @@ export interface PropertiesRailProps {
   selectedEdge: FlowEdge | null;
   onChangeNode: (id: string, data: Partial<NodeData>) => void;
   onBulkChangeNodes: React.ComponentProps<typeof PropertiesPanelComponent>['onBulkChangeNodes'];
-  onChangeNodeType: (id: string, type: string) => void;
   onChangeEdge: (id: string, data: Partial<EdgeData>) => void;
   onDeleteNode: (id: string) => void;
   onDuplicateNode: (id: string) => void;
@@ -190,8 +179,6 @@ export interface PropertiesRailProps {
   onFitSectionToContents: (id: string) => void;
   onReleaseFromSection: (id: string) => void;
   onBringContentsIntoSection: (id: string) => void;
-  onAddMindmapChild: React.ComponentProps<typeof PropertiesPanelComponent>['onAddMindmapChild'];
-  onAddMindmapSibling: React.ComponentProps<typeof PropertiesPanelComponent>['onAddMindmapSibling'];
   onAddArchitectureService: React.ComponentProps<
     typeof PropertiesPanelComponent
   >['onAddArchitectureService'];
@@ -201,15 +188,9 @@ export interface PropertiesRailProps {
   onApplyArchitectureTemplate: React.ComponentProps<
     typeof PropertiesPanelComponent
   >['onApplyArchitectureTemplate'];
-  onGenerateEntityFields: React.ComponentProps<
-    typeof PropertiesPanelComponent
-  >['onGenerateEntityFields'];
   onSuggestArchitectureNode: React.ComponentProps<
     typeof PropertiesPanelComponent
   >['onSuggestArchitectureNode'];
-  onConvertEntitySelectionToClassDiagram: React.ComponentProps<
-    typeof PropertiesPanelComponent
-  >['onConvertEntitySelectionToClassDiagram'];
   onClose: () => void;
 }
 
@@ -307,16 +288,6 @@ export function FlowEditorPanels({
               initialView={commandBar.initialView}
               onAddAnnotation={commandBar.onAddAnnotation}
               onAddSection={commandBar.onAddSection}
-              onAddText={commandBar.onAddText}
-              onAddJourney={commandBar.onAddJourney}
-              onAddMindmap={commandBar.onAddMindmap}
-              onAddArchitecture={commandBar.onAddArchitecture}
-              onAddSequence={commandBar.onAddSequence}
-              onAddClassNode={commandBar.onAddClassNode}
-              onAddEntityNode={commandBar.onAddEntityNode}
-              onAddImage={commandBar.onAddImage}
-              onAddBrowserWireframe={commandBar.onAddBrowserWireframe}
-              onAddMobileWireframe={commandBar.onAddMobileWireframe}
               onAddDomainLibraryItem={commandBar.onAddDomainLibraryItem}
               onCodeAnalysis={commandBar.onCodeAnalysis}
               onSqlAnalysis={commandBar.onSqlAnalysis}
@@ -453,7 +424,6 @@ export function FlowEditorPanels({
                 selectedEdge={properties.selectedEdge}
                 onChangeNode={properties.onChangeNode}
                 onBulkChangeNodes={properties.onBulkChangeNodes}
-                onChangeNodeType={properties.onChangeNodeType}
                 onChangeEdge={properties.onChangeEdge}
                 onDeleteNode={properties.onDeleteNode}
                 onDuplicateNode={properties.onDuplicateNode}
@@ -462,14 +432,10 @@ export function FlowEditorPanels({
                 onFitSectionToContents={properties.onFitSectionToContents}
                 onReleaseFromSection={properties.onReleaseFromSection}
                 onBringContentsIntoSection={properties.onBringContentsIntoSection}
-                onAddMindmapChild={properties.onAddMindmapChild}
-                onAddMindmapSibling={properties.onAddMindmapSibling}
                 onAddArchitectureService={properties.onAddArchitectureService}
                 onCreateArchitectureBoundary={properties.onCreateArchitectureBoundary}
                 onApplyArchitectureTemplate={properties.onApplyArchitectureTemplate}
-                onGenerateEntityFields={properties.onGenerateEntityFields}
                 onSuggestArchitectureNode={properties.onSuggestArchitectureNode}
-                onConvertEntitySelectionToClassDiagram={properties.onConvertEntitySelectionToClassDiagram}
                 onClose={properties.onClose}
               />
             </Suspense>

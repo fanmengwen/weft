@@ -20,9 +20,7 @@ describe('diagram type bootstrap', () => {
     initializeDiagramTypeRuntime();
 
     expect(getDiagramPlugin('flowchart')?.id).toBe('flowchart');
-    expect(getDiagramPlugin('sequence')?.id).toBe('sequence');
-    expect(getDiagramNodeProperties('classDiagram')).toBeDefined();
-    expect(getDiagramNodeProperties('sequence')).toBeDefined();
+    expect(getDiagramNodeProperties('architecture')).toBeDefined();
   });
 
   it('is idempotent across repeated initialization', () => {

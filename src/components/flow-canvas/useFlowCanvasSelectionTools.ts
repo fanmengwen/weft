@@ -1,10 +1,9 @@
-import type { FlowEdge, FlowNode } from '@/lib/types';
+import type { FlowNode } from '@/lib/types';
 import { useFlowCanvasAlignmentGuides } from './useFlowCanvasAlignmentGuides';
 import { useFlowCanvasNodeDragHandlers } from './useFlowCanvasNodeDragHandlers';
 
 interface UseFlowCanvasSelectionToolsParams {
     layerAdjustedNodes: FlowNode[];
-    edges: FlowEdge[];
     alignmentGuidesEnabled: boolean;
     toTypedFlowNode: (node: unknown) => FlowNode;
     onNodeDragStart: (event: unknown, node: FlowNode) => void;
@@ -16,7 +15,6 @@ interface UseFlowCanvasSelectionToolsParams {
 
 export function useFlowCanvasSelectionTools({
     layerAdjustedNodes,
-    edges,
     alignmentGuidesEnabled,
     toTypedFlowNode,
     onNodeDragStart,
@@ -28,7 +26,6 @@ export function useFlowCanvasSelectionTools({
     const alignmentGuides = useFlowCanvasAlignmentGuides({
         enabled: alignmentGuidesEnabled,
         layerAdjustedNodes,
-        edges,
     });
 
     const dragHandlers = useFlowCanvasNodeDragHandlers({
@@ -44,7 +41,6 @@ export function useFlowCanvasSelectionTools({
 
     return {
         alignmentGuides: alignmentGuides.alignmentGuides,
-        selectionDragPreview: alignmentGuides.selectionDragPreview,
         ...dragHandlers,
     };
 }

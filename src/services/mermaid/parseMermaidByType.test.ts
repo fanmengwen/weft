@@ -1,4 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import {
+  initializeDiagramTypeRuntime,
+  resetDiagramTypeRuntimeForTests,
+} from '@/diagram-types/bootstrap';
+import { unregisterDiagramPluginForTests } from '@/diagram-types/core';
 import { parseMermaidByType } from './parseMermaidByType';
 
 describe('parseMermaidByType', () => {
@@ -113,198 +118,6 @@ describe('parseMermaidByType', () => {
     expect(result.diagramType).toBe('stateDiagram');
     expect(result.nodes.find((node) => node.id === 'Busy')?.parentId).toBe('Working');
     expect(result.nodes.find((node) => node.id === 'Idle')?.parentId).toBe('Working');
-  });
-
-  it('parses classDiagram through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      classDiagram
-      class Animal {
-        +name: String
-      }
-      class Duck
-      Animal <|-- Duck
-    `);
-
-    expect(result.diagramType).toBe('classDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
-  });
-
-  it('returns classDiagram diagnostics for malformed declarations without failing parse', () => {
-    const result = parseMermaidByType(`
-      classDiagram
-      class User {
-        +id: UUID
-      }
-      malformed text
-      class Broken ???
-      User -> Account
-    `);
-
-    expect(result.diagramType).toBe('classDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Invalid class declaration at line'))
-    ).toBe(true);
-    expect(result.importState).toBe('editable_partial');
-    expect(result.structuredDiagnostics?.some((diagnostic) => diagnostic.code === 'MERMAID_SYNTAX')).toBe(true);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Invalid class relation syntax at line')
-      )
-    ).toBe(true);
-  });
-
-  it('parses erDiagram through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      erDiagram
-      CUSTOMER {
-        string name
-      }
-      ORDER {
-        string id
-      }
-      CUSTOMER ||--o{ ORDER : places
-    `);
-
-    expect(result.diagramType).toBe('erDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
-  });
-
-  it('returns erDiagram diagnostics for malformed declarations without failing parse', () => {
-    const result = parseMermaidByType(`
-      erDiagram
-      CUSTOMER {
-        string id PK
-      }
-      entity ORDER {
-      CUSTOMER -> ORDER
-      random noise
-    `);
-
-    expect(result.diagramType).toBe('erDiagram');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Invalid entity declaration at line'))
-    ).toBe(true);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Invalid erDiagram relation syntax at line')
-      )
-    ).toBe(true);
-  });
-
-  it('parses mindmap through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      mindmap
-        Root
-          Branch A
-          Branch B
-    `);
-
-    expect(result.diagramType).toBe('mindmap');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
-    expect(result.nodes.every((node) => node.type === 'mindmap')).toBe(true);
-  });
-
-  it('keeps dotted wrapped mindmap aliases in editable_full when no diagnostics are present', () => {
-    const result = parseMermaidByType(`
-      mindmap
-        platform.root((Root))
-          platform.api[[Child A]]
-          platform.branch(Child B)
-    `);
-
-    expect(result.diagramType).toBe('mindmap');
-    expect(result.error).toBeUndefined();
-    expect(result.structuredDiagnostics).toEqual([]);
-    expect(result.importState).toBe('editable_full');
-    expect(result.nodes.find((node) => node.data.label === 'Root')?.data.mindmapAlias).toBe(
-      'platform.root'
-    );
-    expect(
-      result.nodes.find((node) => node.data.label === 'Child A')?.data.mindmapAlias
-    ).toBe('platform.api');
-  });
-
-  it('parses journey through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      journey
-      title Checkout
-      section Happy
-        Search: 5: User
-        Buy: 3: User
-    `);
-
-    expect(result.diagramType).toBe('journey');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.nodes.every((node) => node.type === 'journey')).toBe(true);
-  });
-
-  it('returns journey diagnostics for malformed section and malformed score-like steps', () => {
-    const result = parseMermaidByType(`
-      journey
-      section
-      Open ticket: User
-      Resolve issue: 5: Agent
-    `);
-
-    expect(result.diagramType).toBe('journey');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Invalid journey section syntax at line')
-      )
-    ).toBe(true);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Invalid journey score at line'))
-    ).toBe(true);
-  });
-
-  it('returns mindmap diagnostics for malformed indentation/wrapper lines', () => {
-    const result = parseMermaidByType(`
-      mindmap
-        Root
-            Jumped
-          bad((Unclosed
-          Child
-    `);
-
-    expect(result.diagramType).toBe('mindmap');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(
-      result.diagnostics?.some((message) => message.includes('Mindmap indentation jump at line'))
-    ).toBe(true);
-    expect(
-      result.diagnostics?.some((message) =>
-        message.includes('Malformed mindmap wrapper syntax at line')
-      )
-    ).toBe(true);
-  });
-
-  it('parses sequenceDiagram through plugin dispatcher', () => {
-    const result = parseMermaidByType(`
-      sequenceDiagram
-      participant Alice
-      participant Bob
-      Alice->>Bob: Hello
-      Bob-->>Alice: Hi
-    `);
-
-    expect(result.diagramType).toBe('sequence');
-    expect(result.error).toBeUndefined();
-    expect(result.nodes.length).toBeGreaterThan(0);
-    expect(result.edges.length).toBeGreaterThan(0);
   });
 
   it('parses architecture through plugin dispatcher', () => {
@@ -441,5 +254,129 @@ describe('parseMermaidByType', () => {
     expect(result.error).toContain('Missing chart type declaration');
     expect(result.nodes).toHaveLength(0);
     expect(result.edges).toHaveLength(0);
+  });
+
+  it('degrades mindmap sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      mindmap
+        Root
+          Branch A
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('mindmap');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('degrades classDiagram sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      classDiagram
+      class Animal {
+        +name: String
+      }
+      class Duck
+      Animal <|-- Duck
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('classDiagram');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('degrades erDiagram sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      erDiagram
+      CUSTOMER {
+        string name
+      }
+      CUSTOMER ||--o{ ORDER : places
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('erDiagram');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('degrades sequenceDiagram sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      sequenceDiagram
+      participant Alice
+      participant Bob
+      Alice->>Bob: Hello
+      Bob-->>Alice: Hi
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('sequence');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('degrades journey sources to the renderer-only snapshot path', () => {
+    const result = parseMermaidByType(`
+      journey
+      title Checkout
+      section Happy
+        Search: 5: User
+        Buy: 3: User
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('journey');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+});
+
+describe('parseMermaidByType without a registered plugin', () => {
+  beforeEach(() => {
+    initializeDiagramTypeRuntime();
+    unregisterDiagramPluginForTests('stateDiagram');
+  });
+
+  afterEach(() => {
+    resetDiagramTypeRuntimeForTests();
+    initializeDiagramTypeRuntime();
+  });
+
+  it('degrades to an error-free renderer-only result for the detected family', () => {
+    const result = parseMermaidByType(`
+      stateDiagram-v2
+      [*] --> Idle
+      Idle --> Working
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.diagramType).toBe('stateDiagram');
+    expect(result.nativeParseUnavailable).toBe(true);
+    expect(result.importState).toBe('unsupported_family');
+    expect(result.nodes).toHaveLength(0);
+    expect(result.edges).toHaveLength(0);
+  });
+
+  it('keeps plugin-backed families natively parseable while another plugin is missing', () => {
+    const result = parseMermaidByType(`
+      flowchart TD
+      A[Start] --> B[End]
+    `);
+
+    expect(result.error).toBeUndefined();
+    expect(result.nativeParseUnavailable).toBeUndefined();
+    expect(result.importState).toBe('editable_full');
+    expect(result.nodes).toHaveLength(2);
+    expect(result.edges).toHaveLength(1);
   });
 });

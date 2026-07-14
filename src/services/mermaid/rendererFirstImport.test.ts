@@ -78,4 +78,36 @@ describe('importMermaidToCanvas', () => {
     expect(result.nodes.map((node) => node.id)).toEqual(expect.arrayContaining(['a', 'b']));
     expect(result.edges).toHaveLength(1);
   });
+
+  it('renders an svg snapshot node when native parse is unavailable', async () => {
+    renderMock.mockResolvedValue({
+      svg: '<svg viewBox="0 0 400 200" width="400" height="200"></svg>',
+    });
+
+    const source = 'classDiagram\nclass Animal';
+    const result = await importMermaidToCanvas({
+      parsed: {
+        nodes: [],
+        edges: [],
+        diagramType: 'classDiagram',
+        importState: 'unsupported_family',
+        nativeParseUnavailable: true,
+        originalSource: source,
+      },
+      source,
+      importMode: 'native_editable',
+      layout: {
+        direction: 'TB',
+        spacing: 'normal',
+        contentDensity: 'balanced',
+      },
+    });
+
+    expect(result.importMode).toBe('renderer_first');
+    expect(result.visualMode).toBe('renderer_exact');
+    expect(result.nodes).toHaveLength(1);
+    expect(result.nodes[0].type).toBe('mermaid_svg');
+    expect(result.nodes[0].data.mermaidSource).toBe(source);
+    expect(result.edges).toHaveLength(0);
+  });
 });

@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Settings, WandSparkles, StickyNote, X, Database, ArrowRightLeft } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { isMindmapConnectorSource } from '@/lib/connectCreationPolicy';
 import { useFlowStore } from '@/store';
 import type { DomainLibraryCategory, DomainLibraryItem } from '@/services/domainLibrary';
 import { loadDomainAssetSuggestions } from '@/services/assetCatalog';
@@ -13,7 +12,6 @@ import { normalizeNodeIconData } from '@/lib/nodeIconState';
 import {
     type ConnectMenuOption,
     GenericConnectOptionsSection,
-    MindmapConnectSection,
     ProviderSuggestionsSection,
 } from './ConnectMenuSections';
 
@@ -28,22 +26,6 @@ interface ConnectMenuProps {
 
 function getContextualOptions(sourceType?: string | null): ConnectMenuOption[] {
     switch (sourceType) {
-        case 'class':
-            return [{
-                type: 'class',
-                title: 'Class Node',
-                description: 'Create a connected class',
-                toneClassName: 'bg-sky-50 text-sky-600 border-sky-100',
-                icon: <Settings className="w-4.5 h-4.5" />,
-            }];
-        case 'er_entity':
-            return [{
-                type: 'er_entity',
-                title: 'Entity',
-                description: 'Create a connected entity',
-                toneClassName: 'bg-emerald-50 text-emerald-600 border-emerald-100',
-                icon: <Database className="w-4.5 h-4.5" />,
-            }];
         case 'architecture':
             return [{
                 type: 'architecture',
@@ -51,14 +33,6 @@ function getContextualOptions(sourceType?: string | null): ConnectMenuOption[] {
                 description: 'Create another architecture service',
                 toneClassName: 'bg-cyan-50 text-cyan-700 border-cyan-100',
                 icon: <Settings className="w-4.5 h-4.5" />,
-            }];
-        case 'journey':
-            return [{
-                type: 'journey',
-                title: 'Journey Step',
-                description: 'Create the next journey step',
-                toneClassName: 'bg-violet-50 text-violet-600 border-violet-100',
-                icon: <WandSparkles className="w-4.5 h-4.5" />,
             }];
         case 'annotation':
             return [{
@@ -98,7 +72,6 @@ export const ConnectMenu = ({ position, sourceId, sourceType, onSelect, onSelect
     const { onKeyDown } = useMenuKeyboardNavigation({ menuRef, onClose });
     const sourceNode = useFlowStore((state) => state.nodes.find((node) => node.id === sourceId));
     const normalizedIconData = normalizeNodeIconData(sourceNode?.data);
-    const isMindmapSource = isMindmapConnectorSource(sourceType);
     const isAssetSource = normalizedIconData?.assetPresentation === 'icon'
         && typeof normalizedIconData.assetProvider === 'string';
     const assetProvider = (normalizedIconData?.assetProvider || null) as DomainLibraryCategory | null;
@@ -269,13 +242,7 @@ export const ConnectMenu = ({ position, sourceId, sourceType, onSelect, onSelect
                         <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-[var(--brand-secondary)]">{t('connectMenu.createNewNode')}</p>
                     </div>
 
-                    {isMindmapSource ? (
-                        <MindmapConnectSection
-                            title={t('nodes.mindmap', 'Topic')}
-                            description="Create connected topic"
-                            onSelect={() => handleSelect('mindmap')}
-                        />
-                    ) : isAssetSource && providerItems.length > 0 ? (
+                    {isAssetSource && providerItems.length > 0 ? (
                         <ProviderSuggestionsSection
                             title={`${providerTitle} suggestions`}
                             items={providerItems}

@@ -12,8 +12,8 @@ const TYPE_TO_DSL: Record<string, string> = {
     annotation: 'note',
     section: 'process',
     group: 'process',
-    browser: 'browser',
-    mobile: 'mobile',
+    browser: 'process',
+    mobile: 'process',
     container: 'container',
 };
 
@@ -34,12 +34,6 @@ const NODE_ATTRIBUTE_KEYS = [
     'transparency',
     'variant',
     'layerId',
-    'journeySection',
-    'journeyActor',
-    'journeyTask',
-    'journeyScore',
-    'mindmapSide',
-    'mindmapBranchStyle',
     'archProvider',
     'archProviderLabel',
     'archResourceType',
@@ -61,10 +55,6 @@ const EDGE_ATTRIBUTE_KEYS = [
     'archDirection',
     'archSourceSide',
     'archTargetSide',
-    'classRelation',
-    'classRelationLabel',
-    'erRelation',
-    'erRelationLabel',
     'connectionType',
 ] as const;
 
@@ -108,6 +98,15 @@ function getScalarField(
         return value;
     }
     return undefined;
+}
+
+function resolveDslType(node: Node): string {
+    if (node.type === 'custom') {
+        const shape = getStringField(node.data, 'shape');
+        if (shape === 'parallelogram') return 'io';
+        if (shape === 'cylinder') return 'database';
+    }
+    return TYPE_TO_DSL[node.type || 'process'] || 'process';
 }
 
 export function getOpenFlowDSLExportDiagnostics(nodes: Node[], edges: Edge[]): OpenFlowDSLExportDiagnostic[] {
@@ -162,6 +161,7 @@ export function toOpenFlowDSL(nodes: Node[], edges: Edge[], options: OpenFlowDSL
 
         const entries: Array<[string, string | number | boolean]> = [];
         const defaults = NODE_DEFAULTS[node.type || 'process'] || NODE_DEFAULTS.process;
+        const dslType = resolveDslType(node);
 
         const color = getStringField(data, 'color');
         if (color && color !== defaults.color) {
@@ -177,6 +177,7 @@ export function toOpenFlowDSL(nodes: Node[], edges: Edge[], options: OpenFlowDSL
             const value = getScalarField(data, key);
             if (value === undefined) return;
             if (key === 'shape' && value === defaults.shape) return;
+            if (key === 'shape' && (dslType === 'io' || dslType === 'database')) return;
             entries.push([key, value]);
         });
 
@@ -236,7 +237,7 @@ export function toOpenFlowDSL(nodes: Node[], edges: Edge[], options: OpenFlowDSL
             children.forEach((childNode) => renderNode(childNode, indent + '  '));
             lines.push(`${indent}}`);
         } else {
-            const dslType = TYPE_TO_DSL[node.type || 'process'] || 'process';
+            const dslType = resolveDslType(node);
             const label = getStringField(node.data, 'label') || 'Node';
             const attrs = formatAttributes(collectNodeAttributeEntries(node));
 

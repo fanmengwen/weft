@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import { StudioPanel } from './StudioPanel';
 
@@ -57,5 +57,14 @@ describe('StudioPanel', () => {
     expect(screen.getByText('Studio')).toBeTruthy();
     expect(screen.queryByText('Code')).toBeNull();
     expect(await screen.findByTestId('studio-ai-panel')).toBeTruthy();
+  });
+
+  it('calls onClearChat when the clear conversation button is clicked', () => {
+    const props = createProps();
+    render(<StudioPanel {...props} />);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Clear conversation' }));
+
+    expect(props.onClearChat).toHaveBeenCalledTimes(1);
   });
 });

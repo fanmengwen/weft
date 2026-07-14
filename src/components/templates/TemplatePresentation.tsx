@@ -19,7 +19,6 @@ interface TemplatePreviewNode {
   type: FlowNode['type'];
   shape?: FlowNode['data']['shape'];
   assetPresentation?: FlowNode['data']['assetPresentation'];
-  seqParticipantKind?: FlowNode['data']['seqParticipantKind'];
 }
 
 interface TemplatePreviewEdge {
@@ -119,35 +118,6 @@ function PreviewNodeShape({
   const fillOpacity = variant === 'asset-rich' ? 0.2 : 0.12;
   const fill = getPreviewNodeColor(node, variant);
 
-  if (node.type === 'sequence_participant' || variant === 'sequence') {
-    return (
-      <g>
-        <rect
-          x={node.x}
-          y={node.y}
-          width={node.width}
-          height={Math.min(node.height, 38)}
-          rx={node.seqParticipantKind === 'actor' ? 18 : 12}
-          fill={fill}
-          fillOpacity={0.24}
-          stroke="currentColor"
-          strokeOpacity={strokeOpacity}
-          strokeWidth="2"
-        />
-        <line
-          x1={node.x + node.width / 2}
-          y1={node.y + Math.min(node.height, 38)}
-          x2={node.x + node.width / 2}
-          y2={node.y + node.height + 110}
-          stroke="currentColor"
-          strokeOpacity={0.18}
-          strokeWidth="2"
-          strokeDasharray="8 8"
-        />
-      </g>
-    );
-  }
-
   return (
     <rect
       x={node.x}
@@ -170,7 +140,6 @@ function createTemplatePreview(template: FlowTemplate): {
   nodeIndex: Map<string, TemplatePreviewNode>;
 } {
   const nodes = template.nodes
-    .filter((node) => !isPreviewContainerNode(node))
     .filter((node) => typeof node.position?.x === 'number' && typeof node.position?.y === 'number')
     .slice(0, TEMPLATE_PREVIEW_MAX_NODES)
     .map((node) => {
@@ -184,7 +153,6 @@ function createTemplatePreview(template: FlowTemplate): {
         type: node.type,
         shape: node.data?.shape,
         assetPresentation: node.data?.assetPresentation,
-        seqParticipantKind: node.data?.seqParticipantKind,
       };
     });
   const nodeIds = new Set(nodes.map((node) => node.id));
@@ -198,10 +166,6 @@ function createTemplatePreview(template: FlowTemplate): {
     edges,
     nodeIndex: new Map(nodes.map((node) => [node.id, node])),
   };
-}
-
-function isPreviewContainerNode(node: FlowNode): boolean {
-  return node.type === 'swimlane';
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -242,9 +206,6 @@ function getPreviewNodeColor(
   }
   if (node.type === 'architecture') {
     return 'color-mix(in_srgb, var(--brand-primary) 38%, white)';
-  }
-  if (node.type === 'mindmap') {
-    return 'color-mix(in_srgb, var(--brand-secondary) 30%, white)';
   }
   return 'currentColor';
 }

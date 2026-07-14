@@ -1,13 +1,12 @@
 import type { Connection } from '@/lib/reactflowCompat';
 import type { EdgeData, FlowEdge, FlowNode, NodeData } from '@/lib/types';
-import { createMindmapEdge, DEFAULT_EDGE_OPTIONS, NODE_HEIGHT, NODE_WIDTH } from '@/constants';
+import { DEFAULT_EDGE_OPTIONS, NODE_HEIGHT, NODE_WIDTH } from '@/constants';
 import { getNodeHandleIdForSide, handleIdToSide, type HandleSide } from '@/lib/nodeHandles';
 import { NODE_DEFAULTS } from '@/theme';
-import { createGenericShapeNode, createMindmapTopicNode } from '@/hooks/node-operations/utils';
+import { createGenericShapeNode } from '@/hooks/node-operations/utils';
 import { getGenericShapeColor, isGenericShapeType } from '@/lib/genericShapePolicy';
 import { createId } from '@/lib/id';
-import { getDefaultConnectedNodeSpec, resolveMindmapChildSide, shouldBypassConnectMenu } from '@/lib/connectCreationPolicy';
-import { relayoutMindmapComponent, resolveMindmapBranchStyleForNode } from '@/lib/mindmapLayout';
+import { getDefaultConnectedNodeSpec } from '@/lib/connectCreationPolicy';
 
 const OPPOSITE_HANDLE_SIDE: Record<HandleSide, HandleSide> = {
     right: 'left',
@@ -44,21 +43,6 @@ interface BuildConnectedNodeParams {
 export interface ConnectedEdgePreset {
     label?: string;
     data?: EdgeData;
-}
-
-interface BuildConnectedMindmapTopicParams {
-    nodes: FlowNode[];
-    edges: FlowEdge[];
-    sourceNode: FlowNode;
-    sourceHandle: string | null;
-    sourceId: string;
-    position: { x: number; y: number };
-}
-
-interface BuiltConnectedMindmapTopic {
-    insertedEdge: FlowEdge;
-    nextNode: FlowNode;
-    nextNodes: FlowNode[];
 }
 
 type ConnectEndResolution =
@@ -129,13 +113,6 @@ export function findClosestHandleTarget(
 }
 
 export function getAddedNodeContent(type: string, labels: AddedNodeContentLabels): AddedNodeContent {
-    if (type === 'journey') {
-        return {
-            label: 'User Journey',
-            subLabel: 'User',
-        };
-    }
-
     if (type === 'annotation') {
         return {
             label: labels.noteLabel,
@@ -161,62 +138,6 @@ export function buildConnectedNode({
     const defaultStyle = NODE_DEFAULTS[type] || NODE_DEFAULTS.process;
     const isGenericShape = isGenericShapeType(type);
     const nodeContent = getAddedNodeContent(type, labels);
-
-    if (type === 'journey') {
-        return {
-            newNode: {
-                id,
-                position,
-                data: {
-                    label: nodeContent.label,
-                    subLabel: nodeContent.subLabel,
-                    color: 'violet',
-                    shape: (shape || defaultStyle?.shape) as NodeData['shape'],
-                    journeySection: 'General',
-                    journeyTask: 'User Journey',
-                    journeyActor: 'User',
-                    journeyScore: 3,
-                },
-                type,
-            },
-            isGenericShape,
-        };
-    }
-
-    if (type === 'class') {
-        return {
-            newNode: {
-                id,
-                type: 'class',
-                position,
-                data: {
-                    label: 'ClassName',
-                    color: 'white',
-                    shape: 'rectangle',
-                    classAttributes: ['+ attribute: Type'],
-                    classMethods: ['+ method(): void'],
-                },
-            },
-            isGenericShape: false,
-        };
-    }
-
-    if (type === 'er_entity') {
-        return {
-            newNode: {
-                id,
-                type: 'er_entity',
-                position,
-                data: {
-                    label: 'EntityName',
-                    color: 'white',
-                    shape: 'rectangle',
-                    erFields: ['id: INT PK', 'name: VARCHAR'],
-                },
-            },
-            isGenericShape: false,
-        };
-    }
 
     if (type === 'architecture') {
         const sourceProvider = sourceNode?.data?.archProvider || 'custom';
@@ -293,43 +214,6 @@ export function buildConnectedEdge(
     };
 }
 
-export function buildConnectedMindmapTopic({
-    nodes,
-    edges,
-    sourceNode,
-    sourceHandle,
-    sourceId,
-    position,
-}: BuildConnectedMindmapTopicParams): BuiltConnectedMindmapTopic {
-    const parentDepth = typeof sourceNode.data?.mindmapDepth === 'number' ? sourceNode.data.mindmapDepth : 0;
-    const preferredSide = resolveMindmapChildSide(parentDepth, sourceNode.data?.mindmapSide, sourceHandle);
-    const branchStyle = resolveMindmapBranchStyleForNode(sourceId, nodes);
-    const nextNode = createMindmapTopicNode({
-        id: createId('mm'),
-        position,
-        depth: parentDepth + 1,
-        parentId: sourceId,
-        side: preferredSide,
-        branchStyle,
-        layerId: typeof sourceNode.data?.layerId === 'string' ? sourceNode.data.layerId : undefined,
-    });
-    const insertedEdge = createMindmapEdge(sourceNode, nextNode, undefined, undefined, branchStyle);
-    const nextNodes = relayoutMindmapComponent(
-        [
-            ...nodes.map((node) => ({ ...node, selected: false })),
-            nextNode,
-        ],
-        edges.concat(insertedEdge),
-        sourceId
-    );
-
-    return {
-        insertedEdge,
-        nextNode,
-        nextNodes,
-    };
-}
-
 interface ResolveConnectEndActionParams {
     nodes: FlowNode[];
     edges: FlowEdge[];
@@ -381,7 +265,7 @@ export function resolveConnectEndAction({
         };
     }
 
-    if (canvasInteractionsV1Enabled || shouldBypassConnectMenu(sourceNode?.type)) {
+    if (canvasInteractionsV1Enabled) {
         const defaultConnectedNode = getDefaultConnectedNodeSpec(sourceNode?.type);
         return {
             type: 'add',

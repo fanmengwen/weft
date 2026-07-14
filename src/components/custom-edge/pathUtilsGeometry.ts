@@ -226,56 +226,6 @@ export function getLoopDirection(position: Position): LoopDirection {
   }
 }
 
-export function buildMindmapRootBranchPath(
-  sourceX: number,
-  sourceY: number,
-  targetX: number,
-  targetY: number,
-): EdgePathResult {
-  const direction = targetX >= sourceX ? 1 : -1;
-  const horizontalDistance = Math.abs(targetX - sourceX);
-  const trunkLength = Math.min(96, Math.max(56, horizontalDistance * 0.18));
-  const sourceControlX = sourceX + direction * trunkLength * 0.5;
-  const bundleX = sourceX + direction * trunkLength;
-  const targetControlX = targetX - direction * Math.min(100, Math.max(60, horizontalDistance * 0.24));
-  const edgePath = [
-    `M ${sourceX} ${sourceY}`,
-    `C ${sourceControlX} ${sourceY}, ${bundleX} ${sourceY}, ${bundleX} ${sourceY}`,
-    `C ${bundleX + direction * 28} ${sourceY}, ${targetControlX} ${targetY}, ${targetX} ${targetY}`,
-  ].join(' ');
-
-  return {
-    edgePath,
-    labelX: (bundleX + targetX) / 2,
-    labelY: (sourceY + targetY) / 2,
-  };
-}
-
-export function buildMindmapTopicBranchPath(
-  sourceX: number,
-  sourceY: number,
-  targetX: number,
-  targetY: number,
-): EdgePathResult {
-  const direction = targetX >= sourceX ? 1 : -1;
-  const horizontalDistance = Math.abs(targetX - sourceX);
-  const trunkLength = Math.min(68, Math.max(34, horizontalDistance * 0.16));
-  const sourceControlX = sourceX + direction * trunkLength * 0.55;
-  const bundleX = sourceX + direction * trunkLength;
-  const targetControlX = targetX - direction * Math.min(72, Math.max(42, horizontalDistance * 0.2));
-  const edgePath = [
-    `M ${sourceX} ${sourceY}`,
-    `C ${sourceControlX} ${sourceY}, ${bundleX} ${sourceY}, ${bundleX} ${sourceY}`,
-    `C ${bundleX + direction * 18} ${sourceY}, ${targetControlX} ${targetY}, ${targetX} ${targetY}`,
-  ].join(' ');
-
-  return {
-    edgePath,
-    labelX: (bundleX + targetX) / 2,
-    labelY: (sourceY + targetY) / 2,
-  };
-}
-
 export function buildRoundedPolylinePath(points: { x: number; y: number }[], cornerRadius: number): string {
   if (points.length === 0) return '';
   if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;

@@ -53,6 +53,20 @@ describe('parseTerraformState', () => {
     expect(result.nodes[0].nodeType).toBe('architecture');
   });
 
+  it('parses aws_cloudfront_distribution into a [process] node', () => {
+    const result = parseTerraformState(
+      makeTfState([makeResource('aws_cloudfront_distribution', 'cdn')])
+    );
+    expect(result.nodes[0].nodeType).toBe('process');
+  });
+
+  it('parses kubernetes_ingress into a [process] node', () => {
+    const result = parseTerraformState(
+      makeTfState([makeResource('kubernetes_ingress', 'main')])
+    );
+    expect(result.nodes[0].nodeType).toBe('process');
+  });
+
   it('creates edge from vpc to instance via vpc_id attribute', () => {
     const vpcId = 'vpc-abc123';
     const vpc = {

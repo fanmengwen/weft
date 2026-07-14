@@ -7,12 +7,7 @@ interface PartialCorpusCase {
   diagramType:
     | 'flowchart'
     | 'stateDiagram'
-    | 'classDiagram'
-    | 'erDiagram'
-    | 'architecture'
-    | 'sequence'
-    | 'mindmap'
-    | 'journey';
+    | 'architecture';
   diagnosticIncludes: string[];
   expectedDiagnosticCodes?: string[];
 }
@@ -47,38 +42,6 @@ const PARTIAL_CORPUS: PartialCorpusCase[] = [
     expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
   },
   {
-    name: 'class malformed relation still recovers',
-    diagramType: 'classDiagram',
-    source: `
-      classDiagram
-      class User
-      User -> Account
-      stray words
-    `,
-    diagnosticIncludes: [
-      'Invalid class relation syntax at line',
-      'Unrecognized classDiagram line at line',
-    ],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
-  },
-  {
-    name: 'er malformed declaration still recovers',
-    diagramType: 'erDiagram',
-    source: `
-      erDiagram
-      CUSTOMER {
-        string id PK
-      }
-      entity ORDER {
-      CUSTOMER -> ORDER
-    `,
-    diagnosticIncludes: [
-      'Invalid entity declaration at line',
-      'Invalid erDiagram relation syntax at line',
-    ],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
-  },
-  {
     name: 'architecture implicit-node recovery stays editable',
     diagramType: 'architecture',
     source: `
@@ -88,44 +51,6 @@ const PARTIAL_CORPUS: PartialCorpusCase[] = [
     `,
     diagnosticIncludes: ['Recovered implicit service node "cache"'],
     expectedDiagnosticCodes: ['MERMAID_RECOVERY'],
-  },
-  {
-    name: 'sequence malformed message still recovers',
-    diagramType: 'sequence',
-    source: `
-      sequenceDiagram
-      participant A
-      participant B
-      A->>B: Hello
-      A->>
-    `,
-    diagnosticIncludes: ['Invalid message at line'],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
-  },
-  {
-    name: 'mindmap malformed wrapper still recovers',
-    diagramType: 'mindmap',
-    source: `
-      mindmap
-        Root
-          bad((Unclosed
-          Child
-    `,
-    diagnosticIncludes: ['Malformed mindmap wrapper syntax at line'],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
-  },
-  {
-    name: 'journey invalid score still recovers',
-    diagramType: 'journey',
-    source: `
-      journey
-      title Checkout
-      section Happy
-      Search: User
-      Resolve issue: 5: Agent
-    `,
-    diagnosticIncludes: ['Invalid journey score at line'],
-    expectedDiagnosticCodes: ['MERMAID_SYNTAX'],
   },
 ];
 

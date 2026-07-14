@@ -1,16 +1,4 @@
 import { type LegacyEdge, type LegacyNode } from '@/lib/reactflowCompat';
-import type { ClassRelationToken, ERRelationToken } from '@/lib/relationSemantics';
-
-export interface ErField {
-  name: string;
-  dataType: string;
-  isPrimaryKey: boolean;
-  isForeignKey: boolean;
-  isNotNull?: boolean;
-  isUnique?: boolean;
-  referencesTable?: string;
-  referencesField?: string;
-}
 
 export const DIAGRAM_TYPES = [
   'flowchart',
@@ -39,25 +27,14 @@ export function isDiagramType(value: unknown): value is DiagramType {
 export enum NodeType {
   START = 'start',
   PROCESS = 'process',
-  JOURNEY = 'journey',
-  MINDMAP = 'mindmap',
   ARCHITECTURE = 'architecture',
-  CLASS = 'class',
-  ER_ENTITY = 'er_entity',
   DECISION = 'decision',
   END = 'end',
   CUSTOM = 'custom',
   ANNOTATION = 'annotation',
   SECTION = 'section',
   GROUP = 'group',
-  SWIMLANE = 'swimlane',
-  IMAGE = 'image',
   MERMAID_SVG = 'mermaid_svg',
-  TEXT = 'text',
-  BROWSER = 'browser',
-  MOBILE = 'mobile',
-  SEQUENCE_PARTICIPANT = 'sequence_participant',
-  SEQUENCE_MESSAGE = 'sequence_message',
 }
 
 export interface NodeLabelData {
@@ -73,7 +50,13 @@ export interface NodeIconData {
   mermaidSvg?: string; // Rendered Mermaid SVG markup
 }
 
+export type ChartNodeTone = 'out' | 'end' | 'web' | 'cond' | 'kb' | 'llm' | 'note';
+
 export interface NodeVisualStyleData {
+  /** User-selected tone override from the appearance swatch; falls back to type+shape when absent. */
+  tone?: ChartNodeTone;
+  /** IO node flow direction metadata; rendering flip is deferred to a later pass. */
+  ioDirection?: 'input' | 'output';
   color?: string; // Preset color key (e.g., 'white', 'blue', 'custom')
   colorMode?: 'subtle' | 'filled';
   customColor?: string; // Hex color for the "custom" preset
@@ -101,7 +84,6 @@ export interface NodeVisualStyleData {
   subLabelFontStyle?: string; // 'normal', 'italic'
   backgroundColor?: string;
   transparency?: number; // 0-1
-  variant?: string; // wireframe preset key (e.g. 'landing', 'modal')
 }
 
 export interface NodeCanvasMetadata {
@@ -112,41 +94,6 @@ export interface NodeCanvasMetadata {
   // When true, auto-layout treats this node as a fixed anchor — its position is
   // preserved and other nodes are arranged around it.
   pinned?: boolean;
-}
-
-export interface ClassNodeData {
-  classStereotype?: string;
-  classAttributes?: string[];
-  classMethods?: string[];
-}
-
-export interface EntityNodeData {
-  erFields?: Array<string | ErField>;
-}
-
-export interface JourneyNodeData {
-  journeyTitle?: string;
-  journeySection?: string;
-  journeyActor?: string;
-  journeyTask?: string;
-  journeyScore?: number;
-}
-
-export interface MindmapNodeData {
-  mindmapDepth?: number;
-  mindmapParentId?: string;
-  mindmapAlias?: string;
-  mindmapWrapper?:
-    | 'double-circle'
-    | 'double-square'
-    | 'stadium'
-    | 'subroutine'
-    | 'square'
-    | 'rounded'
-    | 'hexagon';
-  mindmapSide?: 'left' | 'right';
-  mindmapBranchStyle?: 'curved' | 'straight';
-  mindmapCollapsed?: boolean;
 }
 
 export interface ArchitectureNodeData {
@@ -165,28 +112,6 @@ export interface ArchitectureNodeData {
   assetPresentation?: 'icon';
   assetProvider?: string;
   assetCategory?: string;
-}
-
-export interface SequenceNodeData {
-  seqParticipantKind?: 'participant' | 'actor';
-  seqParticipantAlias?: string;
-  seqMessageKind?: 'sync' | 'async' | 'return' | 'self' | 'create' | 'destroy';
-  seqMessageFrom?: string;
-  seqMessageTo?: string;
-  seqMessageOrder?: number;
-  seqActivations?: Array<{
-    order: number;
-    activate: boolean;
-  }>;
-  seqNoteTarget?: string;
-  seqNotePosition?: 'over' | 'left' | 'right';
-  seqFragment?: {
-    type: 'alt' | 'loop' | 'opt' | 'par' | 'break' | 'critical';
-    condition: string;
-    branchKind?: 'start' | 'else' | 'and' | 'option';
-    edgeIds: string[];
-  } | null;
-  seqFragmentId?: string;
 }
 
 export interface SectionNodeData {
@@ -214,12 +139,7 @@ export interface NodeData
     NodeIconData,
     NodeVisualStyleData,
     NodeCanvasMetadata,
-    ClassNodeData,
-    EntityNodeData,
-    JourneyNodeData,
-    MindmapNodeData,
     ArchitectureNodeData,
-    SequenceNodeData,
     SectionNodeData,
     MermaidSvgNodeData {
   [key: string]: unknown;
@@ -267,10 +187,6 @@ export interface EdgeData {
   archDirection?: '-->' | '<--' | '<-->';
   archSourceSide?: 'L' | 'R' | 'T' | 'B';
   archTargetSide?: 'L' | 'R' | 'T' | 'B';
-  classRelation?: ClassRelationToken;
-  classRelationLabel?: string;
-  erRelation?: ERRelationToken;
-  erRelationLabel?: string;
   elkPoints?: {
     x: number;
     y: number;
@@ -280,15 +196,7 @@ export interface EdgeData {
     y: number;
   }[];
   importRoutePath?: string;
-  mindmapBranchKind?: 'root' | 'branch';
-  seqMessageKind?: 'sync' | 'async' | 'return' | 'self' | 'create' | 'destroy';
   connectionType?: 'fixed' | 'dynamic';
-  seqFragment?: {
-    type: 'alt' | 'loop' | 'opt' | 'par' | 'break' | 'critical';
-    condition: string;
-    branchKind?: 'start' | 'else' | 'and' | 'option';
-    edgeIds: string[];
-  } | null;
   waypoint?: {
     x: number;
     y: number;

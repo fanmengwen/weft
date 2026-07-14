@@ -24,7 +24,6 @@ function MermaidSvgNode({ id, data, selected }: LegacyNodeProps<NodeData>): Reac
       keepAspectRatio
       showQuickCreateButtons={false}
       handles={[]}
-      handleClassName=""
     >
       <div
         className="flex h-full w-full items-center justify-center overflow-hidden rounded-xl border border-[var(--color-brand-border)] bg-white shadow-[0_10px_30px_rgba(15,23,42,0.08)]"

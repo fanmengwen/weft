@@ -33,15 +33,6 @@ export interface CommandBarPanelBuilderParams {
   commandBarView: CommandBarView;
   handleAddAnnotation: () => void;
   handleAddSection: () => void;
-  handleAddTextNode: () => void;
-  handleAddJourneyNode: () => void;
-  handleAddMindmapNode: () => void;
-  handleAddArchitectureNode: () => void;
-  handleAddSequenceParticipant: () => void;
-  handleAddClassNode: () => void;
-  handleAddEntityNode: () => void;
-  handleAddImage: (imageUrl: string) => void;
-  handleAddWireframe: (surface: 'browser' | 'mobile') => void;
   handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
   handleCodeAnalysis?: (code: string, language: SupportedLanguage) => Promise<boolean>;
   handleSqlAnalysis?: (sql: string) => Promise<boolean>;
@@ -78,7 +69,6 @@ export interface PropertiesRailBuilderParams {
   selectedEdge: FlowEdge | null;
   updateNodeData: (id: string, data: Record<string, unknown>) => void;
   applyBulkNodeData: FlowEditorPanelsProps['properties']['onBulkChangeNodes'];
-  updateNodeType: (id: string, type: string) => void;
   updateEdge: (id: string, data: Record<string, unknown>) => void;
   deleteNode: (id: string) => void;
   duplicateNode: (id: string) => void;
@@ -87,14 +77,10 @@ export interface PropertiesRailBuilderParams {
   fitSectionToContents: (id: string) => void;
   releaseFromSection: (id: string) => void;
   handleBringContentsIntoSection: (id: string) => void;
-  handleAddMindmapChild: FlowEditorPanelsProps['properties']['onAddMindmapChild'];
-  handleAddMindmapSibling: FlowEditorPanelsProps['properties']['onAddMindmapSibling'];
   handleAddArchitectureService: FlowEditorPanelsProps['properties']['onAddArchitectureService'];
   handleCreateArchitectureBoundary: FlowEditorPanelsProps['properties']['onCreateArchitectureBoundary'];
   handleApplyArchitectureTemplate: FlowEditorPanelsProps['properties']['onApplyArchitectureTemplate'];
-  handleGenerateEntityFields: FlowEditorPanelsProps['properties']['onGenerateEntityFields'];
   handleSuggestArchitectureNode: FlowEditorPanelsProps['properties']['onSuggestArchitectureNode'];
-  handleConvertEntitySelectionToClassDiagram: FlowEditorPanelsProps['properties']['onConvertEntitySelectionToClassDiagram'];
   clearSelection: () => void;
 }
 
@@ -163,15 +149,6 @@ export function buildCommandBarPanelProps({
   commandBarView,
   handleAddAnnotation,
   handleAddSection,
-  handleAddTextNode,
-  handleAddJourneyNode,
-  handleAddMindmapNode,
-  handleAddArchitectureNode,
-  handleAddSequenceParticipant,
-  handleAddClassNode,
-  handleAddEntityNode,
-  handleAddImage,
-  handleAddWireframe,
   handleAddDomainLibraryItem,
   handleCodeAnalysis,
   handleSqlAnalysis,
@@ -199,16 +176,6 @@ export function buildCommandBarPanelProps({
     initialView: commandBarView,
     onAddAnnotation: handleAddAnnotation,
     onAddSection: handleAddSection,
-    onAddText: handleAddTextNode,
-    onAddJourney: handleAddJourneyNode,
-    onAddMindmap: handleAddMindmapNode,
-    onAddArchitecture: handleAddArchitectureNode,
-    onAddSequence: handleAddSequenceParticipant,
-    onAddClassNode: handleAddClassNode,
-    onAddEntityNode: handleAddEntityNode,
-    onAddImage: handleAddImage,
-    onAddBrowserWireframe: () => handleAddWireframe('browser'),
-    onAddMobileWireframe: () => handleAddWireframe('mobile'),
     onAddDomainLibraryItem: handleAddDomainLibraryItem,
     onCodeAnalysis: wrapAsyncCommand(handleCodeAnalysis),
     onSqlAnalysis: wrapAsyncCommand(handleSqlAnalysis),
@@ -261,7 +228,6 @@ export function buildPropertiesRailProps({
   selectedEdge,
   updateNodeData,
   applyBulkNodeData,
-  updateNodeType,
   updateEdge,
   deleteNode,
   duplicateNode,
@@ -270,14 +236,10 @@ export function buildPropertiesRailProps({
   fitSectionToContents,
   releaseFromSection,
   handleBringContentsIntoSection,
-  handleAddMindmapChild,
-  handleAddMindmapSibling,
   handleAddArchitectureService,
   handleCreateArchitectureBoundary,
   handleApplyArchitectureTemplate,
-  handleGenerateEntityFields,
   handleSuggestArchitectureNode,
-  handleConvertEntitySelectionToClassDiagram,
   clearSelection,
 }: PropertiesRailBuilderParams): FlowEditorPanelsProps['properties'] {
   return {
@@ -286,7 +248,6 @@ export function buildPropertiesRailProps({
     selectedEdge,
     onChangeNode: updateNodeData,
     onBulkChangeNodes: applyBulkNodeData,
-    onChangeNodeType: updateNodeType,
     onChangeEdge: updateEdge,
     onDeleteNode: deleteNode,
     onDuplicateNode: duplicateNode,
@@ -295,14 +256,10 @@ export function buildPropertiesRailProps({
     onFitSectionToContents: fitSectionToContents,
     onReleaseFromSection: releaseFromSection,
     onBringContentsIntoSection: handleBringContentsIntoSection,
-    onAddMindmapChild: handleAddMindmapChild,
-    onAddMindmapSibling: handleAddMindmapSibling,
     onAddArchitectureService: handleAddArchitectureService,
     onCreateArchitectureBoundary: handleCreateArchitectureBoundary,
     onApplyArchitectureTemplate: handleApplyArchitectureTemplate,
-    onGenerateEntityFields: handleGenerateEntityFields,
     onSuggestArchitectureNode: handleSuggestArchitectureNode,
-    onConvertEntitySelectionToClassDiagram: handleConvertEntitySelectionToClassDiagram,
     onClose: clearSelection,
   };
 }

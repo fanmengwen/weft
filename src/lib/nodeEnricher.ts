@@ -86,7 +86,7 @@ export function enrichNodesWithIcons(
 }
 
 function enrichSingleNode(node: FlowNode, options: EnrichNodesWithIconsOptions): FlowNode {
-  if (node.type === 'section' || node.type === 'group' || node.type === 'swimlane') {
+  if (node.type === 'section' || node.type === 'group') {
     return node;
   }
 

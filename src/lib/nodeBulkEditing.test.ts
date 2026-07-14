@@ -25,26 +25,19 @@ function createNode(
 describe('nodeBulkEditing', () => {
   it('assigns capabilities by effective property surface instead of every node sharing the same set', () => {
     expect(getNodeBulkEditCapabilities(createNode(NodeType.CUSTOM)).has('shape')).toBe(true);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.TEXT)).has('shape')).toBe(false);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.BROWSER)).has('variant')).toBe(true);
+    expect(getNodeBulkEditCapabilities(createNode(NodeType.ANNOTATION)).has('shape')).toBe(false);
     expect(getNodeBulkEditCapabilities(createNode(NodeType.ARCHITECTURE)).has('architecture')).toBe(
-      true
-    );
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.JOURNEY)).has('journey')).toBe(true);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.CLASS)).has('class')).toBe(true);
-    expect(getNodeBulkEditCapabilities(createNode(NodeType.SEQUENCE_PARTICIPANT)).has('sequence')).toBe(
       true
     );
   });
 
   it('filters unsupported updates per node during bulk apply', () => {
-    const textNode = createNode(NodeType.TEXT);
-    const browserNode = createNode(NodeType.BROWSER);
+    const annotationNode = createNode(NodeType.ANNOTATION);
     const architectureNode = createNode(NodeType.ARCHITECTURE);
     const genericNode = createNode(NodeType.CUSTOM);
 
     expect(
-      filterBulkUpdatesForNode(textNode, {
+      filterBulkUpdatesForNode(annotationNode, {
         shape: 'diamond',
         color: 'blue',
         colorMode: 'filled',
@@ -52,47 +45,11 @@ describe('nodeBulkEditing', () => {
     ).toEqual({ color: 'blue' });
 
     expect(
-      filterBulkUpdatesForNode(browserNode, {
-        variant: 'dashboard',
-        color: 'blue',
-      })
-    ).toEqual({ variant: 'dashboard' });
-
-    expect(
       filterBulkUpdatesForNode(architectureNode, {
         archEnvironment: 'production',
         shape: 'rounded',
       })
     ).toEqual({ archEnvironment: 'production' });
-
-    expect(
-      filterBulkUpdatesForNode(createNode(NodeType.JOURNEY), {
-        journeySection: 'Onboarding',
-        journeyScore: 4,
-        shape: 'rounded',
-      })
-    ).toEqual({
-      journeySection: 'Onboarding',
-      journeyScore: 4,
-    });
-
-    expect(
-      filterBulkUpdatesForNode(createNode(NodeType.CLASS), {
-        classStereotype: 'service',
-        color: 'blue',
-      })
-    ).toEqual({
-      classStereotype: 'service',
-    });
-
-    expect(
-      filterBulkUpdatesForNode(createNode(NodeType.SEQUENCE_PARTICIPANT), {
-        seqParticipantAlias: 'API',
-        icon: 'Server',
-      })
-    ).toEqual({
-      seqParticipantAlias: 'API',
-    });
 
     expect(
       filterBulkUpdatesForNode(genericNode, {
@@ -112,8 +69,7 @@ describe('nodeBulkEditing', () => {
   it('counts affected nodes from scoped updates and shared label transforms', () => {
     const selectedNodes = [
       createNode(NodeType.CUSTOM),
-      createNode(NodeType.TEXT),
-      createNode(NodeType.BROWSER),
+      createNode(NodeType.ANNOTATION),
       createNode(NodeType.ARCHITECTURE),
     ];
 
@@ -127,10 +83,10 @@ describe('nodeBulkEditing', () => {
       getBulkAffectedNodeCount(
         selectedNodes,
         {
-          variant: 'dashboard',
+          archEnvironment: 'production',
         },
         { labelPrefix: 'New ' }
       )
-    ).toBe(4);
+    ).toBe(3);
   });
 });

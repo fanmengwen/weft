@@ -15,13 +15,13 @@ interface ShortcutHandlers {
   onRedoUnavailable?: () => void;
   duplicateNode: (id: string) => void;
   selectAll: () => void;
-  onAddMindmapChildShortcut?: () => void;
-  onAddMindmapSiblingShortcut?: () => void;
   onCommandBar: () => void;
   onSearch: () => void;
   onShortcutsHelp: () => void;
   onSelectMode?: () => void;
   onPanMode?: () => void;
+  onToggleElementPalette?: () => void;
+  onAutoLayout?: () => void;
   onFitView?: () => void;
   onZoomIn?: () => void;
   onZoomOut?: () => void;
@@ -50,13 +50,13 @@ export function useKeyboardShortcuts({
   onRedoUnavailable,
   duplicateNode,
   selectAll,
-  onAddMindmapChildShortcut,
-  onAddMindmapSiblingShortcut,
   onCommandBar,
   onSearch,
   onShortcutsHelp,
   onSelectMode,
   onPanMode,
+  onToggleElementPalette,
+  onAutoLayout,
   onFitView,
   onZoomIn,
   onZoomOut,
@@ -129,6 +129,10 @@ export function useKeyboardShortcuts({
           e.preventDefault();
           onPanMode?.();
         }
+        if (key === 'n' && onToggleElementPalette) {
+          e.preventDefault();
+          onToggleElementPalette();
+        }
         // Pin/unpin selected node positions so they survive auto-layout.
         if (key === 'p' && onTogglePinPositionShortcut) {
           e.preventDefault();
@@ -139,6 +143,12 @@ export function useKeyboardShortcuts({
       if (!isCmdOrCtrl && isShift && !isEditable && e.code === 'Digit1') {
         e.preventDefault();
         onFitView?.();
+        return;
+      }
+
+      if (!isCmdOrCtrl && isShift && !isEditable && key === 'l') {
+        e.preventDefault();
+        onAutoLayout?.();
         return;
       }
 
@@ -201,15 +211,6 @@ export function useKeyboardShortcuts({
         if (selectedNodeId) duplicateNode(selectedNodeId);
       }
 
-      // Mindmap quick-add child (Tab)
-      if (!isCmdOrCtrl && !isEditable && e.key === 'Tab') {
-        if (selectedNodeId && selectedNodeType === 'mindmap' && onAddMindmapChildShortcut) {
-          e.preventDefault();
-          onAddMindmapChildShortcut();
-          return;
-        }
-      }
-
       if (!isCmdOrCtrl && e.altKey && !isEditable) {
         if (e.key === 'ArrowUp') {
           e.preventDefault();
@@ -239,16 +240,6 @@ export function useKeyboardShortcuts({
         if (shortcutIndex >= 0 && shortcutIndex < annotationColors.length) {
           e.preventDefault();
           onAnnotationColorShortcut?.(annotationColors[shortcutIndex]);
-          return;
-        }
-      }
-
-      // Mindmap quick-add sibling (Enter)
-      if (!isCmdOrCtrl && !isShift && e.key === 'Enter') {
-        if (isEditable) return;
-        if (selectedNodeId && selectedNodeType === 'mindmap' && onAddMindmapSiblingShortcut) {
-          e.preventDefault();
-          onAddMindmapSiblingShortcut();
           return;
         }
       }
@@ -322,5 +313,5 @@ export function useKeyboardShortcuts({
     return () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [selectedNodeId, selectedEdgeId, selectedNodeType, deleteNode, deleteEdge, undo, redo, canUndo, canRedo, onUndoUnavailable, onRedoUnavailable, duplicateNode, selectAll, onAddMindmapChildShortcut, onAddMindmapSiblingShortcut, onCommandBar, onSearch, onShortcutsHelp, onSelectMode, onPanMode, onFitView, onZoomIn, onZoomOut, onCopy, onPaste, onCopyStyle, onPasteStyle, onQuickCreateShortcut, onAnnotationColorShortcut, onClearSelection, onNudge, onTogglePinPositionShortcut]);
+  }, [selectedNodeId, selectedEdgeId, selectedNodeType, deleteNode, deleteEdge, undo, redo, canUndo, canRedo, onUndoUnavailable, onRedoUnavailable, duplicateNode, selectAll, onCommandBar, onSearch, onShortcutsHelp, onSelectMode, onPanMode, onToggleElementPalette, onAutoLayout, onFitView, onZoomIn, onZoomOut, onCopy, onPaste, onCopyStyle, onPasteStyle, onQuickCreateShortcut, onAnnotationColorShortcut, onClearSelection, onNudge, onTogglePinPositionShortcut]);
 }

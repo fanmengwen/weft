@@ -9,7 +9,6 @@ import {
   type CinematicThemeMode,
 } from '@/services/export/cinematicExport';
 import { Tooltip } from './Tooltip';
-import { Button } from './ui/Button';
 import { useExportMenu } from './useExportMenu';
 
 const LazyExportMenuPanel = lazy(async () => {
@@ -107,16 +106,16 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
   return (
     <div className="relative" ref={menuRef}>
       <Tooltip text={t('export.exportDiagram', 'Export Diagram')} side="bottom">
-        <Button
+        <button
+          type="button"
           onClick={toggleMenu}
           data-testid="topnav-export"
-          size="sm"
           aria-label={exportLabel}
-          className="h-10 w-10 px-0 sm:h-9 sm:w-auto sm:px-3"
+          className="inline-flex h-8 items-center gap-1.5 rounded-[8px] bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold text-white transition-[filter] hover:brightness-[0.94]"
         >
-          <Download className="h-4 w-4 sm:mr-2" />
+          <Download className="h-4 w-4" />
           <span className="hidden sm:inline">{exportLabel}</span>
-        </Button>
+        </button>
       </Tooltip>
 
       {isOpen && (

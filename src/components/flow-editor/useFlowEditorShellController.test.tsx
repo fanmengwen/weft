@@ -38,7 +38,7 @@ describe('useFlowEditorShellController', () => {
             },
             navigate,
             fileInputRef,
-            pages: [{ id: 'tab-1', diagramType: 'mindmap' }],
+            pages: [{ id: 'tab-1', diagramType: 'flowchart' }],
             activePageId: 'tab-1',
             snapshots: [],
             nodes: [createNode('node-1')],
@@ -71,7 +71,7 @@ describe('useFlowEditorShellController', () => {
             },
             navigate: vi.fn(),
             fileInputRef: { current: null },
-            pages: [{ id: 'tab-1', diagramType: 'mindmap' }],
+            pages: [{ id: 'tab-1', diagramType: 'flowchart' }],
             activePageId: 'tab-1',
             snapshots: [],
             nodes: [createNode('node-1', true), createNode('node-2')],
@@ -95,6 +95,6 @@ describe('useFlowEditorShellController', () => {
             result.current.handleLayoutWithContext();
         });
 
-        expect(onLayout).toHaveBeenCalledWith('TB', 'layered', 'normal', 'mindmap');
+        expect(onLayout).toHaveBeenCalledWith('TB', 'layered', 'normal', 'flowchart');
     });
 });

@@ -5,7 +5,7 @@ import type { NodeData } from '@/lib/types';
 import { createConnectedSibling } from './node-operations/createConnectedSibling';
 import { useNodeLabelEditRequest } from './nodeLabelEditRequest';
 
-type EditableField = 'label' | 'subLabel' | 'classStereotype';
+type EditableField = 'label' | 'subLabel';
 type BeginEditOptions = {
   seedText?: string;
   replaceExisting?: boolean;

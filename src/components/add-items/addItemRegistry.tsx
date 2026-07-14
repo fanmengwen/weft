@@ -1,40 +1,34 @@
 import React from 'react';
 import {
-  AppWindow,
-  Boxes,
-  Component,
-  GitBranch,
-  Image as ImageIcon,
-  LayoutList,
-  Smartphone,
-  StickyNote,
-  Table2,
-  Type,
+  CheckCircle,
+  Database,
+  Download,
+  HelpCircle,
+  Pencil,
+  Play,
+  Square,
 } from 'lucide-react';
 import type { TFunction } from 'i18next';
-import type { NodeData } from '@/lib/types';
+import type { FlowNode, NodeData } from '@/lib/types';
 
 export type AddItemId =
-  | 'rectangle'
-  | 'rounded'
-  | 'capsule'
-  | 'diamond'
-  | 'hexagon'
-  | 'cylinder'
-  | 'circle'
-  | 'sticky-note'
-  | 'text'
-  | 'journey'
-  | 'mindmap'
-  | 'architecture'
-  | 'image'
-  | 'class'
-  | 'entity'
-  | 'browser'
-  | 'mobile';
+  | 'start'
+  | 'end'
+  | 'process'
+  | 'decision'
+  | 'io'
+  | 'database'
+  | 'annotation';
 
-export type AddItemSectionId = 'shapes' | 'diagrams' | 'wireframes' | 'other';
+export type AddItemSectionId = 'shapes' | 'diagrams' | 'other';
 export type AddItemScope = 'toolbar' | 'assets';
+
+export interface AddShapeSpec {
+  type: FlowNode['type'];
+  shape?: NodeData['shape'];
+}
+
+export type AddShapeInput = AddShapeSpec;
 
 export interface AddItemDefinition {
   id: AddItemId;
@@ -45,66 +39,7 @@ export interface AddItemDefinition {
   renderIcon: (className?: string) => React.ReactElement;
 }
 
-interface ShapeGlyphProps {
-  shape: Extract<NodeData['shape'], 'rectangle' | 'rounded' | 'capsule' | 'diamond' | 'hexagon' | 'cylinder' | 'circle'>;
-  className?: string;
-}
-
-const DEFAULT_TOOLBAR_ADD_ITEM_ID: AddItemId = 'rounded';
-
-function ShapeGlyph({ shape, className }: ShapeGlyphProps): React.ReactElement {
-  const resolvedClassName = className ?? 'h-5 w-5';
-  const commonShapeProps = {
-    fill: 'none',
-    stroke: 'currentColor',
-    strokeWidth: 1.75,
-    vectorEffect: 'non-scaling-stroke' as const,
-  };
-
-  function renderShape(): React.ReactNode {
-    switch (shape) {
-      case 'rectangle':
-        return <rect x="12" y="26" width="76" height="48" rx="6" {...commonShapeProps} />;
-      case 'rounded':
-        return <rect x="18" y="18" width="64" height="64" rx="14" {...commonShapeProps} />;
-      case 'capsule':
-        return <rect x="10" y="24" width="80" height="52" rx="26" {...commonShapeProps} />;
-      case 'diamond':
-        return <polygon points="50,12 80,50 50,88 20,50" {...commonShapeProps} />;
-      case 'hexagon':
-        return <polygon points="30,14 70,14 84,50 70,86 30,86 16,50" {...commonShapeProps} />;
-      case 'cylinder':
-        return (
-          <>
-            <ellipse cx="50" cy="24" rx="22" ry="8" {...commonShapeProps} />
-            <path
-              d="M28 24 V72 C28 76 38 80 50 80 C62 80 72 76 72 72 V24"
-              {...commonShapeProps}
-            />
-            <path
-              d="M28 72 C28 76 38 80 50 80 C62 80 72 76 72 72"
-              {...commonShapeProps}
-            />
-          </>
-        );
-      case 'circle':
-        return <circle cx="50" cy="50" r="34" {...commonShapeProps} />;
-      default:
-        return null;
-    }
-  }
-
-  return (
-    <svg
-      aria-hidden="true"
-      className={resolvedClassName}
-      viewBox="0 0 100 100"
-      fill="none"
-    >
-      {renderShape()}
-    </svg>
-  );
-}
+const DEFAULT_TOOLBAR_ADD_ITEM_ID: AddItemId = 'process';
 
 function makeLucideIcon(Icon: React.ComponentType<{ className?: string }>): (className?: string) => React.ReactElement {
   return function renderLucideIcon(className?: string): React.ReactElement {
@@ -112,19 +47,10 @@ function makeLucideIcon(Icon: React.ComponentType<{ className?: string }>): (cla
   };
 }
 
-function makeShapeIcon(
-  shape: ShapeGlyphProps['shape'],
-): (className?: string) => React.ReactElement {
-  return function renderShapeIcon(className?: string): React.ReactElement {
-    return <ShapeGlyph shape={shape} className={className} />;
-  };
-}
-
 export function getAddItemSections(t: TFunction): Array<{ id: AddItemSectionId; title: string }> {
   return [
     { id: 'shapes', title: t('toolbar.shapes', 'Shapes') },
     { id: 'diagrams', title: t('toolbar.diagrams', 'Diagrams') },
-    { id: 'wireframes', title: t('toolbar.wireframes', 'Wireframes') },
     { id: 'other', title: t('toolbar.other', 'Other') },
   ];
 }
@@ -132,140 +58,60 @@ export function getAddItemSections(t: TFunction): Array<{ id: AddItemSectionId; 
 export function getAddItemDefinitions(t: TFunction): AddItemDefinition[] {
   return [
     {
-      id: 'rectangle',
-      label: 'Rectangle',
+      id: 'start',
+      label: t('toolbar.start', 'Start'),
       section: 'shapes',
-      keywords: ['rectangle', 'shape', 'box'],
+      keywords: ['start', 'begin', 'terminal', 'stadium'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('rectangle'),
+      renderIcon: makeLucideIcon(Play),
     },
     {
-      id: 'rounded',
-      label: 'Rounded',
+      id: 'end',
+      label: t('toolbar.end', 'End'),
       section: 'shapes',
-      keywords: ['rounded', 'shape', 'box', 'square'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeShapeIcon('rounded'),
-    },
-    {
-      id: 'capsule',
-      label: 'Capsule',
-      section: 'shapes',
-      keywords: ['capsule', 'pill', 'shape'],
+      keywords: ['end', 'finish', 'terminal', 'stadium'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('capsule'),
+      renderIcon: makeLucideIcon(CheckCircle),
     },
     {
-      id: 'diamond',
-      label: 'Diamond',
+      id: 'process',
+      label: t('toolbar.process', 'Process'),
       section: 'shapes',
-      keywords: ['diamond', 'decision', 'shape'],
-      scope: ['toolbar'],
-      renderIcon: makeShapeIcon('diamond'),
+      keywords: ['process', 'action', 'step', 'block'],
+      scope: ['toolbar', 'assets'],
+      renderIcon: makeLucideIcon(Square),
     },
     {
-      id: 'hexagon',
-      label: 'Hexagon',
+      id: 'decision',
+      label: t('toolbar.decision', 'Decision'),
       section: 'shapes',
-      keywords: ['hexagon', 'shape'],
+      keywords: ['decision', 'branch', 'diamond', 'condition'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('hexagon'),
+      renderIcon: makeLucideIcon(HelpCircle),
     },
     {
-      id: 'cylinder',
-      label: 'Database',
+      id: 'io',
+      label: t('nodes.inputOutput', 'Input / Output'),
       section: 'shapes',
-      keywords: ['database', 'cylinder', 'storage', 'shape'],
+      keywords: ['input', 'output', 'io', 'parallelogram'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('cylinder'),
+      renderIcon: makeLucideIcon(Download),
     },
     {
-      id: 'circle',
-      label: 'Circle',
+      id: 'database',
+      label: t('nodes.database', 'Database'),
       section: 'shapes',
-      keywords: ['circle', 'shape'],
+      keywords: ['database', 'storage', 'cylinder', 'data'],
       scope: ['toolbar'],
-      renderIcon: makeShapeIcon('circle'),
+      renderIcon: makeLucideIcon(Database),
     },
     {
-      id: 'class',
-      label: 'Class',
-      section: 'diagrams',
-      keywords: ['class', 'uml', 'object', 'oop'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(LayoutList),
-    },
-    {
-      id: 'entity',
-      label: 'Entity',
-      section: 'diagrams',
-      keywords: ['entity', 'er', 'erd', 'table', 'database', 'schema'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Table2),
-    },
-    {
-      id: 'mindmap',
-      label: 'Mindmap',
-      section: 'diagrams',
-      keywords: ['mindmap', 'topic', 'brainstorm'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Component),
-    },
-    {
-      id: 'journey',
-      label: 'Journey',
-      section: 'diagrams',
-      keywords: ['journey', 'user flow', 'experience'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(GitBranch),
-    },
-    {
-      id: 'architecture',
-      label: 'Architecture',
-      section: 'diagrams',
-      keywords: ['architecture', 'service', 'system', 'cloud', 'c4'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Boxes),
-    },
-    {
-      id: 'browser',
-      label: 'Browser',
-      section: 'wireframes',
-      keywords: ['browser', 'desktop', 'wireframe', 'web'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(AppWindow),
-    },
-    {
-      id: 'mobile',
-      label: 'Mobile',
-      section: 'wireframes',
-      keywords: ['mobile', 'device', 'wireframe', 'app'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Smartphone),
-    },
-    {
-      id: 'sticky-note',
-      label: t('toolbar.stickyNote', 'Note'),
+      id: 'annotation',
+      label: t('toolbar.annotation', 'Note'),
       section: 'other',
-      keywords: ['sticky note', 'note', 'comment', 'annotation'],
+      keywords: ['annotation', 'note', 'comment', 'sticky'],
       scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(StickyNote),
-    },
-    {
-      id: 'text',
-      label: t('toolbar.text', 'Text'),
-      section: 'other',
-      keywords: ['text', 'label', 'heading'],
-      scope: ['toolbar', 'assets'],
-      renderIcon: makeLucideIcon(Type),
-    },
-    {
-      id: 'image',
-      label: t('toolbar.image', 'Image'),
-      section: 'other',
-      keywords: ['image', 'media', 'upload', 'screenshot'],
-      scope: ['assets'],
-      renderIcon: makeLucideIcon(ImageIcon),
+      renderIcon: makeLucideIcon(Pencil),
     },
   ];
 }
@@ -285,18 +131,9 @@ export function getAddItemDefinitionById(id: AddItemId, t: TFunction): AddItemDe
 }
 
 export interface AddItemActions {
-  onAddShape: (shape: NodeData['shape'], position?: { x: number; y: number }) => void;
+  onAddShape: (input: AddShapeInput, position?: { x: number; y: number }) => void;
   onAddAnnotation: (position?: { x: number; y: number }) => void;
   onAddSection: (position?: { x: number; y: number }) => void;
-  onAddTextNode: (position?: { x: number; y: number }) => void;
-  onAddClassNode: (position?: { x: number; y: number }) => void;
-  onAddEntityNode: (position?: { x: number; y: number }) => void;
-  onAddMindmapNode: (position?: { x: number; y: number }) => void;
-  onAddJourneyNode: (position?: { x: number; y: number }) => void;
-  onAddArchitectureNode: (position?: { x: number; y: number }) => void;
-  onAddSequenceParticipant: (position?: { x: number; y: number }) => void;
-  onAddWireframe: (variant: 'browser' | 'mobile', position?: { x: number; y: number }) => void;
-  onRequestImageUpload?: () => void;
 }
 
 export function executeAddItem(
@@ -305,44 +142,26 @@ export function executeAddItem(
   position?: { x: number; y: number },
 ): void {
   switch (id) {
-    case 'rectangle':
-    case 'rounded':
-    case 'capsule':
-    case 'diamond':
-    case 'hexagon':
-    case 'cylinder':
-    case 'circle':
-      actions.onAddShape(id, position);
+    case 'start':
+      actions.onAddShape({ type: 'start', shape: 'capsule' }, position);
       return;
-    case 'sticky-note':
+    case 'end':
+      actions.onAddShape({ type: 'end', shape: 'capsule' }, position);
+      return;
+    case 'process':
+      actions.onAddShape({ type: 'process', shape: 'rounded' }, position);
+      return;
+    case 'decision':
+      actions.onAddShape({ type: 'decision', shape: 'diamond' }, position);
+      return;
+    case 'io':
+      actions.onAddShape({ type: 'custom', shape: 'parallelogram' }, position);
+      return;
+    case 'database':
+      actions.onAddShape({ type: 'custom', shape: 'cylinder' }, position);
+      return;
+    case 'annotation':
       actions.onAddAnnotation(position);
-      return;
-    case 'text':
-      actions.onAddTextNode(position);
-      return;
-    case 'journey':
-      actions.onAddJourneyNode(position);
-      return;
-    case 'mindmap':
-      actions.onAddMindmapNode(position);
-      return;
-    case 'architecture':
-      actions.onAddArchitectureNode(position);
-      return;
-    case 'image':
-      actions.onRequestImageUpload?.();
-      return;
-    case 'class':
-      actions.onAddClassNode(position);
-      return;
-    case 'entity':
-      actions.onAddEntityNode(position);
-      return;
-    case 'browser':
-      actions.onAddWireframe('browser', position);
-      return;
-    case 'mobile':
-      actions.onAddWireframe('mobile', position);
       return;
     default: {
       const exhaustiveCheck: never = id;

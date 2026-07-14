@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { Node } from '@/lib/reactflowCompat';
 import type { NodeData } from '@/lib/types';
@@ -26,6 +26,14 @@ vi.mock('./IconPicker', () => ({
   IconPicker: () => <div>icon-picker</div>,
 }));
 
+vi.mock('./ColorPicker', () => ({
+  ColorPicker: () => <div>color-picker</div>,
+}));
+
+vi.mock('./ToneSwatch', () => ({
+  ToneSwatch: () => <div>tone-swatch</div>,
+}));
+
 function createNode(overrides: Partial<Node<NodeData>> = {}): Node<NodeData> {
   return {
     id: 'node-1',
@@ -41,7 +49,7 @@ function createNode(overrides: Partial<Node<NodeData>> = {}): Node<NodeData> {
 }
 
 describe('NodeProperties', () => {
-  it('keeps content editing controls inside the Content section without native selects', () => {
+  it('keeps per-type content fields inside the content group without native selects', () => {
     const { container } = render(
       <NodeProperties
         selectedNode={createNode()}
@@ -52,23 +60,108 @@ describe('NodeProperties', () => {
     );
 
     expect(container.querySelector('select')).toBeNull();
-    expect(screen.getByRole('button', { name: 'Content' })).toHaveAttribute('aria-expanded', 'true');
-    expect(screen.getByPlaceholderText('Enter primary text...')).toBeTruthy();
-    expect(screen.getByPlaceholderText('Add descriptive text (Markdown supported)...')).toBeTruthy();
-    expect(screen.getByText('Secondary Style')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: 'Text Style' })).toBeNull();
+    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByText('显示名称')).toBeTruthy();
+    expect(screen.getByText('说明')).toBeTruthy();
+    expect(screen.queryByText('Secondary Style')).toBeNull();
+    expect(screen.queryByTitle('Bold (Cmd+B)')).toBeNull();
   });
 
-  it('uses the shared icon picker for icon-backed asset nodes', () => {
+  it('opens the content group by default and keeps the appearance group collapsed', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode()}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('button', { name: '外观' })).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('collapses the content group when the appearance group is opened', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode()}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '外观' }));
+
+    expect(screen.getByRole('button', { name: '内容' })).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.getByRole('button', { name: '外观' })).toHaveAttribute('aria-expanded', 'true');
+  });
+
+  it('calls onDelete when the delete button is clicked', () => {
+    const onDelete = vi.fn();
+    render(
+      <NodeProperties
+        selectedNode={createNode()}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={onDelete}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: '删除节点' }));
+
+    expect(onDelete).toHaveBeenCalledWith('node-1');
+  });
+
+  function openAppearanceGroup(): void {
+    fireEvent.click(screen.getByRole('button', { name: '外观' }));
+  }
+
+  it('renders tone swatch for process nodes without shape selector or image upload', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'process' })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    openAppearanceGroup();
+
+    expect(screen.getByText('tone-swatch')).toBeTruthy();
+    expect(screen.queryByText('color-picker')).toBeNull();
+    expect(screen.getByText('icon-picker')).toBeTruthy();
+  });
+
+  it('hides appearance group and color controls for annotation nodes', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'annotation' })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByRole('button', { name: '外观' })).toBeNull();
+    expect(screen.queryByText('color-picker')).toBeNull();
+    expect(screen.queryByText('tone-swatch')).toBeNull();
+    expect(screen.queryByText('icon-picker')).toBeNull();
+    expect(screen.getByText('文本内容')).toBeTruthy();
+    expect(screen.getByText('便签色')).toBeTruthy();
+  });
+
+  it('renders icon picker for icon-asset nodes without tone swatch', () => {
     render(
       <NodeProperties
         selectedNode={createNode({
           type: 'custom',
           data: {
-            label: 'Lambda',
+            label: 'Athena',
             assetPresentation: 'icon',
-            archIconPackId: 'aws-official-starter-v1',
-            archIconShapeId: 'compute-lambda',
+            archIconPackId: 'aws',
+            archIconShapeId: 'athena',
           },
         })}
         onChange={vi.fn()}
@@ -77,7 +170,69 @@ describe('NodeProperties', () => {
       />
     );
 
-    expect(screen.getByRole('button', { name: 'Icon' })).toHaveAttribute('aria-expanded', 'true');
+    openAppearanceGroup();
+
+    expect(screen.getByText('icon-picker')).toBeTruthy();
+    expect(screen.queryByText('tone-swatch')).toBeNull();
+  });
+
+  it('renders decision branch labels for decision nodes inside the content group', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'decision', data: { label: 'Check', subLabel: 'x > 0' } })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+        onChangeEdge={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText('分支标签')).toBeTruthy();
+    expect(screen.getByText('条件文本')).toBeTruthy();
+  });
+
+  it('does not render decision branch labels for process nodes', () => {
+    render(
+      <NodeProperties
+        selectedNode={createNode({ type: 'process' })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+        onChangeEdge={vi.fn()}
+      />
+    );
+
+    expect(screen.queryByText('分支标签')).toBeNull();
+  });
+
+  it('hides icon picker for io nodes and shows it for database nodes', () => {
+    const { rerender } = render(
+      <NodeProperties
+        selectedNode={createNode({
+          type: 'custom',
+          data: { label: 'IO', shape: 'parallelogram' },
+        })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
+    openAppearanceGroup();
+    expect(screen.queryByText('icon-picker')).toBeNull();
+
+    rerender(
+      <NodeProperties
+        selectedNode={createNode({
+          type: 'custom',
+          data: { label: 'Database', shape: 'cylinder' },
+        })}
+        onChange={vi.fn()}
+        onDuplicate={vi.fn()}
+        onDelete={vi.fn()}
+      />
+    );
+
     expect(screen.getByText('icon-picker')).toBeTruthy();
   });
 });

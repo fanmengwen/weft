@@ -5,7 +5,6 @@ import {
     renderAnnotationsLayer,
     renderSectionsLayer,
     renderStandardNodesLayer,
-    renderTextNodesLayer,
 } from './figma/nodeLayers';
 
 function getCanvasBounds(nodes: FlowNode[]): { minX: number; minY: number; width: number; height: number } {
@@ -47,7 +46,6 @@ export const toFigmaSVG = async (nodes: FlowNode[], edges: FlowEdge[]): Promise<
     renderSectionsLayer(out, nodes, iconMap);
     renderAnnotationsLayer(out, nodes);
     renderStandardNodesLayer(out, nodes, iconMap);
-    renderTextNodesLayer(out, nodes);
 
     out.push('</svg>');
     return out.join('\n');

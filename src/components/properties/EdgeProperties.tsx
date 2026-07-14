@@ -1,20 +1,11 @@
 import React, { useState } from 'react';
 import type { Edge } from '@/lib/reactflowCompat';
-import type { FlowEdge } from '@/lib/types';
 import { useFlowStore } from '@/store';
-import { Activity, GitBranch, MessageSquareText, Network, Palette, Route, Trash2, Waypoints } from 'lucide-react';
-import { Button } from '../ui/Button';
+import { ArrowRight, Network, Trash2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { EdgeConditionSection } from './edge/EdgeConditionSection';
-import { EdgeColorSection } from './edge/EdgeColorSection';
-import { EdgeLabelSection } from './edge/EdgeLabelSection';
-import { EdgeRouteSection } from './edge/EdgeRouteSection';
-import { EdgeStyleSection } from './edge/EdgeStyleSection';
 import { ArchitectureEdgeSemanticsSection } from './edge/ArchitectureEdgeSemanticsSection';
-import { EdgeRelationSection } from './edge/EdgeRelationSection';
-import { SequenceMessageSection } from './edge/SequenceMessageSection';
 import { CollapsibleSection } from '../ui/CollapsibleSection';
-import { InspectorFooter, InspectorSectionDivider } from './InspectorPrimitives';
+import { InspectorSectionDivider } from './InspectorPrimitives';
 
 interface EdgePropertiesProps {
     selectedEdge: Edge;
@@ -32,120 +23,44 @@ export const EdgeProperties: React.FC<EdgePropertiesProps> = ({
     const sourceNode = nodes.find((node) => node.id === selectedEdge.source);
     const targetNode = nodes.find((node) => node.id === selectedEdge.target);
     const isArchitectureEdge = sourceNode?.type === 'architecture' && targetNode?.type === 'architecture';
-    const isEntityRelationEdge = sourceNode?.type === 'er_entity' && targetNode?.type === 'er_entity';
-    const isSequenceEdge = selectedEdge.type === 'sequence_message';
-    const defaultSection = isArchitectureEdge ? 'architecture' : isSequenceEdge ? 'sequence' : 'route';
-    const [panelState, setPanelState] = useState<{ edgeId: string; activeSection: string }>({
-        edgeId: selectedEdge.id,
-        activeSection: defaultSection,
-    });
-    const activeSection = panelState.edgeId === selectedEdge.id
-        ? panelState.activeSection
-        : defaultSection;
-
-    function toggleSection(section: string): void {
-        setPanelState((currentState) => ({
-            edgeId: selectedEdge.id,
-            activeSection: currentState.edgeId === selectedEdge.id && currentState.activeSection === section ? '' : section,
-        }));
-    }
+    const [isArchSectionOpen, setIsArchSectionOpen] = useState(isArchitectureEdge);
+    const sourceName = sourceNode?.data?.label || sourceNode?.id || '—';
+    const targetName = targetNode?.data?.label || targetNode?.id || '—';
 
     return (
         <>
             <InspectorSectionDivider />
 
+            <div className="px-4 pt-2">
+                <div className="text-[12px] font-medium text-[#5C6572] mb-[6px]">连接</div>
+                <div className="flex items-center gap-2 rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] px-3 py-2.5">
+                    <span className="min-w-0 flex-1 truncate text-[13px] text-[#171D26]">{sourceName}</span>
+                    <ArrowRight className="h-3.5 w-3.5 shrink-0 text-[#8B93A0]" />
+                    <span className="min-w-0 flex-1 truncate text-right text-[13px] text-[#171D26]">{targetName}</span>
+                </div>
+            </div>
+
             {isArchitectureEdge && (
                 <CollapsibleSection
                     title={t('connectionPanel.architecture', 'Architecture')}
                     icon={<Network className="w-3.5 h-3.5" />}
-                    isOpen={activeSection === 'architecture'}
-                    onToggle={() => toggleSection('architecture')}
+                    isOpen={isArchSectionOpen}
+                    onToggle={() => setIsArchSectionOpen((open) => !open)}
                 >
                     <ArchitectureEdgeSemanticsSection selectedEdge={selectedEdge} onChange={onChange} />
                 </CollapsibleSection>
             )}
 
-            {isEntityRelationEdge && (
-                <CollapsibleSection
-                    title="Relation"
-                    icon={<GitBranch className="w-3.5 h-3.5" />}
-                    isOpen={activeSection === 'relation'}
-                    onToggle={() => toggleSection('relation')}
-                >
-                    <EdgeRelationSection selectedEdge={selectedEdge as FlowEdge} onChange={onChange} />
-                </CollapsibleSection>
-            )}
-
-            {isSequenceEdge && (
-                <CollapsibleSection
-                    title="Message"
-                    icon={<MessageSquareText className="w-3.5 h-3.5" />}
-                    isOpen={activeSection === 'sequence'}
-                    onToggle={() => toggleSection('sequence')}
-                >
-                    <SequenceMessageSection selectedEdge={selectedEdge as FlowEdge} onChange={onChange} />
-                </CollapsibleSection>
-            )}
-
-            {!isSequenceEdge && (
-                <>
-                    <CollapsibleSection
-                        title={t('connectionPanel.label', 'Label')}
-                        icon={<MessageSquareText className="w-3.5 h-3.5" />}
-                        isOpen={activeSection === 'label'}
-                        onToggle={() => toggleSection('label')}
-                    >
-                        <EdgeLabelSection selectedEdge={selectedEdge} onChange={onChange} />
-                    </CollapsibleSection>
-
-                    <CollapsibleSection
-                        title={t('connectionPanel.route', 'Route')}
-                        icon={<Route className="w-3.5 h-3.5" />}
-                        isOpen={activeSection === 'route'}
-                        onToggle={() => toggleSection('route')}
-                    >
-                        <EdgeRouteSection selectedEdge={selectedEdge} onChange={onChange} />
-                    </CollapsibleSection>
-
-                    <CollapsibleSection
-                        title={t('properties.color', 'Color')}
-                        icon={<Palette className="w-3.5 h-3.5" />}
-                        isOpen={activeSection === 'color'}
-                        onToggle={() => toggleSection('color')}
-                    >
-                        <EdgeColorSection selectedEdge={selectedEdge} onChange={onChange} />
-                    </CollapsibleSection>
-
-                    <CollapsibleSection
-                        title={t('connectionPanel.appearance', 'Appearance')}
-                        icon={<Activity className="w-3.5 h-3.5" />}
-                        isOpen={activeSection === 'appearance'}
-                        onToggle={() => toggleSection('appearance')}
-                    >
-                        <EdgeStyleSection selectedEdge={selectedEdge} onChange={onChange} />
-                    </CollapsibleSection>
-
-                    <CollapsibleSection
-                        title={t('connectionPanel.condition', 'Condition')}
-                        icon={<Waypoints className="w-3.5 h-3.5" />}
-                        isOpen={activeSection === 'condition'}
-                        onToggle={() => toggleSection('condition')}
-                    >
-                        <EdgeConditionSection selectedEdge={selectedEdge} onChange={onChange} />
-                    </CollapsibleSection>
-                </>
-            )}
-
-            <InspectorFooter>
-                <Button
+            <div className="flex items-center px-3 py-2">
+                <button
+                    type="button"
                     onClick={() => onDelete(selectedEdge.id)}
-                    variant="danger"
-                    className="w-full"
-                    icon={<Trash2 className="w-4 h-4" />}
+                    className="inline-flex items-center gap-1.5 rounded-[7px] px-2 py-1.5 text-[12.5px] font-medium text-[#C4443C] hover:bg-[#FBEFEE]"
                 >
-                    {t('connectionPanel.deleteConnection', 'Delete Connection')}
-                </Button>
-            </InspectorFooter>
+                    <Trash2 className="h-3.5 w-3.5" />
+                    删除连线
+                </button>
+            </div>
         </>
     );
 };

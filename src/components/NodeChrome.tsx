@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 import { Handle, Position } from '@/lib/reactflowCompat';
 import {
+  getChartHandleClassName,
   getConnectorHandleStyle,
   getHandlePointerEvents,
   getV2HandleVisibilityClass,
@@ -25,7 +26,6 @@ type NodeChromeProps = {
   minHeight: number;
   keepAspectRatio?: boolean;
   showQuickCreateButtons?: boolean;
-  handleClassName: string;
   handleVisibilityOptions?: {
     includeConnectingState?: boolean;
     includeScale?: boolean;
@@ -85,7 +85,6 @@ export const NodeChrome = memo(function NodeChrome({
   minHeight,
   keepAspectRatio = false,
   showQuickCreateButtons = true,
-  handleClassName,
   handleVisibilityOptions,
   handleStyleExtras,
   handles = DEFAULT_HANDLES,
@@ -139,7 +138,7 @@ export const NodeChrome = memo(function NodeChrome({
           position={position}
           isConnectableStart
           isConnectableEnd
-          className={`${handleClassName} ${handleVisibilityClass}`}
+          className={`${getChartHandleClassName(side)} ${handleVisibilityClass}`.trim()}
           style={getConnectorHandleStyle(
             side,
             isActiveSelected,

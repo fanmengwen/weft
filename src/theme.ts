@@ -21,7 +21,6 @@ export {
   resolveEdgeVisualStyle,
   resolveNodeVisualStyle,
   resolveSharedColorKey,
-  resolveTextVisualStyle,
 } from './theme/resolvers';
 export { SECTION_COLOR_PALETTE, resolveSectionVisualStyle } from './theme/sections';
 export { NODE_DEFAULTS, getDefaultColor } from './theme/nodeDefaults';

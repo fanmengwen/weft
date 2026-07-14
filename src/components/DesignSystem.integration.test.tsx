@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { act, render, screen } from '@testing-library/react';
 import type { CSSProperties } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -97,6 +99,22 @@ function createSystem(overrides: Partial<DesignSystem> = {}): DesignSystem {
     };
 }
 
+function requireNodeContainer(container: HTMLElement): HTMLDivElement {
+    const nodeContainer = container.querySelector('[data-transform-diagnostics="1"]');
+    if (!(nodeContainer instanceof HTMLDivElement)) {
+        throw new Error('Node container not found');
+    }
+    return nodeContainer;
+}
+
+function requireChildElement(container: ParentNode, selector: string, label: string): HTMLElement {
+    const element = container.querySelector(selector);
+    if (!(element instanceof HTMLElement)) {
+        throw new Error(label);
+    }
+    return element;
+}
+
 describe('Design System integration', () => {
     beforeEach(() => {
         const defaultSystem = createSystem({ id: 'default', name: 'Default' });
@@ -140,8 +158,10 @@ describe('Design System integration', () => {
         if (!nodeContainer) {
             throw new Error('Node container not found');
         }
-        expect(nodeContainer.style.fontFamily).toBe('Inter, sans-serif');
-        expect(nodeContainer.style.borderRadius).toBe('8px');
+        expect(nodeContainer.style.fontFamily).toBe(
+            '-apple-system, BlinkMacSystemFont, "SF Pro Text", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif'
+        );
+        expect(nodeContainer.style.borderRadius).toBe('11px');
 
         act(() => {
             useFlowStore.getState().setActiveDesignSystem('alt');
@@ -169,8 +189,8 @@ describe('Design System integration', () => {
         );
 
         const beforeStyle = JSON.parse(screen.getByTestId('custom-edge-base').getAttribute('data-style') || '{}');
-        expect(beforeStyle.stroke).toBe('#94a3b8');
-        expect(beforeStyle.strokeWidth).toBe(2);
+        expect(beforeStyle.stroke).toBe('#c3c9d3');
+        expect(beforeStyle.strokeWidth).toBe(1.6);
 
         act(() => {
             useFlowStore.getState().setActiveDesignSystem('alt');
@@ -250,10 +270,10 @@ describe('Design System integration', () => {
     it('honors imported Mermaid node geometry instead of generic canvas minimums', () => {
         const importedNodeData = attachMermaidImportedNodeMetadata(
             {
-                id: 'decision-1',
-                type: 'decision',
+                id: 'process-1',
+                type: 'process',
                 position: { x: 0, y: 0 },
-                data: { label: 'Approved?' },
+                data: { label: 'Imported step' },
             } as const,
             {
                 role: 'leaf',
@@ -264,8 +284,8 @@ describe('Design System integration', () => {
 
         const { container } = render(
             <CustomNode
-                id="decision-1"
-                type="decision"
+                id="process-1"
+                type="process"
                 selected={false}
                 dragging={false}
                 zIndex={1}
@@ -286,11 +306,148 @@ describe('Design System integration', () => {
         expect(diagnosticsNode?.style.width).toBe('150px');
         expect(diagnosticsNode?.style.height).toBe('70px');
         expect(diagnosticsNode?.getAttribute('data-transform-compact')).toBe('1');
-        const importedLabelStyle = screen.getByText('Approved?').parentElement?.getAttribute('style') ?? '';
+        const importedLabelStyle = screen.getByText('Imported step').parentElement?.getAttribute('style') ?? '';
         expect(importedLabelStyle).toContain('font-family:');
         // Imported nodes now use the design system font for visual consistency
         expect(importedLabelStyle).not.toContain('Trebuchet MS');
-        expect(importedLabelStyle).toContain('line-height: 1.1;');
+        expect(importedLabelStyle).toContain('line-height: 1.2;');
+    });
+
+    it('renders start nodes with stadium surface and out tone chip', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-start"
+                type="start"
+                selected={false}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Begin' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.style.minHeight).toBe('46px');
+        expect(nodeContainer.style.borderRadius).toBe('999px');
+        expect(nodeContainer.className).toContain('chart-node-surface--stadium');
+
+        const toneChip = requireChildElement(container, '[data-chart-node-tone-chip="1"]', 'Tone chip not found');
+        expect(toneChip.style.backgroundColor).toBe('');
+        expect(toneChip.getAttribute('data-tone')).toBe('out');
+        expect(toneChip.style.getPropertyValue('background')).toBe('var(--wf-t-out-bg)');
+    });
+
+    it('renders process nodes with rounded surface, web tone chip, and subLabel typography', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-process"
+                type="process"
+                selected={false}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Pro Tier', subLabel: 'Payment Process' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.style.borderRadius).toBe('11px');
+        expect(nodeContainer.className).toContain('chart-node-surface--rounded');
+
+        const contentRoot = requireChildElement(container, '[data-chart-node-content="1"]', 'Content root not found');
+        expect(contentRoot.style.padding).toBe('12px');
+
+        const toneChip = requireChildElement(container, '[data-chart-node-tone-chip="1"]', 'Tone chip not found');
+        expect(toneChip.getAttribute('data-tone')).toBe('web');
+        expect(toneChip.style.borderRadius).toBe('8px');
+
+        const subLabel = screen.getByText('Payment Process').closest('[data-chart-node-sublabel="1"]');
+        if (!(subLabel instanceof HTMLElement)) {
+            throw new Error('SubLabel wrapper not found');
+        }
+        expect(subLabel.style.fontSize).toBe('11px');
+        expect(subLabel.style.color).toBe('rgb(139, 147, 160)');
+    });
+
+    it('applies selected accent border and ring styles on active selection', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-selected"
+                type="process"
+                selected={true}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Selected node' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.className).toContain('chart-node-surface--selected');
+        expect(nodeContainer.style.borderColor).toBe('var(--wf-acc)');
+        expect(nodeContainer.style.borderWidth).toBe('1.5px');
+        expect(nodeContainer.style.boxShadow).toBe('var(--wf-shadow-node-selected)');
+    });
+
+    it('keeps selected surface styles when hoverable and selected classes coexist', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-selected-hover"
+                type="process"
+                selected={true}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Selected hover node' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.className).toContain('chart-node-surface--hoverable');
+        expect(nodeContainer.className).toContain('chart-node-surface--selected');
+        expect(nodeContainer.style.borderColor).toBe('var(--wf-acc)');
+        expect(nodeContainer.style.borderWidth).toBe('1.5px');
+        expect(nodeContainer.style.boxShadow).toBe('var(--wf-shadow-node-selected)');
+
+        const css = readFileSync(join(process.cwd(), 'src/index.css'), 'utf8');
+        expect(css).toContain('.chart-node-surface--hoverable:not(.chart-node-surface--selected):hover');
+    });
+
+    it('exposes hover surface classes on generic chart nodes', () => {
+        const { container } = render(
+            <CustomNode
+                id="n-hover"
+                type="process"
+                selected={false}
+                dragging={false}
+                zIndex={1}
+                data={{ label: 'Hover me' }}
+                isConnectable={true}
+                xPos={0}
+                yPos={0}
+                sourcePosition={Position.Right}
+                targetPosition={Position.Left}
+            />
+        );
+
+        const nodeContainer = requireNodeContainer(container);
+        expect(nodeContainer.className).toContain('chart-node-surface--hoverable');
     });
 
     it('honors imported Mermaid section geometry instead of generic section minimums', () => {
@@ -338,3 +495,4 @@ describe('Design System integration', () => {
         expect(screen.getByText('Payments').parentElement?.getAttribute('style')).toContain('top: 8px;');
     });
 });
+

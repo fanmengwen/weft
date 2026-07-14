@@ -4,12 +4,6 @@ import type { FlowNode, NodeData } from '@/lib/types';
 import { useFlowStore } from '../store';
 import { useTranslation } from 'react-i18next';
 import { createId } from '../lib/id';
-import { relayoutMindmapComponent, syncMindmapEdges } from '@/lib/mindmapLayout';
-import {
-  applyMindmapVisibility,
-  getMindmapChildrenById,
-  getMindmapDescendantIds,
-} from '@/lib/mindmapTree';
 import {
   autoFitSectionsToChildren,
   bringContentsIntoSection,
@@ -20,40 +14,17 @@ import {
   unparentSectionChildren,
 } from './node-operations/utils';
 import { useNodeOperationAdders } from './node-operations/useNodeOperationAdders';
-import { useMindmapNodeOperations } from './node-operations/useMindmapNodeOperations';
 import { useArchitectureNodeOperations } from './node-operations/useArchitectureNodeOperations';
 import { useNodeDragOperations } from './node-operations/useNodeDragOperations';
-import { syncSequenceEdgeParticipantKinds } from '@/services/sequence/sequenceMessage';
 import { filterBulkUpdatesForNode } from '@/lib/nodeBulkEditing';
 
 export const useNodeOperations = (recordHistory: () => void) => {
   useTranslation();
-  const { nodes, setNodes, setEdges, setSelectedNodeId } = useFlowStore();
+  const { nodes, setNodes, setSelectedNodeId } = useFlowStore();
   useReactFlow();
 
-  const mindmapOps = useMindmapNodeOperations(recordHistory);
   const archOps = useArchitectureNodeOperations(recordHistory);
   const dragOps = useNodeDragOperations(recordHistory);
-
-  const applyMindmapBranchColor = useCallback(
-    (nodesToUpdate: FlowNode[], nodeId: string, color: string) => {
-      const childrenById = getMindmapChildrenById(nodesToUpdate, useFlowStore.getState().edges);
-      const branchIds = new Set<string>([nodeId, ...getMindmapDescendantIds(nodeId, childrenById)]);
-      return nodesToUpdate.map((node) =>
-        branchIds.has(node.id)
-          ? {
-              ...node,
-              data: {
-                ...node.data,
-                color,
-                ...(color === 'custom' ? {} : { customColor: undefined }),
-              },
-            }
-          : node
-      );
-    },
-    []
-  );
 
   // --- Node Data Updates ---
   const updateNodeData = useCallback(
@@ -64,35 +35,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
         return;
       }
 
-      if (existingNode.type === 'mindmap') {
-        let nextNodes = state.nodes.map((node) =>
-          node.id === id ? { ...node, data: { ...node.data, ...data } } : node
-        );
-
-        if (typeof data.color === 'string') {
-          nextNodes = applyMindmapBranchColor(nextNodes, id, data.color);
-        }
-
-        if (
-          typeof data.mindmapBranchStyle === 'string' ||
-          typeof data.mindmapCollapsed === 'boolean' ||
-          typeof data.color === 'string'
-        ) {
-          nextNodes = relayoutMindmapComponent(nextNodes, state.edges, id);
-        }
-
-        const nextEdges = syncMindmapEdges(nextNodes, state.edges);
-        const visibilityState = applyMindmapVisibility(nextNodes, nextEdges);
-        setNodes(() => visibilityState.nodes);
-        setEdges(() => visibilityState.edges);
-        return;
-      }
-
-      const updatesSequenceParticipantKind =
-        existingNode.type === 'sequence_participant' &&
-        typeof data.seqParticipantKind === 'string' &&
-        data.seqParticipantKind !== existingNode.data.seqParticipantKind;
-
       setNodes((nds) => {
         return reassignArchitectureNodeBoundary({
           nodes: nds,
@@ -100,17 +42,8 @@ export const useNodeOperations = (recordHistory: () => void) => {
           data,
         });
       });
-
-      if (updatesSequenceParticipantKind) {
-        setEdges((existingEdges) => {
-          const nextNodes = state.nodes.map((node) =>
-            node.id === id ? { ...node, data: { ...node.data, ...data } } : node
-          );
-          return syncSequenceEdgeParticipantKinds(nextNodes, existingEdges);
-        });
-      }
     },
-    [applyMindmapBranchColor, setEdges, setNodes]
+    [setNodes]
   );
 
   const applyBulkNodeData = useCallback(
@@ -186,14 +119,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
       }).length;
     },
     [recordHistory, setNodes]
-  );
-
-  const updateNodeType = useCallback(
-    (id: string, type: string) => {
-      recordHistory();
-      setNodes((nds) => nds.map((node) => (node.id === id ? { ...node, type } : node)));
-    },
-    [setNodes, recordHistory]
   );
 
   const updateNodeZIndex = useCallback(
@@ -308,16 +233,7 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddShape,
     handleAddNode,
     handleAddAnnotation,
-    handleAddJourneyNode,
-    handleAddMindmapNode,
-    handleAddArchitectureNode,
-    handleAddSequenceParticipant,
-    handleAddClassNode,
-    handleAddEntityNode,
     handleAddSection,
-    handleAddTextNode,
-    handleAddImage,
-    handleAddWireframe,
     handleAddDomainLibraryItem,
   } = useNodeOperationAdders({
     recordHistory,
@@ -329,7 +245,6 @@ export const useNodeOperations = (recordHistory: () => void) => {
   return {
     updateNodeData,
     applyBulkNodeData,
-    updateNodeType,
     updateNodeZIndex,
     deleteNode,
     duplicateNode,
@@ -339,18 +254,8 @@ export const useNodeOperations = (recordHistory: () => void) => {
     handleAddShape,
     handleAddNode,
     handleAddAnnotation,
-    handleAddJourneyNode,
-    handleAddMindmapNode,
-    handleAddArchitectureNode,
-    handleAddSequenceParticipant,
-    handleAddClassNode,
-    handleAddEntityNode,
     handleAddSection,
-    handleAddTextNode,
-    handleAddImage,
-    handleAddWireframe,
     handleAddDomainLibraryItem,
-    ...mindmapOps,
     ...archOps,
     ...dragOps,
   };

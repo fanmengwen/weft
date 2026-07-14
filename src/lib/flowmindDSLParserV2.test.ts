@@ -178,4 +178,61 @@ describe('Weft DSL V2 Parser', () => {
     expect(result.errors).toHaveLength(1);
     expect(result.errors[0]).toContain('Unrecognized syntax');
   });
+
+  it('remaps legacy [browser] nodes to process', () => {
+    const result = parseOpenFlowDslV2('[browser] web: Web App { color: "blue" }');
+
+    expect(result.errors).toHaveLength(0);
+    const web = result.nodes.find((node) => node.id === 'web');
+    expect(web?.type).toBe('process');
+    expect(web?.data.label).toBe('Web App');
+    expect(web?.data.color).toBe('blue');
+  });
+
+  it('remaps legacy [mobile] nodes to process', () => {
+    const result = parseOpenFlowDslV2('[mobile] app: Mobile App');
+
+    expect(result.errors).toHaveLength(0);
+    const app = result.nodes.find((node) => node.id === 'app');
+    expect(app?.type).toBe('process');
+    expect(app?.data.label).toBe('Mobile App');
+  });
+
+  it('maps [io] to custom with parallelogram shape', () => {
+    const result = parseOpenFlowDslV2('[io] x: In');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 'x');
+    expect(node?.type).toBe('custom');
+    expect(node?.data.shape).toBe('parallelogram');
+    expect(node?.data.label).toBe('In');
+  });
+
+  it('maps [database] to custom with cylinder shape', () => {
+    const result = parseOpenFlowDslV2('[database] y: DB');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 'y');
+    expect(node?.type).toBe('custom');
+    expect(node?.data.shape).toBe('cylinder');
+    expect(node?.data.label).toBe('DB');
+  });
+
+  it('maps [operation] to process', () => {
+    const result = parseOpenFlowDslV2('[operation] z: Step');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 'z');
+    expect(node?.type).toBe('process');
+    expect(node?.data.label).toBe('Step');
+  });
+
+  it('maps [system] to custom', () => {
+    const result = parseOpenFlowDslV2('[system] s: Service');
+
+    expect(result.errors).toHaveLength(0);
+    const node = result.nodes.find((n) => n.id === 's');
+    expect(node?.type).toBe('custom');
+    expect(node?.data.label).toBe('Service');
+  });
 });

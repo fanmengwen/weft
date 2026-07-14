@@ -206,8 +206,6 @@
     "fitView": "Ajustar vista",
     "nudgeNode": "Mover nodo",
     "groupSelection": "Agrupar selección",
-    "mindmapAddChild": "Mindmap: Add Child Topic",
-    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "Renombrar selección",
     "quickCreateConnectedNode": "Quick-create Connected Node",
     "annotationColors": "Annotation Colors",
@@ -220,6 +218,8 @@
     "help": "Ayuda",
     "selectTool": "Herramienta de selección",
     "handTool": "Herramienta mano",
+    "elementPalette": "Panel de elementos",
+    "autoLayout": "Diseño automático",
     "getStarted": "Comenzar",
     "bringToFront": "Traer al frente",
     "sendToBack": "Enviar atrás",
@@ -374,6 +374,11 @@
     "deleteNode": "Eliminar nodo",
     "duplicateNode": "Duplicar nodo"
   },
+  "elementPalette": {
+    "assetLibrary": "Biblioteca de recursos",
+    "dragHint": "Haz clic o arrastra para añadir al lienzo",
+    "title": "Elementos"
+  },
   "landing": {
     "nav": {
       "features": "Características",
@@ -516,9 +521,6 @@
     "shape": "Forma",
     "color": "Color",
     "icon": "Ícono",
-    "rotation": "Rotación",
-    "transparency": "Transparencia",
-    "imageSettings": "Configuración de imagen",
     "bulkShape": "Forma (masiva)",
     "bulkColor": "Color (masivo)",
     "bulkIcon": "Ícono (masivo)",
@@ -1525,10 +1527,6 @@
       "enableDescription": "Compartir datos básicos de uso de forma anónima (opcional)"
     }
   },
-  "customNodes": {
-    "browserContent": "Contenido del navegador",
-    "mobileContent": "Contenido móvil"
-  },
   "keyboardShortcutsModal": {
     "title": "Atajos de teclado",
     "subtitle": "Domine su flujo de trabajo con velocidad.",
@@ -1547,11 +1545,13 @@
     "assets": "Recursos",
     "node": "Forma",
     "stickyNote": "Nota adhesiva",
+    "annotation": "Nota",
+    "decision": "Decisión",
+    "end": "Fin",
+    "process": "Proceso",
+    "start": "Inicio",
     "section": "Sección",
-    "text": "Texto",
     "other": "Otros",
-    "wireframes": "Wireframes",
-    "image": "Imagen",
     "autoLayout": "Diseño automático",
     "clearCanvas": "Limpiar lienzo",
     "undo": "Deshacer (Ctrl+Z)",
@@ -1675,10 +1675,7 @@
     "items": "items",
     "addCommentsHere": "Añade aquí tus comentarios.",
     "newSection": "Nueva sección",
-    "section": "Sección",
-    "text": "Text",
-    "image": "Image",
-    "mindmap": "Tema"
+    "section": "Sección"
   },
   "actions": {
     "clearCanvasConfirm": "¿Seguro que quieres limpiar el lienzo?"
@@ -1755,7 +1752,6 @@
   "connectionPanel": {
     "architecture": "Arquitectura",
     "label": "Label",
-    "messagePlaceholder": "Mensaje",
     "route": "Ruta",
     "appearance": "Apariencia",
     "condition": "Condición",
@@ -1770,7 +1766,6 @@
     "label": "Menú contextual del lienzo"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

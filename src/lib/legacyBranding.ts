@@ -9,7 +9,6 @@ export const APP_STORAGE_KEYS = {
 export const APP_EVENT_NAMES = {
   nodeLabelEditRequest: `${LEGACY_FLOWMIND_NAMESPACE}:node-label-edit-request`,
   nodeQuickCreateRequest: `${LEGACY_FLOWMIND_NAMESPACE}:node-quick-create-request`,
-  mindmapTopicActionRequest: `${LEGACY_FLOWMIND_NAMESPACE}:mindmap-topic-action-request`,
 } as const;
 
 export const APP_COLLABORATION_KEYS = {

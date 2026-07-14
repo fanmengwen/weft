@@ -51,14 +51,6 @@ function createAddItemActions() {
     onAddShape: vi.fn(),
     onAddAnnotation: vi.fn(),
     onAddSection: vi.fn(),
-    onAddTextNode: vi.fn(),
-    onAddClassNode: vi.fn(),
-    onAddEntityNode: vi.fn(),
-    onAddMindmapNode: vi.fn(),
-    onAddJourneyNode: vi.fn(),
-    onAddArchitectureNode: vi.fn(),
-    onAddSequenceParticipant: vi.fn(),
-    onAddWireframe: vi.fn(),
   };
 }
 
@@ -67,14 +59,12 @@ describe('useFlowCanvasDragDrop', () => {
     executeAddItem.mockClear();
     const addItemActions = createAddItemActions();
     const screenToFlowPosition = vi.fn(() => ({ x: 40, y: 60 }));
-    const handleAddImage = vi.fn();
-    const dataTransfer = createDataTransfer({ mime: 'rounded' });
+    const dataTransfer = createDataTransfer({ mime: 'process' });
     const event = createDragEvent(dataTransfer);
 
     const { result } = renderHook(() =>
       useFlowCanvasDragDrop({
         screenToFlowPosition,
-        handleAddImage,
         addItemActions,
       })
     );
@@ -83,34 +73,20 @@ describe('useFlowCanvasDragDrop', () => {
       result.current.onDrop(event);
     });
 
-    expect(executeAddItem).toHaveBeenCalledWith('rounded', addItemActions, { x: 40, y: 60 });
-    expect(handleAddImage).not.toHaveBeenCalled();
+    expect(executeAddItem).toHaveBeenCalledWith('process', addItemActions, { x: 40, y: 60 });
   });
 
-  it('still handles image file drops when no palette MIME is present', () => {
+  it('ignores image file drops', () => {
     executeAddItem.mockClear();
     const addItemActions = createAddItemActions();
     const screenToFlowPosition = vi.fn(() => ({ x: 10, y: 20 }));
-    const handleAddImage = vi.fn();
     const file = new File(['image-bytes'], 'photo.png', { type: 'image/png' });
     const dataTransfer = createDataTransfer({ file });
     const event = createDragEvent(dataTransfer);
 
-    vi.spyOn(globalThis, 'FileReader').mockImplementation(function FileReaderMock(this: FileReader) {
-      this.readAsDataURL = vi.fn(function readAsDataURL() {
-        Object.defineProperty(this, 'result', {
-          configurable: true,
-          value: 'data:image/png;base64,abc',
-        });
-        this.onload?.({ target: this } as ProgressEvent<FileReader>);
-      });
-      return this;
-    });
-
     const { result } = renderHook(() =>
       useFlowCanvasDragDrop({
         screenToFlowPosition,
-        handleAddImage,
         addItemActions,
       })
     );
@@ -120,19 +96,16 @@ describe('useFlowCanvasDragDrop', () => {
     });
 
     expect(executeAddItem).not.toHaveBeenCalled();
-    expect(handleAddImage).toHaveBeenCalledWith('data:image/png;base64,abc', { x: 10, y: 20 });
   });
 
   it('ignores drops with no palette MIME and no files', () => {
     executeAddItem.mockClear();
     const addItemActions = createAddItemActions();
-    const handleAddImage = vi.fn();
     const event = createDragEvent(createDataTransfer());
 
     const { result } = renderHook(() =>
       useFlowCanvasDragDrop({
         screenToFlowPosition: () => ({ x: 0, y: 0 }),
-        handleAddImage,
         addItemActions,
       })
     );
@@ -142,6 +115,5 @@ describe('useFlowCanvasDragDrop', () => {
     });
 
     expect(executeAddItem).not.toHaveBeenCalled();
-    expect(handleAddImage).not.toHaveBeenCalled();
   });
 });

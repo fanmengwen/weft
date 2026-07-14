@@ -23,16 +23,7 @@ export {
   createProcessNode,
   createAnnotationNode,
   createSectionNode,
-  createTextNode,
-  createImageNode,
-  createClassNode,
-  createEntityNode,
-  createJourneyNode,
   createArchitectureNode,
-  createBrowserNode,
-  createMobileNode,
-  createSequenceParticipantNode,
-  createMindmapTopicNode,
   createArchitectureServiceNode,
 } from './nodeFactories';
 

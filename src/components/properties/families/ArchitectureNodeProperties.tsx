@@ -15,6 +15,7 @@ import { toggleSection } from '@/components/properties/shared';
 import { Palette, ServerCog, Type } from 'lucide-react';
 import { ArchitectureNodeSection } from './ArchitectureNodeSection';
 import { ENVIRONMENT_OPTIONS, RESOURCE_TYPE_OPTIONS } from './architectureOptions';
+import { NodePropertiesHeader } from '@/components/properties/NodePropertiesHeader';
 
 export function ArchitectureNodeProperties({
   selectedNode,
@@ -37,6 +38,12 @@ export function ArchitectureNodeProperties({
 
   return (
     <>
+      <NodePropertiesHeader
+        key={selectedNode.id}
+        selectedNode={selectedNode}
+        onChange={onChange}
+      />
+      <div className="space-y-5 px-4">
       <InspectorSectionDivider />
 
       <CollapsibleSection
@@ -129,6 +136,7 @@ export function ArchitectureNodeProperties({
       </CollapsibleSection>
 
       <NodeActionButtons nodeId={selectedNode.id} onDuplicate={onDuplicate} onDelete={onDelete} />
+      </div>
     </>
   );
 }

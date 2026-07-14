@@ -15,7 +15,7 @@ export function createFlowStorePersistOptions(): PersistOptions<
   return {
     name: 'weft-storage',
     storage: createFlowPersistStorage() as PersistStorage<PersistedFlowStateHydration>,
-    version: 2,
+    version: 3,
     migrate: (persistedState: unknown) => migratePersistedFlowState(persistedState),
     partialize: (state: FlowState): PersistedFlowStateSlice => partializePersistedFlowState(state),
   };

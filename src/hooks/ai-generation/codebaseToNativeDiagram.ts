@@ -19,13 +19,13 @@ type FileRole =
   | 'config'
   | 'util';
 
-const ROLE_VISUAL: Record<DirRole, { color: string; icon: string; nodeType: 'browser' | 'system' | 'process' }> = {
+const ROLE_VISUAL: Record<DirRole, { color: string; icon: string; nodeType: 'system' | 'process' }> = {
   routes: { color: 'violet', icon: 'Globe', nodeType: 'system' },
   services: { color: 'blue', icon: 'Server', nodeType: 'system' },
   models: { color: 'emerald', icon: 'Database', nodeType: 'system' },
   auth: { color: 'amber', icon: 'ShieldCheck', nodeType: 'system' },
   utils: { color: 'slate', icon: 'Settings', nodeType: 'process' },
-  frontend: { color: 'blue', icon: 'Monitor', nodeType: 'browser' },
+  frontend: { color: 'blue', icon: 'Monitor', nodeType: 'process' },
   config: { color: 'slate', icon: 'Settings2', nodeType: 'process' },
   unknown: { color: 'slate', icon: 'Folder', nodeType: 'process' },
 };

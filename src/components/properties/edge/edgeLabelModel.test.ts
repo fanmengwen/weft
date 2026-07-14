@@ -17,19 +17,10 @@ describe('edgeLabelModel', () => {
     const edge = createEdge({ label: 'Sync' });
 
     expect(getEditableEdgeLabel(edge)).toBe('Sync');
-    expect(buildEdgeLabelUpdates(edge, 'Async')).toEqual({ label: 'Async' });
+    expect(buildEdgeLabelUpdates('Async')).toEqual({ label: 'Async' });
   });
 
-  it('prefers ER relation labels when ER semantics are present', () => {
-    const edge = createEdge({
-      label: 'ignored',
-      data: { erRelation: '||--o{', erRelationLabel: 'places' },
-    });
-
-    expect(getEditableEdgeLabel(edge)).toBe('places');
-    expect(buildEdgeLabelUpdates(edge, 'owns')).toEqual({
-      data: { erRelation: '||--o{', erRelationLabel: 'owns' },
-      label: undefined,
-    });
+  it('clears the label when the input is blank', () => {
+    expect(buildEdgeLabelUpdates('   ')).toEqual({ label: undefined });
   });
 });

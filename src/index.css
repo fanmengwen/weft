@@ -307,9 +307,8 @@ html {
   --color-surface-info-text: #1d4ed8;
 }
 
-/* ===== Workflow mode (flat light) — self-contained token set.
-   Chart mode keeps --brand-*; workflow components consume only --wf-*.
-   Static values by design: workflow stays light regardless of theme. ===== */
+/* ===== Flat light token set shared by the chart and workflow editors.
+   Static values by design: stays light regardless of theme. ===== */
 :root {
   --wf-acc: #3b63d3;
   --wf-acc-soft: color-mix(in srgb, var(--wf-acc) 8%, #fff);
@@ -351,6 +350,9 @@ html {
   --wf-shadow-node-selected:
     0 0 0 3px color-mix(in srgb, var(--wf-acc) 12%, transparent),
     0 6px 16px rgba(16, 24, 40, 0.08);
+  --wf-shadow-node-hover:
+    0 2px 4px rgba(16, 24, 40, 0.06),
+    0 8px 20px rgba(16, 24, 40, 0.09);
   /* Node tone pairs (bg/fg); mono swap pair would be #eef1f5 / #5a6472 */
   --wf-t-input-bg: #f6eedc;
   --wf-t-input-fg: #8a6410;
@@ -366,6 +368,10 @@ html {
   --wf-t-code-fg: #4a5568;
   --wf-t-out-bg: #e2f2e8;
   --wf-t-out-fg: #1f7d4d;
+  --wf-t-end-bg: #fbeae8;
+  --wf-t-end-fg: #c4443c;
+  --wf-t-note-bg: #fdf4d7;
+  --wf-t-note-fg: #a8862b;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -484,8 +490,44 @@ body {
     opacity 0.15s !important;
 }
 
+.react-flow__handle.chart-handle {
+  width: 11px !important;
+  height: 11px !important;
+  border-radius: 50% !important;
+  transition: opacity 0.15s, transform 0.1s !important;
+}
+
+.react-flow__handle.chart-handle.chart-handle--target {
+  background: #ffffff !important;
+  border: 2px solid #c6ccd6 !important;
+  box-shadow: none !important;
+}
+
+.react-flow__handle.chart-handle.chart-handle--source {
+  background: var(--wf-acc) !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.2) !important;
+}
+
+.react-flow__handle.chart-handle.chart-handle--source:hover,
+.is-connecting .react-flow__handle.chart-handle.chart-handle--source {
+  background: var(--wf-acc) !important;
+  border: 2px solid #ffffff !important;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.2) !important;
+}
+
+.react-flow__handle.chart-handle:hover,
+.is-connecting .react-flow__handle.chart-handle {
+  transform: translate(-50%, -50%) !important;
+}
+
+.react-flow__handle.chart-handle.chart-handle--right:hover,
+.is-connecting .react-flow__handle.chart-handle.chart-handle--right {
+  transform: translate(50%, -50%) !important;
+}
+
 /* Pop the handle on hover so it's obviously clickable */
-.react-flow__handle:hover {
+.react-flow__handle:not(.chart-handle):hover {
   transform: translate(-50%, -50%) scale(1.35) !important;
 }
 
@@ -560,6 +602,12 @@ body {
 .react-flow__handle.workflow-handle.react-flow__handle-right:hover,
 .is-connecting .react-flow__handle.workflow-handle.react-flow__handle-right {
   transform: translate(50%, -50%) !important;
+}
+
+.chart-node-surface--hoverable:not(.chart-node-surface--selected):hover {
+  transform: translateY(-2px);
+  border-color: #d4d9e0 !important;
+  box-shadow: var(--wf-shadow-node-hover) !important;
 }
 
 /* ===== Node Resizer Bounding Box (Miro/Figma style) ===== */
@@ -846,8 +894,8 @@ body {
 }
 
 .exporting .react-flow__edge-path {
-  stroke: #94a3b8 !important;
-  stroke-width: 2 !important;
+  stroke: #c3c9d3 !important;
+  stroke-width: 1.6 !important;
   opacity: 1 !important;
   stroke-dasharray: none !important;
 }
@@ -866,8 +914,8 @@ body {
 
 /* Ensure markers (arrows) render correctly */
 .exporting .react-flow__marker {
-  fill: #94a3b8 !important;
-  stroke: #94a3b8 !important;
+  fill: #c3c9d3 !important;
+  stroke: #c3c9d3 !important;
 }
 
 /* Markdown Styles inside Nodes */

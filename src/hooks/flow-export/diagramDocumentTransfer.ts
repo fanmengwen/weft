@@ -10,6 +10,7 @@ import {
   persistLatestImportReport,
 } from '@/services/importFidelity';
 import { createImportReportOutcome, type OperationOutcome } from '@/services/operationFeedback';
+import { downgradeRetiredEdgeType, downgradeRetiredNodeFamily } from '@/store/persistence';
 import type { FlowEdge, FlowNode, PlaybackState, DiagramType } from '@/lib/types';
 
 interface ActiveTabDocumentState {
@@ -62,9 +63,13 @@ export async function importDiagramDocumentJson(params: {
   try {
     const raw = JSON.parse(json);
     const parsed = parseDiagramDocumentImport(raw);
-    const { nodes, edges } = await composeDiagramForDisplay(parsed.nodes, parsed.edges, {
+    const composed = await composeDiagramForDisplay(parsed.nodes, parsed.edges, {
       diagramType: parsed.diagramType,
     });
+    // Downgrade retired families after layout so type-specific composition
+    // still runs against the original imported graph.
+    const nodes = composed.nodes.map(downgradeRetiredNodeFamily);
+    const edges = composed.edges.map(downgradeRetiredEdgeType);
     const report = buildImportFidelityReport({
       source: 'json',
       nodeCount: nodes.length,

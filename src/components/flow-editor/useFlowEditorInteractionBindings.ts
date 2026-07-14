@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { useMindmapTopicActionRequest } from '@/hooks/mindmapTopicActionRequest';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import { useNodeQuickCreateRequest } from '@/hooks/nodeQuickCreateRequest';
 
@@ -18,12 +17,13 @@ interface UseFlowEditorInteractionBindingsParams {
     onRedoUnavailable: () => void;
     duplicateNode: (id: string) => void;
     selectAll: () => void;
-    handleAddMindmapChild: (nodeId: string, side?: 'left' | 'right' | null) => void;
-    handleAddMindmapSibling: (nodeId: string) => void;
     openCommandBar: (view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system') => void;
     setShortcutsHelpOpen: (open: boolean) => void;
     enableSelectMode: () => void;
     enablePanMode: () => void;
+    closeElementPalette: () => void;
+    toggleElementPalette: () => void;
+    onAutoLayout: () => void;
     fitView: (options?: { duration?: number; padding?: number }) => void;
     zoomIn: (options?: { duration?: number }) => void;
     zoomOut: (options?: { duration?: number }) => void;
@@ -53,12 +53,13 @@ export function useFlowEditorInteractionBindings({
     onRedoUnavailable,
     duplicateNode,
     selectAll,
-    handleAddMindmapChild,
-    handleAddMindmapSibling,
     openCommandBar,
     setShortcutsHelpOpen,
     enableSelectMode,
     enablePanMode,
+    closeElementPalette,
+    toggleElementPalette,
+    onAutoLayout,
     fitView,
     zoomIn,
     zoomOut,
@@ -87,21 +88,13 @@ export function useFlowEditorInteractionBindings({
         duplicateNode,
         selectAll,
         selectedNodeType,
-        onAddMindmapChildShortcut: () => {
-            if (selectedNodeId) {
-                handleAddMindmapChild(selectedNodeId);
-            }
-        },
-        onAddMindmapSiblingShortcut: () => {
-            if (selectedNodeId) {
-                handleAddMindmapSibling(selectedNodeId);
-            }
-        },
         onCommandBar: () => openCommandBar('root'),
         onSearch: () => openCommandBar('search'),
         onShortcutsHelp: () => setShortcutsHelpOpen(true),
         onSelectMode: enableSelectMode,
         onPanMode: enablePanMode,
+        onToggleElementPalette: toggleElementPalette,
+        onAutoLayout,
         onFitView: () => fitView({ duration: 600, padding: 0.2 }),
         onZoomIn: () => zoomIn({ duration: 300 }),
         onZoomOut: () => zoomOut({ duration: 300 }),
@@ -120,6 +113,7 @@ export function useFlowEditorInteractionBindings({
             }
         },
         onClearSelection: () => {
+            closeElementPalette();
             setSelectedNodeId(null);
             setSelectedEdgeId(null);
             setNodes((nodes) => nodes.map((node) => ({ ...node, selected: false })));
@@ -156,18 +150,5 @@ export function useFlowEditorInteractionBindings({
         useCallback((nodeId, direction) => {
             createConnectedNodeInDirection(nodeId, direction);
         }, [createConnectedNodeInDirection])
-    );
-
-    useMindmapTopicActionRequest(
-        useCallback(({ nodeId, action, side }) => {
-            if (action === 'child') {
-                handleAddMindmapChild(nodeId, side ?? null);
-                return;
-            }
-
-            if (action === 'sibling') {
-                handleAddMindmapSibling(nodeId);
-            }
-        }, [handleAddMindmapChild, handleAddMindmapSibling])
     );
 }

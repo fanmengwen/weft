@@ -338,10 +338,10 @@ function parseArchitecture(input: string): { nodes: FlowNode[]; edges: FlowEdge[
     const parsedMeta = parseProtocolPort(edge.label);
     const direction = edge.direction || '-->';
     const markerStart = direction === '<--' || direction === '<-->'
-      ? { type: MarkerType.ArrowClosed, color: '#94a3b8' as const }
+      ? { type: MarkerType.ArrowClosed, color: '#c3c9d3' as const }
       : undefined;
     const markerEnd = direction === '-->' || direction === '<-->'
-      ? { type: MarkerType.ArrowClosed, color: '#94a3b8' as const }
+      ? { type: MarkerType.ArrowClosed, color: '#c3c9d3' as const }
       : undefined;
     return {
       id: `e-arch-${index + 1}`,

@@ -44,28 +44,25 @@ describe('BulkNodeProperties', () => {
       <BulkNodeProperties
         selectedNodes={[
           createNode(NodeType.CUSTOM),
-          createNode(NodeType.TEXT),
-          createNode(NodeType.BROWSER),
+          createNode(NodeType.ANNOTATION),
           createNode(NodeType.ARCHITECTURE),
         ]}
         onApply={vi.fn()}
       />
     );
 
-    expect(screen.getByText('Bulk Shape (1/4)')).toBeTruthy();
-    expect(screen.getByText('Bulk Color (3/4)')).toBeTruthy();
-    expect(screen.getByText('Wireframe Variant (1/4)')).toBeTruthy();
-    expect(screen.getByText('Architecture Deployment (1/4)')).toBeTruthy();
+    expect(screen.getByText('Bulk Shape (1/3)')).toBeTruthy();
+    expect(screen.getByText('Bulk Color')).toBeTruthy();
+    expect(screen.getByText('Architecture Deployment (1/3)')).toBeTruthy();
     expect(screen.getByText('1 Architecture')).toBeTruthy();
     expect(screen.getByText('1 Flow node')).toBeTruthy();
-    expect(screen.getByText('1 Text')).toBeTruthy();
-    expect(screen.getByText('1 Wireframe')).toBeTruthy();
+    expect(screen.getByText('1 Annotation')).toBeTruthy();
   });
 
   it('keeps shared text operations available for every mixed selection', () => {
     render(
       <BulkNodeProperties
-        selectedNodes={[createNode(NodeType.TEXT), createNode(NodeType.BROWSER)]}
+        selectedNodes={[createNode(NodeType.ANNOTATION), createNode(NodeType.CUSTOM)]}
         onApply={vi.fn()}
       />
     );
@@ -79,16 +76,13 @@ describe('BulkNodeProperties', () => {
     render(
       <BulkNodeProperties
         selectedNodes={[
-          createNode(NodeType.JOURNEY),
-          createNode(NodeType.CLASS),
-          createNode(NodeType.SEQUENCE_PARTICIPANT),
+          createNode(NodeType.CUSTOM),
+          createNode(NodeType.ARCHITECTURE),
         ]}
         onApply={vi.fn()}
       />
     );
 
-    expect(screen.getByText('Journey Step (1/3)')).toBeTruthy();
-    expect(screen.getByText('Class Definition (1/3)')).toBeTruthy();
-    expect(screen.getByText('Participant (1/3)')).toBeTruthy();
+    expect(screen.getByText('Architecture Deployment (1/2)')).toBeTruthy();
   });
 });

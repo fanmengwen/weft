@@ -1,5 +1,4 @@
 export type RolloutFlagKey =
-  | 'relationSemanticsV1'
   | 'documentModelV2'
   | 'collaborationEnabled'
   | 'architectureLintEnabled'
@@ -16,12 +15,6 @@ interface RolloutFlagDefinition {
 }
 
 const ROLLOUT_FLAG_DEFINITIONS: Record<RolloutFlagKey, RolloutFlagDefinition> = {
-  relationSemanticsV1: {
-    key: 'relationSemanticsV1',
-    envVar: 'VITE_RELATION_SEMANTICS_V1',
-    defaultEnabled: false,
-    description: 'Class/ER relation marker and routing semantics rollout',
-  },
   documentModelV2: {
     key: 'documentModelV2',
     envVar: 'VITE_DOCUMENT_MODEL_V2',
@@ -88,7 +81,6 @@ export function isRolloutFlagEnabled(key: RolloutFlagKey): boolean {
 }
 
 export const ROLLOUT_FLAGS: Record<RolloutFlagKey, boolean> = {
-  relationSemanticsV1: isRolloutFlagEnabled('relationSemanticsV1'),
   documentModelV2: isRolloutFlagEnabled('documentModelV2'),
   collaborationEnabled: isRolloutFlagEnabled('collaborationEnabled'),
   architectureLintEnabled: isRolloutFlagEnabled('architectureLintEnabled'),

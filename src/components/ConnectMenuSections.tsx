@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, Settings } from 'lucide-react';
+import { Database } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { NamedIcon } from './IconMap';
 import type { DomainLibraryItem } from '@/services/domainLibrary';
@@ -13,34 +13,6 @@ export interface ConnectMenuOption {
   description: string;
   toneClassName: string;
   icon: React.ReactNode;
-}
-
-interface MindmapConnectSectionProps {
-  title: string;
-  description: string;
-  onSelect: () => void;
-}
-
-export function MindmapConnectSection({
-  title,
-  description,
-  onSelect,
-}: MindmapConnectSectionProps): React.ReactElement {
-  return (
-    <button
-      role="menuitem"
-      onClick={onSelect}
-      className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-[var(--brand-text)] transition-all hover:bg-[var(--brand-background)] active:bg-[var(--brand-background)]/80"
-    >
-      <div className="w-9 h-9 bg-indigo-50 text-indigo-600 rounded-lg flex items-center justify-center border border-indigo-100 group-hover:scale-110 transition-transform">
-        <Settings className="w-4.5 h-4.5" />
-      </div>
-      <div className="flex flex-col items-start translate-y-[1px]">
-        <span className="mb-1 font-bold leading-none text-[var(--brand-text)]">{title}</span>
-        <span className="text-[10px] font-medium text-[var(--brand-secondary)]">{description}</span>
-      </div>
-    </button>
-  );
 }
 
 interface ProviderSuggestionsSectionProps {

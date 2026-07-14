@@ -1,12 +1,10 @@
 import React, { Suspense, lazy } from 'react';
-import type { NodeData } from '@/lib/types';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import type { FlowEditorPanelsProps } from '@/components/FlowEditorPanels';
 import type { CinematicExportRequest } from '@/services/export/cinematicExport';
-import type {
-  CollaborationRemotePresence,
-  FlowEditorCollaborationTopNavState,
-} from '@/hooks/useFlowEditorCollaboration';
+import type { CollaborationRemotePresence } from '@/hooks/useFlowEditorCollaboration';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { StudioLauncher } from '@/components/StudioLauncher';
 import type { EditorPage } from '@/store/editorPageHooks';
 
 const LazyFlowEditorPanels = lazy(async () => {
@@ -51,7 +49,7 @@ const LazyCollaborationPresenceOverlay = lazy(async () => {
 
 function TopNavFallback(): React.ReactElement {
   return (
-    <div className="absolute top-0 left-0 right-0 z-50 h-14 border-b border-[var(--color-brand-border)]/20 bg-[var(--brand-surface)]/70 shadow-sm backdrop-blur-md" />
+    <div className="absolute top-0 left-0 right-0 z-50 h-[52px] border-b border-[var(--wf-border)] bg-[var(--wf-surface)]" />
   );
 }
 
@@ -83,7 +81,6 @@ export interface FlowEditorChromeProps {
     onHistory: () => void;
     onGoHome: () => void;
     onPlay: () => void;
-    collaboration?: FlowEditorCollaborationTopNavState;
   };
   canvas: React.ReactNode;
   shouldRenderPanels: boolean;
@@ -104,21 +101,10 @@ export interface FlowEditorChromeProps {
   };
   toolbar: {
     isVisible: boolean;
-    onCommandBar: () => void;
-    onToggleStudio: () => void;
-    isStudioOpen: boolean;
     onOpenAssets: () => void;
-    onAddShape: (shape: NodeData['shape'], position: { x: number; y: number }) => void;
+    onAddShape: (input: AddShapeInput, position: { x: number; y: number }) => void;
     onAddAnnotation: (position: { x: number; y: number }) => void;
     onAddSection: (position: { x: number; y: number }) => void;
-    onAddTextNode: (position: { x: number; y: number }) => void;
-    onAddClassNode: (position: { x: number; y: number }) => void;
-    onAddEntityNode: (position: { x: number; y: number }) => void;
-    onAddMindmapNode: (position: { x: number; y: number }) => void;
-    onAddJourneyNode: (position: { x: number; y: number }) => void;
-    onAddArchitectureNode: (position: { x: number; y: number }) => void;
-    onAddSequenceParticipant: (position: { x: number; y: number }) => void;
-    onAddWireframe: (variant: string, position: { x: number; y: number }) => void;
     onUndo: () => void;
     onRedo: () => void;
     onLayout: () => void;
@@ -127,7 +113,11 @@ export interface FlowEditorChromeProps {
     isSelectMode: boolean;
     onToggleSelectMode: () => void;
     isCommandBarOpen: boolean;
+    editorMode: 'canvas' | 'studio';
     onTogglePanMode: () => void;
+    isElementPaletteOpen: boolean;
+    onToggleElementPalette: () => void;
+    onCloseElementPalette: () => void;
     getCenter: () => { x: number; y: number };
   };
   emptyState?: {
@@ -141,6 +131,7 @@ export interface FlowEditorChromeProps {
     onAddNode: () => void;
     onSuggestionClick?: (prompt: string) => void;
   };
+  onOpenStudio: () => void;
 }
 
 export function FlowEditorChrome({
@@ -158,11 +149,11 @@ export function FlowEditorChrome({
   playback,
   toolbar,
   emptyState,
+  onOpenStudio,
 }: FlowEditorChromeProps): React.ReactElement {
   const topNavProps = {
     pages,
     activePageId,
-    collaboration: topNav.collaboration,
     onSwitchPage: topNav.onSwitchPage,
     onAddPage: topNav.onAddPage,
     onClosePage: topNav.onClosePage,
@@ -189,21 +180,10 @@ export function FlowEditorChrome({
     onPlay: topNav.onPlay,
   };
   const toolbarProps = {
-    onCommandBar: toolbar.onCommandBar,
-    onToggleStudio: toolbar.onToggleStudio,
-    isStudioOpen: toolbar.isStudioOpen,
     onOpenAssets: toolbar.onOpenAssets,
     onAddShape: toolbar.onAddShape,
     onAddAnnotation: toolbar.onAddAnnotation,
     onAddSection: toolbar.onAddSection,
-    onAddTextNode: toolbar.onAddTextNode,
-    onAddClassNode: toolbar.onAddClassNode,
-    onAddEntityNode: toolbar.onAddEntityNode,
-    onAddMindmapNode: toolbar.onAddMindmapNode,
-    onAddJourneyNode: toolbar.onAddJourneyNode,
-    onAddArchitectureNode: toolbar.onAddArchitectureNode,
-    onAddSequenceParticipant: toolbar.onAddSequenceParticipant,
-    onAddWireframe: toolbar.onAddWireframe,
     onUndo: toolbar.onUndo,
     onRedo: toolbar.onRedo,
     onLayout: toolbar.onLayout,
@@ -212,7 +192,11 @@ export function FlowEditorChrome({
     isSelectMode: toolbar.isSelectMode,
     onToggleSelectMode: toolbar.onToggleSelectMode,
     isCommandBarOpen: toolbar.isCommandBarOpen,
+    editorMode: toolbar.editorMode,
     onTogglePanMode: toolbar.onTogglePanMode,
+    isElementPaletteOpen: toolbar.isElementPaletteOpen,
+    onToggleElementPalette: toolbar.onToggleElementPalette,
+    onCloseElementPalette: toolbar.onCloseElementPalette,
     getCenter: toolbar.getCenter,
   };
   const playbackProps = {
@@ -244,12 +228,15 @@ export function FlowEditorChrome({
         <LazyTopNav {...topNavProps} />
       </Suspense>
 
-      <div className="flex min-h-0 flex-1 min-w-0 pt-14">
+      <div className="flex min-h-0 flex-1 min-w-0 pt-[52px]">
         <div className="relative min-w-0 flex-1">
           <ErrorBoundary className="h-full">{canvas}</ErrorBoundary>
           <Suspense fallback={null}>
             <LazyDiffModeBanner />
           </Suspense>
+          {toolbar.editorMode !== 'studio' ? (
+            <StudioLauncher onOpen={onOpenStudio} />
+          ) : null}
         </div>
         {shouldRenderPanels ? (
           <Suspense fallback={null}>

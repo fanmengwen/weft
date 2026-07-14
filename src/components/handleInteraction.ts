@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react';
 
+export type HandleSide = 'top' | 'right' | 'bottom' | 'left';
+
 export function getHandlePointerEvents(_visualQualityV2Enabled: boolean, _selected: boolean): 'none' | 'all' {
   return 'all';
 }
@@ -18,13 +20,22 @@ export function getV2HandleVisibilityClass(
   return `${selected ? selectedVisibility : 'opacity-0'} group-hover:opacity-100${connectingClass}${hitAreaClass}`.trim();
 }
 
+export function isTargetHandleSide(side: HandleSide): boolean {
+  return side === 'left';
+}
+
+export function getChartHandleClassName(side: HandleSide): string {
+  const role = isTargetHandleSide(side) ? 'target' : 'source';
+  return `chart-handle chart-handle--${role} chart-handle--${side}`;
+}
+
 export function getConnectorHandleStyle(
-  position: 'top' | 'right' | 'bottom' | 'left',
+  position: HandleSide,
   _selected: boolean,
   pointerEvents: 'none' | 'all',
   extra?: CSSProperties
 ): CSSProperties {
-  const baseByPosition: Record<'top' | 'right' | 'bottom' | 'left', CSSProperties> = {
+  const baseByPosition: Record<HandleSide, CSSProperties> = {
     top: {
       left: '50%',
       top: 0,
@@ -50,7 +61,6 @@ export function getConnectorHandleStyle(
   return {
     ...baseByPosition[position],
     ...(extra ?? {}),
-    backgroundColor: 'var(--brand-primary)',
     zIndex: 100,
     pointerEvents,
   };

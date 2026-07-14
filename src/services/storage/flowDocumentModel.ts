@@ -1,5 +1,6 @@
 import type { DiagramType, FlowTab, PlaybackState } from '@/lib/types';
 import { createEmptyFlowHistory } from '@/store/historyState';
+import { downgradeRetiredEdgeType, downgradeRetiredNodeFamily } from '@/store/persistence';
 import type {
   LoadedDocument,
   PersistedDocument,
@@ -34,6 +35,26 @@ export interface LoadedFlowWorkspace {
   workspaceMeta: WorkspaceMeta;
 }
 
+function downgradeHistorySnapshots(
+  history: FlowTab['history'] | undefined
+): FlowTab['history'] {
+  if (!history) {
+    return createEmptyFlowHistory();
+  }
+
+  const downgradeSnapshot = (snapshot: FlowTab['history']['past'][number]) => ({
+    nodes: snapshot.nodes.map(downgradeRetiredNodeFamily),
+    edges: snapshot.edges.map(downgradeRetiredEdgeType),
+  });
+
+  return {
+    past: history.past.map(downgradeSnapshot),
+    future: history.future.map(downgradeSnapshot),
+  };
+}
+
+// Hydration only downgrades retired node and edge families; the full persisted
+// sanitize is skipped on purpose so stored geometry and hierarchy load unchanged.
 function createFlowPageFromPersistedContent(
   documentId: string,
   name: string,
@@ -46,10 +67,10 @@ function createFlowPageFromPersistedContent(
     name,
     diagramType,
     updatedAt,
-    nodes: content.nodes,
-    edges: content.edges,
+    nodes: content.nodes.map(downgradeRetiredNodeFamily),
+    edges: content.edges.map(downgradeRetiredEdgeType),
     playback: content.playback,
-    history: content.history ?? createEmptyFlowHistory(),
+    history: downgradeHistorySnapshots(content.history),
   };
 }
 
@@ -59,10 +80,10 @@ function createFlowPageFromPersistedPage(page: PersistedDocumentPage): FlowPage 
     name: page.name,
     diagramType: page.diagramType,
     updatedAt: page.updatedAt,
-    nodes: page.content.nodes,
-    edges: page.content.edges,
+    nodes: page.content.nodes.map(downgradeRetiredNodeFamily),
+    edges: page.content.edges.map(downgradeRetiredEdgeType),
     playback: page.content.playback,
-    history: page.content.history ?? createEmptyFlowHistory(),
+    history: downgradeHistorySnapshots(page.content.history),
   };
 }
 

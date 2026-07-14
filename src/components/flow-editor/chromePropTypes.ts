@@ -28,7 +28,6 @@ export interface BuildTopNavParams {
   openHistory: () => void;
   onGoHome: () => void;
   startPlayback: () => void;
-  collaborationTopNavState?: FlowEditorChromeProps['topNav']['collaboration'];
 }
 
 export interface BuildToolbarParams {
@@ -36,19 +35,10 @@ export interface BuildToolbarParams {
   openCommandBar: (
     view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system'
   ) => void;
-  toggleStudioPanel: () => void;
   editorMode: 'canvas' | 'studio';
   handleAddShape: FlowEditorChromeProps['toolbar']['onAddShape'];
   handleAddAnnotation: (position: { x: number; y: number }) => void;
   handleAddSection: (position: { x: number; y: number }) => void;
-  handleAddTextNode: (position: { x: number; y: number }) => void;
-  handleAddClassNode: (position: { x: number; y: number }) => void;
-  handleAddEntityNode: (position: { x: number; y: number }) => void;
-  handleAddMindmapNode: (position: { x: number; y: number }) => void;
-  handleAddJourneyNode: (position: { x: number; y: number }) => void;
-  handleAddArchitectureNode: (position: { x: number; y: number }) => void;
-  handleAddSequenceParticipant: (position: { x: number; y: number }) => void;
-  handleAddWireframe: (variant: string, position: { x: number; y: number }) => void;
   undo: () => void;
   redo: () => void;
   handleLayoutWithContext: () => void;
@@ -58,6 +48,9 @@ export interface BuildToolbarParams {
   enableSelectMode: () => void;
   isCommandBarOpen: boolean;
   enablePanMode: () => void;
+  isElementPaletteOpen: boolean;
+  toggleElementPalette: () => void;
+  closeElementPalette: () => void;
   getCenter: () => { x: number; y: number };
 }
 

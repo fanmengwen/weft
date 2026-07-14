@@ -41,14 +41,12 @@ export type LoopDirection = 'right' | 'top' | 'left' | 'bottom';
 export type { EdgeCurve } from './edgeCurve';
 
 export interface EdgePathOptions {
-  forceOrthogonal?: boolean;
   mermaidPreservedEndpoints?: boolean;
   mermaidSourceContainer?: boolean;
   mermaidTargetContainer?: boolean;
   elkPoints?: { x: number; y: number }[];
   importRoutePoints?: { x: number; y: number }[];
   importRoutePath?: string;
-  mindmapBranchKind?: 'root' | 'branch';
   routingMode?: 'auto' | 'elk' | 'manual' | 'import-fixed';
   waypoints?: { x: number; y: number }[];
   waypoint?: {

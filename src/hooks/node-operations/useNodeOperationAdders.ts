@@ -1,16 +1,16 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import { createId } from '@/lib/id';
 import type { FlowNode, NodeData } from '@/lib/types';
+import { NODE_DEFAULTS } from '@/theme';
 import { createDomainLibraryNode, type DomainLibraryItem } from '@/services/domainLibrary';
 import { useFlowStore } from '@/store';
 import { queueNodeLabelEditRequest } from '@/hooks/nodeLabelEditRequest';
 import {
   createAnnotationNode,
   createGenericShapeNode,
-  createImageNode,
   createSectionNode,
-  createTextNode,
   getDefaultNodePosition,
   getNextSectionOrder,
   getSectionInsertPosition,
@@ -23,6 +23,20 @@ interface UseNodeOperationAddersParams {
   nodesLength: number;
   setNodes: (updater: (nodes: FlowNode[]) => FlowNode[]) => void;
   setSelectedNodeId: (nodeId: string | null) => void;
+}
+
+function resolveAddShapeSpec(input: AddShapeInput): {
+  type: FlowNode['type'];
+  shape?: NodeData['shape'];
+  color: string;
+} {
+  const defaults = NODE_DEFAULTS[input.type];
+
+  return {
+    type: input.type,
+    shape: input.shape,
+    color: defaults?.color ?? NODE_DEFAULTS.process.color,
+  };
 }
 
 export function useNodeOperationAdders({
@@ -75,16 +89,17 @@ export function useNodeOperationAdders({
   );
 
   const handleAddShape = useCallback(
-    (shape: NodeData['shape'], position?: { x: number; y: number }) => {
+    (input: AddShapeInput, position?: { x: number; y: number }) => {
       recordHistory();
       const id = createId();
+      const resolved = resolveAddShapeSpec(input);
       commitAddedNode(
         id,
         (resolvedPosition) =>
           createGenericShapeNode(id, resolvedPosition ?? getDefaultNodePosition(nodesLength, 100, 100), {
-            type: 'process',
-            color: 'white',
-            shape,
+            type: resolved.type,
+            color: resolved.color,
+            shape: resolved.shape,
           }),
         position
       );
@@ -95,7 +110,7 @@ export function useNodeOperationAdders({
 
   const handleAddNode = useCallback(
     (position?: { x: number; y: number }) => {
-      handleAddShape('rounded', position);
+      handleAddShape({ type: 'process', shape: 'rounded' }, position);
     },
     [handleAddShape]
   );
@@ -115,87 +130,6 @@ export function useNodeOperationAdders({
       );
     },
     [commitAddedNode, nodesLength, recordHistory, t]
-  );
-
-  const handleAddJourneyNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('journey');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'journey',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'User Journey',
-            subLabel: 'User',
-            color: 'violet',
-            shape: 'rounded',
-            journeySection: 'General',
-            journeyTask: 'User Journey',
-            journeyActor: 'User',
-            journeyScore: 3,
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
-  );
-
-  const handleAddMindmapNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('mindmap');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'mindmap',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'Central Topic',
-            color: 'slate',
-            shape: 'rounded',
-            mindmapDepth: 0,
-            mindmapBranchStyle: 'curved',
-          },
-          selected: true,
-        }),
-        position
-      );
-      queueNodeLabelEditRequest(id, { replaceExisting: true });
-    },
-    [commitAddedNode, nodesLength, recordHistory]
-  );
-
-  const handleAddArchitectureNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('arch');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'architecture',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'New Service',
-            color: 'slate',
-            shape: 'rectangle',
-            icon: 'Server',
-            archProvider: 'custom',
-            archResourceType: 'service',
-            archEnvironment: 'default',
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
   );
 
   const handleAddSection = useCallback(
@@ -237,153 +171,6 @@ export function useNodeOperationAdders({
     [recordHistory, setNodes, setSelectedNodeId, t]
   );
 
-  const handleAddTextNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('text');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => createTextNode(
-          id,
-          resolvedPosition || getDefaultNodePosition(nodesLength, 100, 100),
-          t('nodes.text')
-        ),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory, t]
-  );
-
-  const handleAddImage = useCallback(
-    (imageUrl: string, position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('image');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => createImageNode(
-          id,
-          imageUrl,
-          resolvedPosition || getDefaultNodePosition(nodesLength, 100, 100),
-          t('nodes.image')
-        ),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory, t]
-  );
-
-  const handleAddClassNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('class');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'class',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'ClassName',
-            color: 'white',
-            shape: 'rectangle',
-            classAttributes: ['+ attribute: Type'],
-            classMethods: ['+ method(): void'],
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
-  );
-
-  const handleAddSequenceParticipant = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('seq');
-      const { activeLayerId, nodes: currentNodes } = useFlowStore.getState();
-
-      // Align with the existing participant row — place to the right of the last participant.
-      const seqNodes = currentNodes.filter((n) => n.type === 'sequence_participant');
-      const rowY = seqNodes.length > 0 ? seqNodes[0].position.y : 0;
-      const rowX = seqNodes.length > 0 ? Math.max(...seqNodes.map((n) => n.position.x)) + 220 : 0;
-
-      const newNode: FlowNode = {
-        id,
-        type: 'sequence_participant',
-        position: position ? { ...position, y: rowY } : { x: rowX, y: rowY },
-        data: {
-          label: 'Participant',
-          seqParticipantKind: 'participant',
-          layerId: activeLayerId,
-        },
-        selected: true,
-      };
-      setNodes((nds) => {
-        const selectedSectionId = useFlowStore.getState().selectedNodeId;
-        return nds.concat(
-          insertNodeIntoNearestSection(nds, newNode, position, selectedSectionId)
-        );
-      });
-      setSelectedNodeId(id);
-      queueNodeLabelEditRequest(id, { replaceExisting: true });
-    },
-    [recordHistory, setNodes, setSelectedNodeId]
-  );
-
-  const handleAddEntityNode = useCallback(
-    (position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId('er');
-      commitAddedNode(
-        id,
-        (resolvedPosition) => ({
-          id,
-          type: 'er_entity',
-          position: resolvedPosition || getDefaultNodePosition(nodesLength, 120, 120),
-          data: {
-            label: 'EntityName',
-            color: 'white',
-            shape: 'rectangle',
-            erFields: ['id: INT PK', 'name: VARCHAR'],
-          },
-          selected: true,
-        }),
-        position
-      );
-    },
-    [commitAddedNode, nodesLength, recordHistory]
-  );
-
-  const handleAddWireframe = useCallback(
-    (type: 'browser' | 'mobile', position?: { x: number; y: number }) => {
-      recordHistory();
-      const id = createId(type);
-      const { activeLayerId } = useFlowStore.getState();
-      const label = type === 'browser' ? 'New Window' : 'Mobile App';
-      const newNode: FlowNode = {
-        id,
-        type,
-        position: position || getDefaultNodePosition(nodesLength, 100, 100),
-        data: {
-          label,
-          color: 'slate',
-          variant: 'default',
-          layerId: activeLayerId,
-        },
-        selected: true,
-      };
-      setNodes((nds) => {
-        const selectedSectionId = useFlowStore.getState().selectedNodeId;
-        return nds.concat(
-          insertNodeIntoNearestSection(nds, newNode, position, selectedSectionId)
-        );
-      });
-      setSelectedNodeId(id);
-    },
-    [nodesLength, recordHistory, setNodes, setSelectedNodeId]
-  );
-
   const handleAddDomainLibraryItem = useCallback(
     (item: DomainLibraryItem, position?: { x: number; y: number }) => {
       recordHistory();
@@ -410,16 +197,7 @@ export function useNodeOperationAdders({
     handleAddShape,
     handleAddNode,
     handleAddAnnotation,
-    handleAddJourneyNode,
-    handleAddMindmapNode,
-    handleAddArchitectureNode,
-    handleAddSequenceParticipant,
-    handleAddClassNode,
-    handleAddEntityNode,
     handleAddSection,
-    handleAddTextNode,
-    handleAddImage,
-    handleAddWireframe,
     handleAddDomainLibraryItem,
   };
 }

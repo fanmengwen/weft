@@ -8,7 +8,6 @@ const LazyTopNavMenuPanel = lazy(async () => {
 
 interface TopNavMenuProps {
     isOpen: boolean;
-    isBeveled: boolean;
     onToggle: () => void;
     onClose: () => void;
     onGoHome: () => void;
@@ -19,7 +18,6 @@ interface TopNavMenuProps {
 
 export function TopNavMenu({
     isOpen,
-    isBeveled,
     onToggle,
     onClose,
     onGoHome,
@@ -28,9 +26,11 @@ export function TopNavMenu({
     onImportJSON,
 }: TopNavMenuProps): React.ReactElement {
     const menuRef = useRef<HTMLDivElement>(null);
-    const buttonClassName = isOpen
-        ? 'flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] border px-3 py-2 text-sm font-medium transition-all sm:min-h-9 bg-[var(--brand-primary-50)] border-[var(--brand-primary-200)] text-[var(--brand-primary)] shadow-inner'
-        : `flex min-h-10 items-center gap-2 rounded-[var(--radius-md)] border px-3 py-2 text-sm font-medium transition-all sm:min-h-9 bg-[var(--brand-surface)] border-[var(--color-brand-border)] text-[var(--brand-secondary)] hover:border-[var(--brand-secondary)] hover:text-[var(--brand-text)] ${isBeveled ? 'btn-beveled' : 'shadow-sm hover:shadow'}`;
+    const buttonClassName = `flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[8px] transition-colors ${
+        isOpen
+            ? 'bg-[color-mix(in_srgb,var(--wf-acc)_10%,transparent)] text-[var(--wf-acc)]'
+            : 'text-[var(--wf-text-label)] hover:bg-[var(--wf-hover)]'
+    }`;
 
     useEffect(() => {
         if (!isOpen) {

@@ -1,15 +1,42 @@
-import type { FlowNode, NodeData } from '@/lib/types';
+import type { ChartNodeTone, DesignSystem, FlowNode, NodeData } from '@/lib/types';
+
+export type { ChartNodeTone } from '@/lib/types';
+
+export const CHART_NODE_TONES: readonly ChartNodeTone[] = [
+  'out',
+  'end',
+  'web',
+  'cond',
+  'kb',
+  'llm',
+  'note',
+] as const;
+
+const CHART_NODE_TONE_SET = new Set<string>(CHART_NODE_TONES);
+
+export function isChartNodeTone(value: unknown): value is ChartNodeTone {
+  return typeof value === 'string' && CHART_NODE_TONE_SET.has(value);
+}
 
 export type NodeShape = NonNullable<NodeData['shape']>;
 
-export const COMPLEX_SHAPES: NodeShape[] = [
-  'diamond',
+export const DIV_SHAPES: NodeShape[] = ['diamond', 'parallelogram', 'cylinder'];
+
+export const LEGACY_SHAPE_FALLBACKS: NodeShape[] = [
   'hexagon',
-  'parallelogram',
-  'cylinder',
   'circle',
   'ellipse',
+  'rectangle',
+  'capsule',
 ];
+
+export function isDivShape(shape: NodeShape): boolean {
+  return DIV_SHAPES.includes(shape);
+}
+
+export function isLegacyShapeFallback(shape: NodeShape): boolean {
+  return LEGACY_SHAPE_FALLBACKS.includes(shape);
+}
 
 export const FONT_FAMILY_MAP: Record<string, string> = {
   inter: 'font-inter',
@@ -52,6 +79,7 @@ export function getMinNodeSize(shape: NodeData['shape'] | undefined): {
     case 'ellipse':
       return { minWidth: 120, minHeight: 120 };
     case 'diamond':
+      return { minWidth: 148, minHeight: 148 };
     case 'hexagon':
       return { minWidth: 140, minHeight: 140 };
     case 'parallelogram':
@@ -136,16 +164,117 @@ export function fontSizeClassFor(fontSize: string | undefined): string {
   }
 }
 
-export const NEEDS_SQUARE_ASPECT: Set<NodeShape> = new Set([
-  'circle',
-  'ellipse',
-  'diamond',
-  'hexagon',
-]);
+export const NEEDS_SQUARE_ASPECT: Set<NodeShape> = new Set(['diamond']);
 
-export const COMPLEX_SHAPE_PADDING: Partial<Record<NodeShape, string>> = {
-  diamond: 'px-8 py-6',
-  hexagon: 'px-8',
-  parallelogram: 'px-8',
-  cylinder: 'pt-8 pb-4',
-};
+export type ChartNodeSurfaceVariant = 'stadium' | 'rounded';
+
+export const CHART_NODE_SURFACE_GRADIENT =
+  'linear-gradient(180deg, #FFFFFF 0%, #FAFBFC 100%)';
+
+export function resolveChartNodeSurfaceVariant(
+  nodeType: string,
+  shape: NodeShape
+): ChartNodeSurfaceVariant | null {
+  if (isDivShape(shape)) {
+    return null;
+  }
+  if (nodeType === 'start' || nodeType === 'end') {
+    return 'stadium';
+  }
+  return 'rounded';
+}
+
+export function resolveChartNodeTone(nodeType: string, shape: NodeShape): ChartNodeTone {
+  if (nodeType === 'start') {
+    return 'out';
+  }
+  if (nodeType === 'end') {
+    return 'end';
+  }
+  if (nodeType === 'decision') {
+    return 'cond';
+  }
+  if (nodeType === 'custom' && shape === 'parallelogram') {
+    return 'kb';
+  }
+  if (nodeType === 'custom' && shape === 'cylinder') {
+    return 'llm';
+  }
+  return 'web';
+}
+
+export function resolveChartNodeChipIcon(
+  nodeType: string,
+  shape: NodeShape,
+  dataIcon: string | null
+): string {
+  if (dataIcon) {
+    return dataIcon;
+  }
+  if (nodeType === 'start') {
+    return 'Play';
+  }
+  if (nodeType === 'end') {
+    return 'CheckCircle';
+  }
+  if (nodeType === 'decision') {
+    return 'HelpCircle';
+  }
+  if (nodeType === 'custom' && shape === 'parallelogram') {
+    return 'Download';
+  }
+  if (nodeType === 'custom' && shape === 'cylinder') {
+    return 'Database';
+  }
+  return 'Square';
+}
+
+export function buildChartNodeSurfaceStyle(options: {
+  variant: ChartNodeSurfaceVariant;
+  designSystem: DesignSystem;
+  isSelected: boolean;
+}): {
+  background: string;
+  borderColor: string;
+  borderWidth: string;
+  boxShadow: string;
+  borderRadius: string | number;
+} {
+  const { variant, designSystem, isSelected } = options;
+  return {
+    background: CHART_NODE_SURFACE_GRADIENT,
+    borderColor: isSelected ? 'var(--wf-acc)' : designSystem.colors.nodeBorder,
+    borderWidth: isSelected ? '1.5px' : designSystem.components.node.borderWidth,
+    boxShadow: isSelected
+      ? 'var(--wf-shadow-node-selected)'
+      : designSystem.components.node.boxShadow,
+    borderRadius:
+      variant === 'stadium' ? '999px' : designSystem.components.node.borderRadius,
+  };
+}
+
+export function chartNodeToneVars(tone: ChartNodeTone): { background: string; color: string } {
+  return {
+    background: `var(--wf-t-${tone}-bg)`,
+    color: `var(--wf-t-${tone}-fg)`,
+  };
+}
+
+export function resolveNodeTone(node: { type?: string; data?: NodeData }): ChartNodeTone {
+  const nodeType = node.type || 'process';
+  const storedTone = node.data?.tone;
+  if (isChartNodeTone(storedTone)) {
+    return storedTone;
+  }
+  const defaults = getNodeDefaults(nodeType);
+  const shape = (node.data?.shape || defaults.shape) as NodeShape;
+  return resolveChartNodeTone(nodeType, shape);
+}
+
+export function resolveNodeToneVars(node: {
+  type?: string;
+  data?: NodeData;
+}): { background: string; color: string } {
+  return chartNodeToneVars(resolveNodeTone(node));
+}
+

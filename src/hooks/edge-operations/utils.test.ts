@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import {
-  buildConnectedMindmapTopic,
   buildConnectedEdge,
   buildConnectedNode,
   findClosestHandleTarget,
@@ -18,11 +17,11 @@ const processNode: FlowNode = {
   data: { label: 'Process' },
 };
 
-const textNode: FlowNode = {
-  id: 'text-1',
-  type: 'text',
+const annotationNode: FlowNode = {
+  id: 'annotation-1',
+  type: 'annotation',
   position: { x: 300, y: 100 },
-  data: { label: 'Text' },
+  data: { label: 'Note' },
 };
 
 describe('edge operation utils', () => {
@@ -68,11 +67,11 @@ describe('edge operation utils', () => {
 
   it('resolves opposite handle ids using node-specific handle conventions', () => {
     expect(getOppositeTargetHandle(processNode, 'right')).toBe('left');
-    expect(getOppositeTargetHandle(textNode, 'right')).toBe('target-left');
+    expect(getOppositeTargetHandle(annotationNode, 'right')).toBe('left');
     expect(getOppositeTargetHandle(processNode, null)).toBeNull();
   });
 
-  it('builds translated annotation content and journey defaults', () => {
+  it('builds translated annotation content', () => {
     expect(
       getAddedNodeContent('annotation', {
         noteLabel: 'Note',
@@ -83,32 +82,9 @@ describe('edge operation utils', () => {
       subLabel: 'Add comments here',
       icon: 'StickyNote',
     });
-
-    expect(
-      getAddedNodeContent('journey', {
-        noteLabel: 'Ignored',
-        noteSubLabel: 'Ignored',
-      })
-    ).toEqual({
-      label: 'User Journey',
-      subLabel: 'User',
-    });
   });
 
   it('builds connected nodes and default edges without changing runtime defaults', () => {
-    const { newNode: journeyNode } = buildConnectedNode({
-      type: 'journey',
-      position: { x: 10, y: 20 },
-      labels: {
-        noteLabel: 'Note',
-        noteSubLabel: 'Add comments here',
-      },
-    });
-
-    expect(journeyNode.type).toBe('journey');
-    expect(journeyNode.position).toEqual({ x: 10, y: 20 });
-    expect(journeyNode.data.journeyTask).toBe('User Journey');
-
     const { newNode: annotationNode } = buildConnectedNode({
       type: 'annotation',
       position: { x: 20, y: 30 },
@@ -163,59 +139,6 @@ describe('edge operation utils', () => {
     expect(newNode.data.archZone).toBe('ap-south-1');
   });
 
-  it('builds and relayouts a connected mindmap topic from the source branch', () => {
-    const rootNode: FlowNode = {
-      id: 'root',
-      type: 'mindmap',
-      position: { x: 400, y: 260 },
-      data: {
-        label: 'Root',
-        color: 'slate',
-        shape: 'rounded',
-        mindmapDepth: 0,
-        mindmapBranchStyle: 'curved',
-      },
-      selected: true,
-    };
-
-    const childNode: FlowNode = {
-      id: 'child',
-      type: 'mindmap',
-      position: { x: 680, y: 260 },
-      data: {
-        label: 'Child',
-        color: 'slate',
-        shape: 'rounded',
-        mindmapDepth: 1,
-        mindmapParentId: 'root',
-        mindmapSide: 'right',
-      },
-      selected: false,
-    };
-
-    const result = buildConnectedMindmapTopic({
-      nodes: [rootNode, childNode],
-      edges: [
-        {
-          id: 'e-root-child',
-          source: 'root',
-          target: 'child',
-        },
-      ],
-      sourceNode: rootNode,
-      sourceHandle: 'right',
-      sourceId: 'root',
-      position: { x: 720, y: 320 },
-    });
-
-    expect(result.nextNode.type).toBe('mindmap');
-    expect(result.nextNode.data.mindmapParentId).toBe('root');
-    expect(result.nextNode.data.mindmapSide).toBe('right');
-    expect(result.insertedEdge.source).toBe('root');
-    expect(result.insertedEdge.target).toBe(result.nextNode.id);
-    expect(result.nextNodes.find((node) => node.id === 'root')?.position).toEqual({ x: 400, y: 260 });
-  });
-
   it('resolves connect-end autosnap, default add, and menu fallbacks', () => {
     const autosnap = resolveConnectEndAction({
       nodes: [processNode],
@@ -239,24 +162,20 @@ describe('edge operation utils', () => {
     });
 
     const add = resolveConnectEndAction({
-      nodes: [{
-        id: 'mind-root',
-        type: 'mindmap',
-        position: { x: 0, y: 0 },
-        data: { label: 'Root', mindmapDepth: 0 },
-      }],
+      nodes: [processNode],
       edges: [],
-      sourceId: 'mind-root',
+      sourceId: 'node-1',
       sourceHandle: 'right',
       position: { x: 600, y: 600 },
       clientPosition: { x: 30, y: 40 },
       targetIsPane: true,
-      canvasInteractionsV1Enabled: false,
+      canvasInteractionsV1Enabled: true,
     });
 
     expect(add).toEqual({
       type: 'add',
-      nodeType: 'mindmap',
+      nodeType: 'process',
+      shape: 'rounded',
       position: { x: 600, y: 600 },
     });
 

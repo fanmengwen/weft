@@ -1,6 +1,6 @@
 import { createElement, useMemo, type ReactElement } from 'react';
 import { useFlowStore } from '@/store';
-import type { Node } from '@/lib/reactflowCompat';
+import type { Edge, Node } from '@/lib/reactflowCompat';
 import { NodeType, type DiagramType, type NodeData } from '@/lib/types';
 import { initializeDiagramTypeRuntime } from '@/diagram-types/bootstrap';
 import { getDiagramNodeProperties } from '@/diagram-types/core';
@@ -16,26 +16,18 @@ interface DiagramNodePropertiesRouterProps {
   onFitSectionToContents?: (id: string) => void;
   onReleaseFromSection?: (id: string) => void;
   onBringContentsIntoSection?: (id: string) => void;
-  onAddMindmapChild?: (parentId: string) => void;
-  onAddMindmapSibling?: (nodeId: string) => void;
   onAddArchitectureService?: (sourceId: string) => void;
   onCreateArchitectureBoundary?: (sourceId: string) => void;
   onApplyArchitectureTemplate?: (
     sourceId: string,
     templateId: import('@/lib/architectureTemplates').ArchitectureTemplateId
   ) => void;
-  onGenerateEntityFields?: (nodeId: string) => Promise<void> | void;
   onSuggestArchitectureNode?: (nodeId: string) => Promise<void> | void;
-  onConvertEntitySelectionToClassDiagram?: () => void;
+  onChangeEdge?: (id: string, updates: Partial<Edge>) => void;
 }
 
 const NODE_TYPE_PANEL_MAP: Partial<Record<NodeType, DiagramType>> = {
   [NodeType.ARCHITECTURE]: 'architecture',
-  [NodeType.CLASS]: 'classDiagram',
-  [NodeType.ER_ENTITY]: 'erDiagram',
-  [NodeType.JOURNEY]: 'journey',
-  [NodeType.MINDMAP]: 'mindmap',
-  [NodeType.SEQUENCE_PARTICIPANT]: 'sequence',
 };
 
 export function resolveNodePropertiesPanelDiagramType(
@@ -53,14 +45,11 @@ export function DiagramNodePropertiesRouter({
   onFitSectionToContents,
   onReleaseFromSection,
   onBringContentsIntoSection,
-  onAddMindmapChild,
-  onAddMindmapSibling,
   onAddArchitectureService,
   onCreateArchitectureBoundary,
   onApplyArchitectureTemplate,
-  onGenerateEntityFields,
   onSuggestArchitectureNode,
-  onConvertEntitySelectionToClassDiagram,
+  onChangeEdge,
 }: DiagramNodePropertiesRouterProps): ReactElement {
   const tabs = useFlowStore((state) => state.tabs);
   const activeTabId = useFlowStore((state) => state.activeTabId);
@@ -85,6 +74,7 @@ export function DiagramNodePropertiesRouter({
         onFitSectionToContents={onFitSectionToContents}
         onReleaseFromSection={onReleaseFromSection}
         onBringContentsIntoSection={onBringContentsIntoSection}
+        onChangeEdge={onChangeEdge}
       />
     );
   }
@@ -94,13 +84,9 @@ export function DiagramNodePropertiesRouter({
     onChange,
     onDuplicate,
     onDelete,
-    onAddMindmapChild,
-    onAddMindmapSibling,
     onAddArchitectureService,
     onCreateArchitectureBoundary,
     onApplyArchitectureTemplate,
-    onGenerateEntityFields,
     onSuggestArchitectureNode,
-    onConvertEntitySelectionToClassDiagram,
   });
 }

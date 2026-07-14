@@ -32,4 +32,13 @@ describe('recoveryPresentation', () => {
       })
     ).toBe(false);
   });
+
+  it('does not offer editable recovery for unsupported families', () => {
+    expect(
+      canRecoverMermaidSource({
+        originalSource: 'classDiagram\nclass Animal',
+        importState: 'unsupported_family',
+      })
+    ).toBe(false);
+  });
 });

@@ -1,22 +1,22 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { BaseEdge, EdgeLabelRenderer, useReactFlow } from '@/lib/reactflowCompat';
-import { ROLLOUT_FLAGS } from '@/config/rolloutFlags';
-import { MarkerType } from '@/lib/reactflowCompat';
+import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { EdgeLabelRenderer, useReactFlow } from '@/lib/reactflowCompat';
 import { useDesignSystem } from '@/hooks/useDesignSystem';
 import type { EdgeData, FlowEdge } from '@/lib/types';
-import {
-  resolveRelationVisualSpec,
-  toMarkerUrl,
-} from './classRelationSemantics';
-import { resolveStandardEdgeMarkers } from './standardEdgeMarkers';
 import { resolveAnimatedEdgePresentation } from './animatedEdgePresentation';
 import {
   buildEdgeLabelUpdates,
   getEditableEdgeLabel,
 } from '@/components/properties/edge/edgeLabelModel';
 import type { CinematicRenderState } from '@/services/export/cinematicRenderState';
-import { EdgeMarkerDefs } from './EdgeMarkerDefs';
 import { resolveEdgeVisualStyle } from '@/theme';
+import {
+  buildDartArrowTransform,
+  computePathEndpoint,
+  DART_ARROW_PATH,
+  EDGE_ARROW_TRIM_PX,
+  shouldRenderDartMarker,
+  type PathEndpoint,
+} from './edgeDartArrow';
 
 interface CustomEdgeWrapperProps {
   id: string;
@@ -39,8 +39,16 @@ interface CustomEdgeWrapperProps {
   cinematicExportState?: CinematicRenderState;
 }
 
+const EDGE_ACCENT_COLOR = 'var(--wf-acc)';
+
 function toLabelTransform(x: number, y: number): string {
   return `translate(-50%, -50%) translate(${x}px,${y}px)`;
+}
+
+interface PathRenderMetrics {
+  pathLength: number;
+  end: PathEndpoint;
+  start: PathEndpoint;
 }
 
 export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
@@ -52,12 +60,12 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   targetY: _targetY,
   labelX,
   labelY,
-  markerEnd,
+  markerEnd: _markerEnd,
   markerEndConfig,
   style,
   data,
   label,
-  markerStart,
+  markerStart: _markerStart,
   markerStartConfig,
   selected = false,
   edgeAnimated = false,
@@ -66,11 +74,11 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   const { setEdges, screenToFlowPosition } = useReactFlow();
   const pathRef = useRef<SVGPathElement>(null);
   const labelRef = useRef<HTMLDivElement>(null);
+  const [pathMetrics, setPathMetrics] = useState<PathRenderMetrics | null>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isEditingLabel, setIsEditingLabel] = useState(false);
   const [labelDraft, setLabelDraft] = useState('');
   const designSystem = useDesignSystem();
-  const relationSemanticsV1Enabled = ROLLOUT_FLAGS.relationSemanticsV1;
 
   const beginLabelEdit = useCallback(() => {
     const current = getEditableEdgeLabel({
@@ -87,7 +95,7 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   const commitLabelEdit = useCallback(() => {
     setEdges((edges) =>
       edges.map((e) =>
-        e.id !== id ? e : { ...e, ...buildEdgeLabelUpdates(e as FlowEdge, labelDraft) }
+        e.id !== id ? e : { ...e, ...buildEdgeLabelUpdates(labelDraft) }
       )
     );
     setIsEditingLabel(false);
@@ -107,69 +115,34 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
   const showCinematicLabel =
     isBuiltCinematicEdge || (isActiveCinematicEdge && cinematicEdgeProgress >= 0.85);
 
-  const relationVisualSpec = resolveRelationVisualSpec(relationSemanticsV1Enabled, data, label);
-
-  const relationStyle = useMemo<React.CSSProperties>(
-    () => (relationVisualSpec?.dashed ? { strokeDasharray: '6 4' } : {}),
-    [relationVisualSpec?.dashed]
-  );
-
   const resolvedStyle = useMemo<React.CSSProperties>(
     () => ({
       stroke: designSystem.colors.edge,
       strokeWidth: designSystem.components.edge.strokeWidth,
       ...style,
-      ...relationStyle,
     }),
-    [designSystem.colors.edge, designSystem.components.edge.strokeWidth, style, relationStyle]
+    [designSystem.colors.edge, designSystem.components.edge.strokeWidth, style]
   );
 
-  const relationResolvedMarkerStart = relationVisualSpec
-    ? toMarkerUrl(relationVisualSpec.markerStartId)
-    : markerStart;
-  const relationResolvedMarkerEnd = relationVisualSpec
-    ? toMarkerUrl(relationVisualSpec.markerEndId)
-    : markerEnd;
-  const standardMarkers = useMemo(
-    () =>
-      resolveStandardEdgeMarkers({
-        connectorModelEnabled: !relationVisualSpec,
-        edgeId: id,
-        markerStartUrl: relationResolvedMarkerStart,
-        markerEndUrl: relationResolvedMarkerEnd,
-        markerStartConfig:
-          typeof markerStartConfig === 'object'
-            ? (markerStartConfig as {
-                type?: MarkerType | string;
-                color?: string;
-                width?: number;
-                height?: number;
-              })
-            : undefined,
-        markerEndConfig:
-          typeof markerEndConfig === 'object'
-            ? (markerEndConfig as {
-                type?: MarkerType | string;
-                color?: string;
-                width?: number;
-                height?: number;
-              })
-            : undefined,
-        stroke: String(resolvedStyle.stroke ?? designSystem.colors.edge),
-      }),
-    [
-      relationVisualSpec,
-      id,
-      relationResolvedMarkerStart,
-      relationResolvedMarkerEnd,
-      markerStartConfig,
-      markerEndConfig,
-      resolvedStyle.stroke,
-      designSystem.colors.edge,
-    ]
+  const showEndDart = shouldRenderDartMarker(
+    typeof markerEndConfig === 'object' ? markerEndConfig : undefined
   );
-  const resolvedMarkerStart = standardMarkers.markerStartUrl;
-  const resolvedMarkerEnd = standardMarkers.markerEndUrl;
+  const showStartDart =
+    typeof markerStartConfig === 'object' && shouldRenderDartMarker(markerStartConfig);
+  const edgeStrokeColor = String(resolvedStyle.stroke ?? designSystem.colors.edge);
+  const edgeStrokeWidth = Number(
+    resolvedStyle.strokeWidth ?? designSystem.components.edge.strokeWidth
+  );
+  const strokeColor = selected ? EDGE_ACCENT_COLOR : edgeStrokeColor;
+  const strokeWidth = selected ? 2 : edgeStrokeWidth;
+  const hasCustomDash = Boolean(resolvedStyle.strokeDasharray);
+  const trimDasharray =
+    !hasCustomDash &&
+    pathMetrics &&
+    pathMetrics.pathLength > EDGE_ARROW_TRIM_PX &&
+    (showEndDart || showStartDart)
+      ? `${pathMetrics.pathLength - EDGE_ARROW_TRIM_PX} ${EDGE_ARROW_TRIM_PX}`
+      : undefined;
   const animatedPresentation = useMemo(
     () =>
       resolveAnimatedEdgePresentation({
@@ -186,6 +159,20 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
     () => resolveEdgeVisualStyle(String(resolvedStyle.stroke ?? designSystem.colors.edge)),
     [designSystem.colors.edge, resolvedStyle.stroke]
   );
+
+  useLayoutEffect(() => {
+    const pathNode = pathRef.current;
+    if (!pathNode || typeof pathNode.getTotalLength !== 'function') {
+      return;
+    }
+
+    const pathLength = pathNode.getTotalLength();
+    setPathMetrics({
+      pathLength,
+      end: computePathEndpoint(pathNode, 'end'),
+      start: computePathEndpoint(pathNode, 'start'),
+    });
+  }, [displayPath]);
 
   useEffect(() => {
     const labelNode = labelRef.current;
@@ -316,7 +303,7 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
     strokeDashoffset: Math.max(0, 1 - cinematicEdgeProgress),
     strokeOpacity: 0.98,
   };
-  const cinematicMarkerVisible = cinematicEdgeProgress >= 0.995;
+  const cinematicDartVisible = cinematicEdgeProgress >= 0.995;
   const cinematicGlowStyle: React.CSSProperties = {
     ...resolvedStyle,
     stroke: 'rgba(59,130,246,0.22)',
@@ -325,16 +312,73 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
     strokeDashoffset: Math.max(0, 1 - cinematicEdgeProgress),
   };
 
+  const renderDartArrow = (
+    side: 'start' | 'end',
+    color: string,
+    visible: boolean
+  ): React.ReactElement | null => {
+    if (!visible || !pathMetrics) {
+      return null;
+    }
+
+    const endpoint = side === 'end' ? pathMetrics.end : pathMetrics.start;
+    return (
+      <path
+        data-chart-edge-dart={side}
+        d={DART_ARROW_PATH}
+        fill={color}
+        transform={buildDartArrowTransform(endpoint)}
+        pointerEvents="none"
+      />
+    );
+  };
+
   return (
     <>
-      <EdgeMarkerDefs standardMarkers={standardMarkers} />
+      <path
+        ref={pathRef}
+        d={displayPath}
+        fill="none"
+        stroke="none"
+        visibility="hidden"
+        pointerEvents="none"
+        aria-hidden="true"
+      />
       {shouldRenderBaseEdge ? (
-        <BaseEdge
-          path={displayPath}
-          markerEnd={resolvedMarkerEnd}
-          markerStart={resolvedMarkerStart}
-          style={resolvedStyle}
-        />
+        <>
+          {selected ? (
+            <path
+              data-chart-edge-glow="1"
+              d={displayPath}
+              fill="none"
+              stroke={EDGE_ACCENT_COLOR}
+              strokeWidth={6}
+              strokeLinecap="round"
+              opacity={0.14}
+              pointerEvents="none"
+            />
+          ) : null}
+          <path
+            data-chart-edge-main="1"
+            d={displayPath}
+            fill="none"
+            stroke={strokeColor}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeDasharray={trimDasharray ?? resolvedStyle.strokeDasharray}
+            style={
+              trimDasharray
+                ? undefined
+                : {
+                    strokeDasharray: resolvedStyle.strokeDasharray,
+                    strokeDashoffset: resolvedStyle.strokeDashoffset,
+                    strokeOpacity: resolvedStyle.strokeOpacity,
+                  }
+            }
+          />
+          {renderDartArrow('end', strokeColor, showEndDart)}
+          {renderDartArrow('start', strokeColor, showStartDart)}
+        </>
       ) : null}
       {cinematicActive && isActiveCinematicEdge ? (
         <>
@@ -353,10 +397,14 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
             fill="none"
             strokeLinecap="round"
             strokeLinejoin="round"
-            markerEnd={cinematicMarkerVisible ? resolvedMarkerEnd : undefined}
-            markerStart={cinematicMarkerVisible ? resolvedMarkerStart : undefined}
             style={cinematicEdgeStyle}
           />
+          {cinematicDartVisible ? (
+            <>
+              {renderDartArrow('end', edgeStrokeColor, showEndDart)}
+              {renderDartArrow('start', edgeStrokeColor, showStartDart)}
+            </>
+          ) : null}
         </>
       ) : null}
       {animatedPresentation.shouldRenderOverlay && !cinematicActive && (
@@ -388,15 +436,6 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
           <title>Select edge</title>
         </path>
       ) : null}
-      <path
-        ref={pathRef}
-        d={displayPath}
-        style={{ display: 'none' }}
-        fill="none"
-        stroke="none"
-        aria-hidden="true"
-      />
-
       {((renderedLabel && (!cinematicActive || showCinematicLabel)) ||
         (!cinematicActive && !hasArchitectureMeta && (selected || isHovered))) && (
         <EdgeLabelRenderer>
@@ -443,24 +482,30 @@ export const CustomEdgeWrapper = memo(function CustomEdgeWrapper({
               />
             ) : renderedLabel ? (
               <div
+                data-chart-edge-label-pill="1"
                 onPointerDown={onLabelPointerDown}
                 onDoubleClick={(e) => {
                   e.stopPropagation();
                   beginLabelEdit();
                 }}
-                className={`whitespace-nowrap px-2 py-0.5 rounded-full border shadow-sm text-[11px] font-medium select-none flow-lod-secondary flow-lod-shadow transition-all ${cinematicActive ? 'shadow-[0_6px_18px_rgba(15,23,42,0.08)]' : 'hover:shadow'}`}
+                className={`whitespace-nowrap border select-none flow-lod-secondary flow-lod-shadow transition-all ${cinematicActive ? 'shadow-[0_6px_18px_rgba(15,23,42,0.08)]' : 'hover:shadow'}`}
                 style={{
-                  backgroundColor: cinematicActive ? 'var(--brand-surface)' : edgeVisualStyle.pillBg,
+                  backgroundColor: cinematicActive ? 'var(--brand-surface)' : '#FFFFFF',
+                  border: cinematicActive ? '1px solid var(--color-brand-border)' : '1px solid #E6E8EC',
                   borderColor: cinematicActive
                     ? 'var(--color-brand-border)'
-                    : isHovered || selected
-                      ? edgeVisualStyle.pillHoverBorder
-                      : edgeVisualStyle.pillBorder,
+                    : selected
+                      ? EDGE_ACCENT_COLOR
+                      : '#E6E8EC',
+                  borderRadius: '999px',
+                  padding: '3px 10px',
+                  fontSize: '11px',
+                  fontWeight: 500,
                   color: cinematicActive
                     ? 'var(--brand-secondary)'
-                    : isHovered || selected
-                      ? edgeVisualStyle.pillHoverText
-                      : edgeVisualStyle.pillText,
+                    : selected
+                      ? EDGE_ACCENT_COLOR
+                      : '#5C6572',
                   boxShadow: !cinematicActive && selected
                     ? `0 0 0 2px ${edgeVisualStyle.focusRing}`
                     : undefined,

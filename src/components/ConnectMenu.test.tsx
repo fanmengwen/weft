@@ -57,40 +57,6 @@ vi.mock('react-i18next', () => ({
 }));
 
 describe('ConnectMenu', () => {
-  it('shows only topic creation for mindmap sources', () => {
-    render(
-      <ConnectMenu
-        position={{ x: 100, y: 100 }}
-        sourceId="mind-1"
-        sourceType="mindmap"
-        onSelect={vi.fn()}
-        onSelectAsset={vi.fn()}
-        onClose={vi.fn()}
-      />
-    );
-
-    expect(screen.getByText('Topic')).toBeTruthy();
-    expect(screen.queryByText('connectMenu.process')).toBeNull();
-  });
-
-  it('calls onSelect with mindmap when choosing a topic from a mindmap source', () => {
-    const onSelect = vi.fn();
-    render(
-      <ConnectMenu
-        position={{ x: 100, y: 100 }}
-        sourceId="mind-1"
-        sourceType="mindmap"
-        onSelect={onSelect}
-        onSelectAsset={vi.fn()}
-        onClose={vi.fn()}
-      />
-    );
-
-    fireEvent.click(screen.getByText('Topic'));
-
-    expect(onSelect).toHaveBeenCalledWith('mindmap', undefined, undefined);
-  });
-
   it('shows provider suggestions for asset nodes instead of generic shapes', async () => {
     mockStoreState.nodes = [
       {
@@ -146,24 +112,6 @@ describe('ConnectMenu', () => {
     );
 
     expect(await screen.findByRole('menuitem', { name: /Analytics Glue/i })).toBeTruthy();
-  });
-
-  it('surfaces contextual class creation first for class connectors', () => {
-    const onSelect = vi.fn();
-    render(
-      <ConnectMenu
-        position={{ x: 100, y: 100 }}
-        sourceId="class-1"
-        sourceType="class"
-        onSelect={onSelect}
-        onSelectAsset={vi.fn()}
-        onClose={vi.fn()}
-      />
-    );
-
-    fireEvent.click(screen.getByText('Class Node'));
-
-    expect(onSelect).toHaveBeenCalledWith('class', undefined, undefined);
   });
 
   it('passes yes-branch edge metadata for decision sources', () => {

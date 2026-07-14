@@ -12,6 +12,7 @@ import { useFlowEditorPanelActions } from './useFlowEditorPanelActions';
 import { useFlowEditorRuntime } from './useFlowEditorRuntime';
 import { useFlowEditorScreenState } from './useFlowEditorScreenState';
 import { useFlowEditorScreenBehavior } from './useFlowEditorScreenBehavior';
+import { useFlowEditorInteractionBindings } from './useFlowEditorInteractionBindings';
 
 interface UseFlowEditorScreenModelParams {
   onGoHome: () => void;
@@ -23,10 +24,9 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
   const screenState = useFlowEditorScreenState();
   const { location, navigate } = screenState;
   const consumedInitialDslRef = useRef<string | null>(null);
-  const { operations, callbacks } = useFlowEditorScreenBehavior({
+  const { operations, callbacks, selectedNodeType } = useFlowEditorScreenBehavior({
     screenState,
     t,
-    addToast,
   });
 
   const [pendingAIPrompt, setPendingAIPrompt] = useState<string | undefined>();
@@ -93,7 +93,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
   ]);
 
   const {
-    handleGenerateEntityFields,
     handleSuggestArchitectureNode,
     applyArchitectureTemplate,
   } = useFlowEditorPanelActions({
@@ -134,7 +133,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
   });
 
   const {
-    collaborationTopNavState,
     remotePresence,
     collaborationNodePositions,
     isLayouting,
@@ -230,7 +228,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       properties: {
         updateNodeData: operations.updateNodeData,
         applyBulkNodeData: operations.applyBulkNodeData,
-        updateNodeType: operations.updateNodeType,
         updateEdge: operations.updateEdge,
         deleteNode: operations.deleteNode,
         duplicateNode: operations.duplicateNode,
@@ -239,15 +236,10 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
         fitSectionToContents: operations.fitSectionToContents,
         releaseFromSection: operations.releaseFromSection,
         handleBringContentsIntoSection: operations.handleBringContentsIntoSection,
-        handleAddMindmapChild: operations.handleAddMindmapChild,
-        handleAddMindmapSibling: operations.handleAddMindmapSibling,
         handleAddArchitectureService: operations.handleAddArchitectureService,
         handleCreateArchitectureBoundary: operations.handleCreateArchitectureBoundary,
         handleApplyArchitectureTemplate: applyArchitectureTemplate,
-        handleGenerateEntityFields,
         handleSuggestArchitectureNode,
-        handleConvertEntitySelectionToClassDiagram:
-          operations.handleConvertEntitySelectionToClassDiagram,
       },
       studio: {
         handleCommandBarApply: callbacks.handleCommandBarApply,
@@ -312,7 +304,6 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       handleImportJSON,
       openHistory: screenState.openHistory,
       onGoHome,
-      collaborationTopNavState,
       openCommandBar: screenState.openCommandBar,
       handleAddShape: operations.handleAddShape,
       undo: screenState.undo,
@@ -322,6 +313,9 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       isSelectMode: screenState.isSelectMode,
       enableSelectMode: screenState.enableSelectMode,
       enablePanMode: screenState.enablePanMode,
+      isElementPaletteOpen: screenState.isElementPaletteOpen,
+      toggleElementPalette: screenState.toggleElementPalette,
+      closeElementPalette: screenState.closeElementPalette,
       getCenter: callbacks.getCenter,
       t,
       handleAddNode: operations.handleAddNode,
@@ -335,18 +329,54 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
       stopPlayback,
       handleAddAnnotation: operations.handleAddAnnotation,
       handleAddSection: operations.handleAddSection,
-      handleAddTextNode: operations.handleAddTextNode,
-      handleAddJourneyNode: operations.handleAddJourneyNode,
-      handleAddMindmapNode: operations.handleAddMindmapNode,
-      handleAddArchitectureNode: operations.handleAddArchitectureNode,
-      handleAddSequenceParticipant: operations.handleAddSequenceParticipant,
-      handleAddClassNode: operations.handleAddClassNode,
-      handleAddEntityNode: operations.handleAddEntityNode,
-      handleAddImage: operations.handleAddImage,
-      handleAddWireframe: operations.handleAddWireframe,
       handleAddDomainLibraryItem: operations.handleAddDomainLibraryItem,
     },
   });
+  const activeTab = screenState.pages.find((page) => page.id === screenState.activePageId);
+  const handleAutoLayout = useCallback(() => {
+    void onLayout('TB', 'layered', 'normal', activeTab?.diagramType);
+  }, [activeTab?.diagramType, onLayout]);
+
+  useFlowEditorInteractionBindings({
+    selectedNodeId: screenState.selectedNodeId,
+    selectedEdgeId: screenState.selectedEdgeId,
+    selectedNodeType,
+    deleteNode: operations.deleteNode,
+    deleteEdge: operations.deleteEdge,
+    undo: screenState.undo,
+    redo: screenState.redo,
+    canUndo: screenState.canUndo,
+    canRedo: screenState.canRedo,
+    onUndoUnavailable: () => {
+      addToast(t('history.undoUnavailable', 'Nothing to undo yet.'), 'info', 2500);
+    },
+    onRedoUnavailable: () => {
+      addToast(t('history.redoUnavailable', 'Nothing to redo right now.'), 'info', 2500);
+    },
+    duplicateNode: operations.duplicateNode,
+    selectAll: callbacks.selectAll,
+    openCommandBar: screenState.openCommandBar,
+    setShortcutsHelpOpen: screenState.setShortcutsHelpOpen,
+    enableSelectMode: screenState.enableSelectMode,
+    enablePanMode: screenState.enablePanMode,
+    closeElementPalette: screenState.closeElementPalette,
+    toggleElementPalette: screenState.toggleElementPalette,
+    onAutoLayout: handleAutoLayout,
+    fitView: screenState.fitView,
+    zoomIn: screenState.zoomIn,
+    zoomOut: screenState.zoomOut,
+    copySelection: operations.copySelection,
+    pasteSelection: operations.pasteSelection,
+    copyStyleSelection: operations.copyStyleSelection,
+    pasteStyleSelection: operations.pasteStyleSelection,
+    createConnectedNodeInDirection: operations.createConnectedNodeInDirection,
+    updateNodeData: operations.updateNodeData,
+    setSelectedNodeId: screenState.setSelectedNodeId,
+    setSelectedEdgeId: screenState.setSelectedEdgeId,
+    setNodes: screenState.setNodes,
+    setEdges: screenState.setEdges,
+  });
+
   const flowEditorController = useFlowEditorController(flowEditorControllerConfig);
 
   return {
@@ -372,6 +402,7 @@ export function useFlowEditorScreenModel({ onGoHome }: UseFlowEditorScreenModelP
     collaborationNodePositions,
     isLayouting,
     flowEditorController,
+    closeElementPalette: screenState.closeElementPalette,
     t,
   };
 }

@@ -206,8 +206,6 @@
     "fitView": "适应视图",
     "nudgeNode": "微移节点",
     "groupSelection": "分组选择",
-    "mindmapAddChild": "思维导图：添加子主题",
-    "mindmapAddSibling": "思维导图：添加同级主题",
     "renameSelection": "重命名所选项",
     "quickCreateConnectedNode": "快速创建连接节点",
     "annotationColors": "标注颜色",
@@ -220,6 +218,8 @@
     "help": "帮助",
     "selectTool": "选择工具",
     "handTool": "抓手工具",
+    "elementPalette": "元素面板",
+    "autoLayout": "自动布局",
     "getStarted": "开始使用",
     "bringToFront": "移至顶层",
     "sendToBack": "移至底层",
@@ -374,6 +374,11 @@
     "deleteNode": "删除节点",
     "duplicateNode": "复制节点"
   },
+  "elementPalette": {
+    "assetLibrary": "素材库",
+    "dragHint": "点击或拖拽到画布添加",
+    "title": "元素"
+  },
   "landing": {
     "nav": {
       "features": "功能",
@@ -517,9 +522,6 @@
     "shape": "形状",
     "color": "颜色",
     "icon": "图标",
-    "rotation": "旋转",
-    "transparency": "透明度",
-    "imageSettings": "图片设置",
     "bulkShape": "批量形状",
     "bulkColor": "批量颜色",
     "bulkIcon": "批量图标",
@@ -1559,10 +1561,6 @@
       "enableDescription": "共享匿名的基础使用数据（可选）"
     }
   },
-  "customNodes": {
-    "browserContent": "浏览器内容",
-    "mobileContent": "移动端内容"
-  },
   "keyboardShortcutsModal": {
     "title": "键盘快捷键",
     "subtitle": "用速度掌控您的工作流程。",
@@ -1581,11 +1579,13 @@
     "assets": "资源",
     "node": "形状",
     "stickyNote": "便利贴",
+    "annotation": "注释",
+    "decision": "判断",
+    "end": "结束",
+    "process": "处理",
+    "start": "开始",
     "section": "分区",
-    "text": "文本",
     "other": "其他",
-    "wireframes": "线框图",
-    "image": "图片",
     "autoLayout": "自动布局",
     "clearCanvas": "清除画布",
     "undo": "撤销 (Ctrl+Z)",
@@ -1709,10 +1709,7 @@
     "items": "项",
     "addCommentsHere": "在这里添加你的评论。",
     "newSection": "新分区",
-    "section": "部分",
-    "text": "文本",
-    "image": "图片",
-    "mindmap": "主题"
+    "section": "部分"
   },
   "actions": {
     "clearCanvasConfirm": "确定要清空画布吗？"
@@ -1789,7 +1786,6 @@
   "connectionPanel": {
     "architecture": "架构",
     "label": "标签",
-    "messagePlaceholder": "消息",
     "route": "路由",
     "appearance": "外观",
     "condition": "条件",
@@ -1804,7 +1800,6 @@
     "label": "画布右键菜单"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

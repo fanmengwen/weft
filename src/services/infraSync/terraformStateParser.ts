@@ -118,14 +118,14 @@ function getNodeType(resourceType: string): string {
       return 'system';
     case 'aws_cloudfront_distribution':
     case 'google_compute_global_forwarding_rule':
-      return 'browser';
+      return 'process';
     case 'kubernetes_deployment':
     case 'kubernetes_pod':
     case 'kubernetes_service':
       return 'system';
     case 'kubernetes_ingress':
     case 'kubernetes_ingress_v1':
-      return 'browser';
+      return 'process';
     case 'aws_elasticache_cluster':
     case 'aws_elasticache_replication_group':
       return 'system';

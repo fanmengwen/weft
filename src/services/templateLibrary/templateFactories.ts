@@ -8,11 +8,7 @@ export type TemplateCategory =
   | 'architecture'
   | 'aws'
   | 'azure'
-  | 'cncf'
-  | 'mindmap'
-  | 'journey'
-  | 'wireframe'
-  | 'sequence';
+  | 'cncf';
 
 export type ProviderKey = 'aws' | 'azure' | 'cncf';
 
@@ -86,57 +82,6 @@ export function createArchitectureNode(
       archResourceType: resourceType,
     },
   };
-}
-
-export function createMindmapNode(
-  id: string,
-  label: string,
-  x: number,
-  y: number,
-  options: Partial<NodeData> = {}
-): FlowNode {
-  return {
-    id,
-    type: NodeType.MINDMAP,
-    position: { x, y },
-    data: { label, color: 'slate', shape: 'rounded', mindmapBranchStyle: 'curved', ...options },
-  };
-}
-
-export function createJourneyNode(
-  id: string,
-  label: string,
-  actor: string,
-  section: string,
-  score: number,
-  x: number,
-  y: number
-): FlowNode {
-  return {
-    id,
-    type: NodeType.JOURNEY,
-    position: { x, y },
-    data: {
-      label,
-      subLabel: actor,
-      color: 'violet',
-      journeySection: section,
-      journeyTask: label,
-      journeyActor: actor,
-      journeyScore: score,
-    },
-  };
-}
-
-export function createWireframeNode(
-  id: string,
-  type: 'browser' | 'mobile',
-  label: string,
-  variant: string,
-  x: number,
-  y: number
-): FlowNode {
-  return { id, type, position: { x, y }, data: { label, color: 'slate', variant } };
 }
 
 export function createTemplate(

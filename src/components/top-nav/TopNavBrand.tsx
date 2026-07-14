@@ -74,7 +74,7 @@ export function TopNavBrand({
 
       {showTextLogo && (
         <div className="flex min-w-0 flex-col">
-          <span className="truncate text-base font-bold leading-none tracking-tight text-[var(--brand-text)] sm:text-lg">
+          <span className="truncate text-[15px] font-semibold text-[var(--wf-text)]">
             {appName}
           </span>
         </div>

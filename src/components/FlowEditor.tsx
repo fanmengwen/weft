@@ -57,6 +57,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
     collaborationNodePositions,
     isLayouting,
     flowEditorController,
+    closeElementPalette,
     t,
   } = useFlowEditorScreenModel({ onGoHome });
   const cinematicExportTheme = resolveCinematicExportTheme(cinematicExportState.backgroundMode);
@@ -201,6 +202,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
                 recordHistory={recordHistory}
                 isSelectMode={isSelectMode}
                 onCanvasEntityIntent={flowEditorController.handleCanvasEntityIntent}
+                onDismissToolbarOverlays={closeElementPalette}
               />
             }
             shouldRenderPanels={flowEditorController.shouldRenderPanels}
@@ -213,6 +215,7 @@ export function FlowEditor({ onGoHome }: FlowEditorProps) {
             playback={flowEditorController.chrome.playback}
             toolbar={flowEditorController.chrome.toolbar}
             emptyState={flowEditorController.chrome.emptyState}
+            onOpenStudio={flowEditorController.openStudioAI}
           />
 
           <input

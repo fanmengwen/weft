@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { DIAGRAM_TYPES } from '@/lib/types';
+import { initializeDiagramTypeRuntime } from '@/diagram-types/bootstrap';
 import {
   getMermaidFamilySupportMatrixEntry,
   listMermaidFamilySupportMatrix,
@@ -24,14 +25,22 @@ describe('mermaid support matrix', () => {
   });
 
   it('exposes partial-support guidance for richer technical families', () => {
-    expect(getMermaidFamilySupportMatrixEntry('classDiagram').partialConstructs).toEqual(
-      expect.arrayContaining(['generics', 'visibility richness'])
+    expect(getMermaidFamilySupportMatrixEntry('stateDiagram').partialConstructs).toEqual(
+      expect.arrayContaining(['advanced state semantics beyond current editable model'])
     );
-    expect(getMermaidFamilySupportMatrixEntry('erDiagram').partialConstructs).toEqual(
-      expect.arrayContaining(['constraint richness'])
-    );
-    expect(getMermaidFamilySupportMatrixEntry('sequence').partialConstructs).toEqual(
-      expect.arrayContaining(['advanced fragment fidelity'])
-    );
+  });
+
+  it('derives unsupported constructs for families without a registered plugin', () => {
+    initializeDiagramTypeRuntime();
+
+    const entry = getMermaidFamilySupportMatrixEntry('sequence');
+
+    expect(entry.label).toBe('Sequence');
+    expect(entry.editableConstructs).toEqual([]);
+    expect(entry.partialConstructs).toEqual([]);
+    expect(entry.unsupportedConstructs.length).toBeGreaterThan(0);
+    expect(
+      getMermaidFamilySupportMatrixEntry('flowchart').editableConstructs.length
+    ).toBeGreaterThan(0);
   });
 });

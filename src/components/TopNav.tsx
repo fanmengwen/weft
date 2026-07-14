@@ -7,7 +7,7 @@ import { TopNavBrand } from './top-nav/TopNavBrand';
 import { ModeSelector } from './top-nav/ModeSelector';
 import { TopNavActions } from './top-nav/TopNavActions';
 import { useTopNavState } from './top-nav/useTopNavState';
-import { APP_NAME, IS_BEVELED } from '@/lib/brand';
+import { APP_NAME } from '@/lib/brand';
 
 const OPEN_AI_SETTINGS_EVENT = 'open-ai-settings';
 
@@ -45,20 +45,6 @@ interface TopNavProps {
     onHistory: () => void;
     onGoHome: () => void;
     onPlay: () => void;
-    collaboration?: {
-        roomId: string;
-        inviteUrl: string;
-        viewerCount: number;
-        status: 'realtime' | 'waiting' | 'fallback';
-        cacheState: 'unavailable' | 'syncing' | 'ready' | 'hydrated';
-        participants: Array<{
-            clientId: string;
-            name: string;
-            color: string;
-            isLocal: boolean;
-        }>;
-        onCopyShareLink: () => void;
-    };
 }
 
 export function TopNav({
@@ -88,9 +74,7 @@ export function TopNav({
     onHistory,
     onGoHome,
     onPlay,
-    collaboration,
 }: TopNavProps): React.ReactElement {
-    const isBeveled = IS_BEVELED;
     const {
         isMenuOpen,
         isSettingsOpen,
@@ -113,12 +97,10 @@ export function TopNav({
     }, [openAISettings]);
 
     return (
-        <div className="absolute top-0 left-0 right-0 z-50 flex h-16 items-center justify-between px-4 transition-all sm:px-6">
-            {/* Left: Menu & Brand */}
-            <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+        <div className="absolute top-0 left-0 right-0 z-50 flex h-[52px] items-center justify-between gap-3 border-b border-[var(--wf-border)] bg-[var(--wf-surface)] px-3">
+            <div className="flex min-w-0 flex-1 items-center gap-1.5">
                 <TopNavMenu
                     isOpen={isMenuOpen}
-                    isBeveled={isBeveled}
                     onToggle={toggleMenu}
                     onClose={closeMenu}
                     onGoHome={onGoHome}
@@ -132,11 +114,11 @@ export function TopNav({
                     logoStyle="text"
                     ui={{ showBeta: true }}
                 />
-                <ModeSelector />
+                <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" />
+                <ModeSelector variant="flat" />
             </div>
 
-            {/* Center: Tabs */}
-            <div className="flex min-w-0 flex-[1.2] justify-center px-2 sm:px-3">
+            <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                 <FlowTabs
                     pages={pages}
                     activePageId={activePageId}
@@ -166,8 +148,6 @@ export function TopNav({
                     onDownloadOpenFlowDSL={onDownloadOpenFlowDSL}
                     onExportFigma={onExportFigma}
                     onDownloadFigma={onDownloadFigma}
-                    collaboration={collaboration}
-                    isBeveled={isBeveled}
                 />
             </div>
 

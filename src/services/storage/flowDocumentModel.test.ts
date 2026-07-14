@@ -85,7 +85,7 @@ describe('flowDocumentModel', () => {
         {
           id: 'doc-1:page:deployment',
           name: 'Deployment',
-          diagramType: 'sequence',
+          diagramType: 'flowchart',
           updatedAt: '2026-03-27T00:00:00.000Z',
           content: {
             nodes: [],
@@ -102,6 +102,110 @@ describe('flowDocumentModel', () => {
     expect(document.pages).toHaveLength(2);
     expect(document.activePageId).toBe('doc-1:page:deployment');
     expect(document.pages[1]?.name).toBe('Deployment');
+  });
+
+  it('downgrades retired node families when hydrating persisted pages', () => {
+    const document = createFlowDocumentFromPersistedDocument(
+      createPersistedDocument({
+        content: undefined,
+        pages: [
+          {
+            id: 'doc-1:page:primary',
+            name: 'Primary',
+            content: {
+              nodes: [
+                {
+                  id: 'n1',
+                  type: 'mindmap',
+                  position: { x: 0, y: 0 },
+                  data: { label: 'Idea' },
+                },
+              ],
+              edges: [],
+              history: { past: [], future: [] },
+              playback: undefined,
+            },
+          },
+        ],
+      })
+    );
+
+    expect(document.pages[0]?.nodes[0]?.type).toBe('process');
+    expect(document.pages[0]?.nodes[0]?.data.shape).toBe('rounded');
+  });
+
+  it('drops the retired sequence_message type when hydrating persisted pages', () => {
+    const document = createFlowDocumentFromPersistedDocument(
+      createPersistedDocument({
+        content: undefined,
+        pages: [
+          {
+            id: 'doc-1:page:primary',
+            name: 'Primary',
+            content: {
+              nodes: [],
+              edges: [{ id: 'e1', source: 'n1', target: 'n2', type: 'sequence_message' }],
+              history: { past: [], future: [] },
+              playback: undefined,
+            },
+          },
+        ],
+      })
+    );
+
+    expect(document.pages[0]?.edges[0]?.type).toBeUndefined();
+  });
+
+  it('downgrades retired node families inside hydrated history snapshots', () => {
+    const document = createFlowDocumentFromPersistedDocument(
+      createPersistedDocument({
+        content: {
+          nodes: [],
+          edges: [],
+          history: {
+            past: [
+              {
+                nodes: [
+                  {
+                    id: 'n1',
+                    type: 'mindmap',
+                    position: { x: 0, y: 0 },
+                    data: { label: 'Idea' },
+                  },
+                ],
+                edges: [],
+              },
+            ],
+            future: [],
+          },
+          playback: undefined,
+        },
+      })
+    );
+
+    expect(document.pages[0]?.history.past[0]?.nodes[0]?.type).toBe('process');
+  });
+
+  it('downgrades retired node families when hydrating legacy single-content documents', () => {
+    const document = createFlowDocumentFromPersistedDocument(
+      createPersistedDocument({
+        content: {
+          nodes: [
+            {
+              id: 'n1',
+              type: 'mindmap',
+              position: { x: 0, y: 0 },
+              data: { label: 'Idea' },
+            },
+          ],
+          edges: [],
+          history: { past: [], future: [] },
+          playback: undefined,
+        },
+      })
+    );
+
+    expect(document.pages[0]?.nodes[0]?.type).toBe('process');
   });
 
   it('converts flow documents back to tabs for the current editor UI', () => {

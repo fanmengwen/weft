@@ -98,7 +98,6 @@ function SectionNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
       selected={Boolean(selected)}
       minWidth={minWidth}
       minHeight={minHeight}
-      handleClassName="!w-3 !h-3 !border-2 !border-white transition-opacity"
       handleVisibilityOptions={{ includeConnectingState: false }}
     >
       <div

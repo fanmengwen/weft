@@ -1,10 +1,4 @@
-export {
-  ArchitectureBulkSection,
-  ClassBulkSection,
-  JourneyBulkSection,
-  SequenceBulkSection,
-  WireframeVariantBulkSection,
-} from './BulkNodePropertiesFamilySections';
+export { ArchitectureBulkSection } from './BulkNodePropertiesFamilySections';
 
 export {
   FindReplaceBulkSection,

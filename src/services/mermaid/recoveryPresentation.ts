@@ -16,6 +16,10 @@ export function canRecoverMermaidSource(params: {
   importState?: MermaidImportStatus;
   layoutMode?: MermaidDiagnosticsSnapshot['layoutMode'];
 }): boolean {
+  if (params.importState === 'unsupported_family') {
+    return false;
+  }
+
   return Boolean(
     params.originalSource
     && (

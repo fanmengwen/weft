@@ -29,7 +29,7 @@ function renderArrowHead(tx: number, ty: number, targetPos: Position): string {
             break;
     }
 
-    return `<path d="${path}" stroke="#94a3b8" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />`;
+    return `<path d="${path}" stroke="#c3c9d3" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" />`;
 }
 
 function resolveHandlePositions(sourceNode: Node, targetNode: Node, edge: Edge): HandleResolution {
@@ -127,7 +127,7 @@ export function renderEdgesLayer(out: string[], nodes: Node[], edges: Edge[]): v
             borderRadius: 16,
         });
 
-        out.push(`  <path d="${pathData}" stroke="#94a3b8" stroke-width="2" fill="none" />`);
+        out.push(`  <path d="${pathData}" stroke="#c3c9d3" stroke-width="1.6" fill="none" />`);
         out.push(`  ${renderArrowHead(tx, ty, targetPos)}`);
 
         if (edge.label) {

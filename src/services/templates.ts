@@ -1,4 +1,4 @@
-import { Layout, Cloud, GitBranch, Monitor, Route, ShipWheel } from 'lucide-react';
+import { Layout, Cloud, ShipWheel } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type {
@@ -37,13 +37,6 @@ function getTemplateIcon(category: string): LucideIcon {
       return Layout;
     case 'cncf':
       return ShipWheel;
-    case 'mindmap':
-    case 'sequence':
-      return GitBranch;
-    case 'journey':
-      return Route;
-    case 'wireframe':
-      return Monitor;
     case 'flowchart':
     default:
       return Layout;

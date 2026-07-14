@@ -15,8 +15,6 @@ direction: TB | LR       # default TB
 [decision]     branch: Approved?     { color: "amber" }
 [system]       api:    Internal API
 [architecture] db:     Postgres     { archProvider: "aws", archResourceType: "databases-rds" }
-[browser]      web:    Dashboard
-[mobile]       app:    Mobile App
 [note]         n:      Latency 200ms
 
 # Edges

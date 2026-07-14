@@ -45,140 +45,140 @@
     "name": "sequence-basic",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant Alice\nparticipant Bob\nAlice->>Bob: Hello"
   },
   {
     "name": "sequence-activation-and-alt",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nA->>B: Request\nactivate B\nalt success\n  B-->>A: Response\nelse failure\n  B-->>A: Error\nend\ndeactivate B"
   },
   {
     "name": "sequence-invalid-message",
     "family": "sequence",
     "expectedOfficial": "invalid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nA->>"
   },
   {
     "name": "sequence-partial-after-valid-message",
     "family": "sequence",
     "expectedOfficial": "invalid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nA->>B: Hello\nA->>"
   },
   {
     "name": "class-basic",
     "family": "classDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass Animal\nclass Duck\nAnimal <|-- Duck"
   },
   {
     "name": "class-cardinality-generic",
     "family": "classDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass Repository~T~\nclass User\nRepository~T~ \"1\" --> \"*\" User : stores"
   },
   {
     "name": "class-generic-multi-param",
     "family": "classDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass Map~K, V~\nclass Entry\nMap~K, V~ --> Entry : stores"
   },
   {
     "name": "class-invalid-relation",
     "family": "classDiagram",
     "expectedOfficial": "environment_limited",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "classDiagram\nclass User\nUser -> Account"
   },
   {
     "name": "er-basic",
     "family": "erDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nCUSTOMER ||--o{ ORDER : places"
   },
   {
     "name": "er-field-metadata",
     "family": "erDiagram",
     "expectedOfficial": "invalid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nORDER {\n  uuid id PK\n  uuid customer_id FK REFERENCES CUSTOMER.id\n  string external_id UNIQUE\n}"
   },
   {
     "name": "er-field-references-table-only",
     "family": "erDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nORDER {\n  uuid customer_id FK REFERENCES CUSTOMER\n  string external_id UK\n}"
   },
   {
     "name": "er-field-dotted-reference",
     "family": "erDiagram",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "erDiagram\nORDER {\n  uuid customer_id FK REFERENCES billing.Customer.id\n}"
   },
   {
     "name": "mindmap-basic",
     "family": "mindmap",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "mindmap\n  Root\n    Branch A\n    Branch B"
   },
   {
     "name": "mindmap-wrapped-nodes",
     "family": "mindmap",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "mindmap\n  root((Root))\n    feature[[Child A]]\n    decision{{Child B}}"
   },
   {
     "name": "mindmap-dotted-aliases",
     "family": "mindmap",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "mindmap\n  platform.root((Root))\n    platform.api[[Child A]]\n    platform.branch(Child B)"
   },
   {
     "name": "journey-basic",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Checkout\nsection Happy\n  Search: 5: User\n  Buy: 3: User"
   },
   {
     "name": "journey-multiple-sections",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Incident Response\nsection Detect\n  Alert fires: 5: SRE\nsection Resolve\n  Mitigate: 3: SRE, Platform"
   },
   {
     "name": "journey-invalid-score",
     "family": "journey",
     "expectedOfficial": "environment_limited",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Checkout\nsection Happy\n  Search: User"
   },
   {
     "name": "journey-colon-rich-step",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Incident Response\nsection Alerts\n  HTTP: 500 Error: 1: SRE: On-call\n  Recover service: 4: API: Team"
   },
   {
     "name": "journey-support-escalation",
     "family": "journey",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "journey\ntitle Support Escalation\nsection Intake\n  Customer reports issue: 2: Support\n  Triage severity: 3: Support\nsection Escalation\n  Hand off to engineering: 4: Support, Engineering\n  Confirm resolution: 5: Support"
   },
   {
@@ -283,21 +283,21 @@
     "name": "sequence-par-and",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nparticipant C\npar fast lane\n  A->>B: Request\nand slow lane\n  A->>C: Request\nend"
   },
   {
     "name": "sequence-note-inside-alt",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\nalt success\n  note over A, B: Shared context\n  A->>B: Request\nelse failure\n  B-->>A: Error\nend"
   },
   {
     "name": "sequence-critical-option",
     "family": "sequence",
     "expectedOfficial": "valid",
-    "expectedEditableGate": "supported_family",
+    "expectedEditableGate": "unsupported_family",
     "source": "sequenceDiagram\nparticipant A\nparticipant B\ncritical primary path\n  A->>B: Request\noption fallback path\n  B-->>A: Error\nend"
   },
   {

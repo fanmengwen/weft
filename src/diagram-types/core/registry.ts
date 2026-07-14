@@ -18,3 +18,7 @@ export function listDiagramPlugins(): DiagramPlugin[] {
 export function resetDiagramPluginRegistryForTests(): void {
   pluginRegistry.clear();
 }
+
+export function unregisterDiagramPluginForTests(diagramType: DiagramType): void {
+  pluginRegistry.delete(diagramType);
+}

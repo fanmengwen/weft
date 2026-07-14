@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from '../Tooltip';
 
@@ -60,12 +59,19 @@ export function SaveStatusIndicator({
     >
       <div
         aria-label={ariaLabel}
-        className="flex cursor-default items-center justify-center rounded-md p-1.5 text-[var(--brand-primary)] transition-colors duration-300 animate-in fade-in zoom-in-50 hover:bg-[var(--brand-surface)]"
+        className="flex cursor-default items-center justify-center px-1"
       >
-        <ShieldCheck
-          className="h-[18px] w-[18px] drop-shadow-sm text-white"
-          fill="var(--brand-primary)"
-        />
+        <svg width={15} height={15} viewBox="0 0 24 24" aria-hidden className="block shrink-0">
+          <circle cx={12} cy={12} r={10} fill="var(--wf-acc)" />
+          <path
+            d="M8 12.2 L10.8 15 L16 9.5"
+            stroke="#fff"
+            strokeWidth={2.2}
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </div>
     </Tooltip>
   );

@@ -207,8 +207,6 @@
     "fitView": "Görünüme Sığdır",
     "nudgeNode": "Düğümü Hafifçe Taşı",
     "groupSelection": "Seçimi Grupla",
-    "mindmapAddChild": "Zihin Haritası: Alt Konu Ekle",
-    "mindmapAddSibling": "Zihin Haritası: Kardeş Konu Ekle",
     "renameSelection": "Seçimi Yeniden Adlandır",
     "quickCreateConnectedNode": "Bağlı Düğümü Hızlı Oluştur",
     "annotationColors": "Not Renkleri",
@@ -221,6 +219,8 @@
     "help": "Yardım",
     "selectTool": "Seçim Aracı",
     "handTool": "El Aracı",
+    "elementPalette": "Öğe paneli",
+    "autoLayout": "Otomatik Düzen",
     "getStarted": "Hemen Başla",
     "bringToFront": "Öne Getir",
     "sendToBack": "Arkaya Gönder",
@@ -374,6 +374,11 @@
     "deleteNode": "Düğümü Sil",
     "duplicateNode": "Düğümü Çoğalt"
   },
+  "elementPalette": {
+    "assetLibrary": "Varlık kütüphanesi",
+    "dragHint": "Tuvale eklemek için tıklayın veya sürükleyin",
+    "title": "Öğeler"
+  },
   "nodes": {
     "newNode": "Yeni Düğüm",
     "processStep": "İşlem Adımı",
@@ -382,14 +387,11 @@
     "addCommentsHere": "Yorumlarınızı buraya ekleyin.",
     "newSection": "Yeni Bölüm",
     "section": "Bölüm",
-    "text": "Metin",
-    "image": "Görsel",
     "group": "Grup",
     "items": "öğe",
     "database": "Veritabanı",
     "inputOutput": "Giriş / Çıkış",
-    "branch": "Dal",
-    "mindmap": "Konu"
+    "branch": "Dal"
   },
   "actions": {
     "clearCanvasConfirm": "Tuvali temizlemek istediğinizden emin misiniz?"
@@ -536,9 +538,6 @@
     "shape": "Şekil",
     "color": "Renk",
     "icon": "İkon",
-    "rotation": "Döndürme",
-    "transparency": "Saydamlık",
-    "imageSettings": "Görsel Ayarları",
     "bulkShape": "Toplu Şekil",
     "bulkColor": "Toplu Renk",
     "bulkIcon": "Toplu İkon",
@@ -1545,10 +1544,6 @@
       "enableDescription": "Anonim temel kullanım verilerini paylaş (isteğe bağlı)"
     }
   },
-  "customNodes": {
-    "browserContent": "Tarayıcı İçeriği",
-    "mobileContent": "Mobil İçerik"
-  },
   "keyboardShortcutsModal": {
     "title": "Klavye Kısayolları",
     "subtitle": "İş akışınıza hızla hakim olun.",
@@ -1567,11 +1562,13 @@
     "assets": "Varlıklar",
     "node": "Şekil",
     "stickyNote": "Yapışkan Not",
+    "annotation": "Not",
+    "decision": "Karar",
+    "end": "Bitiş",
+    "process": "İşlem",
+    "start": "Başlangıç",
     "section": "Bölüm",
-    "text": "Metin",
     "other": "Diğer",
-    "wireframes": "Tel Çerçeveler",
-    "image": "Resim",
     "autoLayout": "Otomatik Düzen",
     "clearCanvas": "Tuvali Temizle",
     "undo": "Geri Al (Ctrl+Z)",
@@ -1755,7 +1752,6 @@
   "connectionPanel": {
     "architecture": "Mimari",
     "label": "Etiket",
-    "messagePlaceholder": "Mesaj",
     "route": "Yol",
     "appearance": "Görünüm",
     "condition": "Koşul",
@@ -1770,7 +1766,6 @@
     "label": "Tuval Bağlam Menüsü"
   },
   "canvas": {},
-  "mindmap": {},
   "aiModel": {
     "buttons": {}
   },

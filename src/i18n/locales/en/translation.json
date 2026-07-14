@@ -205,8 +205,6 @@
     "fitView": "Fit View",
     "nudgeNode": "Nudge Node",
     "groupSelection": "Group Selection",
-    "mindmapAddChild": "Mindmap: Add Child Topic",
-    "mindmapAddSibling": "Mindmap: Add Sibling Topic",
     "renameSelection": "Rename Selection",
     "quickCreateConnectedNode": "Quick-create Connected Node",
     "annotationColors": "Annotation Colors",
@@ -221,6 +219,8 @@
     "help": "Help",
     "selectTool": "Select Tool",
     "handTool": "Hand Tool",
+    "elementPalette": "Element Palette",
+    "autoLayout": "Auto Layout",
     "getStarted": "Get Started",
     "bringToFront": "Bring to Front",
     "sendToBack": "Send to Back",
@@ -374,6 +374,11 @@
     "deleteNode": "Delete Node",
     "duplicateNode": "Duplicate Node"
   },
+  "elementPalette": {
+    "assetLibrary": "Asset library",
+    "dragHint": "Click or drag to add to the canvas",
+    "title": "Elements"
+  },
   "nodes": {
     "newNode": "New Node",
     "processStep": "Process Step",
@@ -382,14 +387,11 @@
     "addCommentsHere": "Add your comments here.",
     "newSection": "New Section",
     "section": "Section",
-    "text": "Text",
-    "image": "Image",
     "group": "Group",
     "items": "items",
     "database": "Database",
     "inputOutput": "Input / Output",
-    "branch": "Branch",
-    "mindmap": "Topic"
+    "branch": "Branch"
   },
   "actions": {
     "clearCanvasConfirm": "Are you sure you want to clear the canvas?"
@@ -537,9 +539,6 @@
     "shape": "Shape",
     "color": "Color",
     "icon": "Icon",
-    "rotation": "Rotation",
-    "transparency": "Transparency",
-    "imageSettings": "Image Settings",
     "bulkShape": "Bulk Shape",
     "bulkColor": "Bulk Color",
     "bulkIcon": "Bulk Icon",
@@ -1615,10 +1614,6 @@
     "shortcutsHint": "You can also press ? to view these anytime.",
     "canvasSettings": "Canvas Settings"
   },
-  "customNodes": {
-    "browserContent": "Browser Content",
-    "mobileContent": "Mobile Content"
-  },
   "keyboardShortcutsModal": {
     "title": "Keyboard Shortcuts",
     "subtitle": "Master your workflow with speed.",
@@ -1637,11 +1632,13 @@
     "assets": "Assets",
     "node": "Shape",
     "stickyNote": "Note",
+    "annotation": "Note",
+    "decision": "Decision",
+    "end": "End",
+    "process": "Process",
+    "start": "Start",
     "section": "Section",
-    "text": "Text",
     "other": "Other",
-    "wireframes": "Wireframes",
-    "image": "Image",
     "autoLayout": "Auto Layout",
     "clearCanvas": "Clear Canvas",
     "undo": "Undo (Ctrl+Z)",
@@ -1753,7 +1750,6 @@
     "architecture": "Architecture",
     "condition": "Condition",
     "label": "Label",
-    "messagePlaceholder": "Message",
     "route": "Route",
     "style": "Style",
     "appearance": "Appearance",

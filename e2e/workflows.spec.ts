@@ -23,10 +23,10 @@ async function createNewFlow(page: import('@playwright/test').Page) {
   await expect(page.getByTestId('topnav-menu-toggle')).toBeVisible({ timeout: 15000 });
 }
 
-async function addRectangleNode(page: import('@playwright/test').Page) {
-  await expect(page.getByTestId('toolbar-add-toggle')).toBeVisible({ timeout: 15000 });
-  await page.getByTestId('toolbar-add-toggle').click();
-  await page.getByRole('button', { name: 'Rectangle' }).click();
+async function addProcessNode(page: import('@playwright/test').Page) {
+  await expect(page.getByTestId('toolbar-add')).toBeVisible({ timeout: 15000 });
+  await page.getByTestId('toolbar-add').click();
+  await page.getByRole('button', { name: 'Process' }).click();
 }
 
 // ---------------------------------------------------------------------------
@@ -35,7 +35,7 @@ async function addRectangleNode(page: import('@playwright/test').Page) {
 
 test('creates a node and edits its label via double-click', async ({ page }) => {
   await createNewFlow(page);
-  await addRectangleNode(page);
+  await addProcessNode(page);
 
   const node = page.locator('.react-flow__node').first();
   await expect(node).toBeVisible();
@@ -62,7 +62,7 @@ test('undo removes a node and redo restores it', async ({ page }) => {
   const nodes = page.locator('.react-flow__node');
   await expect(nodes).toHaveCount(0);
 
-  await addRectangleNode(page);
+  await addProcessNode(page);
   await expect(nodes).toHaveCount(1);
 
   await page.keyboard.press('ControlOrMeta+Z');
@@ -78,7 +78,7 @@ test('undo removes a node and redo restores it', async ({ page }) => {
 
 test('exports the diagram as JSON and download starts', async ({ page }) => {
   await createNewFlow(page);
-  await addRectangleNode(page);
+  await addProcessNode(page);
 
   await page.getByTestId('topnav-export').click();
   await page.getByRole('tab', { name: 'Code' }).click();
@@ -97,7 +97,7 @@ test('exports the diagram as JSON and download starts', async ({ page }) => {
 
 test('exports the diagram as PNG and download starts', async ({ page }) => {
   await createNewFlow(page);
-  await addRectangleNode(page);
+  await addProcessNode(page);
 
   await page.getByTestId('topnav-export').click();
   await expect(page.getByTestId('export-action-png-download')).toBeVisible();
@@ -127,16 +127,16 @@ test('can create a second tab', async ({ page }) => {
 // Create → Duplicate selected node via Properties Panel
 // ---------------------------------------------------------------------------
 
-test('duplicates a selected node via the properties panel', async ({ page }) => {
+test('duplicates a selected node via keyboard shortcut', async ({ page }) => {
   await createNewFlow(page);
-  await addRectangleNode(page);
+  await addProcessNode(page);
 
   const nodes = page.locator('.react-flow__node');
   await expect(nodes).toHaveCount(1);
 
-  // Click node to open the properties panel, then duplicate via the button
+  // Duplicate is keyboard-only (Cmd/Ctrl+D); there is no panel button.
   await nodes.first().click();
-  await page.getByRole('button', { name: 'Duplicate' }).click();
+  await page.keyboard.press('ControlOrMeta+d');
 
   await expect(nodes).toHaveCount(2);
 });
@@ -147,14 +147,14 @@ test('duplicates a selected node via the properties panel', async ({ page }) => 
 
 test('deletes a selected node via the properties panel', async ({ page }) => {
   await createNewFlow(page);
-  await addRectangleNode(page);
+  await addProcessNode(page);
 
   const nodes = page.locator('.react-flow__node');
   await expect(nodes).toHaveCount(1);
 
   // Click node to open the properties panel, then delete via the button
   await nodes.first().click();
-  await page.getByRole('button', { name: 'Delete' }).click();
+  await page.getByRole('button', { name: '删除节点' }).click();
 
   await expect(nodes).toHaveCount(0);
 });
@@ -289,8 +289,8 @@ test('flow tabs have tab role', async ({ page }) => {
 test('can navigate nodes with keyboard', async ({ page }) => {
   await createNewFlow(page);
 
-  await page.getByTestId('toolbar-add-toggle').click();
-  await page.getByRole('button', { name: /^(Note|Sticky Note)$/ }).click();
+  await page.getByTestId('toolbar-add').click();
+  await page.getByRole('button', { name: 'Note' }).click();
 
   await page.keyboard.press('Tab');
   await page.keyboard.press('Tab');

@@ -12,16 +12,6 @@ interface CreateGenericShapeNodeOptions {
   layerId?: string;
 }
 
-interface CreateMindmapTopicNodeOptions {
-  id: string;
-  position: { x: number; y: number };
-  depth: number;
-  parentId: string;
-  side: 'left' | 'right';
-  branchStyle: 'curved' | 'straight';
-  layerId?: string;
-}
-
 interface CreateArchitectureServiceNodeOptions {
   id: string;
   position: { x: number; y: number };
@@ -103,34 +93,6 @@ export function createSectionNode(
   });
 }
 
-export function createTextNode(
-  id: string,
-  position: { x: number; y: number },
-  label: string
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, subLabel: '', color: 'slate' },
-    type: 'text',
-  };
-}
-
-export function createImageNode(
-  id: string,
-  imageUrl: string,
-  position: { x: number; y: number },
-  label: string
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, imageUrl, transparency: 1, rotation: 0 },
-    type: 'image',
-    style: { width: 200, height: 200 },
-  };
-}
-
 export function createMermaidSvgNode(
   id: string,
   position: { x: number; y: number },
@@ -166,52 +128,6 @@ export function createMermaidSvgNode(
   };
 }
 
-export function createClassNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'ClassName'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', classStereotype: '', classAttributes: [], classMethods: [] },
-    type: 'class',
-  };
-}
-
-export function createEntityNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'entity'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'blue', erFields: [] },
-    type: 'er_entity',
-  };
-}
-
-export function createJourneyNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Step'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: {
-      label,
-      color: 'violet',
-      journeySection: '',
-      journeyActor: '',
-      journeyTask: label,
-      journeyScore: 3,
-    },
-    type: 'journey',
-  };
-}
-
 export function createArchitectureNode(
   id: string,
   position: { x: number; y: number },
@@ -222,74 +138,6 @@ export function createArchitectureNode(
     position,
     data: { label, color: 'blue', archProvider: 'aws', archResourceType: 'service' },
     type: 'architecture',
-  };
-}
-
-export function createBrowserNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Page'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', icon: 'lock', variant: 'default' },
-    type: 'browser',
-    style: { width: 400, height: 300 },
-  };
-}
-
-export function createMobileNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Screen'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', variant: 'default' },
-    type: 'mobile',
-    style: { width: 300, height: 600 },
-  };
-}
-
-export function createSequenceParticipantNode(
-  id: string,
-  position: { x: number; y: number },
-  label = 'Actor'
-): FlowNode {
-  return {
-    id,
-    position,
-    data: { label, color: 'slate', seqParticipantKind: 'participant' },
-    type: 'sequence_participant',
-  };
-}
-
-export function createMindmapTopicNode({
-  id,
-  position,
-  depth,
-  parentId,
-  side,
-  branchStyle,
-  layerId,
-}: CreateMindmapTopicNodeOptions): FlowNode {
-  return {
-    id,
-    type: 'mindmap',
-    position,
-    data: {
-      label: 'New Topic',
-      color: 'slate',
-      shape: 'rounded',
-      mindmapDepth: depth,
-      mindmapParentId: parentId,
-      mindmapSide: side,
-      mindmapBranchStyle: branchStyle,
-      layerId,
-    },
-    selected: true,
   };
 }
 

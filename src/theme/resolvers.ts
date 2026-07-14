@@ -8,7 +8,7 @@ import type {
   NodeExportColor,
 } from './types';
 
-const DEFAULT_EDGE_COLOR = '#94a3b8';
+const DEFAULT_EDGE_COLOR = '#c3c9d3';
 
 const ANNOTATION_COLOR_ALIASES: Record<string, NodeColorKey> = {
   green: 'emerald',
@@ -120,27 +120,6 @@ export function resolveContainerVisualStyle(
     hoverBg: mixHex(resolved.bg, '#ffffff', 0.16),
     badgeBg: mixHex(resolved.border, '#ffffff', 0.74),
     badgeText: mixHex(resolved.text, '#ffffff', 0.1),
-  };
-}
-
-export function resolveTextVisualStyle(
-  colorKey?: string,
-  colorMode: NodeColorMode = 'subtle',
-  customColor?: string,
-  fallback: NodeColorKey = 'slate'
-): Pick<ContainerVisualStyle, 'border' | 'text' | 'hoverBg'> {
-  const resolved = resolveNodeVisualStyle(
-    resolveSharedColorKey(colorKey, fallback),
-    colorMode,
-    customColor
-  );
-  return {
-    border: mixHex(resolved.border, '#ffffff', 0.18),
-    text: mixHex(resolved.text, '#0f172a', 0.22),
-    hoverBg:
-      colorMode === 'filled'
-        ? mixHex(resolved.bg, '#000000', 0.06)
-        : mixHex(resolved.bg, '#ffffff', 0.28),
   };
 }
 

@@ -11,7 +11,6 @@ interface UseFlowCanvasMenusAndActionsParams {
     deleteNode: (id: string) => void;
     deleteEdge: (id: string) => void;
     updateNodeZIndex: (id: string, action: 'front' | 'back') => void;
-    updateNodeType: (id: string, type: string) => void;
     updateNodeData: (id: string, updates: Record<string, unknown>) => void;
     fitSectionToContents: (id: string) => void;
     releaseFromSection: (id: string) => void;
@@ -32,7 +31,6 @@ export function useFlowCanvasMenusAndActions({
     deleteNode,
     deleteEdge,
     updateNodeZIndex,
-    updateNodeType,
     updateNodeData,
     fitSectionToContents,
     releaseFromSection,
@@ -56,7 +54,6 @@ export function useFlowCanvasMenusAndActions({
         deleteNode,
         deleteEdge,
         updateNodeZIndex,
-        updateNodeType,
         updateNodeData,
         fitSectionToContents,
         releaseFromSection,

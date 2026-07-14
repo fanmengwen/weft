@@ -19,7 +19,6 @@ interface PropertiesPanelProps {
     labelPrefix?: string,
     labelSuffix?: string
   ) => number;
-  onChangeNodeType: (id: string, type: string) => void;
   onChangeEdge: (id: string, updates: Partial<Edge>) => void;
   onDeleteNode: (id: string) => void;
   onDuplicateNode: (id: string) => void;
@@ -28,14 +27,10 @@ interface PropertiesPanelProps {
   onFitSectionToContents: (id: string) => void;
   onReleaseFromSection: (id: string) => void;
   onBringContentsIntoSection: (id: string) => void;
-  onAddMindmapChild: (parentId: string) => void;
-  onAddMindmapSibling: (nodeId: string) => void;
   onAddArchitectureService: (sourceId: string) => void;
   onCreateArchitectureBoundary: (sourceId: string) => void;
   onApplyArchitectureTemplate: (sourceId: string, templateId: ArchitectureTemplateId) => void;
-  onGenerateEntityFields: (nodeId: string) => Promise<void> | void;
   onSuggestArchitectureNode: (nodeId: string) => Promise<void> | void;
-  onConvertEntitySelectionToClassDiagram: () => void;
   onClose: () => void;
 }
 
@@ -52,14 +47,10 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   onFitSectionToContents,
   onReleaseFromSection,
   onBringContentsIntoSection,
-  onAddMindmapChild,
-  onAddMindmapSibling,
   onAddArchitectureService,
   onCreateArchitectureBoundary,
   onApplyArchitectureTemplate,
-  onGenerateEntityFields,
   onSuggestArchitectureNode,
-  onConvertEntitySelectionToClassDiagram,
   onClose,
 }) => {
   const { t } = useTranslation();
@@ -84,11 +75,45 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
   }
 
   const isBulkEdit = selectedNodes.length > 1;
+  const isSingleNode = Boolean(selectedNode && !isBulkEdit);
   const panelTitle = isBulkEdit
     ? `Bulk edit (${selectedNodes.length})`
     : selectedEdge
       ? t('propertiesPanel.connection')
       : t('properties.title');
+
+  if (isSingleNode) {
+    return (
+      <SidebarShell>
+        <SidebarBody padded={false} className="space-y-5 pb-3">
+          <DiagramNodePropertiesRouter
+            selectedNode={selectedNode}
+            onChange={onChangeNode}
+            onDuplicate={onDuplicateNode}
+            onDelete={onDeleteNode}
+            onFitSectionToContents={onFitSectionToContents}
+            onReleaseFromSection={onReleaseFromSection}
+            onBringContentsIntoSection={onBringContentsIntoSection}
+            onAddArchitectureService={onAddArchitectureService}
+            onCreateArchitectureBoundary={onCreateArchitectureBoundary}
+            onApplyArchitectureTemplate={onApplyArchitectureTemplate}
+            onSuggestArchitectureNode={onSuggestArchitectureNode}
+            onChangeEdge={onChangeEdge}
+          />
+          {selectedEdge ? (
+            <div className="px-4">
+              <EdgeProperties
+                key={selectedEdge.id}
+                selectedEdge={selectedEdge}
+                onChange={onChangeEdge}
+                onDelete={onDeleteEdge}
+              />
+            </div>
+          ) : null}
+        </SidebarBody>
+      </SidebarShell>
+    );
+  }
 
   return (
     <SidebarShell>
@@ -99,28 +124,9 @@ export const PropertiesPanel: React.FC<PropertiesPanelProps> = ({
           <BulkNodeProperties selectedNodes={selectedNodes} onApply={onBulkChangeNodes} />
         )}
 
-        {selectedNode && !isBulkEdit && (
-          <DiagramNodePropertiesRouter
-            selectedNode={selectedNode}
-            onChange={onChangeNode}
-            onDuplicate={onDuplicateNode}
-            onDelete={onDeleteNode}
-            onFitSectionToContents={onFitSectionToContents}
-            onReleaseFromSection={onReleaseFromSection}
-            onBringContentsIntoSection={onBringContentsIntoSection}
-            onAddMindmapChild={onAddMindmapChild}
-            onAddMindmapSibling={onAddMindmapSibling}
-            onAddArchitectureService={onAddArchitectureService}
-            onCreateArchitectureBoundary={onCreateArchitectureBoundary}
-            onApplyArchitectureTemplate={onApplyArchitectureTemplate}
-            onGenerateEntityFields={onGenerateEntityFields}
-            onSuggestArchitectureNode={onSuggestArchitectureNode}
-            onConvertEntitySelectionToClassDiagram={onConvertEntitySelectionToClassDiagram}
-          />
-        )}
-
         {selectedEdge && (
           <EdgeProperties
+            key={selectedEdge.id}
             selectedEdge={selectedEdge}
             onChange={onChangeEdge}
             onDelete={onDeleteEdge}

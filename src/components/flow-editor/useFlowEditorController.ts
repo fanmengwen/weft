@@ -12,7 +12,7 @@ import type { DomainLibraryItem } from '@/services/domainLibrary';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { Location, NavigateFunction } from 'react-router-dom';
 import type { TFunction } from 'i18next';
-import type { FlowEditorChromeProps } from './FlowEditorChrome';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import type {
     BuildFlowEditorPanelsPropsParams,
     CommandBarPanelBuilderParams,
@@ -73,15 +73,6 @@ type FlowEditorCommandBarConfig = Omit<
     | 'openStudioPlayback'
     | 'handleAddAnnotation'
     | 'handleAddSection'
-    | 'handleAddTextNode'
-    | 'handleAddJourneyNode'
-    | 'handleAddMindmapNode'
-    | 'handleAddArchitectureNode'
-    | 'handleAddSequenceParticipant'
-    | 'handleAddClassNode'
-    | 'handleAddEntityNode'
-    | 'handleAddImage'
-    | 'handleAddWireframe'
     | 'handleAddDomainLibraryItem'
     | 'openArchitectureRulesPanel'
 >;
@@ -162,9 +153,8 @@ export interface UseFlowEditorChromeParams {
     handleImportJSON: () => void;
     openHistory: () => void;
     onGoHome: () => void;
-    collaborationTopNavState?: FlowEditorChromeProps['topNav']['collaboration'];
     openCommandBar: (view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system') => void;
-    handleAddShape: (shapeType: string, position?: { x: number; y: number }) => void;
+    handleAddShape: (input: AddShapeInput, position?: { x: number; y: number }) => void;
     undo: () => void;
     redo: () => void;
     canUndo: boolean;
@@ -172,6 +162,9 @@ export interface UseFlowEditorChromeParams {
     isSelectMode: boolean;
     enableSelectMode: () => void;
     enablePanMode: () => void;
+    isElementPaletteOpen: boolean;
+    toggleElementPalette: () => void;
+    closeElementPalette: () => void;
     getCenter: () => { x: number; y: number };
     t: TFunction;
     handleAddNode: (position?: { x: number; y: number }) => void;
@@ -185,15 +178,6 @@ export interface UseFlowEditorChromeParams {
     stopPlayback: () => void;
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
-    handleAddTextNode: () => void;
-    handleAddJourneyNode: () => void;
-    handleAddMindmapNode: () => void;
-    handleAddArchitectureNode: () => void;
-    handleAddSequenceParticipant: () => void;
-    handleAddClassNode: () => void;
-    handleAddEntityNode: () => void;
-    handleAddImage: (imageUrl: string) => void;
-    handleAddWireframe: (surface: 'browser' | 'mobile') => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
 }
 
@@ -223,7 +207,6 @@ export function useFlowEditorController({
         openStudioAI,
         openStudioPlayback,
         openArchitectureRulesPanel,
-        toggleStudioPanel,
         closeStudioPanel,
         handleCanvasEntityIntent,
     } = useFlowEditorStudioController(studio);
@@ -246,15 +229,6 @@ export function useFlowEditorController({
             openArchitectureRulesPanel,
             handleAddAnnotation: chromeParams.handleAddAnnotation,
             handleAddSection: chromeParams.handleAddSection,
-            handleAddTextNode: chromeParams.handleAddTextNode,
-            handleAddJourneyNode: chromeParams.handleAddJourneyNode,
-            handleAddMindmapNode: chromeParams.handleAddMindmapNode,
-            handleAddArchitectureNode: chromeParams.handleAddArchitectureNode,
-            handleAddSequenceParticipant: chromeParams.handleAddSequenceParticipant,
-            handleAddClassNode: chromeParams.handleAddClassNode,
-            handleAddEntityNode: chromeParams.handleAddEntityNode,
-            handleAddImage: chromeParams.handleAddImage,
-            handleAddWireframe: chromeParams.handleAddWireframe,
             handleAddDomainLibraryItem: chromeParams.handleAddDomainLibraryItem,
         },
         snapshots: {
@@ -306,7 +280,6 @@ export function useFlowEditorController({
         ...chromeParams,
         handleExportJSON: shell.handleExportJSON,
         currentStepIndex: panelParams.studio.playback.currentStepIndex,
-        toggleStudioPanel,
         editorMode: shell.editorMode,
         handleLayoutWithContext,
         openStudioPanel,
@@ -360,6 +333,7 @@ export function useFlowEditorController({
     return {
         shouldRenderPanels,
         handleCanvasEntityIntent,
+        openStudioAI,
         panels,
         chrome,
     };

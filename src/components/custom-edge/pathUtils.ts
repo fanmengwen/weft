@@ -3,8 +3,6 @@ import { isEdgeInteractionLowDetailModeActive } from './edgeRenderMode';
 import { measureDevPerformance } from '@/lib/devPerformance';
 import {
     applyAnchorClearance,
-    buildMindmapRootBranchPath,
-    buildMindmapTopicBranchPath,
     buildRoundedPolylinePath,
     enforceMinimumEndpointLead,
     getElkLabelPosition,
@@ -73,7 +71,6 @@ export function buildEdgePath(
         const sourceNode = getNodeById(allNodes, params.source);
         const targetNode = getNodeById(allNodes, params.target);
         const useMermaidPreservedEndpointRouting = options.mermaidPreservedEndpoints === true;
-        const effectiveForceOrthogonal = options.forceOrthogonal || useMermaidPreservedEndpointRouting;
         const keepMermaidSourceBranchSpread =
             shouldKeepMermaidBranchSpread(useMermaidPreservedEndpointRouting, sourceNode?.data?.shape);
         const keepMermaidTargetBranchSpread =
@@ -194,7 +191,7 @@ export function buildEdgePath(
             return sourceDrift > STALE_ELK_THRESHOLD_PX || targetDrift > STALE_ELK_THRESHOLD_PX;
         })();
         const useElkRouteForRender = shouldUseElkRoute
-            && !(elkPointsAreStale && isSmoothCurve(resolvedCurve) && !effectiveForceOrthogonal);
+            && !(elkPointsAreStale && isSmoothCurve(resolvedCurve) && !useMermaidPreservedEndpointRouting);
 
         if (useElkRouteForRender) {
             const points = options.elkPoints;
@@ -213,10 +210,9 @@ export function buildEdgePath(
                 params.sourcePosition,
                 params.targetPosition
             );
-            // forceOrthogonal (e.g. mermaid-preserved endpoints, relation semantics)
-            // must keep the corridor's right-angles even when the diagram's curve
-            // setting is smooth, so only honor smooth curves when not forced.
-            const smoothedPath = (!effectiveForceOrthogonal && isSmoothCurve(resolvedCurve))
+            // Mermaid-preserved endpoints must keep the corridor's right-angles,
+            // so only honor smooth curves when endpoints are not preserved.
+            const smoothedPath = (!useMermaidPreservedEndpointRouting && isSmoothCurve(resolvedCurve))
                 ? buildCurvedPath(allPoints, resolvedCurve)
                 : null;
             const pathStr = smoothedPath ?? buildRoundedPolylinePath(allPoints, 20);
@@ -225,11 +221,8 @@ export function buildEdgePath(
             return withBundledLabelOffset(pathStr, labelX, labelY, params, labelBundleOffset);
         }
 
-        const isMindmapBranch = Boolean(options.mindmapBranchKind) && variant === 'bezier' && !effectiveForceOrthogonal;
-        const isMindmapRootBranch = options.mindmapBranchKind === 'root' && isMindmapBranch;
         const shouldUseSharedSourceTrunk =
-            !isMindmapBranch
-            && (variant === 'smoothstep' || variant === 'step' || effectiveForceOrthogonal)
+            (variant === 'smoothstep' || variant === 'step' || useMermaidPreservedEndpointRouting)
             && sourceSiblingCount >= 3
             && (
                 params.sourcePosition === Position.Left
@@ -245,7 +238,7 @@ export function buildEdgePath(
             );
         const sourceOffset = getOffsetVector(
             params.sourcePosition,
-            pairOffset + ((isMindmapBranch || shouldUseSharedSourceTrunk) ? 0 : sourceFanoutOffset)
+            pairOffset + (shouldUseSharedSourceTrunk ? 0 : sourceFanoutOffset)
         );
         const targetOffset = getOffsetVector(params.targetPosition, pairOffset + targetFanoutOffset);
         const sourcePoint = applyAnchorClearance(
@@ -272,7 +265,7 @@ export function buildEdgePath(
         if (manualWaypoints.length > 0) {
             const pathPoints = [{ x: sourceX, y: sourceY }, ...manualWaypoints, { x: targetX, y: targetY }];
             const midpoint = getPathMidpoint(pathPoints);
-            const smoothedManual = (!effectiveForceOrthogonal && isSmoothCurve(resolvedCurve))
+            const smoothedManual = (!useMermaidPreservedEndpointRouting && isSmoothCurve(resolvedCurve))
                 ? buildCurvedPath(pathPoints, resolvedCurve)
                 : null;
             return withBundledLabelOffset(
@@ -289,19 +282,7 @@ export function buildEdgePath(
         // curve setting decides the visual instead of the legacy `variant` flag.
         // Smooth curves => cubic bezier through endpoints; orthogonal step curves
         // => rounded smoothstep; linear => straight line.
-        if (!effectiveForceOrthogonal && isSmoothCurve(resolvedCurve)) {
-            if (isMindmapBranch) {
-                return withBundledLabelOffset(
-                    ...(() => {
-                        const result = isMindmapRootBranch
-                            ? buildMindmapRootBranchPath(sourceX, sourceY, targetX, targetY)
-                            : buildMindmapTopicBranchPath(sourceX, sourceY, targetX, targetY);
-                        return [result.edgePath, result.labelX, result.labelY] as const;
-                    })(),
-                    params,
-                    labelBundleOffset
-                );
-            }
+        if (!useMermaidPreservedEndpointRouting && isSmoothCurve(resolvedCurve)) {
             // For Mermaid-parity we use a slightly looser cubic bezier than the
             // React Flow default; mirrors Mermaid's `curveBasis` softness.
             const [edgePath, labelX, labelY] = getBezierPath({
@@ -364,7 +345,7 @@ export function buildEdgePath(
             return withBundledLabelOffset(edgePath, labelX, labelY, params, labelBundleOffset);
         }
 
-        if (effectiveForceOrthogonal) {
+        if (useMermaidPreservedEndpointRouting) {
             const [edgePath, labelX, labelY] = getSmoothStepPath({
                 sourceX,
                 sourceY,

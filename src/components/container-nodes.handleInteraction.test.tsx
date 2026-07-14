@@ -1,10 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import type { CSSProperties } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Position } from '@/lib/reactflowCompat';
-import ImageNode from './ImageNode';
 import GroupNode from './GroupNode';
-import SwimlaneNode from './SwimlaneNode';
 
 let selectedNodeId: string | null = null;
 let currentNodeId: string | null = null;
@@ -79,46 +76,6 @@ function assertUnselectedDiscoverableHandles(ids: string[]): void {
 }
 
 describe('container-like node handle interaction policy', () => {
-  it('keeps selected ImageNode handles connectable in visualQualityV2', () => {
-    render(
-      <ImageNode
-        id="image-1"
-        type="image"
-        selected={true}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Image', imageUrl: 'https://example.com/x.png' }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-        sourcePosition={Position.Right}
-        targetPosition={Position.Left}
-      />
-    );
-
-    assertSelectedConnectableHandles(['top', 'bottom', 'left', 'right']);
-  });
-
-  it('keeps unselected ImageNode handles discoverable', () => {
-    render(
-      <ImageNode
-        id="image-2"
-        type="image"
-        selected={false}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Image' }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-        sourcePosition={Position.Right}
-        targetPosition={Position.Left}
-      />
-    );
-
-    assertUnselectedDiscoverableHandles(['top', 'bottom', 'left', 'right']);
-  });
-
   it('keeps selected GroupNode handles connectable in visualQualityV2', () => {
     render(
       <GroupNode
@@ -178,41 +135,5 @@ describe('container-like node handle interaction policy', () => {
       expect(handle.getAttribute('data-class')).not.toContain('flow-handle-hitarea');
       expect(handle.getAttribute('data-pointer')).toBe('all');
     }
-  });
-
-  it('keeps selected SwimlaneNode handles connectable in visualQualityV2', () => {
-    render(
-      <SwimlaneNode
-        id="swimlane-1"
-        type="swimlane"
-        selected={true}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Lane A' }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-      />
-    );
-
-    assertSelectedConnectableHandles(['top-target', 'bottom-source', 'left-target', 'right-source']);
-  });
-
-  it('keeps unselected SwimlaneNode handles discoverable', () => {
-    render(
-      <SwimlaneNode
-        id="swimlane-2"
-        type="swimlane"
-        selected={false}
-        dragging={false}
-        zIndex={1}
-        data={{ label: 'Lane B' }}
-        isConnectable={true}
-        xPos={0}
-        yPos={0}
-      />
-    );
-
-    assertUnselectedDiscoverableHandles(['top-target', 'bottom-source', 'left-target', 'right-source']);
   });
 });

@@ -7,7 +7,6 @@ import { getAddItemDragData } from '@/components/element-palette/elementPaletteD
 
 interface UseFlowCanvasDragDropParams {
   screenToFlowPosition: (position: { x: number; y: number }) => { x: number; y: number };
-  handleAddImage: (imageUrl: string, position: { x: number; y: number }) => void;
   addItemActions: AddItemActions;
   onFileDrop?: (file: File, content: string) => void;
 }
@@ -43,7 +42,6 @@ const CODE_EXTENSIONS = new Set([
 
 export function useFlowCanvasDragDrop({
   screenToFlowPosition,
-  handleAddImage,
   addItemActions,
   onFileDrop,
 }: UseFlowCanvasDragDropParams): UseFlowCanvasDragDropResult {
@@ -69,21 +67,6 @@ export function useFlowCanvasDragDrop({
       const file = event.dataTransfer.files?.[0];
       if (!file) return;
 
-      if (file.type.startsWith('image/')) {
-        const reader = new FileReader();
-        reader.onload = (loadEvent) => {
-          const imageUrl = loadEvent.target?.result as string;
-          if (!imageUrl) return;
-          const position = screenToFlowPosition({
-            x: event.clientX,
-            y: event.clientY,
-          });
-          handleAddImage(imageUrl, position);
-        };
-        reader.readAsDataURL(file);
-        return;
-      }
-
       const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
       if (CODE_EXTENSIONS.has(ext) && onFileDrop) {
         const reader = new FileReader();
@@ -96,7 +79,7 @@ export function useFlowCanvasDragDrop({
         reader.readAsText(file);
       }
     },
-    [addItemActions, handleAddImage, onFileDrop, screenToFlowPosition]
+    [addItemActions, onFileDrop, screenToFlowPosition]
   );
 
   return { onDragOver, onDrop };

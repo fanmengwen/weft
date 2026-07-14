@@ -9,7 +9,7 @@ import type {
     UseFlowEditorShellParams,
     UseFlowEditorStudioParams,
 } from './useFlowEditorController';
-import type { FlowEditorChromeProps } from './FlowEditorChrome';
+import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { Location, NavigateFunction } from 'react-router-dom';
 
@@ -75,9 +75,8 @@ interface BuildFlowEditorControllerChromeParams {
     handleImportJSON: () => void;
     openHistory: () => void;
     onGoHome: () => void;
-    collaborationTopNavState?: FlowEditorChromeProps['topNav']['collaboration'];
     openCommandBar: (view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system') => void;
-    handleAddShape: (shapeType: string, position?: { x: number; y: number }) => void;
+    handleAddShape: (input: AddShapeInput, position?: { x: number; y: number }) => void;
     undo: () => void;
     redo: () => void;
     canUndo: boolean;
@@ -85,6 +84,9 @@ interface BuildFlowEditorControllerChromeParams {
     isSelectMode: boolean;
     enableSelectMode: () => void;
     enablePanMode: () => void;
+    isElementPaletteOpen: boolean;
+    toggleElementPalette: () => void;
+    closeElementPalette: () => void;
     getCenter: () => { x: number; y: number };
     t: TFunction;
     handleAddNode: (position?: { x: number; y: number }) => void;
@@ -98,15 +100,6 @@ interface BuildFlowEditorControllerChromeParams {
     stopPlayback: () => void;
     handleAddAnnotation: () => void;
     handleAddSection: () => void;
-    handleAddTextNode: () => void;
-    handleAddJourneyNode: () => void;
-    handleAddMindmapNode: () => void;
-    handleAddArchitectureNode: () => void;
-    handleAddSequenceParticipant: () => void;
-    handleAddClassNode: () => void;
-    handleAddEntityNode: () => void;
-    handleAddImage: (imageUrl: string) => void;
-    handleAddWireframe: (surface: 'browser' | 'mobile') => void;
     handleAddDomainLibraryItem: (item: DomainLibraryItem) => void;
 }
 

@@ -207,7 +207,7 @@ export async function applyCodeChanges({
     return false;
   }
 
-  if (res.nodes.length > 0) {
+  if (res.nodes.length > 0 || ('nativeParseUnavailable' in res && res.nativeParseUnavailable)) {
     if (options.source === 'manual') {
       setIsApplying(true);
     } else {
@@ -224,7 +224,8 @@ export async function applyCodeChanges({
       const effectiveMermaidImportMode = mode === 'mermaid'
         ? resolveEffectiveMermaidImportMode(
             mermaidImportMode,
-            'diagramType' in res ? res.diagramType : undefined
+            'diagramType' in res ? res.diagramType : undefined,
+            'nativeParseUnavailable' in res ? res : undefined
           )
         : mermaidImportMode;
 

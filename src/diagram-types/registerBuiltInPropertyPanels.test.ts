@@ -9,14 +9,11 @@ import {
 } from './registerBuiltInPropertyPanels';
 
 describe('registerBuiltInPropertyPanels', () => {
-  it('registers classDiagram node properties component', () => {
+  it('registers built-in node properties components', () => {
     resetBuiltInPropertyPanelRegistrationForTests();
     resetDiagramNodePropertiesRegistryForTests();
     registerBuiltInPropertyPanels();
-    expect(getDiagramNodeProperties('classDiagram')).toBeDefined();
-    expect(getDiagramNodeProperties('erDiagram')).toBeDefined();
-    expect(getDiagramNodeProperties('mindmap')).toBeDefined();
-    expect(getDiagramNodeProperties('journey')).toBeDefined();
+    expect(getDiagramNodeProperties('architecture')).toBeDefined();
     expect(getDiagramNodeProperties('architecture')).toBeDefined();
   });
 });

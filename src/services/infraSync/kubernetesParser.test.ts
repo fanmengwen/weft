@@ -70,9 +70,9 @@ describe('parseKubernetesManifests', () => {
     expect(result.provider).toBe('kubernetes');
   });
 
-  it('parses an Ingress into a [browser] node', () => {
+  it('parses an Ingress into a [process] node', () => {
     const result = parseKubernetesManifests(INGRESS);
-    expect(result.nodes[0].nodeType).toBe('browser');
+    expect(result.nodes[0].nodeType).toBe('process');
   });
 
   it('parses a Namespace into an architecture node', () => {

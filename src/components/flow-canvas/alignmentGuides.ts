@@ -1,5 +1,4 @@
 import type { FlowNode } from '@/lib/types';
-import type { MindmapDropPreview } from '@/lib/mindmapLayout';
 
 const DEFAULT_NODE_WIDTH = 180;
 const DEFAULT_NODE_HEIGHT = 96;
@@ -7,10 +6,6 @@ const DEFAULT_NODE_HEIGHT = 96;
 export interface AlignmentGuides {
   verticalFlowX: number | null;
   horizontalFlowY: number | null;
-}
-
-export interface SelectionDragPreview {
-  mindmapDrop: MindmapDropPreview | null;
 }
 
 function resolveNodeSize(node: FlowNode): { width: number; height: number } {

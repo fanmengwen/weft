@@ -13,11 +13,7 @@ export type BulkSectionId =
   | 'shape'
   | 'color'
   | 'icon'
-  | 'variant'
   | 'architecture'
-  | 'journey'
-  | 'class'
-  | 'sequence'
   | 'labels'
   | 'findReplace'
   | '';
@@ -27,11 +23,7 @@ export interface BulkCapabilityCounts {
   color: number;
   advancedColor: number;
   icon: number;
-  variant: number;
   architecture: number;
-  journey: number;
-  class: number;
-  sequence: number;
 }
 
 type AvailableBulkSectionCounts = Record<Exclude<BulkSectionId, ''>, number>;
@@ -48,15 +40,10 @@ export interface BulkNodePropertiesFormState {
   assetCategory: string | undefined;
   archIconPackId: string | undefined;
   archIconShapeId: string | undefined;
-  variant: string;
   archEnvironment: string;
   archResourceType: string;
   archZone: string;
   archTrustDomain: string;
-  journeySection: string;
-  journeyScore: string;
-  classStereotype: string;
-  sequenceAlias: string;
   labelPrefix: string;
   labelSuffix: string;
   labelFind: string;
@@ -76,15 +63,10 @@ export const INITIAL_BULK_NODE_PROPERTIES_FORM_STATE: BulkNodePropertiesFormStat
   assetCategory: undefined,
   archIconPackId: undefined,
   archIconShapeId: undefined,
-  variant: '',
   archEnvironment: '',
   archResourceType: '',
   archZone: '',
   archTrustDomain: '',
-  journeySection: '',
-  journeyScore: '',
-  classStereotype: '',
-  sequenceAlias: '',
   labelPrefix: '',
   labelSuffix: '',
   labelFind: '',
@@ -98,11 +80,7 @@ export function getBulkCapabilityCounts(selectedNodes: Node<NodeData>[]): BulkCa
     color: getCapabilityTargetNodeIds(selectedNodes, 'color').length,
     advancedColor: getCapabilityTargetNodeIds(selectedNodes, 'advancedColor').length,
     icon: getCapabilityTargetNodeIds(selectedNodes, 'icon').length,
-    variant: getCapabilityTargetNodeIds(selectedNodes, 'variant').length,
     architecture: getCapabilityTargetNodeIds(selectedNodes, 'architecture').length,
-    journey: getCapabilityTargetNodeIds(selectedNodes, 'journey').length,
-    class: getCapabilityTargetNodeIds(selectedNodes, 'class').length,
-    sequence: getCapabilityTargetNodeIds(selectedNodes, 'sequence').length,
   };
 }
 
@@ -111,11 +89,7 @@ export function getAvailableBulkSections(counts: AvailableBulkSectionCounts): Bu
     counts.shape > 0 ? 'shape' : null,
     counts.color > 0 ? 'color' : null,
     counts.icon > 0 ? 'icon' : null,
-    counts.variant > 0 ? 'variant' : null,
     counts.architecture > 0 ? 'architecture' : null,
-    counts.journey > 0 ? 'journey' : null,
-    counts.class > 0 ? 'class' : null,
-    counts.sequence > 0 ? 'sequence' : null,
     'labels',
     'findReplace',
   ].filter((value): value is BulkSectionId => value !== null);
@@ -155,10 +129,6 @@ export function buildBulkUpdates(
     updates.customColor = form.customColor;
   }
 
-  if (form.variant) {
-    updates.variant = form.variant;
-  }
-
   if (form.iconMode === 'built-in') {
     Object.assign(updates, createBuiltInIconData(form.icon));
   }
@@ -195,25 +165,6 @@ export function buildBulkUpdates(
 
   if (form.archTrustDomain) {
     updates.archTrustDomain = form.archTrustDomain;
-  }
-
-  if (form.journeySection) {
-    updates.journeySection = form.journeySection;
-  }
-
-  if (form.journeyScore) {
-    const scoreValue = Number(form.journeyScore);
-    if (!Number.isNaN(scoreValue)) {
-      updates.journeyScore = scoreValue;
-    }
-  }
-
-  if (form.classStereotype) {
-    updates.classStereotype = form.classStereotype;
-  }
-
-  if (form.sequenceAlias) {
-    updates.seqParticipantAlias = form.sequenceAlias;
   }
 
   return updates;
@@ -259,10 +210,6 @@ export function buildChangeSummary(
     items.push(`color: ${colorModeSummary} (${supportCount('color')}/${totalCount})`);
   }
 
-  if (updates.variant) {
-    items.push(`variant: ${updates.variant} (${supportCount('variant')}/${totalCount})`);
-  }
-
   if (updates.icon) {
     items.push(`icon: ${updates.icon} (${supportCount('icon')}/${totalCount})`);
   }
@@ -296,28 +243,6 @@ export function buildChangeSummary(
   if (updates.archTrustDomain) {
     items.push(
       `trust domain: ${updates.archTrustDomain} (${supportCount('architecture')}/${totalCount})`
-    );
-  }
-
-  if (updates.journeySection) {
-    items.push(
-      `journey section: ${updates.journeySection} (${supportCount('journey')}/${totalCount})`
-    );
-  }
-
-  if (typeof updates.journeyScore === 'number') {
-    items.push(`journey score: ${updates.journeyScore} (${supportCount('journey')}/${totalCount})`);
-  }
-
-  if (updates.classStereotype) {
-    items.push(
-      `class stereotype: ${updates.classStereotype} (${supportCount('class')}/${totalCount})`
-    );
-  }
-
-  if (updates.seqParticipantAlias) {
-    items.push(
-      `participant alias: ${updates.seqParticipantAlias} (${supportCount('sequence')}/${totalCount})`
     );
   }
 

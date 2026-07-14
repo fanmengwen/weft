@@ -71,7 +71,7 @@ rollback ==> revert
     dsl: `flow: Three-Tier Web Architecture
 direction: LR
 
-[browser] web: Web App { color: "blue" }
+[process] web: Web App { color: "blue" }
 [architecture] cdn: CloudFront { archProvider: "aws", archResourceType: "networking-content-delivery-cloudfront", color: "blue" }
 [architecture] api: API Gateway { archProvider: "aws", archResourceType: "networking-content-delivery-api-gateway", color: "violet" }
 [architecture] svc: ECS Service { archProvider: "aws", archResourceType: "containers-elastic-container-service", color: "violet" }
@@ -93,7 +93,7 @@ svc --> db
     dsl: `flow: API Request Sequence
 direction: TB
 
-[browser] client: Client
+[process] client: Client
 [system] gateway: API Gateway { color: "violet" }
 [system] service: Order Service { color: "violet" }
 [architecture] db: Orders DB { color: "emerald" }

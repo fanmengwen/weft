@@ -1,4 +1,6 @@
 import { DIAGRAM_TYPES, type DiagramType } from '@/lib/types';
+import { initializeDiagramTypeRuntime } from '@/diagram-types/bootstrap';
+import { getDiagramPlugin } from '@/diagram-types/core';
 
 export type MermaidConstructSupportStatus = 'editable' | 'partial' | 'unsupported';
 
@@ -157,15 +159,33 @@ const MERMAID_FAMILY_SUPPORT_MATRIX: Record<DiagramType, MermaidFamilySupportMat
   },
 };
 
+// Derived at read time so deleting a plugin downgrades its family to
+// unsupported without a manual matrix edit in the same change.
+function deriveRegistrationSupport(
+  entry: MermaidFamilySupportMatrixEntry
+): MermaidFamilySupportMatrixEntry {
+  initializeDiagramTypeRuntime();
+  if (getDiagramPlugin(entry.family)) {
+    return entry;
+  }
+
+  return {
+    ...entry,
+    editableConstructs: [],
+    partialConstructs: [],
+    unsupportedConstructs: ['native editable parsing (no registered plugin)'],
+  };
+}
+
 export function listMermaidFamilySupportMatrix(): MermaidFamilySupportMatrixEntry[] {
-  return DIAGRAM_TYPES.map((family) => MERMAID_FAMILY_SUPPORT_MATRIX[family]).sort(
-    (left, right) => left.priorityRank - right.priorityRank
-  );
+  return DIAGRAM_TYPES.map((family) =>
+    deriveRegistrationSupport(MERMAID_FAMILY_SUPPORT_MATRIX[family])
+  ).sort((left, right) => left.priorityRank - right.priorityRank);
 }
 
 export function getMermaidFamilySupportMatrixEntry(
   family: DiagramType
 ): MermaidFamilySupportMatrixEntry {
-  return MERMAID_FAMILY_SUPPORT_MATRIX[family];
+  return deriveRegistrationSupport(MERMAID_FAMILY_SUPPORT_MATRIX[family]);
 }
 

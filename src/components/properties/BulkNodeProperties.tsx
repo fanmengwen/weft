@@ -20,16 +20,11 @@ import {
   InspectorSummaryCard,
 } from './InspectorPrimitives';
 import { createPropertyInputKeyDownHandler } from './propertyInputBehavior';
-import { getWireframeVariants } from './wireframeVariants';
 import {
   ArchitectureBulkSection,
-  ClassBulkSection,
   FindReplaceBulkSection,
-  JourneyBulkSection,
   LabelTransformBulkSection,
   SelectionSummary,
-  SequenceBulkSection,
-  WireframeVariantBulkSection,
 } from './BulkNodePropertiesSections';
 import {
   buildBulkUpdates,
@@ -77,22 +72,6 @@ export function BulkNodeProperties({
   const allowAdvancedColorControls =
     capabilityCounts.advancedColor === capabilityCounts.color && capabilityCounts.color > 0;
 
-  const wireframeVariantOptions = useMemo(() => {
-    const optionMap = new Map<string, string>();
-
-    for (const node of selectedNodes) {
-      if (node.type !== 'browser' && node.type !== 'mobile') {
-        continue;
-      }
-
-      for (const option of getWireframeVariants(node.type)) {
-        optionMap.set(option.id, option.label);
-      }
-    }
-
-    return Array.from(optionMap.entries()).map(([id, label]) => ({ id, label }));
-  }, [selectedNodes]);
-
   const updates = useMemo(
     () => buildBulkUpdates(form, allowAdvancedColorControls),
     [form, allowAdvancedColorControls]
@@ -110,11 +89,7 @@ export function BulkNodeProperties({
     shape: capabilityCounts.shape,
     color: capabilityCounts.color,
     icon: capabilityCounts.icon,
-    variant: capabilityCounts.variant,
     architecture: capabilityCounts.architecture,
-    journey: capabilityCounts.journey,
-    class: capabilityCounts.class,
-    sequence: capabilityCounts.sequence,
     labels: selectedNodes.length,
     findReplace: selectedNodes.length,
   });
@@ -278,21 +253,6 @@ export function BulkNodeProperties({
         </CollapsibleSection>
       ) : null}
 
-      {capabilityCounts.variant > 0 ? (
-        <WireframeVariantBulkSection
-          title={getScopedSectionTitle(
-            'Wireframe Variant',
-            capabilityCounts.variant,
-            selectedNodes.length
-          )}
-          isOpen={resolvedActiveSection === 'variant'}
-          onToggle={() => toggleSection('variant')}
-          options={wireframeVariantOptions}
-          value={form.variant}
-          onChange={(value) => updateForm('variant', value)}
-        />
-      ) : null}
-
       {capabilityCounts.architecture > 0 ? (
         <ArchitectureBulkSection
           title={getScopedSectionTitle(
@@ -310,41 +270,6 @@ export function BulkNodeProperties({
           onResourceTypeChange={(value) => updateForm('archResourceType', value)}
           onZoneChange={(value) => updateForm('archZone', value)}
           onTrustDomainChange={(value) => updateForm('archTrustDomain', value)}
-          onInputKeyDown={handleInputKeyDown}
-        />
-      ) : null}
-
-      {capabilityCounts.journey > 0 ? (
-        <JourneyBulkSection
-          title={getScopedSectionTitle('Journey Step', capabilityCounts.journey, selectedNodes.length)}
-          isOpen={resolvedActiveSection === 'journey'}
-          onToggle={() => toggleSection('journey')}
-          journeySection={form.journeySection}
-          journeyScore={form.journeyScore}
-          onJourneySectionChange={(value) => updateForm('journeySection', value)}
-          onJourneyScoreChange={(value) => updateForm('journeyScore', value)}
-          onInputKeyDown={handleInputKeyDown}
-        />
-      ) : null}
-
-      {capabilityCounts.class > 0 ? (
-        <ClassBulkSection
-          title={getScopedSectionTitle('Class Definition', capabilityCounts.class, selectedNodes.length)}
-          isOpen={resolvedActiveSection === 'class'}
-          onToggle={() => toggleSection('class')}
-          classStereotype={form.classStereotype}
-          onChange={(value) => updateForm('classStereotype', value)}
-          onInputKeyDown={handleInputKeyDown}
-        />
-      ) : null}
-
-      {capabilityCounts.sequence > 0 ? (
-        <SequenceBulkSection
-          title={getScopedSectionTitle('Participant', capabilityCounts.sequence, selectedNodes.length)}
-          isOpen={resolvedActiveSection === 'sequence'}
-          onToggle={() => toggleSection('sequence')}
-          sequenceAlias={form.sequenceAlias}
-          onChange={(value) => updateForm('sequenceAlias', value)}
           onInputKeyDown={handleInputKeyDown}
         />
       ) : null}

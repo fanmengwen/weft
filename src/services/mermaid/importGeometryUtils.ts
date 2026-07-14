@@ -13,7 +13,7 @@ export function getMermaidImportCandidateIds(rawId: string | undefined): string[
   candidates.add(trimmed.replace(/\d+$/, ''));
 
   const familySuffixMatch = trimmed.match(
-    /(?:^|.*[-_])(?:flowchart|classdiagram|erdiagram|statediagram|sequence|journey|mindmap|architecture)[-_](.+)$/i
+    /(?:^|.*[-_])(?:flowchart|classdiagram|erdiagram|statediagram|sequence|journey|architecture)[-_](.+)$/i
   );
   const familySuffix = familySuffixMatch?.[1];
   if (familySuffix) {
@@ -23,7 +23,7 @@ export function getMermaidImportCandidateIds(rawId: string | undefined): string[
   }
 
   const withoutPrefix = trimmed.replace(
-    /^(flowchart|classdiagram|erdiagram|statediagram|sequence|journey|mindmap|architecture)[-_]/i,
+    /^(flowchart|classdiagram|erdiagram|statediagram|sequence|journey|architecture)[-_]/i,
     ''
   );
   candidates.add(withoutPrefix);

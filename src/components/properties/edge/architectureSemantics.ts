@@ -90,7 +90,7 @@ export function applyArchitectureDirection(
   if (!hasArchitectureDirectionData(edge)) {
     return {};
   }
-  const strokeColor = typeof edge.style?.stroke === 'string' ? edge.style.stroke : '#94a3b8';
+  const strokeColor = typeof edge.style?.stroke === 'string' ? edge.style.stroke : '#c3c9d3';
   const markers = resolveArchitectureEdgeMarkers(direction, strokeColor);
   return {
     ...markers,

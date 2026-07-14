@@ -279,10 +279,6 @@ function resolveNodeSize(node: FlowNode): { width: number; height: number } {
     return resolveCanvasNodeSize(node);
 }
 
-function isPreviewContainerNode(node: FlowNode): boolean {
-    return node.type === 'swimlane';
-}
-
 function clamp(value: number, min: number, max: number): number {
     return Math.min(Math.max(value, min), max);
 }
@@ -297,7 +293,6 @@ function createWorkspaceDocumentPreview(nodes: FlowNode[], edges: FlowEdge[]): W
     }
 
     const previewNodes = nodes
-        .filter((node) => !isPreviewContainerNode(node))
         .filter((node) => typeof node.position?.x === 'number' && typeof node.position?.y === 'number')
         .slice(0, PREVIEW_MAX_NODES)
         .map((node) => {

@@ -22,7 +22,7 @@ import type { NodeData } from '@/lib/types';
 import type { DomainLibraryItem } from '@/services/domainLibrary';
 import type { ConnectedEdgePreset } from '@/hooks/edge-operations/utils';
 import type { FlowCanvasReactFlowConfig } from './useFlowCanvasReactFlowConfig';
-import type { AlignmentGuides, SelectionDragPreview } from './alignmentGuides';
+import type { AlignmentGuides } from './alignmentGuides';
 import type { ContextMenuState } from './useFlowCanvasMenus';
 
 interface FlowCanvasSurfaceProps {
@@ -62,7 +62,6 @@ interface FlowCanvasSurfaceProps {
   effectiveShowGrid: boolean;
   alignmentGuidesEnabled: boolean;
   alignmentGuides: AlignmentGuides;
-  selectionDragPreview: SelectionDragPreview;
   connectMenu: ConnectMenuState | null;
   setConnectMenu: (menu: ConnectMenuState | null) => void;
   screenToFlowPosition: (position: { x: number; y: number }) => { x: number; y: number };
@@ -123,7 +122,6 @@ export function FlowCanvasSurface({
   effectiveShowGrid,
   alignmentGuidesEnabled,
   alignmentGuides,
-  selectionDragPreview,
   connectMenu,
   setConnectMenu,
   screenToFlowPosition,
@@ -227,8 +225,6 @@ export function FlowCanvasSurface({
       <FlowCanvasOverlays
         alignmentGuidesEnabled={alignmentGuidesEnabled}
         alignmentGuides={alignmentGuides}
-        overlayNodes={nodes}
-        selectionDragPreview={selectionDragPreview}
         connectMenu={connectMenu}
         setConnectMenu={setConnectMenu}
         screenToFlowPosition={screenToFlowPosition}

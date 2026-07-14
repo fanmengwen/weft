@@ -38,12 +38,14 @@ interface FlowCanvasProps {
   recordHistory: () => void;
   isSelectMode: boolean;
   onCanvasEntityIntent?: () => void;
+  onDismissToolbarOverlays?: () => void;
 }
 
 export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   recordHistory,
   isSelectMode,
   onCanvasEntityIntent,
+  onDismissToolbarOverlays,
 }) => {
   const { t } = useTranslation();
   const { nodes, edges } = useCanvasState();
@@ -90,7 +92,8 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   const clearPaneSelection = useCallback((): void => {
     setSelectedNodeId(null);
     setSelectedEdgeId(null);
-  }, [setSelectedEdgeId, setSelectedNodeId]);
+    onDismissToolbarOverlays?.();
+  }, [onDismissToolbarOverlays, setSelectedEdgeId, setSelectedNodeId]);
   // --- Operations ---
   const {
     onConnect,
@@ -106,7 +109,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     deleteNode,
     deleteEdge,
     duplicateNode,
-    updateNodeType,
     updateNodeData,
     updateNodeZIndex,
     fitSectionToContents,
@@ -120,18 +122,9 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     handleWrapInSection,
     onReconnect,
     onNodeDrag,
-    handleAddImage,
     handleAddShape,
     handleAddAnnotation,
     handleAddSection,
-    handleAddTextNode,
-    handleAddClassNode,
-    handleAddEntityNode,
-    handleAddMindmapNode,
-    handleAddJourneyNode,
-    handleAddArchitectureNode,
-    handleAddSequenceParticipant,
-    handleAddWireframe,
   } = useFlowOperations(recordHistory, (position, sourceId, sourceHandle, sourceType) => {
     connectMenuSetterRef.current?.({ position, sourceId, sourceHandle, sourceType });
   });
@@ -155,7 +148,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     deleteNode,
     deleteEdge,
     updateNodeZIndex,
-    updateNodeType,
     updateNodeData,
     fitSectionToContents,
     releaseFromSection,
@@ -176,33 +168,16 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
         handleAddShape,
         handleAddAnnotation,
         handleAddSection,
-        handleAddTextNode,
-        handleAddClassNode,
-        handleAddEntityNode,
-        handleAddMindmapNode,
-        handleAddJourneyNode,
-        handleAddArchitectureNode,
-        handleAddSequenceParticipant,
-        handleAddWireframe,
       }),
     [
       handleAddShape,
       handleAddAnnotation,
       handleAddSection,
-      handleAddTextNode,
-      handleAddClassNode,
-      handleAddEntityNode,
-      handleAddMindmapNode,
-      handleAddJourneyNode,
-      handleAddArchitectureNode,
-      handleAddSequenceParticipant,
-      handleAddWireframe,
     ]
   );
 
   const { onDragOver, onDrop } = useFlowCanvasDragDrop({
     screenToFlowPosition,
-    handleAddImage,
     addItemActions,
   });
 
@@ -260,13 +235,11 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
 
   const {
     alignmentGuides,
-    selectionDragPreview,
     handleNodeDragStart,
     handleNodeDrag,
     handleNodeDragStop,
   } = useFlowCanvasSelectionTools({
     layerAdjustedNodes,
-    edges: effectiveEdges,
     alignmentGuidesEnabled,
     toTypedFlowNode: (node) => toTypedFlowNode(node as Parameters<typeof toFlowNode>[0]),
     onNodeDragStart: (event, node) =>
@@ -484,7 +457,6 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       effectiveShowGrid={effectiveShowGrid}
       alignmentGuidesEnabled={alignmentGuidesEnabled}
       alignmentGuides={alignmentGuides}
-      selectionDragPreview={selectionDragPreview}
       connectMenu={connectMenu}
       setConnectMenu={setConnectMenu}
       screenToFlowPosition={screenToFlowPosition}

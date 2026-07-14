@@ -4,7 +4,7 @@ import { useFlowStore } from '@/store';
 import type { FlowEdge, FlowNode, MermaidImportMode } from '@/lib/types';
 import type { MermaidDiagnosticsSnapshot } from '@/store/types';
 import {
-  createPastedTextNode,
+  createPastedAnnotationFromText,
   isEditablePasteTarget,
   resolveLayoutDirection,
 } from './pasteHelpers';
@@ -186,12 +186,13 @@ export function useFlowCanvasPaste({
         if (!result.error) {
           recordHistory();
 
-          if (result.nodes.length > 0) {
+          if (result.nodes.length > 0 || result.nativeParseUnavailable) {
             try {
               const layoutDirection = resolveLayoutDirection(result);
               const effectiveMermaidImportMode = resolveEffectiveMermaidImportMode(
                 mermaidImportMode,
-                result.diagramType
+                result.diagramType,
+                result
               );
               const enrichedNodes = effectiveMermaidImportMode === 'native_editable'
                 ? safelyEnrichImportedNodes(result.nodes, result.diagramType)
@@ -331,13 +332,17 @@ export function useFlowCanvasPaste({
 
       recordHistory();
       const { activeLayerId } = useFlowStore.getState();
-      const newTextNode = createPastedTextNode(pastedText, pasteFlowPosition, activeLayerId);
+      const newAnnotationNode = createPastedAnnotationFromText(
+        pastedText,
+        pasteFlowPosition,
+        activeLayerId
+      );
 
       setNodes((existingNodes) => [
         ...existingNodes.map((node) => ({ ...node, selected: false })),
-        { ...newTextNode, selected: true },
+        { ...newAnnotationNode, selected: true },
       ]);
-      setSelectedNodeId(newTextNode.id);
+      setSelectedNodeId(newAnnotationNode.id);
     },
     [
       activeTabId,
