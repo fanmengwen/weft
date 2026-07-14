@@ -2,7 +2,17 @@ import React from 'react';
 import MemoizedMarkdown from './MemoizedMarkdown';
 import { InlineTextEditSurface } from './InlineTextEditSurface';
 import { ChartNodeToneChip } from './ChartNodeToneChip';
-import { type ChartNodeSurfaceVariant, type ChartNodeTone } from './nodeHelpers';
+import {
+  type ChartNodeSurfaceVariant,
+  type ChartNodeTone,
+  type NodeShape,
+} from './nodeHelpers';
+
+export type ChartNodeContentLayout = 'row' | 'column';
+
+export function resolveChartNodeContentLayout(activeShape: NodeShape): ChartNodeContentLayout {
+  return activeShape === 'diamond' ? 'column' : 'row';
+}
 
 interface InlineEditState {
   isEditing: boolean;
@@ -24,6 +34,7 @@ interface CustomNodeContentProps {
   chipIcon: string;
   tone: ChartNodeTone;
   surfaceVariant: ChartNodeSurfaceVariant | null;
+  activeShape: NodeShape;
   textAlignStyle: React.CSSProperties;
   textClassName: string;
   textStyle: React.CSSProperties;
@@ -46,6 +57,7 @@ export function CustomNodeContent({
   chipIcon,
   tone,
   surfaceVariant,
+  activeShape,
   textAlignStyle,
   textClassName,
   textStyle,
@@ -61,14 +73,17 @@ export function CustomNodeContent({
   contentPadding,
 }: CustomNodeContentProps): React.ReactElement {
   const isStadium = surfaceVariant === 'stadium';
+  const layout = resolveChartNodeContentLayout(activeShape);
+  const isRowLayout = layout === 'row';
   const isCircularChip = isStadium;
-  const layoutClassName = isStadium
+  const layoutClassName = isRowLayout
     ? 'flex-row items-center gap-[10px]'
     : `flex-col items-center ${isDivShape ? 'gap-1.5' : 'gap-2'}`;
 
   return (
     <div
       data-chart-node-content="1"
+      data-chart-node-layout={layout}
       className={`relative z-10 flex h-full w-full min-h-0 justify-center ${layoutClassName}`}
       style={!isDivShape ? { padding: contentPadding } : undefined}
     >
@@ -82,7 +97,7 @@ export function CustomNodeContent({
       />
 
       <div
-        className={`flex min-w-0 flex-col overflow-hidden ${isStadium ? 'flex-1' : 'max-w-full w-full'}`}
+        className={`flex min-w-0 flex-col overflow-hidden ${isRowLayout ? 'flex-1' : 'max-w-full w-full'}`}
         style={textAlignStyle}
       >
         <InlineTextEditSurface
@@ -96,7 +111,7 @@ export function CustomNodeContent({
           className={textClassName}
           style={textStyle}
           inputMode="multiline"
-          inputClassName={isStadium ? 'text-left' : 'text-center'}
+          inputClassName={isRowLayout ? 'text-left' : 'text-center'}
           isSelected={hasLabelSelection}
         />
         {hasSubLabel && !isStadium ? (
@@ -111,7 +126,7 @@ export function CustomNodeContent({
               onKeyDown={subLabelEdit.handleKeyDown}
               className={subTextClassName}
               style={{ fontSize: 'inherit', color: 'inherit' }}
-              inputClassName="text-center"
+              inputClassName={isRowLayout ? 'text-left' : 'text-center'}
               isSelected={hasSubLabelSelection}
             />
           </div>

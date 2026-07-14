@@ -75,6 +75,9 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
       ? { fontSize: `${getMermaidImportedFontSize(nodeHeightPx)}px` }
       : {};
 
+  const isCompactHorizontalShape =
+    isDivShape && (activeShape === 'parallelogram' || activeShape === 'cylinder');
+
   const textProps = surfaceVariant
     ? {
         ...labelFontFamilyStyle,
@@ -96,18 +99,30 @@ export function buildCustomNodeTypography(options: BuildCustomNodeTypographyOpti
           lineHeight: 1.2,
           maxWidth: '92px',
         }
-      : {
-          ...fontSizeStyle,
-          ...importedFontSizeStyle,
-          ...labelFontFamilyStyle,
-          ...importedFontFamilyStyle,
-          color: visualStyle.text,
-          fontWeight: data.fontWeight || (isMermaidImportedLeaf ? '500' : '600'),
-          fontStyle: data.fontStyle || 'normal',
-          lineHeight: isMermaidImportedLeaf ? 1.1 : 1.2,
-        };
+      : isCompactHorizontalShape
+        ? {
+            ...labelFontFamilyStyle,
+            ...importedFontFamilyStyle,
+            color: designSystem.colors.nodeText,
+            fontSize: '12.5px',
+            fontWeight: data.fontWeight || '600',
+            fontStyle: data.fontStyle || 'normal',
+            lineHeight: 1.2,
+          }
+        : {
+            ...fontSizeStyle,
+            ...importedFontSizeStyle,
+            ...labelFontFamilyStyle,
+            ...importedFontFamilyStyle,
+            color: visualStyle.text,
+            fontWeight: data.fontWeight || (isMermaidImportedLeaf ? '500' : '600'),
+            fontStyle: data.fontStyle || 'normal',
+            lineHeight: isMermaidImportedLeaf ? 1.1 : 1.2,
+          };
 
-  const labelTextAlign = (data.align || 'center') as CSSProperties['textAlign'];
+  const defaultTextAlign: CSSProperties['textAlign'] =
+    activeShape === 'diamond' ? 'center' : 'left';
+  const labelTextAlign = (data.align || defaultTextAlign) as CSSProperties['textAlign'];
   const subTextProps = surfaceVariant
     ? {
         ...subLabelFontFamilyStyle,

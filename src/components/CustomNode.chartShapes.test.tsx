@@ -50,6 +50,10 @@ function queryToneChipIcon(root: ParentNode): SVGElement | null {
   return icon instanceof SVGElement ? icon : null;
 }
 
+function queryChartNodeContent(root: ParentNode): HTMLElement | null {
+  return queryHTMLElement(root, '[data-chart-node-content="1"]');
+}
+
 function renderCustomNode(options: {
   id: string;
   type: string;
@@ -193,5 +197,47 @@ describe('CustomNode chart div shapes', () => {
 
     expect(container.querySelector('svg polygon')).toBeNull();
     expect(queryHTMLElement(container, '[data-chart-div-shape="diamond"]')).not.toBeNull();
+  });
+
+  it.each([
+    ['start', 'start', { label: 'Begin' }, 'row'],
+    ['process', 'process', { label: 'Process', subLabel: 'Step' }, 'row'],
+    ['io', 'custom', { label: 'Input', shape: 'parallelogram' }, 'row'],
+    ['cylinder', 'custom', { label: 'Users DB', shape: 'cylinder' }, 'row'],
+    ['diamond', 'decision', { label: 'Approved?', shape: 'diamond' }, 'column'],
+  ] as const)(
+    'uses %s chart node content layout %s',
+    (_name, type, data, layout) => {
+      const { container } = renderCustomNode({
+        id: `${_name}-layout`,
+        type,
+        data,
+      });
+
+      const content = queryChartNodeContent(container);
+      expect(content).not.toBeNull();
+      expect(content?.getAttribute('data-chart-node-layout')).toBe(layout);
+    }
+  );
+
+  it('applies io and cylinder label typography from design', () => {
+    const ioView = renderCustomNode({
+      id: 'io-typography',
+      type: 'custom',
+      data: { label: 'Input', shape: 'parallelogram' },
+    });
+    const dbView = renderCustomNode({
+      id: 'db-typography',
+      type: 'custom',
+      data: { label: 'Users DB', shape: 'cylinder' },
+    });
+
+    const ioLabelSurface = ioView.getByText('Input').parentElement;
+    const dbLabelSurface = dbView.getByText('Users DB').parentElement;
+
+    expect(ioLabelSurface?.style.fontSize).toBe('12.5px');
+    expect(ioLabelSurface?.style.fontWeight).toBe('600');
+    expect(dbLabelSurface?.style.fontSize).toBe('12.5px');
+    expect(dbLabelSurface?.style.fontWeight).toBe('600');
   });
 });
