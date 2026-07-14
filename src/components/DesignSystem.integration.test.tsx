@@ -240,7 +240,7 @@ describe('Design System integration', () => {
         if (!nodeContainer) {
             throw new Error('Node container not found');
         }
-        expect(nodeContainer.style.minHeight).toBe('128px');
+        expect(nodeContainer.style.minHeight).toBe('80px');
     });
 
     it('does not lock generic nodes to measured dimensions when no explicit size was authored', () => {

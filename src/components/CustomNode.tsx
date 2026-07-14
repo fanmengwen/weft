@@ -75,8 +75,8 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     ? 46
     : !nodeUsesDivShape
       ? hasSubLabel
-        ? 128
-        : 108
+        ? 80
+        : 56
       : baseMinHeight;
   const minWidth = isMermaidImportedLeaf ? explicitWidthPx ?? baseMinWidth : baseMinWidth;
   const effectiveMinHeight = isMermaidImportedLeaf
