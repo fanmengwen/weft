@@ -310,6 +310,16 @@ export function useFlowEditorController({
     }, []);
 
     useEffect(() => {
+        // Empty chart entry: open Studio so AI generate + try-these are visible
+        // beside the flat canvas empty state (see chart empty-state design).
+        if (shell.nodes.length > 0 || shell.editorMode === 'studio') {
+            return;
+        }
+        openStudioAI();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
         const initialTemplateId = getInitialFlowEditorTemplateId(shell.location.state);
         if (!initialTemplateId) return;
 

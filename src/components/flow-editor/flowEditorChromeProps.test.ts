@@ -32,8 +32,10 @@ describe('buildFlowEditorEmptyStateProps', () => {
     const result = buildFlowEditorEmptyStateProps(createParams());
 
     expect(result).toBeDefined();
-    expect(result?.title).toBe('Start your diagram');
-    expect(result?.onGenerate).toEqual(expect.any(Function));
+    expect(result?.title).toBe('Your canvas is empty');
+    expect(result?.onTemplates).toEqual(expect.any(Function));
+    expect(result?.onAddNode).toEqual(expect.any(Function));
+    expect(result?.showStudioHint).toBe(false);
   });
 
   it('returns undefined when the canvas has nodes', () => {
@@ -44,12 +46,14 @@ describe('buildFlowEditorEmptyStateProps', () => {
     expect(result).toBeUndefined();
   });
 
-  it('returns undefined when studio mode is active on an empty canvas', () => {
+  it('keeps empty state visible with studio hint when studio is open', () => {
     const result = buildFlowEditorEmptyStateProps(
       createParams({ editorMode: 'studio' })
     );
 
-    expect(result).toBeUndefined();
+    expect(result).toBeDefined();
+    expect(result?.showStudioHint).toBe(true);
+    expect(result?.studioHintLabel).toBe('AI is ready');
   });
 
   it('returns undefined when the command bar is open on an empty canvas', () => {

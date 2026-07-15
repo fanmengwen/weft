@@ -969,11 +969,24 @@
       "uploadPreviewAlt": "Upload preview",
       "attachImage": "Attach image",
       "cancelGeneration": "Cancel generation",
+      "emptyHeroTitle": "Generate a diagram with AI",
+      "emptyHeroDescription": "Describe a process or system and AI will draft the full diagram for you.",
+      "tryThese": "Try these",
+      "generateShortcut": "⌘↵ to generate",
+      "emptyExamples": {
+        "userRegistration": "User registration and login",
+        "userRegistrationPrompt": "User registration and login flow with email verification and password retry after failed login",
+        "ecommerceCheckout": "Checkout with payment failure",
+        "ecommerceCheckoutPrompt": "E-commerce checkout from cart to order confirmation, including payment gateway failure and inventory-out branches",
+        "cicdRelease": "CI/CD release pipeline",
+        "cicdReleasePrompt": "CI/CD release pipeline from merge and test gates through canary deploy, approval, and rollback"
+      },
       "placeholders": {
         "create": "Describe the diagram you want to create from scratch...",
         "selectedEdit": "Describe what to change about the {{count}} selected node...",
         "edit": "Describe a change, for example 'add Redis between API and DB'",
-        "empty": "Describe a diagram to generate from scratch..."
+        "empty": "Describe a diagram to generate from scratch...",
+        "emptyCanvas": "e.g. User registration to order flow with payment-failure retry branch"
       },
       "thread": {
         "planTitle": "Processing steps",
@@ -1656,11 +1669,13 @@
     "figmaExportFailed": "Figma Export Failed: {{message}}",
     "applyingLayout": "Applying layout…",
     "emptyState": {
-      "title": "Start Building",
-      "description": "Your canvas is empty. Generate a diagram with AI, or start from scratch.",
+      "title": "Your canvas is empty",
+      "description": "Use Studio on the right to generate a diagram with AI,\nor start manually with the options below.",
       "generateWithFlowpilot": "Generate with AI",
       "browseTemplates": "Browse Templates",
-      "addBlankNode": "Add Blank Shape"
+      "addBlankNode": "Add Blank Shape",
+      "orPrefix": "or",
+      "studioReady": "AI is ready"
     },
     "viewShortcuts": "View keyboard shortcuts"
   },

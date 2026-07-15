@@ -903,12 +903,6 @@
       "exportMode": "导出模式"
     },
     "aiStudio": {
-      "placeholders": {
-        "create": "请描述你想从零开始创建的图表...",
-        "selectedEdit": "请描述你想对这 {{count}} 个已选节点做哪些修改...",
-        "edit": "请描述一个修改，例如“在 API 和数据库之间添加 Redis”",
-        "empty": "请描述一个要从零生成的图表..."
-      },
       "applyEdit": "应用 AI 编辑",
       "generateDiagram": "生成图表",
       "importReady": "导入已就绪 - 请检查更改",
@@ -930,6 +924,25 @@
       "uploadPreviewAlt": "上传预览",
       "attachImage": "附加图片",
       "cancelGeneration": "取消生成",
+      "emptyHeroTitle": "用 AI 生成图表",
+      "emptyHeroDescription": "描述你的流程或系统，AI 会为你画好整张图。",
+      "tryThese": "试试这些",
+      "generateShortcut": "⌘↵ 生成",
+      "emptyExamples": {
+        "userRegistration": "用户注册与登录流程",
+        "userRegistrationPrompt": "用户注册与登录流程，包含邮箱验证和登录失败重试",
+        "ecommerceCheckout": "电商结账含支付失败处理",
+        "ecommerceCheckoutPrompt": "电商结账从加购到下单确认，包含支付失败与库存不足分支",
+        "cicdRelease": "CI/CD 发布流水线",
+        "cicdReleasePrompt": "CI/CD 发布流水线，从合并与测试门禁到金丝雀发布、审批与回滚"
+      },
+      "placeholders": {
+        "create": "请描述你想从零开始创建的图表...",
+        "selectedEdit": "请描述你想对这 {{count}} 个已选节点做哪些修改...",
+        "edit": "请描述一个修改，例如“在 API 和数据库之间添加 Redis”",
+        "empty": "请描述一个要从零生成的图表...",
+        "emptyCanvas": "例如：用户从注册到下单的完整流程，包含支付失败的重试分支"
+      },
       "thread": {
         "planTitle": "处理步骤",
         "planTitleDiagram": "图表生成",
@@ -1602,11 +1615,13 @@
     "figmaExportFailed": "Figma 导出失败：{{message}}",
     "applyingLayout": "正在应用布局…",
     "emptyState": {
-      "title": "开始构建",
-      "description": "画布是空的。用 AI 生成图表，或从空白开始。",
+      "title": "画布还是空的",
+      "description": "用右侧 Studio 让 AI 帮你生成图表，\n或选择下面的方式手动开始。",
       "generateWithFlowpilot": "用 AI 生成",
       "browseTemplates": "浏览模板",
-      "addBlankNode": "添加空白形状"
+      "addBlankNode": "添加空白形状",
+      "orPrefix": "或",
+      "studioReady": "AI 已就绪"
     },
     "dslExportSkippedEdges": "DSL 导出时跳过了 {{count}} 条无效边。",
     "viewShortcuts": "查看键盘快捷键"
