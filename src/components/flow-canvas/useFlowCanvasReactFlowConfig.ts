@@ -21,6 +21,7 @@ interface ComputeFlowCanvasReactFlowConfigParams {
     visualQualityV2Enabled: boolean;
     isEffectiveSelectMode: boolean;
     viewportCullingEnabled: boolean;
+    showGrid?: boolean;
 }
 
 interface UseFlowCanvasReactFlowConfigParams extends ComputeFlowCanvasReactFlowConfigParams {
@@ -65,6 +66,7 @@ export function computeFlowCanvasReactFlowConfig({
     visualQualityV2Enabled,
     isEffectiveSelectMode,
     viewportCullingEnabled,
+    showGrid = true,
 }: ComputeFlowCanvasReactFlowConfigParams): Omit<FlowCanvasReactFlowConfig, 'isValidConnection'> {
     const interactionMode = getFlowCanvasInteractionMode(isEffectiveSelectMode);
     const stylePreset = visualQualityV2Enabled
@@ -72,7 +74,7 @@ export function computeFlowCanvasReactFlowConfig({
         : FLOW_CANVAS_STYLE_PRESETS.standard;
 
     return {
-        className: getFlowCanvasClassName(isEffectiveSelectMode),
+        className: getFlowCanvasClassName(isEffectiveSelectMode, showGrid),
         onlyRenderVisibleElements: viewportCullingEnabled,
         ...FLOW_CANVAS_BASE_BEHAVIOR,
         ...interactionMode,
@@ -85,6 +87,7 @@ export function useFlowCanvasReactFlowConfig({
     visualQualityV2Enabled,
     isEffectiveSelectMode,
     viewportCullingEnabled,
+    showGrid = true,
     effectiveEdges,
 }: UseFlowCanvasReactFlowConfigParams): FlowCanvasReactFlowConfig {
     const config = useMemo(
@@ -92,8 +95,9 @@ export function useFlowCanvasReactFlowConfig({
             visualQualityV2Enabled,
             isEffectiveSelectMode,
             viewportCullingEnabled,
+            showGrid,
         }),
-        [isEffectiveSelectMode, viewportCullingEnabled, visualQualityV2Enabled]
+        [isEffectiveSelectMode, showGrid, viewportCullingEnabled, visualQualityV2Enabled]
     );
 
     const isValidConnection = useCallback(

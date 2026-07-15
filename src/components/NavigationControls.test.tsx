@@ -3,8 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useFlowStore } from '@/store';
 import { NavigationControls } from './NavigationControls';
 
-const zoomIn = vi.fn();
-const zoomOut = vi.fn();
+const zoomTo = vi.fn();
 const fitView = vi.fn();
 
 vi.mock('react-i18next', () => ({
@@ -19,8 +18,7 @@ vi.mock('@/lib/reactflowCompat', async (importOriginal) => {
   return {
     ...actual,
     useReactFlow: () => ({
-      zoomIn,
-      zoomOut,
+      zoomTo,
       fitView,
     }),
     useViewport: () => ({ zoom: 1 }),
@@ -29,24 +27,23 @@ vi.mock('@/lib/reactflowCompat', async (importOriginal) => {
 
 describe('NavigationControls', () => {
   beforeEach(() => {
-    zoomIn.mockClear();
-    zoomOut.mockClear();
+    zoomTo.mockClear();
     fitView.mockClear();
     useFlowStore.getState().setShortcutsHelpOpen(false);
   });
 
-  it('calls zoomIn when the zoom-in control is clicked', () => {
+  it('zooms in by 20% when the zoom-in control is clicked', () => {
     render(<NavigationControls />);
     const buttons = screen.getAllByRole('button');
     fireEvent.click(buttons[0]!);
-    expect(zoomIn).toHaveBeenCalledWith({ duration: 300 });
+    expect(zoomTo).toHaveBeenCalledWith(1.2, { duration: 300 });
   });
 
-  it('calls zoomOut when the zoom-out control is clicked', () => {
+  it('zooms out by 20% when the zoom-out control is clicked', () => {
     render(<NavigationControls />);
     const buttons = screen.getAllByRole('button');
     fireEvent.click(buttons[1]!);
-    expect(zoomOut).toHaveBeenCalledWith({ duration: 300 });
+    expect(zoomTo).toHaveBeenCalledWith(0.8, { duration: 300 });
   });
 
   it('calls fitView when the fit-view control is clicked', () => {

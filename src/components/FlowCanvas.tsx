@@ -199,6 +199,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     visualQualityV2Enabled: true,
     isEffectiveSelectMode,
     viewportCullingEnabled,
+    showGrid: effectiveShowGrid,
     effectiveEdges,
   });
   const { isConnecting, onConnectStartWrapper, onConnectEndWrapper } = useFlowCanvasConnectionState(
@@ -451,7 +452,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       onConnectEnd={onConnectEndWrapper}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      fitView={true}
+      fitView={false}
       reactFlowConfig={reactFlowConfig}
       snapToGrid={snapToGrid}
       effectiveShowGrid={effectiveShowGrid}
