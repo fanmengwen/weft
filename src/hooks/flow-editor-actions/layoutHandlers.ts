@@ -3,8 +3,15 @@ import type { FlowTemplate } from '@/services/templates';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import { buildInsertedTemplateData } from './helpers';
 
+interface FitViewOptions {
+    duration?: number;
+    padding?: number;
+    minZoom?: number;
+    maxZoom?: number;
+}
+
 interface FitViewLike {
-    (options?: { duration?: number; padding?: number }): void;
+    (options?: FitViewOptions): void;
 }
 
 interface AutoLayoutParams {
@@ -75,6 +82,22 @@ export function buildTemplateInsertionResult({
     };
 }
 
-export function scheduleFitView(fitView: FitViewLike, duration: number, delayMs: number): void {
-    window.setTimeout(() => fitView({ duration }), delayMs);
+export function scheduleFitView(
+    fitView: FitViewLike,
+    duration: number,
+    delayMs: number,
+    options: Omit<FitViewOptions, 'duration'> = {},
+): void {
+    window.setTimeout(() => fitView({ duration, ...options }), delayMs);
+}
+
+/** Fit content into view without changing the current zoom level (pan only). */
+export function scheduleFitViewPreservingZoom(
+    fitView: FitViewLike,
+    getZoom: () => number,
+    duration: number,
+    delayMs: number,
+): void {
+    const zoom = getZoom();
+    scheduleFitView(fitView, duration, delayMs, { minZoom: zoom, maxZoom: zoom });
 }

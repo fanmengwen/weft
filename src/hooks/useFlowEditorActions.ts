@@ -22,6 +22,7 @@ import {
     buildTemplateInsertionResult,
     getAutoLayoutResult,
     scheduleFitView,
+    scheduleFitViewPreservingZoom,
 } from './flow-editor-actions/layoutHandlers';
 import { recordOnboardingEvent } from '@/services/onboarding/events';
 
@@ -34,7 +35,13 @@ interface UseFlowEditorActionsParams {
     recordHistory: () => void;
     setNodes: (nodes: FlowNode[] | ((nodes: FlowNode[]) => FlowNode[])) => void;
     setEdges: (edges: FlowEdge[] | ((edges: FlowEdge[]) => FlowEdge[])) => void;
-    fitView: (options?: { duration?: number; padding?: number }) => void;
+    fitView: (options?: {
+        duration?: number;
+        padding?: number;
+        minZoom?: number;
+        maxZoom?: number;
+    }) => void;
+    getZoom: () => number;
     t: TFunction;
     addToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning', duration?: number) => void;
     exportSerializationMode: ExportSerializationMode;
@@ -70,6 +77,7 @@ export function useFlowEditorActions({
     setNodes,
     setEdges,
     fitView,
+    getZoom,
     t,
     addToast,
     exportSerializationMode,
@@ -103,13 +111,14 @@ export function useFlowEditorActions({
                 setNodes(layoutedNodes);
                 setEdges(layoutedEdges);
             });
-            scheduleFitView(fitView, 800, 50);
+            // Keep the user's zoom; only pan so the layouted graph stays in view.
+            scheduleFitViewPreservingZoom(fitView, getZoom, 800, 50);
         } catch (error) {
             logger.error('ELK layout failed.', { error });
         } finally {
             setIsLayouting(false);
         }
-    }, [nodes, edges, recordHistory, setNodes, setEdges, fitView]);
+    }, [nodes, edges, recordHistory, setNodes, setEdges, fitView, getZoom]);
 
     const handleInsertTemplate = useCallback((template: FlowTemplate): void => {
         recordHistory();

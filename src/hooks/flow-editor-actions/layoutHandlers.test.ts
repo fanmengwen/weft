@@ -6,6 +6,7 @@ import {
   buildTemplateInsertionResult,
   getAutoLayoutResult,
   scheduleFitView,
+  scheduleFitViewPreservingZoom,
 } from './layoutHandlers';
 
 vi.mock('@/services/elkLayout', () => ({
@@ -98,6 +99,20 @@ describe('layoutHandlers', () => {
 
     vi.advanceTimersByTime(100);
     expect(fitView).toHaveBeenCalledWith({ duration: 800 });
+    vi.useRealTimers();
+  });
+
+  it('schedules fitView locked to the current zoom', () => {
+    vi.useFakeTimers();
+    const fitView = vi.fn();
+    const getZoom = vi.fn(() => 1);
+
+    scheduleFitViewPreservingZoom(fitView, getZoom, 800, 50);
+    expect(getZoom).toHaveBeenCalledTimes(1);
+    expect(fitView).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(50);
+    expect(fitView).toHaveBeenCalledWith({ duration: 800, minZoom: 1, maxZoom: 1 });
     vi.useRealTimers();
   });
 });

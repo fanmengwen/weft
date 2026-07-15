@@ -59,6 +59,7 @@ describe('useFlowEditorActions', () => {
                 setNodes: vi.fn(),
                 setEdges: vi.fn(),
                 fitView: vi.fn(),
+                getZoom: () => 1,
                 t: createTranslator((key: string) => key),
                 addToast,
                 exportSerializationMode: 'deterministic',
@@ -91,6 +92,7 @@ describe('useFlowEditorActions', () => {
                 setNodes: vi.fn(),
                 setEdges: vi.fn(),
                 fitView: vi.fn(),
+                getZoom: () => 1,
                 t: createTranslator((key: string, options?: Record<string, unknown>) => options?.message ? `${key}:${String(options.message)}` : key),
                 addToast,
                 exportSerializationMode: 'deterministic',
@@ -122,6 +124,7 @@ describe('useFlowEditorActions', () => {
                 setNodes: vi.fn(),
                 setEdges: vi.fn(),
                 fitView: vi.fn(),
+                getZoom: () => 1,
                 t: createTranslator((key: string, options?: Record<string, unknown>) => {
                     if (key === 'flowEditor.dslExportSkippedEdges') return `${String(options?.count)} skipped`;
                     return key;
@@ -149,6 +152,7 @@ describe('useFlowEditorActions', () => {
                 setNodes: vi.fn(),
                 setEdges: vi.fn(),
                 fitView: vi.fn(),
+                getZoom: () => 1,
                 t: createTranslator((key: string) => key),
                 addToast,
                 exportSerializationMode: 'deterministic',
