@@ -76,15 +76,20 @@ export function CustomNodeContent({
   const layout = resolveChartNodeContentLayout(activeShape);
   const isRowLayout = layout === 'row';
   const isCircularChip = isStadium;
+  // Diamond content is a centered stack (chip above label). Row cards keep
+  // icon+label left-packed so short titles do not look lopsided.
   const layoutClassName = isRowLayout
-    ? 'flex-row items-center gap-[10px]'
-    : `flex-col items-center ${isDivShape ? 'gap-1.5' : 'gap-2'}`;
+    ? 'flex-row items-center justify-start gap-[10px]'
+    : `flex-col items-center justify-center ${isDivShape ? 'gap-[5px]' : 'gap-2'}`;
+  const textColumnClassName = isRowLayout
+    ? 'flex min-w-0 flex-1 flex-col justify-center overflow-hidden'
+    : 'flex w-auto max-w-[92px] flex-col items-center overflow-hidden';
 
   return (
     <div
       data-chart-node-content="1"
       data-chart-node-layout={layout}
-      className={`relative z-10 flex h-full w-full min-h-0 justify-center ${layoutClassName}`}
+      className={`relative z-10 flex h-full w-full min-h-0 ${layoutClassName}`}
       style={!isDivShape ? { padding: contentPadding } : undefined}
     >
       <ChartNodeToneChip
@@ -97,7 +102,8 @@ export function CustomNodeContent({
       />
 
       <div
-        className={`flex min-w-0 flex-col overflow-hidden ${isRowLayout ? 'flex-1' : 'max-w-full w-full'}`}
+        data-chart-node-text-column="1"
+        className={textColumnClassName}
         style={textAlignStyle}
       >
         <InlineTextEditSurface

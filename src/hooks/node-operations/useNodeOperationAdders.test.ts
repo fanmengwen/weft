@@ -106,4 +106,23 @@ describe('useNodeOperationAdders', () => {
     const createdNode = captureCreatedNode(mockSetNodes);
     expect(createdNode?.data.label).toBe(expectedLabel);
   });
+
+  it('handleAddShape does not queue empty rename edit that would wipe the default label', () => {
+    const { result } = renderHook(() =>
+      useNodeOperationAdders({
+        recordHistory,
+        nodesLength: 0,
+        setNodes: mockSetNodes,
+        setSelectedNodeId: mockSetSelectedNodeId,
+      }),
+    );
+
+    act(() => {
+      result.current.handleAddShape({ type: 'process', shape: 'rounded' });
+    });
+
+    expect(useFlowStore.getState().pendingNodeLabelEditRequest).toBeNull();
+    const createdNode = captureCreatedNode(mockSetNodes);
+    expect(createdNode?.data.label).toBe('toolbar.process');
+  });
 });

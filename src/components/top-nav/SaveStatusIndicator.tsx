@@ -59,7 +59,7 @@ export function SaveStatusIndicator({
     >
       <div
         aria-label={ariaLabel}
-        className="flex cursor-default items-center justify-center px-1"
+        className="flex cursor-default items-center justify-center"
       >
         <svg width={15} height={15} viewBox="0 0 24 24" aria-hidden className="block shrink-0">
           <circle cx={12} cy={12} r={10} fill="var(--wf-acc)" />

@@ -87,17 +87,18 @@ export const Toolbar: React.FC<ToolbarProps> = ({
           <div data-testid="toolbar-divider" className={TOOLBAR_DIVIDER_CLASS} />
 
           <Tooltip text={t('toolbar.addItem', 'Add Item')}>
-            <Button
+            <button
+              type="button"
               onClick={onToggleElementPalette}
               disabled={!isInteractive}
               data-testid="toolbar-add"
-              variant="ghost"
-              size="icon"
               className={addButtonClass}
+              aria-label={t('toolbar.addItem', 'Add Item')}
               aria-expanded={shouldShowPalette}
               aria-haspopup="menu"
-              icon={<Plus data-testid="toolbar-add-icon" className={addIconClass} />}
-            />
+            >
+              <Plus data-testid="toolbar-add-icon" className={addIconClass} aria-hidden="true" />
+            </button>
           </Tooltip>
 
           <Tooltip text={t('toolbar.autoLayout')}>

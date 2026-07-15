@@ -267,6 +267,40 @@ describe('CustomNode chart div shapes', () => {
     }
   );
 
+  it('centers diamond label column under the tone chip instead of left-packing full width', () => {
+    const { container } = renderCustomNode({
+      id: 'decision-center',
+      type: 'decision',
+      data: { label: '判断', shape: 'diamond' },
+    });
+
+    const content = queryChartNodeContent(container);
+    const textColumn = queryHTMLElement(container, '[data-chart-node-text-column="1"]');
+    expect(content?.className).toContain('items-center');
+    expect(content?.className).toContain('justify-center');
+    expect(content?.className).toContain('gap-[5px]');
+    expect(textColumn).not.toBeNull();
+    expect(textColumn?.className).toContain('items-center');
+    expect(textColumn?.className).toContain('w-auto');
+    expect(textColumn?.className).toContain('max-w-[92px]');
+    expect(textColumn?.className).not.toContain('w-full');
+  });
+
+  it('left-packs process row content with a tighter min width floor', () => {
+    const { container } = renderCustomNode({
+      id: 'process-pack',
+      type: 'process',
+      data: { label: '处理' },
+    });
+
+    const content = queryChartNodeContent(container);
+    const nodeContainer = queryHTMLElement(container, '[data-transform-diagnostics="1"]');
+    expect(content?.className).toContain('justify-start');
+    expect(content?.className).toContain('items-center');
+    expect(nodeContainer?.style.minWidth).toBe('96px');
+    expect(nodeContainer?.style.minHeight).toBe('56px');
+  });
+
   it('applies io and cylinder label typography from design', () => {
     const ioView = renderCustomNode({
       id: 'io-typography',

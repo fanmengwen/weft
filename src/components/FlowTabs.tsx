@@ -28,10 +28,12 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
   const [editName, setEditName] = useState('');
   const [draggedPageId, setDraggedPageId] = useState<string | null>(null);
   const [dropTargetPageId, setDropTargetPageId] = useState<string | null>(null);
+  // Canvas.dc.html page chip: h30, px16, r8, acc@9% fill + acc@22% border, 13/600.
   const activeTabClassName =
-    'h-[30px] inline-flex items-center gap-2 rounded-[9px] border border-[var(--wf-acc-border)] bg-[color-mix(in_srgb,var(--wf-acc)_9%,#fff)] px-3 text-[13px] font-semibold text-[var(--wf-acc)] transition-colors shrink-0 cursor-pointer select-none';
+    'h-[30px] inline-flex items-center justify-center rounded-[8px] border border-[var(--wf-acc-border)] bg-[color-mix(in_srgb,var(--wf-acc)_9%,#FFFFFF)] px-4 text-[13px] font-semibold leading-none text-[var(--wf-acc)] transition-colors shrink-0 cursor-pointer select-none';
   const inactiveTabClassName =
-    'h-[30px] inline-flex items-center gap-2 rounded-[9px] border border-transparent px-3 text-[13px] font-medium text-[var(--brand-secondary)] transition-colors shrink-0 cursor-pointer select-none hover:bg-[#F3F5F8]';
+    'h-[30px] inline-flex items-center justify-center rounded-[8px] border border-transparent px-4 text-[13px] font-medium leading-none text-[var(--wf-text-label)] transition-colors shrink-0 cursor-pointer select-none hover:bg-[var(--wf-hover)]';
+  const canClosePage = pages.length > 1;
 
   const handleStartEdit = (page: EditorPage) => {
     setEditingTabId(page.id);
@@ -68,10 +70,10 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
   };
 
   return (
-    <div className="pointer-events-auto flex min-w-0 items-center justify-center px-2 sm:px-4">
+    <div className="pointer-events-auto flex min-w-0 items-center justify-center">
       <div
         role="tablist"
-        className="flex max-w-full min-w-0 items-center gap-1 overflow-x-auto no-scrollbar"
+        className="flex max-w-full min-w-0 items-center gap-1.5 overflow-x-auto no-scrollbar"
       >
         {pages.map((page) => (
           <div
@@ -134,29 +136,33 @@ export const FlowTabs: React.FC<FlowTabsProps> = ({
               </span>
             )}
 
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onClosePage(page.id);
-              }}
-              title={t('flowTabs.closeTab', 'Close page')}
-              className={`
-                rounded-full p-1 opacity-0 transition-colors group-hover:opacity-100
-                ${activePageId === page.id ? 'text-[var(--wf-acc)] hover:bg-[color-mix(in_srgb,var(--wf-acc)_12%,#fff)]' : 'text-[var(--brand-secondary)]'}
-              `}
-            >
-              <X className="h-3 w-3" />
-            </button>
+            {canClosePage ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onClosePage(page.id);
+                }}
+                title={t('flowTabs.closeTab', 'Close page')}
+                className={`
+                  -mr-1 rounded-full p-0.5 opacity-0 transition-colors group-hover:opacity-100
+                  ${activePageId === page.id ? 'text-[var(--wf-acc)] hover:bg-[color-mix(in_srgb,var(--wf-acc)_12%,#fff)]' : 'text-[var(--wf-text-label)] hover:bg-[var(--wf-hover)]'}
+                `}
+              >
+                <X className="h-3 w-3" />
+              </button>
+            ) : null}
           </div>
         ))}
 
         <button
+          type="button"
           onClick={onAddPage}
           data-testid="flow-page-add"
-          className="ml-1 flex h-[30px] w-[30px] items-center justify-center rounded-[9px] border border-[#E6E8EC] bg-[#FFFFFF] text-[var(--brand-secondary)] transition-colors hover:bg-[#F3F5F8]"
+          className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-[8px] text-[var(--wf-text-label)] transition-colors hover:bg-[var(--wf-hover)]"
           title={t('flowTabs.newFlowTab', 'New page')}
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-3.5 w-3.5" strokeWidth={2} />
         </button>
       </div>
     </div>

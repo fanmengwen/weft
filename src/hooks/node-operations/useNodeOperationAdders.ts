@@ -7,7 +7,6 @@ import type { FlowNode, NodeData } from '@/lib/types';
 import { NODE_DEFAULTS } from '@/theme';
 import { createDomainLibraryNode, type DomainLibraryItem } from '@/services/domainLibrary';
 import { useFlowStore } from '@/store';
-import { queueNodeLabelEditRequest } from '@/hooks/nodeLabelEditRequest';
 import {
   createAnnotationNode,
   createGenericShapeNode,
@@ -122,13 +121,13 @@ export function useNodeOperationAdders({
         (resolvedPosition) =>
           createGenericShapeNode(id, resolvedPosition ?? getDefaultNodePosition(nodesLength, 100, 100), {
             type: resolved.type,
+            // Default stays visible on drop; empty auto-rename used to blur-commit blanks.
             label: resolveDefaultShapeLabel(t, resolved.type, resolved.shape),
             color: resolved.color,
             shape: resolved.shape,
           }),
         position
       );
-      queueNodeLabelEditRequest(id, { replaceExisting: true });
     },
     [commitAddedNode, nodesLength, recordHistory, t]
   );

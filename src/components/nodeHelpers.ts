@@ -90,7 +90,8 @@ export function getMinNodeSize(shape: NodeData['shape'] | undefined): {
     case 'cylinder':
       return { minWidth: 140, minHeight: 80 };
     default:
-      return { minWidth: 120, minHeight: 60 };
+      // Hug short chart labels (e.g. "处理"); longer text still expands past this floor.
+      return { minWidth: 96, minHeight: 56 };
   }
 }
 

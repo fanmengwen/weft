@@ -62,6 +62,7 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
   cinematicThemeMode,
 }) => {
   const { t } = useTranslation();
+  // Canvas.dc.html primary CTA: solid accent, 32h, px14, 13/600 + download icon.
   const exportLabel = t('export.title', 'Export');
   const defaultRequest = createDefaultCinematicExportRequest(cinematicThemeMode);
   const [cinematicSpeedState, setCinematicSpeedState] = useState<CinematicExportSpeed>(
@@ -111,9 +112,9 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
           onClick={toggleMenu}
           data-testid="topnav-export"
           aria-label={exportLabel}
-          className="inline-flex h-8 items-center gap-1.5 rounded-[8px] bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold text-white transition-[filter] hover:brightness-[0.94]"
+          className="inline-flex h-8 items-center gap-1.5 rounded-[8px] bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold leading-none text-white transition-[filter] hover:brightness-[0.94]"
         >
-          <Download className="h-4 w-4" />
+          <Download className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
           <span className="hidden sm:inline">{exportLabel}</span>
         </button>
       </Tooltip>

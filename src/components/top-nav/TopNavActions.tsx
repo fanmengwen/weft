@@ -45,25 +45,25 @@ export function TopNavActions({
 }: TopNavActionsProps): React.ReactElement {
     const { t } = useTranslation();
     const { resolvedTheme } = useTheme();
-    const playLabel = t('common.play', 'Preview');
+    const playLabel = t('common.play', 'Play');
 
     return (
-        <div className="flex min-w-0 items-center justify-end gap-2 sm:gap-3">
-            <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex min-w-0 items-center justify-end">
+            <div className="flex items-center gap-1">
                 <Tooltip text={t('nav.playbackMode', 'Preview playback')} side="bottom">
                     <button
                         type="button"
                         onClick={onPlay}
                         data-testid="topnav-play"
                         aria-label={playLabel}
-                        className="inline-flex h-8 items-center gap-1.5 rounded-[8px] px-2.5 text-[13px] font-medium text-[var(--wf-text-btn)] transition-colors hover:bg-[var(--wf-hover)]"
+                        className="inline-flex h-8 items-center gap-1.5 rounded-[8px] px-3 text-[13px] font-medium leading-none text-[var(--wf-text-btn)] transition-colors hover:bg-[var(--wf-hover)]"
                     >
-                        <Play className="h-3.5 w-3.5" />
+                        <Play className="h-[11px] w-[11px] fill-current stroke-none" aria-hidden />
                         <span className="hidden sm:inline">{playLabel}</span>
                     </button>
                 </Tooltip>
 
-                <div className="mx-1.5 h-4 w-px bg-[var(--wf-border)]" />
+                <div className="mx-2 h-4 w-px shrink-0 bg-[var(--wf-border)]" aria-hidden />
 
                 <ExportMenu
                     onExportPNG={onExportPNG}

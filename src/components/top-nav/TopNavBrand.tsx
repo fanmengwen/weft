@@ -35,13 +35,13 @@ export function TopNavBrand({
   const showTextLogo = shouldShowTextLogo(logoStyle);
 
   return (
-    <div className="flex min-w-0 items-center gap-2">
+    <div className="flex min-w-0 items-center gap-1.5 px-1">
       {showIconLogo && (
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden">
+        <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden">
           {logoUrl ? (
             <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
           ) : (
-            <WeftLogo className="h-9 w-9" />
+            <WeftLogo className="h-7 w-7" />
           )}
         </div>
       )}
@@ -73,16 +73,12 @@ export function TopNavBrand({
       )}
 
       {showTextLogo && (
-        <div className="flex min-w-0 flex-col">
-          <span className="truncate text-[15px] font-semibold text-[var(--wf-text)]">
-            {appName}
-          </span>
-        </div>
+        <span className="truncate text-[15px] font-semibold leading-none text-[var(--wf-text)]">
+          {appName}
+        </span>
       )}
 
-      <div className="ml-1 flex items-center">
-        <SaveStatusIndicator showPrivacyMessage={showPrivacyBadge} />
-      </div>
+      <SaveStatusIndicator showPrivacyMessage={showPrivacyBadge} />
     </div>
   );
 }

@@ -114,7 +114,7 @@ export function TopNav({
                     logoStyle="text"
                     ui={{ showBeta: true }}
                 />
-                <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" />
+                <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" aria-hidden />
                 <ModeSelector variant="flat" />
             </div>
 

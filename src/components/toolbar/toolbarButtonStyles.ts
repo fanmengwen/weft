@@ -15,11 +15,27 @@ export const TOOLBAR_ICON_DISABLED_CLASS = 'text-[#C6CCD6]';
 
 export const TOOLBAR_DIVIDER_CLASS = 'mx-auto h-px w-[18px] bg-[#EEF0F4]';
 
-export const TOOLBAR_ADD_BUTTON_CLASS =
-  'group inline-flex h-9 w-9 items-center justify-center rounded-[9px] bg-[var(--wf-acc)] text-white transition-[background-color,transform] hover:brightness-[0.94] disabled:pointer-events-none';
+const TOOLBAR_ADD_BUTTON_BASE_CLASS =
+  'group inline-flex h-9 w-9 items-center justify-center rounded-[9px] transition-[background-color,color,filter,transform] disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color-mix(in_srgb,var(--wf-acc)_25%,transparent)]';
 
-export const TOOLBAR_ADD_BUTTON_OPEN_CLASS =
-  'bg-[color-mix(in_srgb,var(--wf-acc)_10%,transparent)] text-[var(--wf-acc)]';
+/** Closed: solid accent CTA. Explicit hover colors override Button ghost. */
+export const TOOLBAR_ADD_BUTTON_CLASS = [
+  TOOLBAR_ADD_BUTTON_BASE_CLASS,
+  'bg-[var(--wf-acc)] text-white',
+  'hover:bg-[var(--wf-acc)] hover:text-white hover:brightness-[0.94]',
+  'active:brightness-[0.9]',
+].join(' ');
+
+/**
+ * Open (palette visible): muted pressed/close control — not solid blue.
+ * Neutral rail fill + secondary X so it matches other toolbar chrome.
+ */
+export const TOOLBAR_ADD_BUTTON_OPEN_CLASS = [
+  TOOLBAR_ADD_BUTTON_BASE_CLASS,
+  'bg-[var(--wf-hover)] text-[var(--brand-secondary)]',
+  'hover:bg-[#EEF0F4] hover:text-[var(--brand-text)]',
+  'active:bg-[#E6E8EC]',
+].join(' ');
 
 export const TOOLBAR_PALETTE_OFFSET_CLASS = 'absolute left-[46px] top-1/2 -translate-y-1/2';
 
@@ -41,13 +57,11 @@ export function getToolbarAddButtonClasses(options: {
   const { open, interactive } = options;
 
   return {
-    button: [TOOLBAR_ADD_BUTTON_CLASS, open ? TOOLBAR_ADD_BUTTON_OPEN_CLASS : '']
-      .filter(Boolean)
-      .join(' '),
+    button: open ? TOOLBAR_ADD_BUTTON_OPEN_CLASS : TOOLBAR_ADD_BUTTON_CLASS,
     icon: [
       TOOLBAR_ICON_CLASS,
       'transition-transform duration-200',
-      open ? 'rotate-45 text-[var(--wf-acc)]' : 'text-white',
+      open ? 'rotate-45 text-[var(--brand-secondary)] group-hover:text-[var(--brand-text)]' : 'text-white',
       !interactive ? TOOLBAR_ICON_DISABLED_CLASS : '',
     ]
       .filter(Boolean)

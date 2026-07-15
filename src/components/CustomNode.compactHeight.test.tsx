@@ -86,7 +86,7 @@ describe('CustomNode compact rounded surface height', () => {
       data: { label: 'Process' },
     });
 
-    expect(queryNodeContainer(container)?.style.minHeight).toBe('60px');
+    expect(queryNodeContainer(container)?.style.minHeight).toBe('56px');
   });
 
   it('uses modestly higher minHeight for rounded nodes with subLabel', () => {
