@@ -54,7 +54,7 @@ describe('StudioPanel', () => {
   it('renders the AI workspace without studio tabs', async () => {
     render(<StudioPanel {...createProps()} />);
 
-    expect(screen.getByText('Studio')).toBeTruthy();
+    expect(screen.getByText('AI assistant')).toBeTruthy();
     expect(screen.queryByText('Code')).toBeNull();
     expect(await screen.findByTestId('studio-ai-panel')).toBeTruthy();
   });
@@ -68,3 +68,4 @@ describe('StudioPanel', () => {
     expect(props.onClearChat).toHaveBeenCalledTimes(1);
   });
 });
+

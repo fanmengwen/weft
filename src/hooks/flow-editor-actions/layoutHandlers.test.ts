@@ -115,4 +115,25 @@ describe('layoutHandlers', () => {
     expect(fitView).toHaveBeenCalledWith({ duration: 800, minZoom: 1, maxZoom: 1 });
     vi.useRealTimers();
   });
+
+  it('schedules fitView locked to the default 100% zoom when options pin min/max', () => {
+    vi.useFakeTimers();
+    const fitView = vi.fn();
+
+    scheduleFitView(fitView, 800, 100, {
+      padding: 0.2,
+      minZoom: 1,
+      maxZoom: 1,
+    });
+    expect(fitView).not.toHaveBeenCalled();
+
+    vi.advanceTimersByTime(100);
+    expect(fitView).toHaveBeenCalledWith({
+      duration: 800,
+      padding: 0.2,
+      minZoom: 1,
+      maxZoom: 1,
+    });
+    vi.useRealTimers();
+  });
 });

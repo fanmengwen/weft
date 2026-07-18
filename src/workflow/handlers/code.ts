@@ -3,7 +3,8 @@ import { WorkflowHandlerError, type WorkflowNodeHandler } from '../engine/types'
 import type { VariablePool } from '../engine/variablePool';
 import { firstUpstreamText } from './llm';
 
-const CODE_TIMEOUT_MS = 5000;
+/** Matches the design property panel timeout label (10 seconds). */
+export const CODE_TIMEOUT_MS = 10_000;
 
 // Runs inside the Worker: evaluate the user function and post back a
 // structured-cloneable verdict, covering sync throws and rejected promises.
@@ -32,6 +33,11 @@ export function buildCodeInputs(
   }
   // Node ids are wf-<kind>-<uuid>, so the convenience key cannot collide.
   inputs.text = firstUpstreamText(pool, incomers);
+  // Design-friendly alias: first upstream payload as `input` (object or results).
+  const first = incomers[0];
+  if (first) {
+    inputs.input = pool.getNodeOutputs(first.id) ?? {};
+  }
   return inputs;
 }
 

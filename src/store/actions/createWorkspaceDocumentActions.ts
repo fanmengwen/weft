@@ -73,7 +73,14 @@ function matchesLoadedPages(currentPages: FlowTab[], documentPages: FlowDocument
 
 export function createWorkspaceDocumentActions(set: SetFlowState, get: GetFlowState): Pick<
     FlowState,
-    'setDocuments' | 'setActiveDocumentId' | 'createDocument' | 'renameDocument' | 'duplicateDocument' | 'deleteDocumentRecord'
+    | 'setDocuments'
+    | 'setActiveDocumentId'
+    | 'createDocument'
+    | 'renameDocument'
+    | 'duplicateDocument'
+    | 'deleteDocumentRecord'
+    | 'restoreDocumentRecord'
+    | 'purgeDocumentRecord'
 > {
     return {
         setDocuments: (documents) => set({ documents }),
@@ -225,16 +232,22 @@ export function createWorkspaceDocumentActions(set: SetFlowState, get: GetFlowSt
             return duplicated.id;
         },
         deleteDocumentRecord: (id) => {
-            const { documents, activeDocumentId } = get();
-            const remainingDocuments = documents.filter((document) => document.id !== id);
-
-            if (remainingDocuments.length === documents.length) {
+            const { documents, activeDocumentId, trashedDocuments } = get();
+            const target = documents.find((document) => document.id === id);
+            if (!target) {
                 return;
             }
+
+            const remainingDocuments = documents.filter((document) => document.id !== id);
+            const nextTrashed = [
+                { document: target, deletedAt: nowIso() },
+                ...trashedDocuments.filter((entry) => entry.document.id !== id),
+            ];
 
             if (remainingDocuments.length === 0) {
                 set({
                     documents: [],
+                    trashedDocuments: nextTrashed,
                     activeDocumentId: '',
                     tabs: [],
                     activeTabId: '',
@@ -245,7 +258,10 @@ export function createWorkspaceDocumentActions(set: SetFlowState, get: GetFlowSt
             }
 
             if (id !== activeDocumentId) {
-                set({ documents: remainingDocuments });
+                set({
+                    documents: remainingDocuments,
+                    trashedDocuments: nextTrashed,
+                });
                 return;
             }
 
@@ -258,11 +274,34 @@ export function createWorkspaceDocumentActions(set: SetFlowState, get: GetFlowSt
 
             set({
                 documents: remainingDocuments,
+                trashedDocuments: nextTrashed,
                 activeDocumentId: nextDocument.id,
                 tabs: pages,
                 activeTabId: activePage.id,
                 nodes: activePage.nodes,
                 edges: activePage.edges,
+            });
+        },
+        restoreDocumentRecord: (id) => {
+            const { documents, trashedDocuments } = get();
+            const entry = trashedDocuments.find((item) => item.document.id === id);
+            if (!entry) {
+                return;
+            }
+
+            set({
+                documents: [...documents, entry.document],
+                trashedDocuments: trashedDocuments.filter((item) => item.document.id !== id),
+            });
+        },
+        purgeDocumentRecord: (id) => {
+            const { trashedDocuments } = get();
+            if (!trashedDocuments.some((item) => item.document.id === id)) {
+                return;
+            }
+
+            set({
+                trashedDocuments: trashedDocuments.filter((item) => item.document.id !== id),
             });
         },
     };

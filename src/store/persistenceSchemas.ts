@@ -42,6 +42,7 @@ export const persistedTabBaseSchema = z.object({
 
 export const persistedFlowHydrationSchema = z.object({
   documents: z.array(z.unknown()).optional(),
+  trashedDocuments: z.array(z.unknown()).optional(),
   activeDocumentId: z.string().optional(),
   tabs: z.array(z.unknown()).optional(),
   activeTabId: z.string().optional(),

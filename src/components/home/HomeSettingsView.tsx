@@ -1,72 +1,86 @@
 import React from 'react';
-import { AI_ASSISTANT_NAME } from '@/lib/brand';
 import { useTranslation } from 'react-i18next';
-import { AISettings } from '../SettingsModal/AISettings';
-import { CanvasSettings } from '../SettingsModal/CanvasSettings';
-import { GeneralSettings } from '../SettingsModal/GeneralSettings';
-import { MCPSettings } from '../SettingsModal/MCPSettings';
-import { ShortcutsSettings } from '../SettingsModal/ShortcutsSettings';
-import { SidebarItem } from '../ui/SidebarItem';
+import { HomeSettingsAboutPanel } from './settings/HomeSettingsAboutPanel';
+import { HomeSettingsAIPanel } from './settings/HomeSettingsAIPanel';
+import { HomeSettingsCanvasPanel } from './settings/HomeSettingsCanvasPanel';
+import { HomeSettingsGeneralPanel } from './settings/HomeSettingsGeneralPanel';
+import { HomeSettingsShortcutsPanel } from './settings/HomeSettingsShortcutsPanel';
+import { HOME_SETTINGS_TABS, type HomeSettingsTab } from './settings/homeSettingsTabs';
+import { SettingsNavItem } from './settings/settingsPrimitives';
 
-type HomeSettingsTab = 'general' | 'canvas' | 'shortcuts' | 'ai' | 'mcp';
+export type { HomeSettingsTab };
 
 interface HomeSettingsViewProps {
-    activeSettingsTab: HomeSettingsTab;
-    onSettingsTabChange: (tab: HomeSettingsTab) => void;
+  activeSettingsTab: HomeSettingsTab;
+  onSettingsTabChange: (tab: HomeSettingsTab) => void;
 }
 
 export function HomeSettingsView({
-    activeSettingsTab,
-    onSettingsTabChange,
+  activeSettingsTab,
+  onSettingsTabChange,
 }: HomeSettingsViewProps): React.ReactElement {
-    const { t } = useTranslation();
-    const settingsTabs: Array<{ key: HomeSettingsTab; label: string }> = [
-        { key: 'general', label: t('settings.general') },
-        { key: 'canvas', label: t('settings.canvas') },
-        { key: 'ai', label: t('settings.aiAssistant', AI_ASSISTANT_NAME) },
-        { key: 'mcp', label: t('settings.mcp') },
-        { key: 'shortcuts', label: t('settings.shortcuts') },
-    ];
+  const { t } = useTranslation();
 
-    function renderSettingsPanel(): React.ReactElement {
-        switch (activeSettingsTab) {
-            case 'general':
-                return <GeneralSettings />;
-            case 'canvas':
-                return <CanvasSettings />;
-            case 'ai':
-                return <AISettings />;
-            case 'mcp':
-                return <MCPSettings />;
-            case 'shortcuts':
-                return <ShortcutsSettings />;
-        }
+  const tabLabels: Record<HomeSettingsTab, string> = {
+    general: t('settings.general', 'General'),
+    canvas: t('settings.canvas', 'Canvas'),
+    ai: t('settings.ai', 'AI'),
+    shortcuts: t('settings.shortcuts', 'Shortcuts'),
+    about: t('settings.about', 'About'),
+  };
+
+  function renderPanel(): React.ReactElement {
+    switch (activeSettingsTab) {
+      case 'general':
+        return <HomeSettingsGeneralPanel />;
+      case 'canvas':
+        return <HomeSettingsCanvasPanel />;
+      case 'ai':
+        return <HomeSettingsAIPanel />;
+      case 'shortcuts':
+        return <HomeSettingsShortcutsPanel />;
+      case 'about':
+        return <HomeSettingsAboutPanel />;
     }
+  }
 
-    return (
-        <div className="flex min-h-screen flex-1 flex-col overflow-hidden animate-in fade-in duration-300">
-            <header className="border-b border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-4 py-4 sm:px-6 md:px-8 md:py-6">
-                <h1 className="text-xl font-bold text-[var(--brand-text)] tracking-tight">{t('settings.title')}</h1>
-            </header>
+  return (
+    <div
+      className="flex-1 overflow-y-auto animate-in fade-in duration-300"
+      data-testid="home-settings-view"
+    >
+      <div className="mx-auto max-w-[880px] px-4 py-8 sm:px-8 md:px-10 md:py-9 md:pb-14">
+        <h1 className="m-0 text-[21px] font-bold tracking-tight text-[var(--brand-text)]">
+          {t('settings.title', 'Settings')}
+        </h1>
+        <p className="mt-1.5 text-[13px] text-[#6B7484] dark:text-[var(--brand-secondary)]">
+          {t(
+            'homeSettings.subtitle',
+            'App preferences, plus default canvas and AI behavior.'
+          )}
+        </p>
 
-            <div className="flex min-h-0 flex-1 flex-col bg-[var(--brand-surface)] md:flex-row">
-                <div className="flex gap-2 overflow-x-auto border-b border-[var(--color-brand-border)] p-2 md:w-48 md:block md:space-y-1 md:overflow-y-auto md:border-b-0 md:border-r">
-                    {settingsTabs.map((tab) => (
-                        <SidebarItem
-                            key={tab.key}
-                            isActive={activeSettingsTab === tab.key}
-                            onClick={() => onSettingsTabChange(tab.key)}
-                            className="min-w-fit md:min-w-0"
-                        >
-                            {tab.label}
-                        </SidebarItem>
-                    ))}
-                </div>
+        <div className="mt-6 grid grid-cols-1 items-start gap-5 md:grid-cols-[176px_1fr]">
+          <nav
+            className="flex gap-1 overflow-x-auto md:flex-col md:gap-0.5 md:overflow-visible"
+            aria-label={t('settings.title', 'Settings')}
+            data-testid="home-settings-nav"
+          >
+            {HOME_SETTINGS_TABS.map((tab) => (
+              <SettingsNavItem
+                key={tab}
+                label={tabLabels[tab]}
+                active={activeSettingsTab === tab}
+                onClick={() => onSettingsTabChange(tab)}
+              />
+            ))}
+          </nav>
 
-                <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8">
-                    <div className="max-w-2xl">{renderSettingsPanel()}</div>
-                </div>
-            </div>
+          <div className="min-w-0" data-testid={`home-settings-panel-${activeSettingsTab}`}>
+            {renderPanel()}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }

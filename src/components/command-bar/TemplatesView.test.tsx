@@ -28,19 +28,19 @@ describe('TemplatesView', () => {
     expect(screen.getAllByText(/nodes?/i).length).toBeGreaterThan(0);
     expect(screen.queryByText('Domain events')).toBeNull();
 
-    fireEvent.click(screen.getByText('AWS Event-Driven SaaS Platform').closest('button') as HTMLButtonElement);
+    fireEvent.click(screen.getByText('请假审批').closest('button') as HTMLButtonElement);
 
     expect(onSelectTemplate).toHaveBeenCalledWith(
-      expect.objectContaining({ id: 'aws-event-driven-saas-platform' })
+      expect.objectContaining({ id: 'leave-approval-flow' })
     );
   });
 
   it('searches across use cases and replacement hints, not just names', () => {
     render(<TemplatesView onSelectTemplate={vi.fn()} onClose={vi.fn()} handleBack={vi.fn()} />);
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'canary environment' } });
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '灰度环境' } });
 
-    expect(screen.getByText('Production Release Train')).toBeTruthy();
-    expect(screen.queryByText('AWS Event-Driven SaaS Platform')).toBeNull();
+    expect(screen.getByText('软件发版上线')).toBeTruthy();
+    expect(screen.queryByText('请假审批')).toBeNull();
   });
 });

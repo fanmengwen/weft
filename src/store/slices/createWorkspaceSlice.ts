@@ -11,7 +11,7 @@ import type { FlowState } from '../types';
 
 type WorkspaceSliceState = Pick<
   FlowState,
-  'documents' | 'activeDocumentId' | 'tabs' | 'activeTabId'
+  'documents' | 'trashedDocuments' | 'activeDocumentId' | 'tabs' | 'activeTabId'
 >;
 
 export type WorkspaceSlice = WorkspaceSliceState &
@@ -26,6 +26,7 @@ export function createWorkspaceSlice(
 ): WorkspaceSlice {
   return {
     documents: initialState.documents,
+    trashedDocuments: initialState.trashedDocuments,
     activeDocumentId: initialState.activeDocumentId,
     tabs: initialState.tabs,
     activeTabId: initialState.activeTabId,

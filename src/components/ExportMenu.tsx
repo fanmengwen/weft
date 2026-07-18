@@ -37,6 +37,8 @@ interface ExportMenuProps {
   cinematicResolution?: CinematicExportResolution;
   onCinematicResolutionChange?: (res: CinematicExportResolution) => void;
   cinematicThemeMode: CinematicThemeMode;
+  triggerClassName?: string;
+  triggerIcon?: React.ReactNode;
 }
 
 export const ExportMenu: React.FC<ExportMenuProps> = ({
@@ -60,10 +62,13 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
   cinematicResolution,
   onCinematicResolutionChange,
   cinematicThemeMode,
+  triggerClassName,
+  triggerIcon,
 }) => {
   const { t } = useTranslation();
-  // Canvas.dc.html primary CTA: solid accent, 32h, px14, 13/600 + download icon.
   const exportLabel = t('export.title', 'Export');
+  const defaultTriggerClassName =
+    'inline-flex h-8 items-center gap-1.5 rounded-[8px] bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold leading-none text-white transition-[filter] hover:brightness-[0.94]';
   const defaultRequest = createDefaultCinematicExportRequest(cinematicThemeMode);
   const [cinematicSpeedState, setCinematicSpeedState] = useState<CinematicExportSpeed>(
     defaultRequest.speed
@@ -112,9 +117,9 @@ export const ExportMenu: React.FC<ExportMenuProps> = ({
           onClick={toggleMenu}
           data-testid="topnav-export"
           aria-label={exportLabel}
-          className="inline-flex h-8 items-center gap-1.5 rounded-[8px] bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold leading-none text-white transition-[filter] hover:brightness-[0.94]"
+          className={triggerClassName ?? defaultTriggerClassName}
         >
-          <Download className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />
+          {triggerIcon ?? <Download className="h-[13px] w-[13px]" strokeWidth={2} aria-hidden />}
           <span className="hidden sm:inline">{exportLabel}</span>
         </button>
       </Tooltip>

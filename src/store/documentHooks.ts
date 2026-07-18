@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useFlowStore } from '../store';
-import type { FlowDocument } from '@/services/storage/flowDocumentModel';
+import type { FlowDocument, TrashedDocument } from '@/services/storage/flowDocumentModel';
 import {
     createWorkspaceDocumentsFromTabs,
     findDocumentRouteTarget,
@@ -36,6 +36,13 @@ export function useWorkspaceDocumentsState(): {
     };
 }
 
+export function useTrashedDocumentsState(): {
+    trashedDocuments: TrashedDocument[];
+} {
+    const trashedDocuments = useFlowStore((state) => state.trashedDocuments);
+    return { trashedDocuments };
+}
+
 export function useWorkspaceDocumentActions(): {
     setActiveDocumentId: WorkspaceDocumentActionsSlice['setActiveDocumentId'];
     setDocuments: WorkspaceDocumentActionsSlice['setDocuments'];
@@ -43,6 +50,8 @@ export function useWorkspaceDocumentActions(): {
     renameDocument: WorkspaceDocumentActionsSlice['renameDocument'];
     duplicateDocument: WorkspaceDocumentActionsSlice['duplicateDocument'];
     deleteDocument: WorkspaceDocumentActionsSlice['deleteDocumentRecord'];
+    restoreDocument: WorkspaceDocumentActionsSlice['restoreDocumentRecord'];
+    purgeDocument: WorkspaceDocumentActionsSlice['purgeDocumentRecord'];
 } {
     const actions = useFlowStore(useShallow(selectWorkspaceDocumentActions));
 
@@ -53,6 +62,8 @@ export function useWorkspaceDocumentActions(): {
         renameDocument: actions.renameDocument,
         duplicateDocument: actions.duplicateDocument,
         deleteDocument: actions.deleteDocumentRecord,
+        restoreDocument: actions.restoreDocumentRecord,
+        purgeDocument: actions.purgeDocumentRecord,
     };
 }
 

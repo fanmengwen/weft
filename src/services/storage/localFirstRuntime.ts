@@ -105,15 +105,9 @@ async function migrateLegacyStoreIntoRepositoryIfNeeded(): Promise<void> {
 
 async function hydrateStoreFromRepository(): Promise<void> {
   const loaded = await localFirstRepository.loadWorkspaceSnapshot();
-  const workspace = createLoadedFlowWorkspace(loaded);
+  const trashedPersisted = await localFirstRepository.listTrashedDocuments();
+  const workspace = createLoadedFlowWorkspace(loaded, trashedPersisted);
   const activeDocument = getEditorPagesForDocument(workspace.documents, workspace.activeDocumentId);
-  if (!activeDocument) {
-    captureAnalyticsEvent('workspace_restored', {
-      document_count: 0,
-      has_active_document: false,
-    });
-    return;
-  }
 
   const persistentAiSettings = await localFirstRepository.loadPersistentAISettings();
   const parsedPersistentAiSettings = parsePersistentAISettingsJson(
@@ -123,9 +117,29 @@ async function hydrateStoreFromRepository(): Promise<void> {
     ? sanitizeAISettings(parsedPersistentAiSettings, DEFAULT_AI_SETTINGS)
     : loadPersistedAISettings();
 
+  if (!activeDocument) {
+    useFlowStore.setState((currentState) => ({
+      ...currentState,
+      documents: workspace.documents,
+      trashedDocuments: workspace.trashedDocuments,
+      activeDocumentId: '',
+      tabs: [],
+      activeTabId: '',
+      nodes: [],
+      edges: [],
+      aiSettings,
+    }));
+    captureAnalyticsEvent('workspace_restored', {
+      document_count: 0,
+      has_active_document: false,
+    });
+    return;
+  }
+
   useFlowStore.setState((currentState) => ({
     ...currentState,
     documents: workspace.documents,
+    trashedDocuments: workspace.trashedDocuments,
     activeDocumentId: activeDocument.activeDocumentId,
     tabs: activeDocument.pages,
     activeTabId: activeDocument.activePageId,
@@ -151,6 +165,7 @@ function persistStoreSnapshot(): void {
     edges: nextState.edges,
   });
 
+  // Active-only save soft-deletes missing IDs in the repository (keeps Trash content).
   void localFirstRepository.saveFlowDocuments(
     documents,
     nextState.activeDocumentId,
@@ -159,6 +174,14 @@ function persistStoreSnapshot(): void {
   if (nextState.aiSettings.storageMode === 'local') {
     void localFirstRepository.savePersistentAISettings(JSON.stringify(nextState.aiSettings));
   }
+}
+
+/**
+ * Hard-delete a purged trash entry from durable storage.
+ * Soft-delete is handled by saveFlowDocuments when the id leaves the active set.
+ */
+export function purgeTrashedDocumentFromRepository(documentId: string): void {
+  void localFirstRepository.deleteDocument(documentId);
 }
 
 let syncStopper: (() => void) | null = null;

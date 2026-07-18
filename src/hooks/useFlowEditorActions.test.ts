@@ -18,6 +18,14 @@ vi.mock('@/services/figmaExportService', () => ({
     toFigmaSVG: vi.fn(() => '<svg />'),
 }));
 
+vi.mock('@/services/onboarding/events', () => ({
+    recordOnboardingEvent: vi.fn(),
+}));
+
+vi.mock('@/services/analytics/analytics', () => ({
+    captureAnalyticsEvent: vi.fn(),
+}));
+
 function createNode(id: string): FlowNode {
     return {
         id,
@@ -165,5 +173,63 @@ describe('useFlowEditorActions', () => {
 
         expect(addToast).toHaveBeenCalledWith('Add nodes before creating a share link.', 'error');
         expect(result.current.shareViewerUrl).toBeNull();
+    });
+
+    it('fits inserted templates at 100% zoom instead of auto-scaling', () => {
+        vi.useFakeTimers();
+        const fitView = vi.fn();
+        const setNodes = vi.fn();
+        const setEdges = vi.fn();
+
+        const { result } = renderHook(() =>
+            useFlowEditorActions({
+                nodes: [],
+                edges: [],
+                recordHistory: vi.fn(),
+                setNodes,
+                setEdges,
+                fitView,
+                getZoom: () => 1,
+                t: createTranslator((key: string) => key),
+                addToast: vi.fn(),
+                exportSerializationMode: 'deterministic',
+            })
+        );
+
+        act(() => {
+            result.current.handleInsertTemplate({
+                id: 'starter-simple',
+                name: 'Simple',
+                description: 'desc',
+                icon: (() => null) as never,
+                msg: 'Simple',
+                category: 'flowchart',
+                tags: [],
+                audience: 'builders',
+                useCase: 'test template insert zoom',
+                launchPriority: 1,
+                featured: false,
+                difficulty: 'starter',
+                outcome: 'canvas receives template graph',
+                replacementHints: ['a', 'b', 'c'],
+                nodes: [createNode('tpl-1')],
+                edges: [],
+            });
+        });
+
+        expect(setNodes).toHaveBeenCalled();
+        expect(fitView).not.toHaveBeenCalled();
+
+        act(() => {
+            vi.advanceTimersByTime(100);
+        });
+
+        expect(fitView).toHaveBeenCalledWith({
+            duration: 800,
+            padding: 0.2,
+            minZoom: 1,
+            maxZoom: 1,
+        });
+        vi.useRealTimers();
     });
 });

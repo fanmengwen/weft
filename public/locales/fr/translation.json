@@ -268,7 +268,13 @@
     "playbackMode": "Mode lecture",
     "privacyMessage": "Vos diagrammes restent avec vous et n’atteignent pas nos serveurs.",
     "templates": "Modèles",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "files": "My files",
+    "runs": "Run center",
+    "trash": "Trash",
+    "account": "Account",
+    "accountInitial": "F",
+    "primaryNav": "Primary navigation"
   },
   "menu": {
     "file": "Fichier",
@@ -442,8 +448,8 @@
   },
   "home": {
     "appName": "Weft",
-    "title": "Tableau de bord",
-    "description": "Gérez vos flux et diagrammes.",
+    "title": "Home",
+    "description": "Manage your flows and diagrams.",
     "recentFiles": "Fichiers récents",
     "files": "fichiers",
     "createFirstFlow": "Créer votre premier flux",
@@ -460,11 +466,12 @@
       "closeDialog": "Fermer la boîte de dialogue de renommage du flux"
     },
     "deleteFlow": {
-      "title": "Supprimer le flux",
-      "description": "Cela supprime de cet appareil le flux local enregistré automatiquement.",
-      "confirmation": "Supprimer \"{{name}}\" ?",
-      "hint": "Cette action est irréversible sauf si vous avez un export de sauvegarde ou une autre copie.",
-      "closeDialog": "Fermer la boîte de dialogue de suppression du flux"
+      "title": "Move to trash",
+      "description": "The file will be moved to Trash so you can restore it later.",
+      "confirmation": "Move \"{{name}}\" to Trash?",
+      "hint": "You can restore it from Trash anytime.",
+      "confirmAction": "Move to trash",
+      "closeDialog": "Close delete flow dialog"
     },
     "homeEmptyTitle": "Créez votre premier flux",
     "homeEmptySubtitle": "Concevez des architectures de qualité entreprise instantanément. Commencez avec un canevas vierge, décrivez votre infrastructure avec notre constructeur IA, ou utilisez un modèle adapté.",
@@ -482,7 +489,80 @@
     "suggestionTemplates": "Modèles",
     "suggestionTemplatesDesc": "Commencer avec un modèle éprouvé",
     "continueTitle": "Continuer avec une action récente",
-    "generateWithFlowpilot": "Générer avec l'IA"
+    "generateWithFlowpilot": "Générer avec l'IA",
+    "capability": {
+      "chartTitle": "Flowchart",
+      "chartDescription": "Map structure and decision branches for people to read",
+      "workflowTitle": "Workflow",
+      "workflowDescription": "Orchestrate runnable steps that produce results"
+    },
+    "kind": {
+      "chart": "Flowchart",
+      "workflow": "Workflow"
+    },
+    "examples": {
+      "title": "See what Weft can do",
+      "sample": "Sample",
+      "leaveApproval": "Leave approval flow",
+      "webSummaryBot": "Web summary bot",
+      "openLook": "Open",
+      "runOnce": "Run once"
+    },
+    "templatesOrStart": "Or start from a template",
+    "allTemplates": "All templates",
+    "useTemplate": "Use",
+    "showcase": {
+      "orderFulfillment": "Order fulfillment",
+      "supportAutoReply": "Support auto-reply",
+      "systemArchitecture": "System architecture",
+      "weeklyReport": "Weekly report"
+    },
+    "filterAll": "All",
+    "filterAria": "Filter recent files",
+    "importFile": "Import file",
+    "startFromTemplate": "Start from a template",
+    "noMatchingFiles": "No files match this filter.",
+    "filesPageDescription": "All diagrams and workflows saved on this device.",
+    "filesEmpty": "No files yet. Create a flowchart or workflow from Home.",
+    "runsDescription": "Workflow run history will appear here.",
+    "trashDescription": "Deleted files will appear here so you can restore them later.",
+    "accountDescription": "Account preferences will appear here.",
+    "purgeFlow": {
+      "title": "Delete permanently",
+      "description": "This permanently removes the file from this device.",
+      "confirmation": "Permanently delete \"{{name}}\"?",
+      "hint": "This cannot be undone.",
+      "closeDialog": "Close permanent delete dialog"
+    },
+    "trash": {
+      "restore": "Restore",
+      "purge": "Delete permanently",
+      "deletedAt": "Deleted {{date}}"
+    },
+    "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
+    "trashEmpty": "Trash is empty."
+  },
+  "homeFiles": {
+    "search": "Search files",
+    "new": "New",
+    "sortRecent": "Recently modified",
+    "layoutAria": "Layout",
+    "layoutGrid": "Grid",
+    "layoutList": "List",
+    "viewAll": "View all",
+    "sectionChart": "Flowchart · {{count}}",
+    "sectionWorkflow": "Workflow · {{count}}",
+    "convertToWorkflow": "Convert to workflow",
+    "nodeMeta": "{{count}} nodes",
+    "moreActions": "More actions",
+    "relative": {
+      "justNow": "Just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}} hours ago",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{count}} days ago",
+      "lastWeek": "Last week"
+    }
   },
   "settings": {
     "title": "Paramètres",
@@ -906,7 +986,8 @@
         "create": "Décrivez le diagramme que vous voulez créer à partir de zéro...",
         "selectedEdit": "Décrivez ce que vous voulez modifier sur le nœud sélectionné {{count}}...",
         "edit": "Décrivez une modification, par exemple : 'ajouter Redis entre l'API et la base de données'",
-        "empty": "Décrivez un diagramme à générer à partir de zéro..."
+        "empty": "Décrivez un diagramme à générer à partir de zéro...",
+        "emptyCanvas": "Describe a flowchart to generate…"
       },
       "applyEdit": "Appliquer la modification IA",
       "generateDiagram": "Générer le diagramme",
@@ -1001,7 +1082,11 @@
         "iterationServerPrompt": "Ajoutez un service backend Node.js",
         "iterationDeploy": "Déploiement",
         "iterationDeployPrompt": "Ajoutez des étapes de déploiement et d'hébergement au diagramme"
-      }
+      },
+      "emptyHeroDescription": "Describe the flow you want — AI will generate nodes and connections on the canvas.",
+      "emptyHeroTitle": "Generate with AI",
+      "generateShortcut": "⌘↵",
+      "tryThese": "Try these"
     },
     "figmaImport": {
       "invalidUrl": "URL Figma invalide. Utilisez un lien figma.com/file/... ou figma.com/design/....",
@@ -1572,7 +1657,9 @@
       "description": "Votre canevas est vide. Générez un diagramme avec l'IA ou commencez de zéro.",
       "generateWithFlowpilot": "Générer avec l'IA",
       "browseTemplates": "Parcourir les modèles",
-      "addBlankNode": "Ajouter une forme vide"
+      "addBlankNode": "Ajouter une forme vide",
+      "orPrefix": "or",
+      "studioReady": "AI is ready →"
     },
     "dslExportSkippedEdges": "{{count}} arête(s) invalide(s) ont été ignorée(s) lors de l’export DSL.",
     "viewShortcuts": "View keyboard shortcuts"
@@ -1888,5 +1975,48 @@
     "cinematicCancelled": "Export annulé",
     "nodeCount": "{{count}} nœuds",
     "edgeCount": "{{count}} arêtes"
+  },
+  "homeSettings": {
+    "subtitle": "App preferences, plus default canvas and AI behavior.",
+    "analyticsHint": "Shares feature usage only — no canvas content. Turn off anytime.",
+    "canvas": {
+      "showGrid": "Show grid dots",
+      "showGridDesc": "22px dot grid on the canvas background",
+      "snap": "Snap to align",
+      "snapDesc": "Snap nodes to the grid and nearby nodes while dragging",
+      "edgeStyle": "Edge style",
+      "edgeStyleDesc": "Default soft curves, matching the element style guide",
+      "edgeCurve": "Soft curve",
+      "edgeOrtho": "Orthogonal"
+    },
+    "ai": {
+      "provider": "Model provider",
+      "model": "Default model",
+      "modelHint": "Workflow nodes set to follow global AI settings use this model",
+      "keyHint": "Stored on this device only — never uploaded",
+      "testConnection": "Test connection",
+      "testOk": "Key saved locally. Ready to use.",
+      "testEmpty": "Enter an API key first."
+    },
+    "shortcuts": {
+      "commandCenter": "Command center",
+      "select": "Select tool",
+      "hand": "Hand tool",
+      "addElement": "Add element",
+      "autoLayout": "Auto layout",
+      "undo": "Undo",
+      "redo": "Redo",
+      "runWorkflow": "Run workflow",
+      "hint": "Shortcuts match the toolbar. Customization is not available yet."
+    },
+    "about": {
+      "version": "Version",
+      "versionValue": "Weft V{{version}}",
+      "upToDate": "Weft V{{version}} · You are up to date",
+      "checkUpdates": "Check for updates",
+      "designSpecs": "Design guidelines",
+      "elementStyles": "Element styles",
+      "toolbarSpecs": "Toolbar specs"
+    }
   }
 }

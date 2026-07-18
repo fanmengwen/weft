@@ -69,6 +69,28 @@ describe('outputHandler', () => {
       outputs: { text: 'final answer' },
     });
   });
+
+  it('resolves an explicit content template before falling back to upstream', async () => {
+    const upstream = createWorkflowNode('llm', { x: 0, y: 0 });
+    const node = createWorkflowNode('output', { x: 1, y: 0 });
+    (node.data as { text?: string }).text = `Answer: {{${upstream.id}.text}}`;
+    const pool = new VariablePool({ [upstream.id]: { text: 'resolved' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    await expect(outputHandler.run(context)).resolves.toEqual({
+      outputs: { text: 'Answer: resolved' },
+    });
+  });
+
+  it('emits fixed copy for empty-branch style outputs', async () => {
+    const node = createWorkflowNode('output', { x: 0, y: 0 });
+    (node.data as { text?: string }).text = '知识库中没有找到相关资料。';
+    const { context } = makeContext(node);
+
+    await expect(outputHandler.run(context)).resolves.toEqual({
+      outputs: { text: '知识库中没有找到相关资料。' },
+    });
+  });
 });
 
 describe('llmHandler', () => {
@@ -197,6 +219,30 @@ describe('ifElseHandler', () => {
     const result = await ifElseHandler.run(context);
     expect(result.branch).toBe('false');
     expect(result.outputs.result).toBe(false);
+  });
+
+  it('treats isNotEmpty as true for non-blank retrieved text', async () => {
+    const upstream = createWorkflowNode('knowledgeRetrieval', { x: 0, y: 0 });
+    const node = makeIfElseNode([
+      { id: 'c1', variable: `${upstream.id}.text`, operator: 'isNotEmpty', value: '' },
+    ]);
+    const pool = new VariablePool({ [upstream.id]: { text: 'chunk A' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    const result = await ifElseHandler.run(context);
+    expect(result.branch).toBe('true');
+  });
+
+  it('treats isNotEmpty as false for blank text', async () => {
+    const upstream = createWorkflowNode('knowledgeRetrieval', { x: 0, y: 0 });
+    const node = makeIfElseNode([
+      { id: 'c1', variable: `${upstream.id}.text`, operator: 'isNotEmpty', value: '' },
+    ]);
+    const pool = new VariablePool({ [upstream.id]: { text: '   ' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    const result = await ifElseHandler.run(context);
+    expect(result.branch).toBe('false');
   });
 
   it('defaults to the true branch with a warning when no conditions exist', async () => {

@@ -28,6 +28,7 @@ function createState(snapshotCount = 0): FlowState {
     nodes,
     edges,
     documents: [],
+    trashedDocuments: [],
     activeDocumentId: '',
     setDocuments: () => undefined,
     setActiveDocumentId: () => undefined,
@@ -35,6 +36,8 @@ function createState(snapshotCount = 0): FlowState {
     renameDocument: () => undefined,
     duplicateDocument: () => null,
     deleteDocumentRecord: () => undefined,
+    restoreDocumentRecord: () => undefined,
+    purgeDocumentRecord: () => undefined,
     tabs: [
       {
         id: 'tab-1',

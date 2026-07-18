@@ -1,6 +1,12 @@
 import type { WorkflowNodeKind } from './nodeCatalog';
 
-export type WorkflowConditionOperator = 'contains' | 'notContains' | 'equals' | 'regex';
+export type WorkflowConditionOperator =
+  | 'contains'
+  | 'notContains'
+  | 'equals'
+  | 'regex'
+  | 'isNotEmpty'
+  | 'isEmpty';
 
 export interface WorkflowCondition extends Record<string, unknown> {
   id: string;
@@ -14,6 +20,7 @@ export interface WorkflowCondition extends Record<string, unknown> {
 export interface WorkflowNodeData extends Record<string, unknown> {
   kind: WorkflowNodeKind;
   label: string;
+  // textInput default value, or output content template (may include {{node.key}}).
   text?: string;
   prompt?: string;
   systemPrompt?: string;

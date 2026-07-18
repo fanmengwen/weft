@@ -27,6 +27,10 @@ function evaluateCondition(operand: string, condition: WorkflowCondition): boole
       return !operand.includes(condition.value);
     case 'equals':
       return operand === condition.value;
+    case 'isNotEmpty':
+      return operand.trim().length > 0;
+    case 'isEmpty':
+      return operand.trim().length === 0;
     case 'regex':
       // An invalid pattern throws and fails the node — surfacing the raw
       // SyntaxError beats silently routing to FALSE.

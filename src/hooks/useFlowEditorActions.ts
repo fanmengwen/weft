@@ -18,6 +18,7 @@ import {
 } from './flow-editor-actions/exportHandlers';
 import { toOpenFlowDSL } from '@/services/openFlowDSLExporter';
 import { encodeDslForViewer } from '@/services/viewerUrlCodec';
+import { CANVAS_DEFAULT_ZOOM } from '@/lib/canvasZoom';
 import {
     buildTemplateInsertionResult,
     getAutoLayoutResult,
@@ -137,7 +138,13 @@ export function useFlowEditorActions({
 
         setNodes(nextNodes);
         setEdges((existingEdges) => [...existingEdges, ...newEdges]);
-        scheduleFitView(fitView, 800, 100);
+        // Template open should start at 100% zoom; unconstrained fitView was
+        // auto-scaling to ~126% for compact starter graphs.
+        scheduleFitView(fitView, 800, 100, {
+            padding: 0.2,
+            minZoom: CANVAS_DEFAULT_ZOOM,
+            maxZoom: CANVAS_DEFAULT_ZOOM,
+        });
     }, [nodes, recordHistory, setNodes, setEdges, fitView]);
 
     const handleExportMermaid = useCallback(async (): Promise<void> => {

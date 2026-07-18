@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { ChevronDown, Link, Play, Trash2 } from 'lucide-react';
+import { ChevronDown, Link, Play, Trash2, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { createId } from '@/lib/id';
 import { useToast } from '@/components/ui/ToastContext';
@@ -13,6 +13,7 @@ import type {
   WorkflowNodeData,
 } from '../nodes/workflowNodeData';
 import { listUpstreamVariables } from '../graph/upstreamVariables';
+import { CODE_TIMEOUT_MS } from '../handlers/code';
 import { BUILTIN_DOC_ID, useKnowledgeStore } from '../rag/documentStore';
 import { useWorkflowRunStore } from '../store/workflowRunStore';
 import { useWorkflowStore } from '../store/workflowStore';
@@ -23,19 +24,30 @@ const FIELD_LABEL_CLASS = 'text-xs font-medium text-[var(--wf-text-label)]';
 const FOCUS_RING_CLASS =
   'outline-none transition-shadow focus:border-[var(--wf-acc)] focus:shadow-[0_0_0_3px_var(--wf-acc-focus)]';
 const INPUT_CLASS = `h-[34px] w-full rounded-lg border border-[var(--wf-input-border)] bg-white px-2.5 text-[13px] text-[var(--wf-text)] placeholder:text-[var(--wf-placeholder)] ${FOCUS_RING_CLASS}`;
-const TEXTAREA_CLASS = `min-h-[84px] w-full resize-none rounded-lg border border-[var(--wf-input-border)] bg-white px-2.5 py-2 text-[13px] leading-normal text-[var(--wf-text)] placeholder:text-[var(--wf-placeholder)] ${FOCUS_RING_CLASS}`;
+const TEXTAREA_CLASS = `min-h-[84px] w-full resize-y rounded-lg border border-[var(--wf-input-border)] bg-white px-2.5 py-2 text-[13px] leading-normal text-[var(--wf-text)] placeholder:text-[var(--wf-placeholder)] ${FOCUS_RING_CLASS}`;
 const COMPACT_SELECT_CLASS = `rounded-[7px] border border-[var(--wf-input-border)] bg-white px-2 py-1.5 text-xs text-[var(--wf-text)] outline-none focus:border-[var(--wf-acc)]`;
 const DASHED_BUTTON_CLASS =
   'rounded-lg border border-dashed border-[var(--wf-input-border)] px-3 py-2 text-[13px] text-[var(--wf-text-muted)] transition-colors hover:border-[var(--wf-acc)] hover:text-[var(--wf-text)]';
+const META_PILL_CLASS =
+  'rounded-md bg-[#F5F7FB] px-2 py-0.5 font-mono text-[11px] text-[#4A5361]';
+const REF_PILL_CLASS =
+  'rounded-md bg-[color-mix(in_srgb,var(--wf-acc)_8%,#fff)] px-2 py-0.5 font-mono text-[11px] text-[var(--wf-acc)]';
 
 const MODEL_CUSTOM_OPTION = '__custom__';
 
 const CONDITION_OPERATORS: WorkflowConditionOperator[] = [
+  'isNotEmpty',
+  'isEmpty',
   'contains',
   'notContains',
   'equals',
   'regex',
 ];
+
+const OPERATORS_WITHOUT_VALUE: ReadonlySet<WorkflowConditionOperator> = new Set([
+  'isNotEmpty',
+  'isEmpty',
+]);
 
 function SectionDivider(): React.ReactElement {
   return <div className="-mx-4 mt-[18px] border-t border-[var(--wf-divider)]" />;
@@ -130,6 +142,8 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
   const workflowEdges = useWorkflowStore((state) => state.workflowEdges);
   const selectedNodeId = useWorkflowStore((state) => state.selectedNodeId);
   const selectedEdgeId = useWorkflowStore((state) => state.selectedEdgeId);
+  const setSelectedNodeId = useWorkflowStore((state) => state.setSelectedNodeId);
+  const setSelectedEdgeId = useWorkflowStore((state) => state.setSelectedEdgeId);
   const updateWorkflowNodeData = useWorkflowStore((state) => state.updateWorkflowNodeData);
   const deleteWorkflowNode = useWorkflowStore((state) => state.deleteWorkflowNode);
   const deleteWorkflowEdge = useWorkflowStore((state) => state.deleteWorkflowEdge);
@@ -204,16 +218,52 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
     patchNode({ knowledgeDocId: docId });
   };
 
+  const branchTargets = useMemo(() => {
+    if (!selectedNode || data?.kind !== 'ifElse') {
+      return { trueLabel: '—', falseLabel: '—' };
+    }
+    const labelOf = (handle: 'true' | 'false'): string => {
+      const edge = workflowEdges.find(
+        (entry) => entry.source === selectedNode.id && entry.sourceHandle === handle
+      );
+      if (!edge) {
+        return t('workflowMode.properties.branchUnconnected');
+      }
+      const target = workflowNodes.find((node) => node.id === edge.target);
+      const targetData = target?.data as unknown as WorkflowNodeData | undefined;
+      return targetData?.label ?? edge.target;
+    };
+    return { trueLabel: labelOf('true'), falseLabel: labelOf('false') };
+  }, [selectedNode, data?.kind, workflowEdges, workflowNodes, t]);
+
+  const closePanel = () => {
+    setSelectedNodeId(null);
+    setSelectedEdgeId(null);
+  };
+
   return (
     <aside className="flex min-h-0 flex-col border-l border-[var(--wf-border)] bg-[var(--wf-surface)]">
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4 pt-3.5">
-        <h2 className="text-[11px] tracking-[0.05em] text-[var(--wf-text-faint)]">
-          {t('workflowMode.properties.title')}
-        </h2>
+      <div className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-4 pb-4 pt-3.5">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-[11px] tracking-[0.05em] text-[var(--wf-text-faint)]">
+            {t('workflowMode.properties.title')}
+          </h2>
+          {selectedNode || selectedEdge ? (
+            <button
+              type="button"
+              onClick={closePanel}
+              title={t('workflowMode.properties.closePanel')}
+              aria-label={t('workflowMode.properties.closePanel')}
+              className="-mr-1.5 -mt-1 flex h-[26px] w-[26px] items-center justify-center rounded-[7px] text-[var(--wf-text-muted)] transition-colors hover:bg-[#F3F5F8] hover:text-[var(--wf-text-label)]"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          ) : null}
+        </div>
 
         {selectedNode && data ? (
           <>
-            <div className="mt-3 flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5">
               <span
                 className="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-[9px]"
                 style={meta ? workflowToneStyle(meta.tone) : undefined}
@@ -236,15 +286,17 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
               </div>
             </div>
 
-            <button
-              type="button"
-              onClick={() => void runSingleNode(selectedNode.id)}
-              disabled={isBusy}
-              className="mt-3.5 flex h-[34px] w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--wf-acc-border)] bg-[var(--wf-acc-soft)] text-[13px] font-semibold text-[var(--wf-acc)] transition-colors hover:bg-[var(--wf-acc-soft-hover)] disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              <Play className="h-2.5 w-2.5 fill-current" />
-              {t('workflowMode.properties.runNode')}
-            </button>
+            {data.kind !== 'output' ? (
+              <button
+                type="button"
+                onClick={() => void runSingleNode(selectedNode.id)}
+                disabled={isBusy}
+                className="mt-3.5 flex h-[34px] w-full items-center justify-center gap-1.5 rounded-lg border border-[var(--wf-acc-border)] bg-[var(--wf-acc-soft)] text-[13px] font-semibold text-[var(--wf-acc)] transition-colors hover:bg-[var(--wf-acc-soft-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                <Play className="h-2.5 w-2.5 fill-current" />
+                {t('workflowMode.properties.runNode')}
+              </button>
+            ) : null}
 
             <SectionDivider />
             <div className={SECTION_HEADER_CLASS}>
@@ -259,6 +311,16 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                 className={INPUT_CLASS}
               />
             </label>
+            <div className="mt-3.5 flex items-center justify-between gap-2">
+              <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.nodeIdField')}</span>
+              <span className={META_PILL_CLASS}>{selectedNode.id}</span>
+            </div>
+            {data.kind !== 'ifElse' && data.kind !== 'output' ? (
+              <div className="mt-2.5 flex items-center justify-between gap-2">
+                <span className={FIELD_LABEL_CLASS}>{t('workflowMode.properties.refField')}</span>
+                <span className={REF_PILL_CLASS}>{`{{${selectedNode.id}.text}}`}</span>
+              </div>
+            ) : null}
 
             {data.kind === 'llm' ? (
               <LlmModelField
@@ -299,7 +361,7 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                   <textarea
                     value={data.prompt ?? ''}
                     onChange={(event) => patchNode({ prompt: event.target.value })}
-                    className={`${TEXTAREA_CLASS} min-h-[108px]`}
+                    className={`${TEXTAREA_CLASS} min-h-[180px] text-[12.5px] leading-relaxed`}
                     placeholder={t('workflowMode.properties.promptPlaceholder')}
                   />
                 </label>
@@ -307,7 +369,13 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
             ) : (
               <>
                 <div className={SECTION_HEADER_CLASS}>
-                  {t('workflowMode.properties.sections.config')}
+                  {data.kind === 'textInput' || data.kind === 'output'
+                    ? t('workflowMode.properties.sections.content')
+                    : data.kind === 'ifElse'
+                      ? t('workflowMode.properties.sections.condition')
+                      : data.kind === 'code'
+                        ? t('workflowMode.properties.sections.code')
+                        : t('workflowMode.properties.sections.retrieval')}
                 </div>
 
                 {data.kind === 'textInput' ? (
@@ -318,9 +386,12 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                     <textarea
                       value={data.text ?? ''}
                       onChange={(event) => patchNode({ text: event.target.value })}
-                      className={`${TEXTAREA_CLASS} min-h-[108px]`}
+                      className={`${TEXTAREA_CLASS} min-h-[96px]`}
                       placeholder={t('workflowMode.properties.textPlaceholder')}
                     />
+                    <span className="text-xs leading-relaxed text-[var(--wf-text-faint)]">
+                      {t('workflowMode.properties.textHint')}
+                    </span>
                   </label>
                 ) : null}
 
@@ -339,7 +410,7 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                       type="text"
                       value={data.query ?? ''}
                       onChange={(event) => patchNode({ query: event.target.value })}
-                      className={INPUT_CLASS}
+                      className={`${INPUT_CLASS} font-mono text-[12.5px]`}
                       placeholder={t('workflowMode.properties.queryPlaceholder')}
                     />
                   </label>
@@ -366,6 +437,10 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                         <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-[var(--wf-text-muted)]" />
                       </div>
                     </label>
+                    <div className="flex items-start gap-1.5 rounded-lg bg-[var(--wf-t-cond-bg)] px-2.5 py-2 text-xs leading-relaxed text-[var(--wf-t-cond-fg)]">
+                      <span className="mt-0.5 shrink-0">⚠</span>
+                      <span>{t('workflowMode.properties.knowledgeEmptyHint')}</span>
+                    </div>
                     <input
                       ref={uploadInputRef}
                       type="file"
@@ -386,6 +461,24 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                     >
                       {t('workflowMode.properties.knowledgeUpload')}
                     </button>
+                    <label className="flex flex-col gap-1.5">
+                      <span className="flex items-center justify-between">
+                        <span className={FIELD_LABEL_CLASS}>
+                          {t('workflowMode.properties.knowledgeQueryField')}
+                        </span>
+                        <WorkflowVariablePicker
+                          nodeId={selectedNode.id}
+                          onPick={(template) => patchNode({ query: (data.query ?? '') + template })}
+                        />
+                      </span>
+                      <input
+                        type="text"
+                        value={data.query ?? ''}
+                        onChange={(event) => patchNode({ query: event.target.value })}
+                        className={`${INPUT_CLASS} font-mono text-[12.5px]`}
+                        placeholder={t('workflowMode.properties.queryPlaceholder')}
+                      />
+                    </label>
                     <label className="flex flex-col gap-1.5">
                       <span className={FIELD_LABEL_CLASS}>
                         {t('workflowMode.properties.knowledgeTopKField')}
@@ -411,21 +504,24 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
 
                 {data.kind === 'ifElse' ? (
                   <div className="flex flex-col gap-2">
-                    <div className="flex items-center justify-between">
-                      <span className={FIELD_LABEL_CLASS}>
-                        {t('workflowMode.properties.conditionsField')}
-                      </span>
-                      <select
-                        value={data.conditionLogic ?? 'and'}
-                        onChange={(event) =>
-                          patchNode({ conditionLogic: event.target.value === 'or' ? 'or' : 'and' })
+                    {(data.conditions ?? []).length === 0 ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          patchConditions([
+                            {
+                              id: createId('wf-cond'),
+                              variable: '',
+                              operator: 'isNotEmpty',
+                              value: '',
+                            },
+                          ])
                         }
-                        className={COMPACT_SELECT_CLASS}
+                        className={DASHED_BUTTON_CLASS}
                       >
-                        <option value="and">{t('workflowMode.properties.logicAnd')}</option>
-                        <option value="or">{t('workflowMode.properties.logicOr')}</option>
-                      </select>
-                    </div>
+                        + {t('workflowMode.properties.addCondition')}
+                      </button>
+                    ) : null}
                     {(data.conditions ?? []).map((condition) => {
                       const conditions = data.conditions ?? [];
                       const patchCondition = (patch: Partial<WorkflowCondition>) =>
@@ -434,16 +530,20 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                             entry.id === condition.id ? { ...entry, ...patch } : entry
                           )
                         );
+                      const needsValue = !OPERATORS_WITHOUT_VALUE.has(condition.operator);
                       return (
                         <div
                           key={condition.id}
                           className="flex flex-col gap-1.5 rounded-lg border border-[var(--wf-input-border)] bg-white p-2"
                         >
+                          <span className={FIELD_LABEL_CLASS}>
+                            {t('workflowMode.properties.conditionVariable')}
+                          </span>
                           <select
                             value={condition.variable}
                             onChange={(event) => patchCondition({ variable: event.target.value })}
                             aria-label={t('workflowMode.properties.conditionVariable')}
-                            className={COMPACT_SELECT_CLASS}
+                            className={`${COMPACT_SELECT_CLASS} font-mono`}
                           >
                             <option value="">
                               {t('workflowMode.properties.conditionUpstream')}
@@ -454,35 +554,47 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                               workflowEdges
                             ).map((option) => (
                               <option key={option.selector} value={option.selector}>
-                                {option.nodeLabel} · {option.key}
+                                {`{{${option.selector}}}`} · {option.nodeLabel}
                               </option>
                             ))}
                           </select>
-                          <div className="flex gap-1.5">
-                            <select
-                              value={condition.operator}
-                              onChange={(event) =>
-                                patchCondition({
-                                  operator: event.target.value as WorkflowConditionOperator,
-                                })
-                              }
-                              aria-label={t('workflowMode.properties.conditionOperator')}
-                              className={`${COMPACT_SELECT_CLASS} min-w-0 flex-1`}
-                            >
-                              {CONDITION_OPERATORS.map((operator) => (
-                                <option key={operator} value={operator}>
-                                  {t(`workflowMode.properties.conditionOp.${operator}`)}
-                                </option>
-                              ))}
-                            </select>
-                            <input
-                              type="text"
-                              value={condition.value}
-                              onChange={(event) => patchCondition({ value: event.target.value })}
-                              aria-label={t('workflowMode.properties.conditionValue')}
-                              placeholder={t('workflowMode.properties.conditionValue')}
-                              className={`${COMPACT_SELECT_CLASS} min-w-0 flex-1`}
-                            />
+                          <span className={`${FIELD_LABEL_CLASS} mt-1`}>
+                            {t('workflowMode.properties.conditionOperator')}
+                          </span>
+                          <select
+                            value={condition.operator}
+                            onChange={(event) =>
+                              patchCondition({
+                                operator: event.target.value as WorkflowConditionOperator,
+                              })
+                            }
+                            aria-label={t('workflowMode.properties.conditionOperator')}
+                            className={COMPACT_SELECT_CLASS}
+                          >
+                            {CONDITION_OPERATORS.map((operator) => (
+                              <option key={operator} value={operator}>
+                                {t(`workflowMode.properties.conditionOp.${operator}`)}
+                              </option>
+                            ))}
+                          </select>
+                          {needsValue ? (
+                            <>
+                              <span className={`${FIELD_LABEL_CLASS} mt-1`}>
+                                {t('workflowMode.properties.conditionValue')}
+                              </span>
+                              <input
+                                type="text"
+                                value={condition.value}
+                                onChange={(event) =>
+                                  patchCondition({ value: event.target.value })
+                                }
+                                aria-label={t('workflowMode.properties.conditionValue')}
+                                placeholder={t('workflowMode.properties.conditionValue')}
+                                className={`${COMPACT_SELECT_CLASS} font-mono`}
+                              />
+                            </>
+                          ) : null}
+                          {conditions.length > 1 ? (
                             <button
                               type="button"
                               onClick={() =>
@@ -491,27 +603,63 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                                 )
                               }
                               aria-label={t('workflowMode.properties.removeCondition')}
-                              title={t('workflowMode.properties.removeCondition')}
-                              className="shrink-0 rounded-[7px] px-2 text-[var(--wf-text-muted)] transition-colors hover:text-[var(--wf-danger)]"
+                              className="self-end text-xs text-[var(--wf-text-muted)] hover:text-[var(--wf-danger)]"
                             >
-                              ✕
+                              {t('workflowMode.properties.removeCondition')}
                             </button>
-                          </div>
+                          ) : null}
                         </div>
                       );
                     })}
-                    <button
-                      type="button"
-                      onClick={() =>
-                        patchConditions([
-                          ...(data.conditions ?? []),
-                          { id: createId('wf-cond'), variable: '', operator: 'contains', value: '' },
-                        ])
-                      }
-                      className={DASHED_BUTTON_CLASS}
-                    >
-                      + {t('workflowMode.properties.addCondition')}
-                    </button>
+                    {(data.conditions ?? []).length > 0 ? (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          patchConditions([
+                            ...(data.conditions ?? []),
+                            {
+                              id: createId('wf-cond'),
+                              variable: '',
+                              operator: 'contains',
+                              value: '',
+                            },
+                          ])
+                        }
+                        className={DASHED_BUTTON_CLASS}
+                      >
+                        + {t('workflowMode.properties.addCondition')}
+                      </button>
+                    ) : null}
+
+                    <SectionDivider />
+                    <div className={SECTION_HEADER_CLASS}>
+                      {t('workflowMode.properties.sections.branches')}
+                    </div>
+                    <div className="rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] p-2.5">
+                      <div className="flex items-center gap-2.5">
+                        <span className="shrink-0 rounded-full bg-[var(--wf-t-out-bg)] px-2 py-0.5 font-mono text-[10.5px] font-semibold text-[var(--wf-t-out-fg)]">
+                          true
+                        </span>
+                        <span className="min-w-0 flex-1 truncate text-[13px] font-medium">
+                          {branchTargets.trueLabel}
+                        </span>
+                        <span className="shrink-0 text-[11px] text-[var(--wf-text-faint)]">
+                          {t('workflowMode.properties.branchTrueHint')}
+                        </span>
+                      </div>
+                      <div className="ml-[17px] my-1.5 h-3 w-[1.5px] bg-[#E6E8EC]" />
+                      <div className="flex items-center gap-2.5">
+                        <span className="shrink-0 rounded-full bg-[var(--wf-t-end-bg,#FBEAE8)] px-2 py-0.5 font-mono text-[10.5px] font-semibold text-[var(--wf-t-end-fg,#C4443C)]">
+                          false
+                        </span>
+                        <span className="min-w-0 flex-1 truncate text-[13px] font-medium">
+                          {branchTargets.falseLabel}
+                        </span>
+                        <span className="shrink-0 text-[11px] text-[var(--wf-text-faint)]">
+                          {t('workflowMode.properties.branchFalseHint')}
+                        </span>
+                      </div>
+                    </div>
                     <p className="text-xs leading-relaxed text-[var(--wf-text-muted)]">
                       {t('workflowMode.properties.ifElseHint')}
                     </p>
@@ -519,27 +667,59 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                 ) : null}
 
                 {data.kind === 'code' ? (
-                  <label className="flex flex-col gap-1.5">
-                    <span className={FIELD_LABEL_CLASS}>
-                      {t('workflowMode.properties.codeField')}
-                    </span>
+                  <div className="flex flex-col gap-1.5">
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className={FIELD_LABEL_CLASS}>
+                        {t('workflowMode.properties.codeLanguage')}
+                      </span>
+                      <span className="text-[12.5px] font-medium text-[var(--wf-text-label)]">
+                        JavaScript
+                      </span>
+                    </div>
                     <textarea
                       value={data.code ?? ''}
                       onChange={(event) => patchNode({ code: event.target.value })}
-                      rows={8}
+                      rows={12}
                       spellCheck={false}
-                      className={`${TEXTAREA_CLASS} min-h-[140px] font-mono text-xs`}
+                      className={`${TEXTAREA_CLASS} min-h-[220px] bg-[#FCFCFD] font-mono text-[11.5px] leading-relaxed`}
                     />
                     <span className="text-xs leading-relaxed text-[var(--wf-text-muted)]">
                       {t('workflowMode.properties.codeHint')}
                     </span>
-                  </label>
+                    <div className="mt-3.5 flex items-center justify-between">
+                      <span className={FIELD_LABEL_CLASS}>
+                        {t('workflowMode.properties.codeTimeout')}
+                      </span>
+                      <span className="text-[12.5px] font-medium text-[var(--wf-text-label)]">
+                        {t('workflowMode.properties.codeTimeoutValue', {
+                          seconds: CODE_TIMEOUT_MS / 1000,
+                        })}
+                      </span>
+                    </div>
+                  </div>
                 ) : null}
 
                 {data.kind === 'output' ? (
-                  <p className="text-xs leading-relaxed text-[var(--wf-text-muted)]">
-                    {t('workflowMode.properties.outputHint')}
-                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    <span className="flex items-center justify-between">
+                      <span className={FIELD_LABEL_CLASS}>
+                        {t('workflowMode.properties.outputContentField')}
+                      </span>
+                      <WorkflowVariablePicker
+                        nodeId={selectedNode.id}
+                        onPick={(template) => patchNode({ text: (data.text ?? '') + template })}
+                      />
+                    </span>
+                    <textarea
+                      value={data.text ?? ''}
+                      onChange={(event) => patchNode({ text: event.target.value })}
+                      className={`${TEXTAREA_CLASS} min-h-[84px] font-mono text-[12.5px] leading-relaxed`}
+                      placeholder={t('workflowMode.properties.outputContentPlaceholder')}
+                    />
+                    <span className="text-xs leading-relaxed text-[var(--wf-text-faint)]">
+                      {t('workflowMode.properties.outputHint')}
+                    </span>
+                  </div>
                 ) : null}
               </>
             )}
@@ -548,7 +728,11 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
             <div className={SECTION_HEADER_CLASS}>{t('workflowMode.properties.lastRun')}</div>
             {lastRunOutput === undefined && Object.keys(lastRunInputs).length === 0 ? (
               <div className="rounded-lg border border-dashed border-[var(--wf-input-border)] px-3 py-3.5 text-center text-xs leading-relaxed text-[var(--wf-text-muted)]">
-                {t('workflowMode.properties.lastRunEmpty')}
+                {data.kind === 'ifElse'
+                  ? t('workflowMode.properties.lastRunEmptyBranch')
+                  : data.kind === 'output'
+                    ? t('workflowMode.properties.lastRunEmptyOutput')
+                    : t('workflowMode.properties.lastRunEmpty')}
               </div>
             ) : (
               <div className="flex flex-col gap-3">

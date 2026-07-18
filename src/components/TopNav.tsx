@@ -5,6 +5,7 @@ import { FlowTabs } from './FlowTabs';
 import { TopNavMenu } from './top-nav/TopNavMenu';
 import { TopNavBrand } from './top-nav/TopNavBrand';
 import { ModeSelector } from './top-nav/ModeSelector';
+import { TopNavDocumentName } from './top-nav/TopNavDocumentName';
 import { TopNavActions } from './top-nav/TopNavActions';
 import { useTopNavState } from './top-nav/useTopNavState';
 import { APP_NAME } from '@/lib/brand';
@@ -73,7 +74,7 @@ export function TopNav({
     onImportJSON,
     onHistory,
     onGoHome,
-    onPlay,
+    onPlay: _onPlay,
 }: TopNavProps): React.ReactElement {
     const {
         isMenuOpen,
@@ -112,10 +113,12 @@ export function TopNav({
                     appName={APP_NAME}
                     logoUrl={null}
                     logoStyle="text"
-                    ui={{ showBeta: true }}
+                    onGoHome={onGoHome}
                 />
                 <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" aria-hidden />
                 <ModeSelector variant="flat" />
+                <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" aria-hidden />
+                <TopNavDocumentName />
             </div>
 
             <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -132,7 +135,7 @@ export function TopNav({
 
             <div className="flex min-w-0 flex-1 justify-end">
                 <TopNavActions
-                    onPlay={onPlay}
+                    onGoHome={onGoHome}
                     onExportPNG={onExportPNG}
                     onCopyImage={onCopyImage}
                     onExportSVG={onExportSVG}

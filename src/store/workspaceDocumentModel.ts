@@ -9,10 +9,20 @@ export interface WorkspaceDocumentPreviewNode {
     width: number;
     height: number;
     shape?: FlowNode['data']['shape'];
+    type?: FlowNode['type'];
+    label?: string;
+}
+
+export interface WorkspaceDocumentPreviewEdge {
+    id: string;
+    source: string;
+    target: string;
+    label?: string;
 }
 
 export interface WorkspaceDocumentPreview {
     nodes: WorkspaceDocumentPreviewNode[];
+    edges?: WorkspaceDocumentPreviewEdge[];
 }
 
 const PREVIEW_MAX_NODES = 18;
@@ -304,6 +314,8 @@ function createWorkspaceDocumentPreview(nodes: FlowNode[], edges: FlowEdge[]): W
                 width: clamp(size.width, PREVIEW_MIN_NODE_WIDTH, PREVIEW_MAX_NODE_WIDTH),
                 height: clamp(size.height, PREVIEW_MIN_NODE_HEIGHT, PREVIEW_MAX_NODE_HEIGHT),
                 shape: node.data?.shape,
+                type: node.type,
+                label: typeof node.data?.label === 'string' ? node.data.label : undefined,
             };
         });
 
@@ -319,8 +331,20 @@ function createWorkspaceDocumentPreview(nodes: FlowNode[], edges: FlowEdge[]): W
         return null;
     }
 
+    const nodeIds = new Set(previewNodes.map((node) => node.id));
+    const previewEdges = edges
+        .filter((edge) => nodeIds.has(edge.source) && nodeIds.has(edge.target))
+        .slice(0, PREVIEW_MAX_NODES * 2)
+        .map((edge) => ({
+            id: edge.id,
+            source: edge.source,
+            target: edge.target,
+            label: typeof edge.label === 'string' ? edge.label : undefined,
+        }));
+
     return {
         nodes: previewNodes,
+        edges: previewEdges,
     };
 }
 

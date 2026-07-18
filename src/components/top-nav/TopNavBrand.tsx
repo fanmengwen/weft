@@ -2,17 +2,12 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { WeftLogo } from '../icons/WeftLogo';
 import { Tooltip } from '../Tooltip';
-import { SaveStatusIndicator } from './SaveStatusIndicator';
-
-interface BrandUIConfig {
-  showBeta?: boolean;
-}
 
 interface TopNavBrandProps {
   appName: string;
   logoUrl: string | null;
   logoStyle: 'icon' | 'text' | 'both' | 'wide';
-  ui: BrandUIConfig;
+  onGoHome?: () => void;
 }
 
 function shouldShowIconLogo(logoStyle: TopNavBrandProps['logoStyle']): boolean {
@@ -23,23 +18,26 @@ function shouldShowTextLogo(logoStyle: TopNavBrandProps['logoStyle']): boolean {
   return logoStyle === 'text' || logoStyle === 'both';
 }
 
+const brandButtonClassName =
+  'flex min-w-0 cursor-pointer items-center gap-1.5 rounded-lg px-1.5 py-1 text-[var(--wf-text)] transition-colors hover:bg-[var(--wf-hover)] hover:text-[var(--wf-acc)] active:bg-[var(--wf-hover)]';
+
 export function TopNavBrand({
   appName,
   logoUrl,
   logoStyle,
-  ui,
+  onGoHome,
 }: TopNavBrandProps): React.ReactElement {
   const { t } = useTranslation();
-  const showPrivacyBadge = ui.showBeta !== false;
   const showIconLogo = shouldShowIconLogo(logoStyle);
   const showTextLogo = shouldShowTextLogo(logoStyle);
+  const homeLabel = t('workflowMode.home');
 
-  return (
-    <div className="flex min-w-0 items-center gap-1.5 px-1">
+  const brandContent = (
+    <>
       {showIconLogo && (
         <div className="flex h-7 w-7 shrink-0 items-center justify-center overflow-hidden">
           {logoUrl ? (
-            <img src={logoUrl} alt="Logo" className="h-full w-full object-contain" />
+            <img src={logoUrl} alt="" className="h-full w-full object-contain" />
           ) : (
             <WeftLogo className="h-7 w-7" />
           )}
@@ -52,7 +50,7 @@ export function TopNavBrand({
             <div className="flex h-full items-center justify-start">
               <img
                 src={logoUrl}
-                alt="Logo"
+                alt=""
                 className="h-[70%] w-auto max-w-full object-contain object-left"
               />
             </div>
@@ -73,12 +71,24 @@ export function TopNavBrand({
       )}
 
       {showTextLogo && (
-        <span className="truncate text-[15px] font-semibold leading-none text-[var(--wf-text)]">
-          {appName}
-        </span>
+        <span className="truncate text-[15px] font-semibold leading-none">{appName}</span>
       )}
-
-      <SaveStatusIndicator showPrivacyMessage={showPrivacyBadge} />
-    </div>
+    </>
   );
+
+  if (onGoHome) {
+    return (
+      <button
+        type="button"
+        onClick={onGoHome}
+        aria-label={homeLabel}
+        title={homeLabel}
+        className={brandButtonClassName}
+      >
+        {brandContent}
+      </button>
+    );
+  }
+
+  return <div className="flex min-w-0 items-center gap-1.5 px-1">{brandContent}</div>;
 }
