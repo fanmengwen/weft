@@ -63,6 +63,31 @@ describe('flowDocumentModel', () => {
     expect(workspace.activeDocumentId).toBe('doc-1');
     expect(workspace.documents).toHaveLength(1);
     expect(workspace.documents[0]?.pages).toHaveLength(1);
+    expect(workspace.trashedDocuments).toEqual([]);
+  });
+
+  it('maps soft-deleted persisted documents into trashed workspace entries', () => {
+    const active = createPersistedDocument();
+    const trashed = createPersistedDocument({
+      id: 'doc-trash',
+      name: 'Deleted flow',
+      deletedAt: '2026-07-10T00:00:00.000Z',
+    });
+
+    const workspace = createLoadedFlowWorkspace(
+      {
+        document: active,
+        documents: [active],
+        workspaceMeta: createWorkspaceMeta(),
+      },
+      [trashed]
+    );
+
+    expect(workspace.trashedDocuments).toHaveLength(1);
+    expect(workspace.trashedDocuments[0]).toMatchObject({
+      deletedAt: '2026-07-10T00:00:00.000Z',
+      document: { id: 'doc-trash', name: 'Deleted flow' },
+    });
   });
 
   it('preserves multipage persisted documents', () => {

@@ -28,7 +28,8 @@ describe('CommandBar', () => {
     onClose: vi.fn(),
     nodes: [],
     edges: [],
-  };
+    templateCategory: 'flowchart',
+  } satisfies React.ComponentProps<typeof CommandBar>;
 
   it('renders with dialog semantics and focuses the search input', () => {
     render(<CommandBar {...baseProps} />);

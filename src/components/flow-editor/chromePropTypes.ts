@@ -73,7 +73,6 @@ export interface BuildEmptyStateParams {
   openCommandBar: (
     view: 'root' | 'search' | 'assets' | 'templates' | 'layout' | 'design-system'
   ) => void;
-  handleAddNode: (position?: { x: number; y: number }) => void;
   setPendingAIPrompt: (prompt: string) => void;
 }
 

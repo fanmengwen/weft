@@ -9,6 +9,7 @@ import {
 export function ChartDatabaseSurface({
   designSystem,
   isSelected,
+  surfaceClassName,
   diagnosticsAttrs,
   ariaLabel,
   children,
@@ -23,7 +24,7 @@ export function ChartDatabaseSurface({
       aria-label={ariaLabel}
       data-chart-div-shape="database"
       data-transform-diagnostics="1"
-      className="relative w-full"
+      className={`relative w-full transition-all duration-200 ${surfaceClassName}`}
       style={{ filter: CHART_DATABASE_DROP_SHADOW, minHeight: 'inherit' }}
       {...diagnosticsAttrs}
     >

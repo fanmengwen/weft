@@ -2,15 +2,27 @@ import React, { Suspense, lazy, useState } from 'react';
 import { useFlowStore } from '../store';
 import { useWorkspaceDocumentActions, useWorkspaceDocumentsState } from '@/store/documentHooks';
 import { HomeDashboard, type HomeFlowCard } from './home/HomeDashboard';
+import { HomeFilesView } from './home/HomeFilesView';
 import { HomeFlowDeleteDialog, HomeFlowRenameDialog } from './home/HomeFlowDialogs';
 import { HomeMCPView } from './home/HomeMCPView';
-import { HomeSettingsView } from './home/HomeSettingsView';
+import { HomePlaceholderView } from './home/HomePlaceholderView';
+import { HomeRunsView } from './home/HomeRunsView';
+import { HomeSettingsView, type HomeSettingsTab } from './home/HomeSettingsView';
 import { HomeSidebar } from './home/HomeSidebar';
 import { HomeTemplatesView } from './home/HomeTemplatesView';
+import { HomeTrashView } from './home/HomeTrashView';
+import type { HomePageTab } from './home/homeTabs';
 import { shouldShowWelcomeModal } from './home/welcomeModalState';
-
-type HomePageTab = 'home' | 'templates' | 'settings' | 'mcp';
-type HomeSettingsTab = 'general' | 'canvas' | 'shortcuts' | 'ai' | 'mcp';
+import {
+  copyDocumentKind,
+  removeDocumentKind,
+  setDocumentKind,
+  type DocumentKind,
+} from './home/documentKindStorage';
+import { purgeTrashedDocumentFromRepository } from '@/services/storage/localFirstRuntime';
+import {
+  useTrashedDocumentsState,
+} from '@/store/documentHooks';
 
 const LazyWelcomeModal = lazy(async () => {
   const module = await import('./WelcomeModal');
@@ -18,7 +30,7 @@ const LazyWelcomeModal = lazy(async () => {
 });
 
 interface HomePageProps {
-  onLaunch: () => void;
+  onLaunch: (kind?: DocumentKind) => void;
   onLaunchWithTemplates: () => void;
   onLaunchWithTemplate: (templateId: string) => void;
   onLaunchWithAI: () => void;
@@ -39,7 +51,14 @@ export const HomePage: React.FC<HomePageProps> = ({
   onSwitchTab,
 }) => {
   const { documents } = useWorkspaceDocumentsState();
-  const { renameDocument, deleteDocument, duplicateDocument } = useWorkspaceDocumentActions();
+  const { trashedDocuments } = useTrashedDocumentsState();
+  const {
+    renameDocument,
+    deleteDocument,
+    duplicateDocument,
+    restoreDocument,
+    purgeDocument,
+  } = useWorkspaceDocumentActions();
   const hasWorkspaceDocuments = useFlowStore((state) => state.documents.length > 0);
   const [internalActiveTab, setInternalActiveTab] = useState<HomePageTab>('home');
   const [activeSettingsTab, setActiveSettingsTab] = useState<HomeSettingsTab>('general');
@@ -63,7 +82,6 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (!flow) {
       return;
     }
-
     setFlowPendingRename(flow);
   }
 
@@ -72,7 +90,6 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (!flow) {
       return;
     }
-
     setFlowPendingDelete(flow);
   }
 
@@ -80,13 +97,11 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (!flowPendingRename) {
       return;
     }
-
     const trimmedName = nextName.trim();
     if (!trimmedName || trimmedName === flowPendingRename.name) {
       setFlowPendingRename(null);
       return;
     }
-
     renameDocument(flowPendingRename.id, trimmedName);
     setFlowPendingRename(null);
   }
@@ -95,33 +110,52 @@ export const HomePage: React.FC<HomePageProps> = ({
     if (!flowPendingDelete) {
       return;
     }
-
+    // Soft-delete keeps documentKind so Trash/restore retain chart vs workflow badges.
     deleteDocument(flowPendingDelete.id);
     setFlowPendingDelete(null);
+  }
+
+  function handleRestoreFlow(documentId: string): void {
+    restoreDocument(documentId);
+  }
+
+  function handlePurgeFlow(documentId: string): void {
+    purgeDocument(documentId);
+    removeDocumentKind(documentId);
+    purgeTrashedDocumentFromRepository(documentId);
   }
 
   function handleDuplicateFlow(flowId: string): void {
     const newFlowId = duplicateDocument(flowId);
     if (newFlowId) {
+      copyDocumentKind(flowId, newFlowId);
       onOpenFlow(newFlowId);
     }
+  }
+
+  function handleConvertToWorkflow(flowId: string): void {
+    const newFlowId = duplicateDocument(flowId);
+    if (!newFlowId) {
+      return;
+    }
+    setDocumentKind(newFlowId, 'workflow');
+    onOpenFlow(newFlowId);
   }
 
   return (
     <div className="min-h-screen bg-[var(--brand-background)] flex flex-col text-[var(--brand-text)] md:flex-row">
       <HomeSidebar activeTab={activeTab} onTabChange={handleTabChange} />
 
-      {/* Main Content */}
       <main
         id="main-content"
-        className="flex-1 flex min-w-0 flex-col bg-[var(--brand-surface)] md:ml-64"
+        className="flex min-w-0 flex-1 flex-col bg-[#F6F7F9] dark:bg-[var(--brand-background)] md:ml-[232px]"
       >
         {activeTab === 'home' && (
           <HomeDashboard
             flows={flows}
-            onCreateNew={onLaunch}
+            onCreate={onLaunch}
             onOpenTemplates={onLaunchWithTemplates}
-            onPromptWithAI={onLaunchWithAI}
+            onUseTemplate={onLaunchWithTemplate}
             onImportJSON={onImportJSON}
             onOpenFlow={onOpenFlow}
             onRenameFlow={handleRenameFlow}
@@ -130,8 +164,40 @@ export const HomePage: React.FC<HomePageProps> = ({
           />
         )}
 
+        {activeTab === 'files' && (
+          <HomeFilesView
+            flows={flows}
+            onCreate={onLaunch}
+            onOpenFlow={onOpenFlow}
+            onRenameFlow={handleRenameFlow}
+            onDuplicateFlow={handleDuplicateFlow}
+            onDeleteFlow={handleDeleteFlow}
+            onConvertToWorkflow={handleConvertToWorkflow}
+          />
+        )}
+
         {activeTab === 'templates' && (
           <HomeTemplatesView onUseTemplate={onLaunchWithTemplate} />
+        )}
+
+        {activeTab === 'runs' && <HomeRunsView onOpenFlow={onOpenFlow} />}
+
+        {activeTab === 'trash' && (
+          <HomeTrashView
+            items={trashedDocuments}
+            onRestore={handleRestoreFlow}
+            onPurge={handlePurgeFlow}
+          />
+        )}
+
+        {activeTab === 'account' && (
+          <HomePlaceholderView
+            testId="home-account-view"
+            titleKey="nav.account"
+            titleFallback="Account"
+            descriptionKey="home.accountDescription"
+            descriptionFallback="Account preferences will appear here."
+          />
         )}
 
         {activeTab === 'mcp' && <HomeMCPView />}
@@ -163,7 +229,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             onOpenTemplates={onLaunchWithTemplates}
             onPromptWithAI={onLaunchWithAI}
             onImport={onImportJSON}
-            onBlankCanvas={onLaunch}
+            onBlankCanvas={() => onLaunch('chart')}
           />
         </Suspense>
       ) : null}

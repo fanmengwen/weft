@@ -2,6 +2,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import App from './App';
 import { useFlowStore } from './store';
+import { NodeType } from '@/lib/types';
+import { useWorkflowStore } from '@/workflow/store/workflowStore';
 
 vi.mock('./components/HomePage', () => ({
   HomePage: ({
@@ -9,13 +11,16 @@ vi.mock('./components/HomePage', () => ({
     onLaunchWithTemplates,
     onImportJSON,
   }: {
-    onLaunch: () => void;
+    onLaunch: (kind?: 'chart' | 'workflow') => void;
     onLaunchWithTemplates: () => void;
     onImportJSON: () => void;
   }) => (
     <div data-testid="home-page">
-      <button type="button" onClick={onLaunch}>
+      <button type="button" onClick={() => onLaunch()}>
         Create Flow
+      </button>
+      <button type="button" onClick={() => onLaunch('workflow')}>
+        Create Workflow
       </button>
       <button type="button" onClick={onLaunchWithTemplates}>
         Open Templates
@@ -29,6 +34,10 @@ vi.mock('./components/HomePage', () => ({
 
 vi.mock('./components/FlowEditor', () => ({
   FlowEditor: () => <div data-testid="flow-editor">Editor</div>,
+}));
+
+vi.mock('./workflow/WorkflowEditor', () => ({
+  WorkflowEditor: () => <div data-testid="workflow-editor">Workflow editor</div>,
 }));
 
 vi.mock('@/components/app/MobileWorkspaceGate', () => ({
@@ -51,6 +60,13 @@ describe('App routing', () => {
   beforeEach(() => {
     localStorage.clear();
     resetEmptyWorkspace();
+    useWorkflowStore.setState({
+      mode: 'chart',
+      workflowNodes: [],
+      workflowEdges: [],
+      selectedNodeId: null,
+      selectedEdgeId: null,
+    });
   });
 
   it('redirects /canvas to home when no active document exists', async () => {
@@ -98,5 +114,27 @@ describe('App routing', () => {
       expect(useFlowStore.getState().documents).toHaveLength(0);
       expect(useFlowStore.getState().activeDocumentId).toBe('');
     });
+  });
+
+  it('clears persisted workflow content before opening a new blank workflow', async () => {
+    useWorkflowStore.setState({
+      workflowNodes: [{
+        id: 'stale-node',
+        type: NodeType.PROCESS,
+        position: { x: 0, y: 0 },
+        data: { label: 'Stale node' },
+      }],
+      workflowEdges: [],
+      selectedNodeId: 'stale-node',
+    });
+    window.history.pushState({}, '', '/#/home');
+
+    render(<App />);
+    fireEvent.click(await screen.findByRole('button', { name: 'Create Workflow' }));
+
+    expect(await screen.findByTestId('workflow-editor')).toBeTruthy();
+    expect(useWorkflowStore.getState().workflowNodes).toHaveLength(0);
+    expect(useWorkflowStore.getState().workflowEdges).toHaveLength(0);
+    expect(useWorkflowStore.getState().selectedNodeId).toBeNull();
   });
 });

@@ -1,12 +1,12 @@
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import type { TFunction } from 'i18next';
 import type { AddShapeInput } from '@/components/add-items/addItemRegistry';
 import { createId } from '@/lib/id';
 import type { FlowNode, NodeData } from '@/lib/types';
 import { NODE_DEFAULTS } from '@/theme';
 import { createDomainLibraryNode, type DomainLibraryItem } from '@/services/domainLibrary';
 import { useFlowStore } from '@/store';
-import { queueNodeLabelEditRequest } from '@/hooks/nodeLabelEditRequest';
 import {
   createAnnotationNode,
   createGenericShapeNode,
@@ -37,6 +37,29 @@ function resolveAddShapeSpec(input: AddShapeInput): {
     shape: input.shape,
     color: defaults?.color ?? NODE_DEFAULTS.process.color,
   };
+}
+
+export function resolveDefaultShapeLabel(
+  t: TFunction,
+  type: FlowNode['type'],
+  shape?: NodeData['shape']
+): string {
+  if (type === 'start') {
+    return t('toolbar.start', 'Start');
+  }
+  if (type === 'end') {
+    return t('toolbar.end', 'End');
+  }
+  if (type === 'decision') {
+    return t('toolbar.decision', 'Decision');
+  }
+  if (type === 'custom' && shape === 'parallelogram') {
+    return t('nodes.inputOutput', 'Input / Output');
+  }
+  if (type === 'custom' && shape === 'cylinder') {
+    return t('nodes.database', 'Database');
+  }
+  return t('toolbar.process', 'Process');
 }
 
 export function useNodeOperationAdders({
@@ -98,14 +121,15 @@ export function useNodeOperationAdders({
         (resolvedPosition) =>
           createGenericShapeNode(id, resolvedPosition ?? getDefaultNodePosition(nodesLength, 100, 100), {
             type: resolved.type,
+            // Default stays visible on drop; empty auto-rename used to blur-commit blanks.
+            label: resolveDefaultShapeLabel(t, resolved.type, resolved.shape),
             color: resolved.color,
             shape: resolved.shape,
           }),
         position
       );
-      queueNodeLabelEditRequest(id, { replaceExisting: true });
     },
-    [commitAddedNode, nodesLength, recordHistory]
+    [commitAddedNode, nodesLength, recordHistory, t]
   );
 
   const handleAddNode = useCallback(

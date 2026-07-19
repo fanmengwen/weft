@@ -75,8 +75,8 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
     ? 46
     : !nodeUsesDivShape
       ? hasSubLabel
-        ? 128
-        : 108
+        ? 80
+        : 54
       : baseMinHeight;
   const minWidth = isMermaidImportedLeaf ? explicitWidthPx ?? baseMinWidth : baseMinWidth;
   const effectiveMinHeight = isMermaidImportedLeaf
@@ -199,6 +199,7 @@ function CustomNode(props: LegacyNodeProps<NodeData>): React.ReactElement {
         chipIcon={chipIcon}
         tone={nodeTone}
         surfaceVariant={surfaceVariant}
+        activeShape={activeShape}
         textAlignStyle={typography.textAlignStyle}
         textClassName={`leading-tight block break-words markdown-content [&_p]:m-0 [&_p]:leading-tight ${surfaceVariant ? '' : typography.fSizeClass} ${typography.labelFontFamilyClass}`}
         textStyle={typography.textProps}

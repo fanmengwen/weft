@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactFlow, { Background } from '@/lib/reactflowCompat';
+import ReactFlow from '@/lib/reactflowCompat';
 import type {
   OnConnect,
   OnConnectEnd,
@@ -24,6 +24,11 @@ import type { ConnectedEdgePreset } from '@/hooks/edge-operations/utils';
 import type { FlowCanvasReactFlowConfig } from './useFlowCanvasReactFlowConfig';
 import type { AlignmentGuides } from './alignmentGuides';
 import type { ContextMenuState } from './useFlowCanvasMenus';
+import {
+  CANVAS_DEFAULT_VIEWPORT,
+  CANVAS_ZOOM_MAX,
+  CANVAS_ZOOM_MIN,
+} from '@/lib/canvasZoom';
 
 interface FlowCanvasSurfaceProps {
   containerClassName: string;
@@ -119,7 +124,7 @@ export function FlowCanvasSurface({
   fitView,
   reactFlowConfig,
   snapToGrid,
-  effectiveShowGrid,
+  effectiveShowGrid: _effectiveShowGrid,
   alignmentGuidesEnabled,
   alignmentGuides,
   connectMenu,
@@ -188,8 +193,10 @@ export function FlowCanvasSurface({
         nodeTypes={flowCanvasNodeTypes}
         edgeTypes={flowCanvasEdgeTypes}
         fitView={fitView}
+        defaultViewport={CANVAS_DEFAULT_VIEWPORT}
         className={reactFlowConfig.className}
-        minZoom={0.1}
+        minZoom={CANVAS_ZOOM_MIN}
+        maxZoom={CANVAS_ZOOM_MAX}
         onlyRenderVisibleElements={reactFlowConfig.onlyRenderVisibleElements}
         connectionMode={reactFlowConfig.connectionMode}
         isValidConnection={reactFlowConfig.isValidConnection}
@@ -211,14 +218,6 @@ export function FlowCanvasSurface({
         connectionLineComponent={CustomConnectionLine}
         snapToGrid={snapToGrid}
       >
-        {effectiveShowGrid ? (
-          <Background
-            variant={reactFlowConfig.background.variant}
-            gap={reactFlowConfig.background.gap}
-            size={reactFlowConfig.background.size}
-            color={reactFlowConfig.background.color}
-          />
-        ) : null}
         <NavigationControls />
       </ReactFlow>
       <StreamingOverlay />

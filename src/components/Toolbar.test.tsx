@@ -98,5 +98,17 @@ describe('Toolbar', () => {
     expect(screen.getByTestId('element-palette')).toBeTruthy();
     const addIcon = screen.getByTestId('toolbar-add-icon');
     expect(addIcon.getAttribute('class') ?? '').toContain('rotate-45');
+
+    const addButton = screen.getByTestId('toolbar-add');
+    const addClass = addButton.getAttribute('class') ?? '';
+    expect(addClass).toContain('bg-[var(--wf-hover)]');
+    expect(addClass).not.toContain('bg-[var(--wf-acc)]');
+  });
+
+  it('uses solid accent styling for the add button when the palette is closed', () => {
+    render(<Toolbar {...createProps()} />);
+    const addClass = screen.getByTestId('toolbar-add').getAttribute('class') ?? '';
+    expect(addClass).toContain('bg-[var(--wf-acc)]');
+    expect(addClass).not.toContain('bg-[var(--wf-hover)]');
   });
 });

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { ReactFlowProvider } from '@/lib/reactflowCompat';
 import { ToastProvider } from '@/components/ui/ToastContext';
@@ -12,6 +12,7 @@ describe('WorkflowEditor', () => {
       workflowNodes: [],
       workflowEdges: [],
       selectedNodeId: null,
+      selectedEdgeId: null,
     });
     global.ResizeObserver = class ResizeObserver {
       observe() {}
@@ -44,5 +45,29 @@ describe('WorkflowEditor', () => {
         screen.getAllByText(`workflowMode.nodes.${kind}.name`).length
       ).toBeGreaterThan(0);
     }
+  });
+
+  it('applies only workflow templates from an empty canvas', async () => {
+    render(
+      <ToastProvider>
+        <ReactFlowProvider>
+          <WorkflowEditor onGoHome={() => {}} />
+        </ReactFlowProvider>
+      </ToastProvider>
+    );
+
+    fireEvent.click(screen.getByTestId('workflow-empty-browse-templates'));
+
+    const workflowTemplate = await screen.findByText('文档问答助手');
+    expect(screen.queryByText('软件发版')).toBeNull();
+    expect(screen.queryByText('ALL')).toBeNull();
+    const templateButton = workflowTemplate.closest('button');
+    if (!templateButton) {
+      throw new Error('Workflow template button was not rendered');
+    }
+    fireEvent.click(templateButton);
+
+    expect(useWorkflowStore.getState().workflowNodes.length).toBeGreaterThan(0);
+    expect(screen.queryByTestId('workflow-empty-browse-templates')).toBeNull();
   });
 });

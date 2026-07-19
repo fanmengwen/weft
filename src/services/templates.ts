@@ -37,6 +37,8 @@ function getTemplateIcon(category: string): LucideIcon {
       return Layout;
     case 'cncf':
       return ShipWheel;
+    case 'workflow':
+      return ShipWheel;
     case 'flowchart':
     default:
       return Layout;

@@ -4,6 +4,7 @@ import { computeFlowCanvasReactFlowConfig } from './useFlowCanvasReactFlowConfig
 import {
     FLOW_CANVAS_BASE_BEHAVIOR,
     FLOW_CANVAS_STYLE_PRESETS,
+    getFlowCanvasClassName,
 } from './flowCanvasReactFlowContracts';
 
 describe('computeFlowCanvasReactFlowConfig', () => {
@@ -60,5 +61,17 @@ describe('computeFlowCanvasReactFlowConfig', () => {
         expect(result.zoomOnDoubleClick).toBe(FLOW_CANVAS_BASE_BEHAVIOR.zoomOnDoubleClick);
         expect(result.defaultEdgeOptions).toEqual(FLOW_CANVAS_STYLE_PRESETS.standard.defaultEdgeOptions);
         expect(result.background).toEqual(FLOW_CANVAS_STYLE_PRESETS.standard.background);
+    });
+
+    it('uses flat chart canvas tokens with design-spec dot grid class', () => {
+        const withGrid = getFlowCanvasClassName(true, true);
+        const withoutGrid = getFlowCanvasClassName(false, false);
+        expect(withGrid).toContain('flow-canvas-surface');
+        expect(withGrid).toContain('flow-canvas-select-mode');
+        expect(withGrid).toContain('flow-canvas-grid');
+        expect(withoutGrid).toContain('flow-canvas-pan-mode');
+        expect(withoutGrid).not.toContain('flow-canvas-grid');
+        expect(FLOW_CANVAS_STYLE_PRESETS.enhanced.background.gap).toBe(22);
+        expect(FLOW_CANVAS_STYLE_PRESETS.enhanced.background.color).toBe('#dee1e7');
     });
 });

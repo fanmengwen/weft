@@ -42,6 +42,7 @@ export type PersistedFlowStateHydration = Partial<
     | 'layers'
     | 'activeLayerId'
     | 'documents'
+    | 'trashedDocuments'
     | 'activeDocumentId'
     | 'tabs'
     | 'activeTabId'
@@ -257,6 +258,9 @@ export function migratePersistedFlowState(
     documents: Array.isArray(state.documents)
       ? (state.documents as FlowState['documents'])
       : [],
+    trashedDocuments: Array.isArray(state.trashedDocuments)
+      ? (state.trashedDocuments as FlowState['trashedDocuments'])
+      : [],
     activeDocumentId:
       typeof state.activeDocumentId === 'string' ? state.activeDocumentId : EMPTY_WORKSPACE_ID,
     tabs,
@@ -294,6 +298,7 @@ export function createInitialFlowState(): Pick<
   | 'nodes'
   | 'edges'
   | 'documents'
+  | 'trashedDocuments'
   | 'activeDocumentId'
   | 'tabs'
   | 'activeTabId'
@@ -315,6 +320,7 @@ export function createInitialFlowState(): Pick<
     nodes: [],
     edges: [],
     documents: [],
+    trashedDocuments: [],
     activeDocumentId: EMPTY_WORKSPACE_ID,
     tabs: [],
     activeTabId: EMPTY_WORKSPACE_ID,

@@ -21,6 +21,23 @@ describe('IconMap', () => {
         expect(resolveIconName('totallyUnknownIcon')).toBe('Settings');
     });
 
+    it('resolves chart node chip icon names', () => {
+        expect(resolveIconName('Play')).toBe('Play');
+        expect(resolveIconName('Square')).toBe('Square');
+        expect(resolveIconName('Download')).toBe('Download');
+    });
+
+    it('renders chart node chip icons without Settings fallback', () => {
+        const playView = render(<NamedIcon name="Play" data-testid="play-icon" />);
+        const squareView = render(<NamedIcon name="Square" data-testid="square-icon" />);
+        const downloadView = render(<NamedIcon name="Download" data-testid="download-icon" />);
+
+        expect(playView.getByTestId('play-icon').classList.contains('lucide-play')).toBe(true);
+        expect(squareView.getByTestId('square-icon').classList.contains('lucide-square')).toBe(true);
+        expect(downloadView.getByTestId('download-icon').classList.contains('lucide-download')).toBe(true);
+        expect(playView.getByTestId('play-icon').classList.contains('lucide-settings')).toBe(false);
+    });
+
     it('renders a named icon element', () => {
         const view = render(<NamedIcon name="Database" data-testid="icon" />);
         const svg = view.getByTestId('icon');

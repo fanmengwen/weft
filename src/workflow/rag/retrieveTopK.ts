@@ -12,6 +12,7 @@ interface EmbeddingCacheEntry {
 // Chunk vectors per document, invalidated when the text or model changes.
 // Session-scoped like the documents themselves.
 const embeddingCache = new Map<string, EmbeddingCacheEntry>();
+export const MIN_EMBEDDING_RELEVANCE = 0.45;
 
 function keywordTerms(query: string): string[] {
   const terms = new Set<string>();
@@ -80,6 +81,7 @@ async function embeddingRetrieve(
       ...chunk,
       score: cosineSimilarity(queryVector, vectors![index]),
     }))
+    .filter((chunk) => chunk.score >= MIN_EMBEDDING_RELEVANCE)
     .sort((a, b) => b.score - a.score)
     .slice(0, topK);
 }

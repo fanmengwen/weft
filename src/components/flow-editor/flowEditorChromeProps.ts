@@ -133,31 +133,28 @@ export function buildFlowEditorEmptyStateProps({
   t,
   openStudioPanel,
   openCommandBar,
-  handleAddNode,
   setPendingAIPrompt,
 }: BuildEmptyStateParams): FlowEditorChromeProps['emptyState'] | undefined {
-  if (nodes.length > 0 || editorMode === 'studio' || isCommandBarOpen) {
+  // Keep the empty-canvas overlay while Studio is open so the flat CTA and
+  // "AI is ready" hint stay visible next to the AI panel (design empty state).
+  if (nodes.length > 0 || isCommandBarOpen) {
     return undefined;
   }
 
   return {
-    title: t('flowEditor.emptyState.title', { defaultValue: 'Start your diagram' }),
+    title: t('flowEditor.emptyState.title', { defaultValue: 'Your canvas is empty' }),
     description: t('flowEditor.emptyState.description', {
       defaultValue:
-        'Choose the fastest way to get a first draft on the canvas, then refine it with layout, properties, and Studio tools.',
-    }),
-    generateLabel: t('flowEditor.emptyState.generateWithFlowpilot', {
-      defaultValue: 'Generate with AI',
+        'Use Studio on the right to generate a diagram with AI,\nor start manually with the options below.',
     }),
     templatesLabel: t('flowEditor.emptyState.browseTemplates', {
       defaultValue: 'Browse templates',
     }),
-    addNodeLabel: t('flowEditor.emptyState.addBlankNode', {
-      defaultValue: 'Start from a blank node',
-    }),
-    onGenerate: () => openStudioPanel('ai'),
     onTemplates: () => openCommandBar('templates'),
-    onAddNode: () => handleAddNode(),
+    showStudioHint: editorMode === 'studio',
+    studioHintLabel: t('flowEditor.emptyState.studioReady', {
+      defaultValue: 'AI is ready',
+    }),
     onSuggestionClick: (prompt) => {
       setPendingAIPrompt(prompt);
       openStudioPanel('ai');
@@ -221,7 +218,6 @@ export function useFlowEditorChromeProps(
     t,
     openStudioPanel,
     openCommandBar,
-    handleAddNode,
     setPendingAIPrompt,
   } = params;
 
@@ -347,10 +343,9 @@ export function useFlowEditorChromeProps(
         t,
         openStudioPanel,
         openCommandBar,
-        handleAddNode,
         setPendingAIPrompt,
       }),
-    [nodes, editorMode, isCommandBarOpen, t, openStudioPanel, openCommandBar, handleAddNode, setPendingAIPrompt]
+    [nodes, editorMode, isCommandBarOpen, t, openStudioPanel, openCommandBar, setPendingAIPrompt]
   );
 
   return {

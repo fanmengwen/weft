@@ -17,6 +17,8 @@ interface HomeFlowDeleteDialogProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: () => void;
+    /** soft-delete into Trash (default) or permanent purge */
+    mode?: 'trash' | 'purge';
 }
 
 export function HomeFlowRenameDialog({
@@ -132,9 +134,11 @@ export function HomeFlowDeleteDialog({
     isOpen,
     onClose,
     onConfirm,
+    mode = 'trash',
 }: HomeFlowDeleteDialogProps): React.ReactElement | null {
     const { t } = useTranslation();
     const closeButtonRef = useRef<HTMLButtonElement>(null);
+    const isPurge = mode === 'purge';
 
     useEffect(() => {
         if (!isOpen) {
@@ -157,6 +161,29 @@ export function HomeFlowDeleteDialog({
         return null;
     }
 
+    const title = isPurge
+        ? t('home.purgeFlow.title', 'Delete permanently')
+        : t('home.deleteFlow.title', 'Move to trash');
+    const description = isPurge
+        ? t('home.purgeFlow.description', 'This permanently removes the file from this device.')
+        : t('home.deleteFlow.description', 'The file will be moved to Trash so you can restore it later.');
+    const confirmation = isPurge
+        ? t('home.purgeFlow.confirmation', 'Permanently delete "{{name}}"?', {
+            name: getFlowDisplayName(flowName, t),
+        })
+        : t('home.deleteFlow.confirmation', 'Move "{{name}}" to Trash?', {
+            name: getFlowDisplayName(flowName, t),
+        });
+    const hint = isPurge
+        ? t('home.purgeFlow.hint', 'This cannot be undone.')
+        : t('home.deleteFlow.hint', 'You can restore it from Trash anytime.');
+    const confirmLabel = isPurge
+        ? t('home.trash.purge', 'Delete permanently')
+        : t('home.deleteFlow.confirmAction', 'Move to trash');
+    const closeLabel = isPurge
+        ? t('home.purgeFlow.closeDialog', 'Close permanent delete dialog')
+        : t('home.deleteFlow.closeDialog', 'Close delete flow dialog');
+
     return createPortal(
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
             <div
@@ -173,10 +200,10 @@ export function HomeFlowDeleteDialog({
                         </div>
                         <div>
                             <h2 id="home-flow-delete-title" className="text-base font-semibold text-[var(--brand-text)]">
-                                {t('home.deleteFlow.title', 'Delete flow')}
+                                {title}
                             </h2>
                             <p id="home-flow-delete-description" className="text-sm text-[var(--brand-secondary)]">
-                                {t('home.deleteFlow.description', 'This removes the local autosaved flow from this device.')}
+                                {description}
                             </p>
                         </div>
                     </div>
@@ -193,12 +220,10 @@ export function HomeFlowDeleteDialog({
 
                 <div className="px-6 py-5">
                     <p className="text-sm leading-6 text-[var(--brand-text)]">
-                        {t('home.deleteFlow.confirmation', 'Delete "{{name}}"?', {
-                            name: getFlowDisplayName(flowName, t),
-                        })}
+                        {confirmation}
                     </p>
                     <p className="mt-2 text-xs text-[var(--brand-secondary)]">
-                        {t('home.deleteFlow.hint', 'This cannot be undone unless you have an exported backup or another copy.')}
+                        {hint}
                     </p>
 
                     <div className="mt-6 flex items-center justify-end gap-3">
@@ -206,7 +231,7 @@ export function HomeFlowDeleteDialog({
                             {t('common.cancel', 'Cancel')}
                         </Button>
                         <Button type="button" variant="danger" onClick={onConfirm}>
-                            {t('common.delete', 'Delete')}
+                            {confirmLabel}
                         </Button>
                     </div>
                 </div>
@@ -216,7 +241,7 @@ export function HomeFlowDeleteDialog({
                 type="button"
                 className="absolute inset-0 -z-10"
                 onClick={onClose}
-                aria-label={t('home.deleteFlow.closeDialog', 'Close delete flow dialog')}
+                aria-label={closeLabel}
             />
         </div>,
         document.body

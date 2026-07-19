@@ -18,6 +18,7 @@ import { useFlowCanvasZoomLod } from './flow-canvas/useFlowCanvasZoomLod';
 import { useFlowCanvasViewState } from './flow-canvas/useFlowCanvasViewState';
 import { useFlowCanvasReactFlowConfig } from './flow-canvas/useFlowCanvasReactFlowConfig';
 import { useFlowCanvasSelectionTools } from './flow-canvas/useFlowCanvasSelectionTools';
+import { useInitialChartFitView } from './flow-canvas/useInitialChartFitView';
 import type { ConnectMenuState } from './flow-canvas/useFlowCanvasMenus';
 import { useToast } from './ui/ToastContext';
 import { isCanvasBackgroundTarget } from '@/hooks/edgeConnectInteractions';
@@ -88,7 +89,13 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
   const connectMenuSetterRef = useRef<((value: ConnectMenuState | null) => void) | null>(null);
   const importStabilizationSignatureRef = useRef<string | null>(null);
 
-  const { screenToFlowPosition, fitView } = useReactFlow();
+  const { screenToFlowPosition, fitView, getZoom } = useReactFlow();
+  useInitialChartFitView({
+    fitView,
+    getZoom,
+    activeTabId,
+    nodeCount: nodes.length,
+  });
   const clearPaneSelection = useCallback((): void => {
     setSelectedNodeId(null);
     setSelectedEdgeId(null);
@@ -199,6 +206,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
     visualQualityV2Enabled: true,
     isEffectiveSelectMode,
     viewportCullingEnabled,
+    showGrid: effectiveShowGrid,
     effectiveEdges,
   });
   const { isConnecting, onConnectStartWrapper, onConnectEndWrapper } = useFlowCanvasConnectionState(
@@ -451,7 +459,7 @@ export const FlowCanvas: React.FC<FlowCanvasProps> = ({
       onConnectEnd={onConnectEndWrapper}
       onDragOver={onDragOver}
       onDrop={onDrop}
-      fitView={true}
+      fitView={false}
       reactFlowConfig={reactFlowConfig}
       snapToGrid={snapToGrid}
       effectiveShowGrid={effectiveShowGrid}

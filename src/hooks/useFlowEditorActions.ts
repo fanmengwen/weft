@@ -18,10 +18,12 @@ import {
 } from './flow-editor-actions/exportHandlers';
 import { toOpenFlowDSL } from '@/services/openFlowDSLExporter';
 import { encodeDslForViewer } from '@/services/viewerUrlCodec';
+import { CANVAS_DEFAULT_ZOOM } from '@/lib/canvasZoom';
 import {
     buildTemplateInsertionResult,
     getAutoLayoutResult,
     scheduleFitView,
+    scheduleFitViewPreservingZoom,
 } from './flow-editor-actions/layoutHandlers';
 import { recordOnboardingEvent } from '@/services/onboarding/events';
 
@@ -34,7 +36,13 @@ interface UseFlowEditorActionsParams {
     recordHistory: () => void;
     setNodes: (nodes: FlowNode[] | ((nodes: FlowNode[]) => FlowNode[])) => void;
     setEdges: (edges: FlowEdge[] | ((edges: FlowEdge[]) => FlowEdge[])) => void;
-    fitView: (options?: { duration?: number; padding?: number }) => void;
+    fitView: (options?: {
+        duration?: number;
+        padding?: number;
+        minZoom?: number;
+        maxZoom?: number;
+    }) => void;
+    getZoom: () => number;
     t: TFunction;
     addToast: (message: string, type?: 'success' | 'error' | 'info' | 'warning', duration?: number) => void;
     exportSerializationMode: ExportSerializationMode;
@@ -70,6 +78,7 @@ export function useFlowEditorActions({
     setNodes,
     setEdges,
     fitView,
+    getZoom,
     t,
     addToast,
     exportSerializationMode,
@@ -103,13 +112,14 @@ export function useFlowEditorActions({
                 setNodes(layoutedNodes);
                 setEdges(layoutedEdges);
             });
-            scheduleFitView(fitView, 800, 50);
+            // Keep the user's zoom; only pan so the layouted graph stays in view.
+            scheduleFitViewPreservingZoom(fitView, getZoom, 800, 50);
         } catch (error) {
             logger.error('ELK layout failed.', { error });
         } finally {
             setIsLayouting(false);
         }
-    }, [nodes, edges, recordHistory, setNodes, setEdges, fitView]);
+    }, [nodes, edges, recordHistory, setNodes, setEdges, fitView, getZoom]);
 
     const handleInsertTemplate = useCallback((template: FlowTemplate): void => {
         recordHistory();
@@ -128,7 +138,13 @@ export function useFlowEditorActions({
 
         setNodes(nextNodes);
         setEdges((existingEdges) => [...existingEdges, ...newEdges]);
-        scheduleFitView(fitView, 800, 100);
+        // Template open should start at 100% zoom; unconstrained fitView was
+        // auto-scaling to ~126% for compact starter graphs.
+        scheduleFitView(fitView, 800, 100, {
+            padding: 0.2,
+            minZoom: CANVAS_DEFAULT_ZOOM,
+            maxZoom: CANVAS_DEFAULT_ZOOM,
+        });
     }, [nodes, recordHistory, setNodes, setEdges, fitView]);
 
     const handleExportMermaid = useCallback(async (): Promise<void> => {

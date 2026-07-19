@@ -68,6 +68,7 @@ const baseProps = {
     onRedo: vi.fn(),
     onLayout: vi.fn(async () => undefined),
     onSelectTemplate: vi.fn(),
+    templateCategory: 'flowchart',
     onOpenStudioAI: vi.fn(),
     onOpenStudioPlayback: vi.fn(),
     onOpenArchitectureRules: vi.fn(),
@@ -155,7 +156,7 @@ const baseProps = {
     onClose: vi.fn(),
   },
   isHistoryOpen: false,
-};
+} satisfies React.ComponentProps<typeof FlowEditorPanels>;
 
 const selectedNode = {
   id: 'node-1',

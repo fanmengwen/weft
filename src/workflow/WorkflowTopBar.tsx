@@ -75,20 +75,15 @@ export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactEl
         >
           <ArrowLeft className="h-4 w-4" />
         </button>
-        <div className="flex items-center gap-1.5 px-1">
-          <span className="text-[15px] font-semibold text-[var(--wf-text)]">{APP_NAME}</span>
-          <svg width={15} height={15} viewBox="0 0 24 24" aria-hidden className="block shrink-0">
-            <circle cx={12} cy={12} r={10} fill="var(--wf-acc)" />
-            <path
-              d="M8 12.2 L10.8 15 L16 9.5"
-              stroke="#fff"
-              strokeWidth={2.2}
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </div>
+        <button
+          type="button"
+          onClick={onGoHome}
+          aria-label={t('workflowMode.home')}
+          title={t('workflowMode.home')}
+          className="cursor-pointer rounded-lg px-1.5 py-1 text-[15px] font-semibold text-[var(--wf-text)] transition-colors hover:bg-[var(--wf-hover)] hover:text-[var(--wf-acc)] active:bg-[var(--wf-hover)]"
+        >
+          {APP_NAME}
+        </button>
         <div className="mx-1.5 h-4 w-px shrink-0 bg-[var(--wf-border)]" />
         <ModeSelector variant="flat" />
       </div>
@@ -136,6 +131,7 @@ export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactEl
           <button
             type="button"
             onClick={handleRun}
+            data-testid="workflow-run"
             disabled={!hasNodes}
             title={hasNodes ? t('workflowMode.run') : t('workflowMode.runNeedsNodes')}
             className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold text-white transition-[filter] hover:brightness-[0.94] disabled:cursor-not-allowed disabled:opacity-50"

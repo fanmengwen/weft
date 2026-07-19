@@ -130,6 +130,7 @@
       "missingVariables": "Çözümlenmemiş değişkenler: {{selectors}}",
       "promptFromUpstream": "İstem boş — önceki metin kullanılıyor",
       "searchDegraded": "Web araması kullanılamıyor ({{reason}}) — sorgu olduğu gibi aktarılıyor",
+      "searchFailed": "Web search failed: {{reason}}",
       "searchNoResults": "Sonuç yok — sorgu olduğu gibi aktarılıyor",
       "searchHits": "Wikipedia {{count}} sonuç döndürdü",
       "knowledgeDegraded": "Embedding uç noktası yok — anahtar kelime eşleşmesine dönülüyor",
@@ -268,7 +269,13 @@
     "playbackMode": "Oynatma Modu",
     "privacyMessage": "Diyagramlarınız sizinle kalır ve sunucularımıza ulaşmaz.",
     "templates": "Şablonlar",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "files": "My files",
+    "runs": "Run center",
+    "trash": "Trash",
+    "account": "Account",
+    "accountInitial": "F",
+    "primaryNav": "Primary navigation"
   },
   "menu": {
     "file": "Dosya",
@@ -459,8 +466,8 @@
   },
   "home": {
     "appName": "Weft",
-    "title": "Gösterge Paneli",
-    "description": "Akışlarınızı ve diyagramlarınızı yönetin.",
+    "title": "Home",
+    "description": "Manage your flows and diagrams.",
     "recentFiles": "Son Dosyalar",
     "files": "dosyalar",
     "createFirstFlow": "İlk akışınızı oluşturun",
@@ -477,11 +484,12 @@
       "closeDialog": "Akış yeniden adlandırma iletişim kutusunu kapat"
     },
     "deleteFlow": {
-      "title": "Akışı sil",
-      "description": "Bu, yerel otomatik kaydedilen akışı bu cihazdan kaldırır.",
-      "confirmation": "\"{{name}}\" silinsin mi?",
-      "hint": "Dışa aktarılmış bir yedeklemeniz veya başka bir kopyanız yoksa bu işlem geri alınamaz.",
-      "closeDialog": "Akış silme iletişim kutusunu kapat"
+      "title": "Move to trash",
+      "description": "The file will be moved to Trash so you can restore it later.",
+      "confirmation": "Move \"{{name}}\" to Trash?",
+      "hint": "You can restore it from Trash anytime.",
+      "confirmAction": "Move to trash",
+      "closeDialog": "Close delete flow dialog"
     },
     "homeEmptyTitle": "İlk akışınızı oluşturun",
     "homeEmptySubtitle": "Kurumsal düzey mimariileri anında tasarlayın. Boş bir tuvalden başlayın, altyapınızı AI builderımızla tanımlayın veya hazır bir şablon kullanın.",
@@ -499,7 +507,118 @@
     "suggestionTemplates": "Şablonlar",
     "suggestionTemplatesDesc": "Kanıtlanmış bir kalıptan başla",
     "continueTitle": "Son eylemle devam et",
-    "generateWithFlowpilot": "Yapay zeka ile oluştur"
+    "generateWithFlowpilot": "Yapay zeka ile oluştur",
+    "capability": {
+      "chartTitle": "Flowchart",
+      "chartDescription": "Map structure and decision branches for people to read",
+      "workflowTitle": "Workflow",
+      "workflowDescription": "Orchestrate runnable steps that produce results"
+    },
+    "kind": {
+      "chart": "Flowchart",
+      "workflow": "Workflow"
+    },
+    "examples": {
+      "title": "See what Weft can do",
+      "sample": "Sample",
+      "leaveApproval": "Leave approval flow",
+      "webSummaryBot": "Web summary bot",
+      "openLook": "Open",
+      "runOnce": "Run once"
+    },
+    "templatesOrStart": "Or start from a template",
+    "allTemplates": "All templates",
+    "useTemplate": "Use",
+    "showcase": {
+      "orderFulfillment": "Order fulfillment",
+      "supportAutoReply": "Support auto-reply",
+      "systemArchitecture": "System architecture",
+      "weeklyReport": "Weekly report"
+    },
+    "filterAll": "All",
+    "filterAria": "Filter recent files",
+    "importFile": "Import file",
+    "startFromTemplate": "Start from a template",
+    "noMatchingFiles": "No files match this filter.",
+    "filesPageDescription": "All diagrams and workflows saved on this device.",
+    "filesEmpty": "No files yet. Create a flowchart or workflow from Home.",
+    "runsDescription": "Workflow run history will appear here.",
+    "trashDescription": "Deleted files will appear here so you can restore them later.",
+    "accountDescription": "Account preferences will appear here.",
+    "purgeFlow": {
+      "title": "Delete permanently",
+      "description": "This permanently removes the file from this device.",
+      "confirmation": "Permanently delete \"{{name}}\"?",
+      "hint": "This cannot be undone.",
+      "closeDialog": "Close permanent delete dialog"
+    },
+    "trash": {
+      "restore": "Restore",
+      "purge": "Delete permanently",
+      "deletedAt": "Deleted {{date}}"
+    },
+    "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
+    "trashEmpty": "Trash is empty."
+  },
+  "homeRuns": {
+    "description": "Review workflow results and node-by-node logs stored on this device.",
+    "emptyTitle": "No workflow runs yet",
+    "emptyDescription": "Run a workflow and its result will appear here.",
+    "result": "Result",
+    "noResult": "No final output was produced.",
+    "nodes": "Node states",
+    "statusIdle": "Not run",
+    "statusSkipped": "Skipped",
+    "logs": "Run logs",
+    "retention": "Keep the latest {{count}}",
+    "filters": "Run status filters",
+    "filterAll": "All",
+    "filterEmpty": "No runs match this filter",
+    "inputLabel": "Input",
+    "justNow": "Just now",
+    "manualTrigger": "Manual run",
+    "openWorkflow": "Open workflow",
+    "deleteRecord": "Delete run record",
+    "runFailed": "Run failed",
+    "markdownRendered": "Markdown rendered",
+    "rawResult": "Raw result",
+    "renderedResult": "Rendered result",
+    "viewRaw": "View source",
+    "copy": "Copy",
+    "copied": "Copied",
+    "nodeExecution": "Node execution",
+    "nodeSummary": "{{count}} nodes · {{skipped}} skipped",
+    "expandHint": "Select a row to expand input / output snapshots",
+    "snapshotUnavailable": "Snapshot unavailable",
+    "inputSnapshot": "Input snapshot",
+    "outputSnapshot": "Output snapshot",
+    "errorSnapshot": "Error details",
+    "rawLogs": "Raw logs",
+    "logCount": "{{count}} entries",
+    "logHint": "Internal node events only; timing is shown above",
+    "nodeStatus": { "idle": "Not run", "running": "Running", "succeeded": "Succeeded", "failed": "Failed", "skipped": "Skipped" }
+  },
+  "homeFiles": {
+    "search": "Search files",
+    "new": "New",
+    "sortRecent": "Recently modified",
+    "layoutAria": "Layout",
+    "layoutGrid": "Grid",
+    "layoutList": "List",
+    "viewAll": "View all",
+    "sectionChart": "Flowchart · {{count}}",
+    "sectionWorkflow": "Workflow · {{count}}",
+    "convertToWorkflow": "Convert to workflow",
+    "nodeMeta": "{{count}} nodes",
+    "moreActions": "More actions",
+    "relative": {
+      "justNow": "Just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}} hours ago",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{count}} days ago",
+      "lastWeek": "Last week"
+    }
   },
   "settings": {
     "title": "Ayarlar",
@@ -923,7 +1042,8 @@
         "create": "Sıfırdan oluşturmak istediğiniz diyagramı açıklayın...",
         "selectedEdit": "Seçili {{count}} düğümde neyi değiştirmek istediğinizi açıklayın...",
         "edit": "Bir değişiklik tarif edin, örneğin: 'API ile DB arasına Redis ekle'",
-        "empty": "Sıfırdan oluşturulacak bir diyagramı açıklayın..."
+        "empty": "Sıfırdan oluşturulacak bir diyagramı açıklayın...",
+        "emptyCanvas": "Describe a flowchart to generate…"
       },
       "applyEdit": "Yapay zeka düzenlemesini uygula",
       "generateDiagram": "Diyagram oluştur",
@@ -1018,7 +1138,11 @@
         "iterationServerPrompt": "Bir Node.js backend servisi ekle",
         "iterationDeploy": "Dağıtım",
         "iterationDeployPrompt": "Diyagrama dağıtım ve barındırma adımları ekle"
-      }
+      },
+      "emptyHeroDescription": "Describe the flow you want — AI will generate nodes and connections on the canvas.",
+      "emptyHeroTitle": "Generate with AI",
+      "generateShortcut": "⌘↵",
+      "tryThese": "Try these"
     },
     "figmaImport": {
       "invalidUrl": "Geçersiz Figma URL'si. figma.com/file/... veya figma.com/design/... bağlantısı kullanın.",
@@ -1589,7 +1713,9 @@
       "description": "Tuvaliniz boş. Yapay zeka ile bir diyagram oluşturun veya sıfırdan başlayın.",
       "generateWithFlowpilot": "Yapay zeka ile oluştur",
       "browseTemplates": "Şablonlara Gözat",
-      "addBlankNode": "Boş Şekil Ekle"
+      "addBlankNode": "Boş Şekil Ekle",
+      "orPrefix": "or",
+      "studioReady": "AI is ready →"
     },
     "dslExportSkippedEdges": "DSL dışa aktarmada {{count}} geçersiz kenar atlandı.",
     "viewShortcuts": "View keyboard shortcuts"
@@ -1888,5 +2014,48 @@
     "cinematicCancelled": "Dışa aktarma iptal edildi",
     "nodeCount": "{{count}} düğüm",
     "edgeCount": "{{count}} kenar"
+  },
+  "homeSettings": {
+    "subtitle": "App preferences, plus default canvas and AI behavior.",
+    "analyticsHint": "Shares feature usage only — no canvas content. Turn off anytime.",
+    "canvas": {
+      "showGrid": "Show grid dots",
+      "showGridDesc": "22px dot grid on the canvas background",
+      "snap": "Snap to align",
+      "snapDesc": "Snap nodes to the grid and nearby nodes while dragging",
+      "edgeStyle": "Edge style",
+      "edgeStyleDesc": "Default soft curves, matching the element style guide",
+      "edgeCurve": "Soft curve",
+      "edgeOrtho": "Orthogonal"
+    },
+    "ai": {
+      "provider": "Model provider",
+      "model": "Default model",
+      "modelHint": "Workflow nodes set to follow global AI settings use this model",
+      "keyHint": "Stored on this device only — never uploaded",
+      "testConnection": "Test connection",
+      "testOk": "Key saved locally. Ready to use.",
+      "testEmpty": "Enter an API key first."
+    },
+    "shortcuts": {
+      "commandCenter": "Command center",
+      "select": "Select tool",
+      "hand": "Hand tool",
+      "addElement": "Add element",
+      "autoLayout": "Auto layout",
+      "undo": "Undo",
+      "redo": "Redo",
+      "runWorkflow": "Run workflow",
+      "hint": "Shortcuts match the toolbar. Customization is not available yet."
+    },
+    "about": {
+      "version": "Version",
+      "versionValue": "Weft V{{version}}",
+      "upToDate": "Weft V{{version}} · You are up to date",
+      "checkUpdates": "Check for updates",
+      "designSpecs": "Design guidelines",
+      "elementStyles": "Element styles",
+      "toolbarSpecs": "Toolbar specs"
+    }
   }
 }

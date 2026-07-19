@@ -4,6 +4,7 @@ import { Plus, Minus, Maximize, HelpCircle } from 'lucide-react';
 import { Tooltip } from './Tooltip';
 import { useTranslation } from 'react-i18next';
 import { useShortcutHelpActions } from '@/store/viewHooks';
+import { nextCanvasZoom } from '@/lib/canvasZoom';
 
 const NAV_CONTROL_INTERACTIVE_CLASS =
   'text-[var(--brand-secondary)] transition-colors hover:bg-[#F3F5F8]';
@@ -17,16 +18,20 @@ const NAV_HELP_BUTTON_CLASS = `flex h-9 w-9 items-center justify-center rounded-
 
 export function NavigationControls(): React.ReactElement {
   const { t } = useTranslation();
-  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  const { zoomTo, fitView } = useReactFlow();
   const { zoom } = useViewport();
   const { setShortcutsHelpOpen } = useShortcutHelpActions();
+
+  const stepZoom = (direction: 1 | -1) => {
+    zoomTo(nextCanvasZoom(zoom, direction), { duration: 300 });
+  };
 
   return (
     <div className="absolute bottom-4 right-4 z-50 flex flex-col items-center gap-2">
       <div className={NAV_RAIL_CLASS}>
         <Tooltip text={t('navigationControls.zoomIn')} side="left">
           <button
-            onClick={() => zoomIn({ duration: 300 })}
+            onClick={() => stepZoom(1)}
             className={`${NAV_RAIL_BUTTON_CLASS} rounded-t-[10px]`}
           >
             <Plus className="h-4 w-4" />
@@ -36,7 +41,7 @@ export function NavigationControls(): React.ReactElement {
           {Math.round(zoom * 100)}%
         </div>
         <Tooltip text={t('navigationControls.zoomOut')} side="left">
-          <button onClick={() => zoomOut({ duration: 300 })} className={NAV_RAIL_BUTTON_CLASS}>
+          <button onClick={() => stepZoom(-1)} className={NAV_RAIL_BUTTON_CLASS}>
             <Minus className="h-4 w-4" />
           </button>
         </Tooltip>

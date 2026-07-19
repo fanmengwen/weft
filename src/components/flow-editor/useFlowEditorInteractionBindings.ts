@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import { useNodeQuickCreateRequest } from '@/hooks/nodeQuickCreateRequest';
+import { nextCanvasZoom } from '@/lib/canvasZoom';
 
 interface UseFlowEditorInteractionBindingsParams {
     selectedNodeId: string | null;
@@ -25,8 +26,8 @@ interface UseFlowEditorInteractionBindingsParams {
     toggleElementPalette: () => void;
     onAutoLayout: () => void;
     fitView: (options?: { duration?: number; padding?: number }) => void;
-    zoomIn: (options?: { duration?: number }) => void;
-    zoomOut: (options?: { duration?: number }) => void;
+    getZoom: () => number;
+    zoomTo: (zoom: number, options?: { duration?: number }) => void;
     copySelection: () => void;
     pasteSelection: () => void;
     copyStyleSelection: () => void;
@@ -61,8 +62,8 @@ export function useFlowEditorInteractionBindings({
     toggleElementPalette,
     onAutoLayout,
     fitView,
-    zoomIn,
-    zoomOut,
+    getZoom,
+    zoomTo,
     copySelection,
     pasteSelection,
     copyStyleSelection,
@@ -96,8 +97,8 @@ export function useFlowEditorInteractionBindings({
         onToggleElementPalette: toggleElementPalette,
         onAutoLayout,
         onFitView: () => fitView({ duration: 600, padding: 0.2 }),
-        onZoomIn: () => zoomIn({ duration: 300 }),
-        onZoomOut: () => zoomOut({ duration: 300 }),
+        onZoomIn: () => zoomTo(nextCanvasZoom(getZoom(), 1), { duration: 300 }),
+        onZoomOut: () => zoomTo(nextCanvasZoom(getZoom(), -1), { duration: 300 }),
         onCopy: copySelection,
         onPaste: pasteSelection,
         onCopyStyle: copyStyleSelection,

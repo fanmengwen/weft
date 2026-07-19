@@ -17,6 +17,7 @@ import { WORKFLOW_EDGE_STYLE } from './graph/workflowEdgeStyle';
 import { workflowNodeTypes } from './nodes/workflowNodeTypes';
 import { WorkflowLogPanel } from './panels/WorkflowLogPanel';
 import { useWorkflowStore } from './store/workflowStore';
+import { WorkflowEmptyCanvas } from './WorkflowEmptyCanvas';
 
 const workflowEdgeTypes = { workflow: WorkflowEdge };
 
@@ -155,14 +156,11 @@ function WorkflowCanvasInner(): React.ReactElement {
         <Background gap={22} size={1} color="#dee1e7" />
       </ReactFlow>
       {nodes.length === 0 ? (
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-          <p className="text-base font-semibold text-[var(--wf-text)]">
-            {t('workflowMode.canvas.emptyTitle')}
-          </p>
-          <p className="text-sm text-[var(--wf-text-muted)]">
-            {t('workflowMode.canvas.emptyHint')}
-          </p>
-        </div>
+        <WorkflowEmptyCanvas
+          nodes={nodes}
+          edges={edges}
+          onTemplateApplied={() => window.setTimeout(() => fitView({ padding: 0.2 }), 0)}
+        />
       ) : null}
     </div>
   );

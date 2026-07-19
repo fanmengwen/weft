@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { ArrowRight, Sparkles, Trash2, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { FlowEdge, FlowNode } from '@/lib/types';
 import type { ChatMessage } from '@/services/aiService';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
@@ -78,18 +79,23 @@ export function StudioPanel({
     initialPrompt,
     onInitialPromptConsumed,
 }: StudioPanelProps): React.ReactElement {
+    const { t } = useTranslation();
+    const title = t('settings.aiAssistant', 'AI assistant');
+    const clearLabel = t('commandBar.aiStudio.clearConversation', 'Clear conversation');
+    const closeLabel = t('common.close', 'Close');
+
     return (
         <SidebarShell>
             <div className="flex h-12 items-center justify-between border-b border-[#EEF0F4] pl-4 pr-3">
                 <div className="flex items-center gap-[7px]">
                     <Sparkles className="h-3.5 w-3.5 text-[var(--wf-acc)]" />
-                    <span className="text-[14px] font-semibold text-[var(--wf-text)]">Studio</span>
+                    <span className="text-[14px] font-semibold text-[var(--wf-text)]">{title}</span>
                 </div>
                 <div className="flex items-center gap-0.5">
                     <button
                         type="button"
                         onClick={onClearChat}
-                        aria-label="Clear conversation"
+                        aria-label={clearLabel}
                         className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[#8B93A0] transition-colors hover:bg-[#FBEFEE] hover:text-[#C4443C]"
                     >
                         <Trash2 className="h-3.5 w-3.5" />
@@ -97,7 +103,7 @@ export function StudioPanel({
                     <button
                         type="button"
                         onClick={onClose}
-                        aria-label="Close"
+                        aria-label={closeLabel}
                         className="flex h-7 w-7 items-center justify-center rounded-[7px] text-[#8B93A0] transition-colors hover:bg-[#F3F5F8] hover:text-[#4A5361]"
                     >
                         <X className="h-3.5 w-3.5" />

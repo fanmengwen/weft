@@ -7,11 +7,18 @@ export default defineConfig(({ mode }) => {
   // so dev servers don't collide. strictPort fails loud only when explicitly set.
   const env = loadEnv(mode, process.cwd(), 'WEFT_');
   const devPort = env.WEFT_DEV_PORT ? Number(env.WEFT_DEV_PORT) : undefined;
+  // Git worktrees often resolve npm deps from the main checkout's node_modules
+  // (outside this worktree root). Vite serves those via /@fs/... and 403s unless
+  // allowed — which breaks ELK's auto-layout worker in dev.
+  const mainRepoRoot = path.resolve(__dirname, '../../..');
   return {
     server: {
       port: devPort ?? 3000,
       host: '0.0.0.0',
       strictPort: devPort !== undefined,
+      fs: {
+        allow: [path.resolve(__dirname), mainRepoRoot],
+      },
     },
     plugins: [react()],
     resolve: {

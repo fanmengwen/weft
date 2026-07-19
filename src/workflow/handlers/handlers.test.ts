@@ -1,4 +1,5 @@
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { useFlowStore } from '@/store';
 import type { FlowNode } from '@/lib/types';
 import { createWorkflowNode } from '../dnd/createWorkflowNode';
 import type { WorkflowLogMessage, WorkflowRunContext } from '../engine/types';
@@ -39,6 +40,12 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+beforeEach(() => {
+  useFlowStore.setState({
+    aiSettings: { provider: 'gemini', storageMode: 'local', customHeaders: [] },
+  });
+});
+
 describe('textInputHandler', () => {
   it('emits the configured text and warns when empty', async () => {
     const node = createWorkflowNode('textInput', { x: 0, y: 0 });
@@ -69,6 +76,28 @@ describe('outputHandler', () => {
       outputs: { text: 'final answer' },
     });
   });
+
+  it('resolves an explicit content template before falling back to upstream', async () => {
+    const upstream = createWorkflowNode('llm', { x: 0, y: 0 });
+    const node = createWorkflowNode('output', { x: 1, y: 0 });
+    (node.data as { text?: string }).text = `Answer: {{${upstream.id}.text}}`;
+    const pool = new VariablePool({ [upstream.id]: { text: 'resolved' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    await expect(outputHandler.run(context)).resolves.toEqual({
+      outputs: { text: 'Answer: resolved' },
+    });
+  });
+
+  it('emits fixed copy for empty-branch style outputs', async () => {
+    const node = createWorkflowNode('output', { x: 0, y: 0 });
+    (node.data as { text?: string }).text = '知识库中没有找到相关资料。';
+    const { context } = makeContext(node);
+
+    await expect(outputHandler.run(context)).resolves.toEqual({
+      outputs: { text: '知识库中没有找到相关资料。' },
+    });
+  });
 });
 
 describe('llmHandler', () => {
@@ -91,6 +120,44 @@ describe('llmHandler', () => {
 });
 
 describe('webSearchHandler', () => {
+  it('uses DashScope native search when the configured custom endpoint supports it', async () => {
+    useFlowStore.setState({
+      aiSettings: {
+        provider: 'custom',
+        storageMode: 'local',
+        apiKey: 'test-key',
+        model: 'qwen-plus',
+        customBaseUrl: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+        customHeaders: [],
+      },
+    });
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        output: {
+          choices: [{ message: { content: '搜索摘要[ref_1]' } }],
+          search_info: {
+            search_results: [{ title: '来源', url: 'https://example.com/source' }],
+          },
+        },
+      }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const node = createWorkflowNode('webSearch', { x: 0, y: 0 });
+    Object.assign(node.data, { query: '最近动态', searchFreshnessDays: 7 });
+    const { context, logs } = makeContext(node);
+
+    const result = await webSearchHandler.run(context);
+
+    expect(result.outputs.text).toContain('https://example.com/source');
+    expect(result.outputs.results).toHaveLength(1);
+    expect(logs).toContainEqual({
+      level: 'info',
+      messageKey: 'workflowMode.log.searchHits',
+      messageParams: { count: 1 },
+    });
+  });
+
   it('returns wikipedia hits and logs the count', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
@@ -197,6 +264,30 @@ describe('ifElseHandler', () => {
     const result = await ifElseHandler.run(context);
     expect(result.branch).toBe('false');
     expect(result.outputs.result).toBe(false);
+  });
+
+  it('treats isNotEmpty as true for non-blank retrieved text', async () => {
+    const upstream = createWorkflowNode('knowledgeRetrieval', { x: 0, y: 0 });
+    const node = makeIfElseNode([
+      { id: 'c1', variable: `${upstream.id}.text`, operator: 'isNotEmpty', value: '' },
+    ]);
+    const pool = new VariablePool({ [upstream.id]: { text: 'chunk A' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    const result = await ifElseHandler.run(context);
+    expect(result.branch).toBe('true');
+  });
+
+  it('treats isNotEmpty as false for blank text', async () => {
+    const upstream = createWorkflowNode('knowledgeRetrieval', { x: 0, y: 0 });
+    const node = makeIfElseNode([
+      { id: 'c1', variable: `${upstream.id}.text`, operator: 'isNotEmpty', value: '' },
+    ]);
+    const pool = new VariablePool({ [upstream.id]: { text: '   ' } });
+    const { context } = makeContext(node, { pool, incomers: [upstream] });
+
+    const result = await ifElseHandler.run(context);
+    expect(result.branch).toBe('false');
   });
 
   it('defaults to the true branch with a warning when no conditions exist', async () => {

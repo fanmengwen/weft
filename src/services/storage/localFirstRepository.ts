@@ -40,7 +40,6 @@ import {
   putRecord,
   deleteRecord,
   deleteRecordsByIndex,
-  deleteWhereDocumentId,
   getAllRecordsByIndex,
 } from './indexedDbHelpers';
 import {
@@ -52,6 +51,12 @@ import {
   removeLegacyChatHistory,
   writeLegacyChatHistory,
 } from './fallbackStorage';
+import {
+  mergeActiveDocumentsWithSoftDelete,
+  removePersistedDocument,
+  restorePersistedDocument,
+  selectTrashedDocuments,
+} from './documentSoftDelete';
 
 const WORKSPACE_META_ID = 'workspace';
 const AI_SETTINGS_STORAGE_KEY = 'weft-ai-settings';
@@ -91,10 +96,13 @@ export interface PersistedAISettingsRecord {
 export interface PersistenceRepository {
   loadWorkspaceSnapshot(): Promise<LoadedDocument>;
   loadActiveDocument(): Promise<LoadedDocument>;
+  listTrashedDocuments(): Promise<PersistedDocument[]>;
+  restoreDocument(documentId: string): Promise<PersistedDocument | null>;
   saveDocument(documentId: string, content: PersistedDocumentContent): Promise<void>;
   saveFlowDocuments(documents: FlowDocument[], activeDocumentId: string | null): Promise<void>;
   saveDocuments(documents: PersistedDocument[], activeDocumentId: string | null): Promise<void>;
   saveWorkspace(tabs: FlowTab[], activeDocumentId: string | null): Promise<void>;
+  /** Permanently removes a document and related session/chat data. */
   deleteDocument(documentId: string): Promise<void>;
   loadDocumentSession(documentId: string): Promise<PersistedDocumentSession | null>;
   saveDocumentSession(session: PersistedDocumentSession): Promise<void>;
@@ -274,31 +282,16 @@ export const localFirstRepository: PersistenceRepository = {
           database,
           PERSISTED_DOCUMENTS_STORE_NAME
         );
-        const nextIds = new Set(documents.map((document) => document.id));
-
-        await Promise.all(
-          documents.map((document) =>
-            putRecord(database, PERSISTED_DOCUMENTS_STORE_NAME, {
-              ...document,
-              createdAt:
-                existingDocuments.find((existing) => existing.id === document.id)?.createdAt ??
-                document.createdAt ??
-                nowIso,
-              updatedAt: document.updatedAt ?? nowIso,
-              deletedAt: null,
-            } satisfies PersistedDocument)
-          )
+        const mergedDocuments = mergeActiveDocumentsWithSoftDelete(
+          existingDocuments,
+          documents,
+          nowIso
         );
 
         await Promise.all(
-          existingDocuments
-            .filter((document) => !nextIds.has(document.id))
-            .map(async (document) => {
-              await deleteRecord(database, PERSISTED_DOCUMENTS_STORE_NAME, document.id);
-              await deleteRecord(database, DOCUMENT_SESSIONS_STORE_NAME, document.id);
-              await deleteRecord(database, CHAT_THREADS_STORE_NAME, document.id);
-              await deleteWhereDocumentId(database, CHAT_MESSAGES_STORE_NAME, document.id);
-            })
+          mergedDocuments.map((document) =>
+            putRecord(database, PERSISTED_DOCUMENTS_STORE_NAME, document)
+          )
         );
 
         await putRecord(database, WORKSPACE_META_STORE_NAME, workspaceMeta);
@@ -310,15 +303,79 @@ export const localFirstRepository: PersistenceRepository = {
         severity: 'warning',
         message: 'IndexedDB workspace save failed; writing localStorage compatibility backup.',
       });
-      saveFallbackDocuments(
-        documents.map((document) => ({
-          ...document,
-          createdAt: document.createdAt ?? nowIso,
-          updatedAt: document.updatedAt ?? nowIso,
-          deletedAt: null,
-        }))
+      const existingFallback = loadFallbackDocuments();
+      const mergedDocuments = mergeActiveDocumentsWithSoftDelete(
+        existingFallback,
+        documents,
+        nowIso
       );
+      saveFallbackDocuments(mergedDocuments);
       saveFallbackWorkspaceMeta(workspaceMeta);
+    }
+  },
+
+  async listTrashedDocuments(): Promise<PersistedDocument[]> {
+    try {
+      const documents = await withDatabase(async (database) =>
+        getAllRecords<PersistedDocument>(database, PERSISTED_DOCUMENTS_STORE_NAME)
+      );
+      return selectTrashedDocuments(documents);
+    } catch {
+      return selectTrashedDocuments(loadFallbackDocuments());
+    }
+  },
+
+  async restoreDocument(documentId: string): Promise<PersistedDocument | null> {
+    try {
+      return await withDatabase(async (database) => {
+        const existingDocuments = await getAllRecords<PersistedDocument>(
+          database,
+          PERSISTED_DOCUMENTS_STORE_NAME
+        );
+        const { restored } = restorePersistedDocument(existingDocuments, documentId);
+        if (!restored) {
+          return null;
+        }
+
+        await putRecord(database, PERSISTED_DOCUMENTS_STORE_NAME, restored);
+
+        const workspaceMeta =
+          (await getRecord<WorkspaceMeta>(
+            database,
+            WORKSPACE_META_STORE_NAME,
+            WORKSPACE_META_ID
+          )) ?? createDefaultWorkspaceMeta();
+        const documentOrder = workspaceMeta.documentOrder.includes(documentId)
+          ? workspaceMeta.documentOrder
+          : [...workspaceMeta.documentOrder, documentId];
+        await putRecord(database, WORKSPACE_META_STORE_NAME, {
+          ...workspaceMeta,
+          documentOrder,
+          lastOpenedAt: getNowIso(),
+        });
+
+        return restored;
+      });
+    } catch {
+      const existingFallback = loadFallbackDocuments();
+      const { documents: nextDocuments, restored } = restorePersistedDocument(
+        existingFallback,
+        documentId
+      );
+      if (!restored) {
+        return null;
+      }
+      saveFallbackDocuments(nextDocuments);
+      const workspaceMeta = loadFallbackWorkspaceMeta(() => createDefaultWorkspaceMeta());
+      const documentOrder = workspaceMeta.documentOrder.includes(documentId)
+        ? workspaceMeta.documentOrder
+        : [...workspaceMeta.documentOrder, documentId];
+      saveFallbackWorkspaceMeta({
+        ...workspaceMeta,
+        documentOrder,
+        lastOpenedAt: getNowIso(),
+      });
+      return restored;
     }
   },
 
@@ -348,12 +405,35 @@ export const localFirstRepository: PersistenceRepository = {
           CHAT_MESSAGES_BY_DOCUMENT_ID_INDEX,
           documentId
         );
+
+        const workspaceMeta = await getRecord<WorkspaceMeta>(
+          database,
+          WORKSPACE_META_STORE_NAME,
+          WORKSPACE_META_ID
+        );
+        if (workspaceMeta) {
+          await putRecord(database, WORKSPACE_META_STORE_NAME, {
+            ...workspaceMeta,
+            documentOrder: workspaceMeta.documentOrder.filter((id) => id !== documentId),
+            activeDocumentId:
+              workspaceMeta.activeDocumentId === documentId
+                ? null
+                : workspaceMeta.activeDocumentId,
+            lastOpenedAt: getNowIso(),
+          });
+        }
       });
     } catch {
-      const nextDocuments = loadFallbackDocuments().filter(
-        (document) => document.id !== documentId
-      );
+      const nextDocuments = removePersistedDocument(loadFallbackDocuments(), documentId);
       saveFallbackDocuments(nextDocuments);
+      const workspaceMeta = loadFallbackWorkspaceMeta(() => createDefaultWorkspaceMeta());
+      saveFallbackWorkspaceMeta({
+        ...workspaceMeta,
+        documentOrder: workspaceMeta.documentOrder.filter((id) => id !== documentId),
+        activeDocumentId:
+          workspaceMeta.activeDocumentId === documentId ? null : workspaceMeta.activeDocumentId,
+        lastOpenedAt: getNowIso(),
+      });
       removeLegacyChatHistory(documentId);
     }
   },

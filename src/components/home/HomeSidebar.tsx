@@ -1,22 +1,21 @@
 import React from 'react';
-import { Home, LayoutTemplate, Plug, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { WeftLogo } from '../icons/WeftLogo';
-import { SidebarItem } from '../ui/SidebarItem';
 import { APP_NAME } from '@/lib/brand';
-
-type HomeSidebarTab = 'home' | 'templates' | 'settings' | 'mcp';
-
-interface NavigationItem {
-  icon: React.ReactNode;
-  label: string;
-  tab: HomeSidebarTab;
-  testId: string;
-}
+import type { HomePageTab } from './homeTabs';
+import {
+  SidebarBrandMark,
+  SidebarFilesIcon,
+  SidebarHomeIcon,
+  SidebarRunsIcon,
+  SidebarSettingsIcon,
+  SidebarTemplatesIcon,
+  SidebarTrashIcon,
+} from './homeSidebarIcons';
+import { SidebarNavButton, type SidebarNavEntry } from './homeSidebarNav';
 
 interface HomeSidebarProps {
-  activeTab: HomeSidebarTab;
-  onTabChange: (tab: HomeSidebarTab) => void;
+  activeTab: HomePageTab;
+  onTabChange: (tab: HomePageTab) => void;
 }
 
 export function HomeSidebar({
@@ -24,65 +23,107 @@ export function HomeSidebar({
   onTabChange,
 }: HomeSidebarProps): React.ReactElement {
   const { t } = useTranslation();
-  const localizedAppName = t('home.appName', APP_NAME);
-  const navigationItems: NavigationItem[] = [
+  const appName = t('home.appName', APP_NAME);
+
+  const primaryItems: SidebarNavEntry[] = [
     {
-      icon: <Home className="w-4 h-4" />,
-      label: t('nav.home', 'Home'),
       tab: 'home',
+      label: t('nav.home', 'Home'),
       testId: 'sidebar-home',
+      icon: <SidebarHomeIcon />,
     },
     {
-      icon: <LayoutTemplate className="w-4 h-4" />,
-      label: t('nav.templates', 'Templates'),
+      tab: 'files',
+      label: t('nav.files', 'My files'),
+      testId: 'sidebar-files',
+      icon: <SidebarFilesIcon />,
+    },
+    {
       tab: 'templates',
+      label: t('nav.templates', 'Templates'),
       testId: 'sidebar-templates',
+      icon: <SidebarTemplatesIcon />,
     },
     {
-      icon: <Plug className="w-4 h-4" />,
-      label: t('nav.mcp', 'MCP'),
-      tab: 'mcp',
-      testId: 'sidebar-mcp',
+      tab: 'runs',
+      label: t('nav.runs', 'Run center'),
+      testId: 'sidebar-runs',
+      icon: <SidebarRunsIcon />,
+      trailing: (
+        <span
+          className="ml-auto h-1.5 w-1.5 shrink-0 rounded-full bg-[#C4443C]"
+          aria-hidden="true"
+        />
+      ),
+    },
+  ];
+
+  const secondaryItems: SidebarNavEntry[] = [
+    {
+      tab: 'trash',
+      label: t('nav.trash', 'Trash'),
+      testId: 'sidebar-trash',
+      icon: <SidebarTrashIcon />,
     },
     {
-      icon: <Settings className="w-4 h-4" />,
-      label: t('nav.settings', 'Settings'),
       tab: 'settings',
+      label: t('nav.settings', 'Settings'),
       testId: 'sidebar-settings',
+      icon: <SidebarSettingsIcon />,
+    },
+    {
+      tab: 'account',
+      label: t('nav.account', 'Account'),
+      testId: 'sidebar-account',
+      icon: (
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#F0F2F5] text-[10.5px] font-semibold text-[#5C6572] dark:bg-[color-mix(in_srgb,var(--brand-secondary),transparent_85%)] dark:text-[var(--brand-secondary)]">
+          {t('nav.accountInitial', 'F')}
+        </span>
+      ),
     },
   ];
 
   return (
-    <aside className="sticky top-0 z-20 flex w-full flex-col border-b border-[var(--color-brand-border)] bg-[var(--brand-surface)] md:fixed md:inset-y-0 md:left-0 md:w-64 md:border-b-0 md:border-r">
-      <div className="flex h-14 items-center gap-3 border-b border-[var(--color-brand-border)] px-4">
-        <WeftLogo className="h-8 w-8 shrink-0" />
-
-        <span className="truncate text-base font-semibold tracking-tight text-[var(--brand-text)]">
-          {localizedAppName}
+    <aside
+      className="sticky top-0 z-20 flex w-full flex-col border-b border-[#E6E8EC] bg-white dark:border-[var(--color-brand-border)] dark:bg-[var(--brand-surface)] md:fixed md:inset-y-0 md:left-0 md:w-[232px] md:border-b-0 md:border-r"
+      data-testid="home-sidebar"
+    >
+      <button
+        type="button"
+        data-testid="sidebar-brand-home"
+        aria-label={t('nav.home', 'Home')}
+        onClick={() => onTabChange('home')}
+        className="flex h-[52px] shrink-0 items-center gap-2 border-b border-[#EEF0F4] px-4 text-left transition-colors hover:bg-[#F6F7F9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--brand-primary)] dark:border-[var(--color-brand-border)] dark:hover:bg-[var(--brand-background)]"
+      >
+        <SidebarBrandMark />
+        <span className="truncate text-[15px] font-semibold text-[#171D26] dark:text-[var(--brand-text)]">
+          {appName}
         </span>
+      </button>
 
-        <div className="flex items-center justify-center rounded-[5px] border border-[color-mix(in_srgb,var(--color-brand-border),transparent_20%)] bg-[color-mix(in_srgb,var(--brand-surface),transparent_50%)] px-[5px] py-[3px] shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_1px_2px_rgba(0,0,0,0.25)]">
-          <span className="text-[9.5px] font-mono font-bold uppercase leading-none tracking-[0.02em] text-[color-mix(in_srgb,var(--brand-secondary),var(--brand-text))]">
-            v1.0
-          </span>
-        </div>
-      </div>
+      <nav
+        className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2.5 py-3"
+        aria-label={t('nav.primaryNav', 'Primary')}
+      >
+        {primaryItems.map((item) => (
+          <SidebarNavButton
+            key={item.testId}
+            item={item}
+            isActive={activeTab === item.tab}
+            onClick={() => onTabChange(item.tab)}
+          />
+        ))}
+      </nav>
 
-      <div className="flex gap-2 overflow-x-auto p-3 md:block md:flex-1 md:space-y-5 md:overflow-y-auto">
-        <div className="flex gap-2 md:block md:space-y-1">
-          {navigationItems.map((item) => (
-            <SidebarItem
-              key={item.testId}
-              icon={item.icon}
-              isActive={activeTab === item.tab}
-              onClick={() => onTabChange(item.tab)}
-              testId={item.testId}
-              className="min-w-fit md:min-w-0"
-            >
-              {item.label}
-            </SidebarItem>
-          ))}
-        </div>
+      <div className="flex shrink-0 flex-col gap-0.5 border-t border-[#EEF0F4] px-2.5 py-3 dark:border-[var(--color-brand-border)]">
+        {secondaryItems.map((item) => (
+          <SidebarNavButton
+            key={item.testId}
+            item={item}
+            isActive={activeTab === item.tab}
+            onClick={() => onTabChange(item.tab)}
+          />
+        ))}
       </div>
     </aside>
   );

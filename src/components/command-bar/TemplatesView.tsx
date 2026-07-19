@@ -2,32 +2,29 @@ import React, { useMemo, useState } from 'react';
 import { Layout } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { SearchField } from '../ui/SearchField';
-import { SegmentedTabs } from '../ui/SegmentedTabs';
 import { ViewHeader } from './ViewHeader';
 import { TemplateDiagramPreview } from '@/components/templates/TemplatePresentation';
 import { getFlowTemplates, type FlowTemplate } from '@/services/templates';
+import type { EditorTemplateCategory } from './types';
 
 interface TemplatesViewProps {
   onSelectTemplate?: (t: FlowTemplate) => void;
   onClose: () => void;
   handleBack: () => void;
+  templateCategory: EditorTemplateCategory;
 }
 
 export const TemplatesView = ({
   onSelectTemplate,
   onClose,
   handleBack,
+  templateCategory,
 }: TemplatesViewProps): React.ReactElement => {
   const { t } = useTranslation();
   const [tSearch, setTSearch] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all');
-  const templates = useMemo(() => getFlowTemplates(), []);
-  const categories = useMemo(
-    () =>
-      Array.from(new Set(templates.map((template) => template.category))).sort((left, right) =>
-        left.localeCompare(right)
-      ),
-    [templates]
+  const templates = useMemo(
+    () => getFlowTemplates().filter((template) => template.category === templateCategory),
+    [templateCategory]
   );
 
   const handleSelect = (template: FlowTemplate) => {
@@ -38,9 +35,6 @@ export const TemplatesView = ({
   const filteredTemplates = useMemo(() => {
     const normalizedSearch = tSearch.trim().toLowerCase();
     return templates.filter((template) => {
-      if (activeCategory !== 'all' && template.category !== activeCategory) {
-        return false;
-      }
       if (!normalizedSearch) {
         return true;
       }
@@ -54,26 +48,16 @@ export const TemplatesView = ({
         template.replacementHints.some((hint) => hint.toLowerCase().includes(normalizedSearch))
       );
     });
-  }, [activeCategory, tSearch, templates]);
-
-  const categoryItems = useMemo(
-    () => [
-      { id: 'all', label: 'ALL', count: templates.length },
-      ...categories.map((category) => ({
-        id: category,
-        label: category.toUpperCase(),
-        count: templates.filter((template) => template.category === category).length,
-      })),
-    ],
-    [categories, templates]
-  );
+  }, [tSearch, templates]);
 
   return (
     <div className="flex h-full flex-col bg-[radial-gradient(circle_at_top,_rgba(249,115,22,0.08),_transparent_48%)]">
       <ViewHeader
         title={t('commandBar.templates.title')}
         icon={<Layout className="h-4 w-4 text-[var(--brand-primary)]" />}
-        description="Start from a polished workflow or architecture template, then edit the real details on canvas."
+        description={templateCategory === 'workflow'
+          ? 'Start from a polished workflow template, then customize its inputs and steps.'
+          : 'Start from a polished flowchart template, then edit the real details on canvas.'}
         onBack={handleBack}
         onClose={onClose}
       />
@@ -85,14 +69,6 @@ export const TemplatesView = ({
           onKeyDown={(e) => e.stopPropagation()}
           placeholder={t('commandBar.templates.placeholder')}
           autoFocus
-        />
-
-        <SegmentedTabs
-          items={categoryItems}
-          value={activeCategory}
-          onChange={setActiveCategory}
-          className="mt-3 -mx-1"
-          listClassName="px-1"
         />
       </div>
 

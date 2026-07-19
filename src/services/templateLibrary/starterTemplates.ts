@@ -2,462 +2,163 @@ import { createDefaultEdge } from '@/constants';
 import { NodeType } from '@/lib/types';
 import { createTemplateRegistry, type TemplateRegistry } from './registry';
 import type { TemplateManifest } from './types';
-import {
-  createArchitectureNode,
-  createAssetNode,
-  createFlowNode,
-  createTemplate,
-} from './templateFactories';
+import { createFlowNode, createTemplate } from './templateFactories';
+import { STARTER_WORKFLOW_TEMPLATE_MANIFESTS } from './starterWorkflowTemplates';
 
+/**
+ * Featured Chinese starters: compact graphs (5–6 nodes) for readable
+ * template-page previews and still usable on the canvas.
+ */
 export const STARTER_TEMPLATE_MANIFESTS: TemplateManifest[] = [
   createTemplate(
-    'incident-response-command-flow',
-    'Incident Response Command Flow',
-    'A production incident flow with severity triage, response ownership, external comms, and follow-up work.',
+    'leave-approval-flow',
+    '请假审批',
+    '员工提交请假申请，经主管判断后归档或驳回，覆盖通过与驳回路径。',
     'flowchart',
-    ['incident', 'sre', 'operations', 'oncall'],
+    ['请假', '审批', '人事', '行政'],
     [
-      createFlowNode('irc-1', NodeType.START, 'Pager Alert Triggered', 0, 0, 'red', {
-        subLabel: 'Latency, errors, or saturation threshold breached',
+      createFlowNode('la-1', NodeType.START, '开始', 0, 120, 'emerald'),
+      createFlowNode('la-2', NodeType.PROCESS, '提交申请', 180, 110, 'blue', {
+        subLabel: '选择类型、时间与事由',
       }),
-      createFlowNode('irc-2', NodeType.PROCESS, 'Validate Signal and Blast Radius', 0, 150, 'slate', {
-        subLabel: 'Correlate dashboards, logs, deploys, and region impact',
+      createFlowNode('la-3', NodeType.DECISION, '请假>3天?', 380, 80, 'amber', {
+        subLabel: '超过阈值走总监审批',
       }),
-      createFlowNode('irc-3', NodeType.DECISION, 'Customer Impact Confirmed?', 0, 340, 'amber', {
-        subLabel: 'Severity gate for escalation and comms',
+      createFlowNode('la-4', NodeType.PROCESS, '总监审批', 560, 20, 'violet', {
+        subLabel: '长假额外确认',
       }),
-      createFlowNode('irc-4', NodeType.PROCESS, 'Open SEV Channel and Assign Roles', -260, 560, 'red', {
-        subLabel: 'Incident commander, comms lead, domain owner',
+      createFlowNode('la-5', NodeType.PROCESS, '主管审批', 560, 200, 'blue', {
+        subLabel: '短假主管确认',
       }),
-      createFlowNode('irc-5', NodeType.PROCESS, 'Mitigate in Service', 260, 560, 'blue', {
-        subLabel: 'Rollback, feature flag, failover, or circuit breaker',
-      }),
-      createFlowNode('irc-6', NodeType.PROCESS, 'Publish Status Update', -260, 760, 'violet', {
-        subLabel: 'Internal stakeholders and external status page',
-      }),
-      createFlowNode('irc-7', NodeType.DECISION, 'Service Stable?', 260, 760, 'amber', {
-        subLabel: 'Error rate normal, queue drained, customer path healthy',
-      }),
-      createFlowNode('irc-8', NodeType.PROCESS, 'Escalate to Partner or Infra Team', 520, 940, 'orange', {
-        subLabel: 'Cloud provider, database team, or network owner',
-      }),
-      createFlowNode('irc-9', NodeType.PROCESS, 'Capture Timeline and Actions', 0, 1120, 'slate', {
-        subLabel: 'Pin logs, commands, decision points, and owners',
-      }),
-      createFlowNode('irc-10', NodeType.END, 'Postmortem Scheduled', 0, 1320, 'emerald', {
-        subLabel: 'Corrective actions tracked with due dates',
-      }),
-      createFlowNode('irc-note', NodeType.ANNOTATION, 'Replace alerts, severities, and roles with your team workflow.', -430, 1120, 'yellow', {
-        subLabel: 'Best first edit: update the escalation channel and incident roles',
-      }),
+      createFlowNode('la-6', NodeType.END, '结束', 760, 110, 'red'),
     ],
     [
-      createDefaultEdge('irc-1', 'irc-2', 'Acknowledge within 5 min'),
-      createDefaultEdge('irc-2', 'irc-3', 'Triage complete'),
-      createDefaultEdge('irc-3', 'irc-4', 'Yes, customer-facing'),
-      createDefaultEdge('irc-3', 'irc-5', 'No, contained'),
-      createDefaultEdge('irc-4', 'irc-6', 'SEV process live'),
-      createDefaultEdge('irc-5', 'irc-7', 'Mitigation applied'),
-      createDefaultEdge('irc-6', 'irc-9', 'Comms cadence set'),
-      createDefaultEdge('irc-7', 'irc-9', 'Yes'),
-      createDefaultEdge('irc-7', 'irc-8', 'No'),
-      createDefaultEdge('irc-8', 'irc-9', 'Additional support engaged'),
-      createDefaultEdge('irc-9', 'irc-10', 'Follow-up assigned'),
-      createDefaultEdge('irc-note', 'irc-9', 'edit guidance'),
-    ],
-    {
-      audience: 'developers',
-      useCase: 'Run a real production incident with clear roles and handoffs',
-      launchPriority: 10,
-      featured: true,
-      difficulty: 'intermediate',
-      outcome: 'Leaves you with a reusable incident runbook your on-call team can adapt immediately.',
-      replacementHints: ['Alert source', 'Severity names', 'Escalation channel', 'Owner roles'],
-    }
-  ),
-  createTemplate(
-    'production-release-train',
-    'Production Release Train',
-    'A delivery workflow from merge readiness through canary checks, approvals, and rollback handling.',
-    'flowchart',
-    ['release', 'delivery', 'devops', 'platform'],
-    [
-      createFlowNode('prt-1', NodeType.START, 'Merge Queue Ready', 0, 0, 'slate', {
-        subLabel: 'Protected branch and release candidate tagged',
-      }),
-      createFlowNode('prt-2', NodeType.PROCESS, 'Run Build, Test, and Security Gates', 0, 150, 'blue', {
-        subLabel: 'Unit, integration, lint, image scan, and migration checks',
-      }),
-      createFlowNode('prt-3', NodeType.DECISION, 'Release Candidate Healthy?', 0, 340, 'amber', {
-        subLabel: 'All gates green and rollback package available',
-      }),
-      createFlowNode('prt-4', NodeType.PROCESS, 'Publish Artifact and Release Notes', 260, 560, 'violet', {
-        subLabel: 'Versioned image, changelog, and rollout checklist',
-      }),
-      createFlowNode('prt-5', NodeType.PROCESS, 'Reject and Notify Owning Team', -260, 560, 'red', {
-        subLabel: 'Failure summary to Slack and issue tracker',
-      }),
-      createFlowNode('prt-6', NodeType.PROCESS, 'Deploy Canary Slice', 260, 760, 'blue', {
-        subLabel: 'Low-traffic tenant or single region rollout',
-      }),
-      createFlowNode('prt-7', NodeType.DECISION, 'Canary Metrics Within Guardrails?', 260, 960, 'amber', {
-        subLabel: 'Latency, error rate, saturation, and business KPI check',
-      }),
-      createFlowNode('prt-8', NodeType.PROCESS, 'Promote to General Availability', 0, 1160, 'emerald', {
-        subLabel: 'Progressive rollout complete and ops handoff posted',
-      }),
-      createFlowNode('prt-9', NodeType.PROCESS, 'Rollback and Freeze Train', 520, 1160, 'red', {
-        subLabel: 'Revert artifact and suspend downstream deploys',
-      }),
-      createFlowNode('prt-note', NodeType.ANNOTATION, 'Swap in your actual environments, guardrails, and approval steps.', -420, 960, 'yellow', {
-        subLabel: 'Best first edit: canary policy and release owner',
-      }),
-    ],
-    [
-      createDefaultEdge('prt-1', 'prt-2', 'Start train'),
-      createDefaultEdge('prt-2', 'prt-3', 'All checks finished'),
-      createDefaultEdge('prt-3', 'prt-4', 'Yes'),
-      createDefaultEdge('prt-3', 'prt-5', 'No'),
-      createDefaultEdge('prt-4', 'prt-6', 'Artifact signed'),
-      createDefaultEdge('prt-6', 'prt-7', 'Canary live'),
-      createDefaultEdge('prt-7', 'prt-8', 'Yes'),
-      createDefaultEdge('prt-7', 'prt-9', 'No'),
-      createDefaultEdge('prt-note', 'prt-7', 'edit guardrails'),
-    ],
-    {
-      audience: 'developers',
-      useCase: 'Show how software moves from merge to safe production rollout',
-      launchPriority: 9,
-      featured: true,
-      difficulty: 'intermediate',
-      outcome: 'Creates a concrete release flow that teams can edit for their CI/CD and approval model.',
-      replacementHints: ['Build gates', 'Artifact name', 'Canary environment', 'Approval owner'],
-    }
-  ),
-  createTemplate(
-    'customer-support-ai-escalation',
-    'Customer Support AI Escalation',
-    'A support workflow with AI triage, confidence checks, human routing, and follow-up quality loops.',
-    'flowchart',
-    ['support', 'ai', 'operations', 'customer'],
-    [
-      createFlowNode('csa-1', NodeType.START, 'Ticket Submitted', 0, 0, 'blue', {
-        subLabel: 'Email, chat, or in-app request enters the queue',
-      }),
-      createFlowNode('csa-2', NodeType.PROCESS, 'Classify Intent and Account Tier', 0, 150, 'violet', {
-        subLabel: 'LLM draft plus account context and SLA',
-      }),
-      createFlowNode('csa-3', NodeType.DECISION, 'Confidence Above Auto-Resolve Threshold?', 0, 340, 'amber', {
-        subLabel: 'Use policy and quality gate, not model score alone',
-      }),
-      createFlowNode('csa-4', NodeType.PROCESS, 'Send Guided Resolution', -260, 560, 'emerald', {
-        subLabel: 'Knowledge base answer with next-step checklist',
-      }),
-      createFlowNode('csa-5', NodeType.PROCESS, 'Route to Specialist Queue', 260, 560, 'blue', {
-        subLabel: 'Billing, product, security, or infra ownership',
-      }),
-      createFlowNode('csa-6', NodeType.DECISION, 'Customer Replied or Reopened?', -260, 760, 'amber', {
-        subLabel: 'Measure whether self-service actually solved the case',
-      }),
-      createFlowNode('csa-7', NodeType.PROCESS, 'Human Triage With Context Pack', 260, 760, 'slate', {
-        subLabel: 'Conversation summary, product events, and suggested actions',
-      }),
-      createFlowNode('csa-8', NodeType.PROCESS, 'Escalate Engineering Issue', 520, 960, 'orange', {
-        subLabel: 'Bug, outage, or product gap requires internal owner',
-      }),
-      createFlowNode('csa-9', NodeType.END, 'Case Closed and Feedback Logged', 0, 1160, 'emerald', {
-        subLabel: 'Resolution reason and training signal captured',
-      }),
-      createFlowNode('csa-note', NodeType.ANNOTATION, 'Replace routing teams, thresholds, and escalation rules with your support org.', -430, 1160, 'yellow', {
-        subLabel: 'Best first edit: queues, SLA promises, and resolution policy',
-      }),
-    ],
-    [
-      createDefaultEdge('csa-1', 'csa-2', 'Ticket ingested'),
-      createDefaultEdge('csa-2', 'csa-3', 'Draft ready'),
-      createDefaultEdge('csa-3', 'csa-4', 'Yes'),
-      createDefaultEdge('csa-3', 'csa-5', 'No'),
-      createDefaultEdge('csa-4', 'csa-6', 'Response sent'),
-      createDefaultEdge('csa-6', 'csa-9', 'No, resolved'),
-      createDefaultEdge('csa-6', 'csa-7', 'Yes, still blocked'),
-      createDefaultEdge('csa-5', 'csa-7', 'Specialist owns case'),
-      createDefaultEdge('csa-7', 'csa-8', 'Engineering needed'),
-      createDefaultEdge('csa-7', 'csa-9', 'Handled in support'),
-      createDefaultEdge('csa-8', 'csa-9', 'Bug owner assigned'),
-      createDefaultEdge('csa-note', 'csa-9', 'edit policy'),
+      createDefaultEdge('la-1', 'la-2'),
+      createDefaultEdge('la-2', 'la-3'),
+      createDefaultEdge('la-3', 'la-4', '是'),
+      createDefaultEdge('la-3', 'la-5', '否'),
+      createDefaultEdge('la-4', 'la-6'),
+      createDefaultEdge('la-5', 'la-6'),
     ],
     {
       audience: 'builders',
-      useCase: 'Map a modern support workflow with AI and human fallback',
-      launchPriority: 8,
-      featured: true,
-      difficulty: 'intermediate',
-      outcome: 'Gives support teams an editable operating flow instead of a vague AI automation sketch.',
-      replacementHints: ['Ticket channels', 'Specialist queues', 'Confidence threshold', 'Escalation rules'],
-    }
-  ),
-  createTemplate(
-    'c4-system-context',
-    'C4 System Context',
-    'A context diagram showing users, surrounding systems, delivery surfaces, and the main product boundary.',
-    'architecture',
-    ['architecture', 'c4', 'documentation'],
-    [
-      createArchitectureNode('c4-user', 'Platform Engineer', 'person', 'User', 'blue', -420, 220, 'Uses the product to create and share diagrams'),
-      createArchitectureNode('c4-team', 'Product Team', 'person', 'Users', 'cyan', -420, 420, 'Maintains templates, docs, and release flow'),
-      createArchitectureNode('c4-core', 'Weft Workspace', 'system', 'Box', 'slate', 40, 320, 'Primary system boundary'),
-      createArchitectureNode('c4-auth', 'Identity Provider', 'system', 'ShieldCheck', 'violet', 480, 120, 'Authentication and access policy'),
-      createArchitectureNode('c4-docs', 'Documentation Site', 'container', 'BookOpen', 'emerald', 480, 320, 'Embeds guides, examples, and exported diagrams'),
-      createArchitectureNode('c4-ci', 'Release Pipeline', 'container', 'GitBranch', 'orange', 480, 520, 'Builds, tests, and publishes changes'),
-      createFlowNode('c4-note', NodeType.ANNOTATION, 'Swap the central system and surrounding actors to match your product boundary.', 30, 600, 'yellow', {
-        subLabel: 'Best first edit: central system label, users, and adjacent systems',
-      }),
-    ],
-    [
-      createDefaultEdge('c4-user', 'c4-core', 'creates diagrams'),
-      createDefaultEdge('c4-team', 'c4-core', 'curates templates'),
-      createDefaultEdge('c4-core', 'c4-auth', 'delegates sign-in'),
-      createDefaultEdge('c4-core', 'c4-docs', 'publishes assets'),
-      createDefaultEdge('c4-ci', 'c4-core', 'deploys releases'),
-      createDefaultEdge('c4-note', 'c4-core', 'replace context'),
-    ],
-    {
-      audience: 'developers',
-      useCase: 'Explain what your system is, who uses it, and what it depends on',
+      useCase: '梳理行政/人事类请假审批，便于落地到 OA 或表单系统',
       launchPriority: 10,
       featured: true,
       difficulty: 'starter',
-      outcome: 'Produces a credible context diagram that is ready for internal docs and design reviews.',
-      replacementHints: ['Central system', 'Primary users', 'External systems', 'Key integrations'],
+      outcome: '得到可直接改角色与规则的请假审批主路径图',
+      replacementHints: ['请假类型', '主管角色', '天数阈值', '审批人'],
     }
   ),
   createTemplate(
-    'c4-container-architecture',
-    'C4 Container Architecture',
-    'A container-level architecture with application surfaces, async workers, storage, and observability touchpoints.',
-    'architecture',
-    ['architecture', 'c4', 'containers', 'platform'],
+    'order-fulfillment-flow',
+    '订单履约',
+    '从下单支付到仓配出库、物流签收的电商履约主路径。',
+    'flowchart',
+    ['订单', '电商', '履约', '物流'],
     [
-      createArchitectureNode('c4c-web', 'Web App', 'container', 'Monitor', 'blue', -260, 80, 'User-facing product UI'),
-      createArchitectureNode('c4c-api', 'API Service', 'container', 'ServerCog', 'slate', 60, 80, 'Primary application backend'),
-      createArchitectureNode('c4c-worker', 'Background Worker', 'container', 'Package', 'violet', 380, 80, 'Async jobs and retries'),
-      createArchitectureNode('c4c-queue', 'Job Queue', 'queue', 'ListTree', 'orange', 380, 320, 'Buffers outbound and long-running tasks'),
-      createArchitectureNode('c4c-db', 'Postgres', 'database_container', 'Database', 'emerald', 60, 320, 'Transactional system of record'),
-      createArchitectureNode('c4c-cache', 'Redis Cache', 'cache', 'Layers3', 'cyan', -260, 320, 'Sessions and hot reads'),
-      createArchitectureNode('c4c-obs', 'Observability Stack', 'service', 'Activity', 'red', 60, 560, 'Logs, traces, and alerts'),
-      createFlowNode('c4c-note', NodeType.ANNOTATION, 'Rename containers to match your codebase and deployment units.', -260, 560, 'yellow', {
-        subLabel: 'Best first edit: services, storage, and queue ownership',
+      createFlowNode('of-1', NodeType.START, '开始', 0, 100, 'emerald'),
+      createFlowNode('of-2', NodeType.PROCESS, '下单支付', 180, 90, 'blue', {
+        subLabel: '订单与支付回调',
       }),
+      createFlowNode('of-3', NodeType.DECISION, '可履约?', 380, 60, 'amber', {
+        subLabel: '库存与风控',
+      }),
+      createFlowNode('of-4', NodeType.PROCESS, '出库发货', 560, 0, 'violet', {
+        subLabel: '拣货与揽收',
+      }),
+      createFlowNode('of-5', NodeType.PROCESS, '取消退款', 560, 180, 'orange', {
+        subLabel: '释放库存',
+      }),
+      createFlowNode('of-6', NodeType.END, '结束', 760, 90, 'red'),
     ],
     [
-      createDefaultEdge('c4c-web', 'c4c-api', 'HTTPS'),
-      createDefaultEdge('c4c-api', 'c4c-db', 'reads/writes'),
-      createDefaultEdge('c4c-api', 'c4c-cache', 'hot path cache'),
-      createDefaultEdge('c4c-api', 'c4c-queue', 'enqueue jobs'),
-      createDefaultEdge('c4c-worker', 'c4c-queue', 'consume'),
-      createDefaultEdge('c4c-worker', 'c4c-db', 'update records'),
-      createDefaultEdge('c4c-api', 'c4c-obs', 'emit traces'),
-      createDefaultEdge('c4c-worker', 'c4c-obs', 'job metrics'),
-      createDefaultEdge('c4c-note', 'c4c-api', 'replace containers'),
+      createDefaultEdge('of-1', 'of-2'),
+      createDefaultEdge('of-2', 'of-3'),
+      createDefaultEdge('of-3', 'of-4', '是'),
+      createDefaultEdge('of-3', 'of-5', '否'),
+      createDefaultEdge('of-4', 'of-6'),
+      createDefaultEdge('of-5', 'of-6'),
     ],
     {
-      audience: 'developers',
-      useCase: 'Show the main application containers and how they interact',
+      audience: 'builders',
+      useCase: '电商 / 零售订单从支付到签收的端到端履约',
       launchPriority: 9,
-      featured: false,
-      difficulty: 'intermediate',
-      outcome: 'Creates a container diagram that engineering teams can personalize without redrawing structure from scratch.',
-      replacementHints: ['Service names', 'Queue tech', 'Primary datastore', 'Observability tooling'],
-    }
-  ),
-  createTemplate(
-    'edge-security-zero-trust-access',
-    'Edge Security and Zero-Trust Access',
-    'A perimeter and private-access architecture covering public ingress, policy checks, service routing, and operator access.',
-    'architecture',
-    ['architecture', 'network', 'security', 'zero-trust'],
-    [
-      createArchitectureNode('esz-dns', 'Public DNS', 'dns', 'Globe2', 'lime', -360, 220, 'Traffic entry point and record management'),
-      createArchitectureNode('esz-edge', 'CDN and Edge Termination', 'cdn', 'Globe', 'violet', -60, 220, 'Caching, TLS, and bot controls'),
-      createArchitectureNode('esz-policy', 'WAF and Access Policy', 'firewall', 'Shield', 'red', 240, 220, 'Policy checks for public and admin traffic'),
-      createArchitectureNode('esz-gateway', 'Application Gateway', 'load_balancer', 'Scale', 'orange', 540, 220, 'Routes verified traffic to private services'),
-      createArchitectureNode('esz-app', 'Private Application Services', 'service', 'ServerCog', 'blue', 860, 120, 'Business APIs and frontends'),
-      createArchitectureNode('esz-admin', 'Operator Access Broker', 'service', 'Cable', 'cyan', 860, 320, 'Short-lived admin access and session policy'),
-      createArchitectureNode('esz-logs', 'Security Logging', 'service', 'Activity', 'slate', 540, 480, 'Audit trail and alerting'),
-      createFlowNode('esz-note', NodeType.ANNOTATION, 'Replace policy names, admin path, and trust boundaries with your environment.', 200, 640, 'yellow', {
-        subLabel: 'Best first edit: ingress controls, operator path, and audit sinks',
-      }),
-    ],
-    [
-      createDefaultEdge('esz-dns', 'esz-edge', 'resolve traffic'),
-      createDefaultEdge('esz-edge', 'esz-policy', 'forward HTTPS'),
-      createDefaultEdge('esz-policy', 'esz-gateway', 'allow public path'),
-      createDefaultEdge('esz-gateway', 'esz-app', 'route app traffic'),
-      createDefaultEdge('esz-admin', 'esz-app', 'admin session'),
-      createDefaultEdge('esz-policy', 'esz-logs', 'write security events'),
-      createDefaultEdge('esz-admin', 'esz-logs', 'session audit'),
-      createDefaultEdge('esz-note', 'esz-policy', 'replace boundaries'),
-    ],
-    {
-      audience: 'developers',
-      useCase: 'Explain perimeter security and controlled private access without overcomplicating the diagram',
-      launchPriority: 8,
       featured: true,
       difficulty: 'intermediate',
-      outcome: 'Gives teams a security architecture starter with real access and audit concepts already mapped.',
-      replacementHints: ['Ingress controls', 'Gateway name', 'Admin access path', 'Audit destination'],
+      outcome: '一张可改仓配与售后入口的订单履约流程图',
+      replacementHints: ['库存系统', '仓库节点', '物流商', '退款策略'],
     }
   ),
   createTemplate(
-    'aws-event-driven-saas-platform',
-    'AWS Event-Driven SaaS Platform',
-    'An AWS starter with API ingress, tenant-aware async processing, orchestration, persistence, and alerting.',
-    'aws',
-    ['aws', 'serverless', 'saas', 'events'],
+    'user-registration-flow',
+    '用户注册登录',
+    '新用户注册、校验、登录与异常路径的精简主流程。',
+    'flowchart',
+    ['注册', '登录', '账号', '产品'],
     [
-      createAssetNode('aws-saas-1', 'aws', 'API Gateway', 'Networking Content Delivery', 'networking-content-delivery-api-gateway', -220, 0),
-      createAssetNode('aws-saas-2', 'aws', 'Lambda API', 'Compute', 'compute-lambda', 0, 0),
-      createAssetNode('aws-saas-3', 'aws', 'EventBridge', 'Application Integration', 'application-integration-eventbridge', 220, 0),
-      createAssetNode('aws-saas-4', 'aws', 'SQS Work Queue', 'Application Integration', 'application-integration-simple-queue-service', 220, 240),
-      createAssetNode('aws-saas-5', 'aws', 'Step Functions', 'Application Integration', 'application-integration-step-functions', 460, 240),
-      createAssetNode('aws-saas-6', 'aws', 'DynamoDB Tenant Data', 'Databases', 'databases-dynamodb', 0, 240),
-      createAssetNode('aws-saas-7', 'aws', 'SES Customer Notices', 'Business Applications', 'business-applications-simple-email-service', 460, 480),
-      createAssetNode('aws-saas-8', 'aws', 'CloudWatch Alerts', 'Management Tools', 'management-tools-cloudwatch', -220, 480),
-      createFlowNode('aws-saas-note', NodeType.ANNOTATION, 'Replace tenant events, storage, and async handlers with your own platform flow.', 80, 660, 'yellow', {
-        subLabel: 'Best first edit: tenant event names, queue consumers, and customer notifications',
+      createFlowNode('ur-1', NodeType.START, '开始', 0, 100, 'emerald'),
+      createFlowNode('ur-2', NodeType.PROCESS, '填写资料', 180, 90, 'blue', {
+        subLabel: '邮箱 / 手机号',
       }),
+      createFlowNode('ur-3', NodeType.DECISION, '校验通过?', 380, 60, 'amber'),
+      createFlowNode('ur-4', NodeType.PROCESS, '创建账号', 560, 0, 'violet'),
+      createFlowNode('ur-5', NodeType.PROCESS, '提示修正', 560, 180, 'orange'),
+      createFlowNode('ur-6', NodeType.END, '结束', 760, 90, 'red'),
     ],
     [
-      createDefaultEdge('aws-saas-1', 'aws-saas-2', 'tenant request'),
-      createDefaultEdge('aws-saas-2', 'aws-saas-3', 'emit domain event'),
-      createDefaultEdge('aws-saas-2', 'aws-saas-6', 'write command state'),
-      createDefaultEdge('aws-saas-3', 'aws-saas-4', 'fan out work'),
-      createDefaultEdge('aws-saas-4', 'aws-saas-5', 'process async workflow'),
-      createDefaultEdge('aws-saas-5', 'aws-saas-6', 'persist result'),
-      createDefaultEdge('aws-saas-5', 'aws-saas-7', 'notify customer'),
-      createDefaultEdge('aws-saas-2', 'aws-saas-8', 'app metrics'),
-      createDefaultEdge('aws-saas-5', 'aws-saas-8', 'workflow alarms'),
-      createDefaultEdge('aws-saas-note', 'aws-saas-5', 'replace workflow'),
+      createDefaultEdge('ur-1', 'ur-2'),
+      createDefaultEdge('ur-2', 'ur-3'),
+      createDefaultEdge('ur-3', 'ur-4', '是'),
+      createDefaultEdge('ur-3', 'ur-5', '否'),
+      createDefaultEdge('ur-4', 'ur-6'),
+      createDefaultEdge('ur-5', 'ur-2', '重填'),
     ],
     {
-      audience: 'developers',
-      useCase: 'Describe an event-driven AWS application without starting from a blank icon board',
-      launchPriority: 10,
-      featured: true,
-      difficulty: 'intermediate',
-      outcome: 'Provides a cloud diagram that already contains ingress, persistence, async orchestration, and notifications.',
-      replacementHints: ['API name', 'Domain events', 'Queue consumers', 'Notification path'],
-      previewVariant: 'asset-rich',
-    }
-  ),
-  createTemplate(
-    'aws-container-platform-observability',
-    'AWS Container Platform with Observability',
-    'A container delivery platform showing build, registry, runtime, edge traffic, cache, and operational visibility.',
-    'aws',
-    ['aws', 'containers', 'observability', 'platform'],
-    [
-      createAssetNode('aws-cont-1', 'aws', 'CodeBuild', 'Developer Tools', 'developer-tools-codebuild', -220, 0),
-      createAssetNode('aws-cont-2', 'aws', 'ECR', 'Containers', 'containers-elastic-container-registry', 0, 0),
-      createAssetNode('aws-cont-3', 'aws', 'ECS Service', 'Containers', 'containers-elastic-container-service', 220, 0),
-      createAssetNode('aws-cont-4', 'aws', 'Application Load Balancer', 'Networking Content Delivery', 'networking-content-delivery-elastic-load-balancing', 220, 240),
-      createAssetNode('aws-cont-5', 'aws', 'CloudWatch', 'Management Tools', 'management-tools-cloudwatch', 0, 240),
-      createAssetNode('aws-cont-6', 'aws', 'ElastiCache', 'Databases', 'databases-elasticache', 460, 240),
-      createAssetNode('aws-cont-7', 'aws', 'X-Ray', 'Developer Tools', 'developer-tools-x-ray', 0, 480),
-      createFlowNode('aws-cont-note', NodeType.ANNOTATION, 'Use this to map real runtime dependencies, not just deployment order.', 160, 660, 'yellow', {
-        subLabel: 'Best first edit: runtime service name, cache usage, and alerting thresholds',
-      }),
-    ],
-    [
-      createDefaultEdge('aws-cont-1', 'aws-cont-2', 'publish image'),
-      createDefaultEdge('aws-cont-2', 'aws-cont-3', 'deploy task definition'),
-      createDefaultEdge('aws-cont-3', 'aws-cont-4', 'serve traffic'),
-      createDefaultEdge('aws-cont-3', 'aws-cont-5', 'emit metrics'),
-      createDefaultEdge('aws-cont-3', 'aws-cont-6', 'cache reads'),
-      createDefaultEdge('aws-cont-3', 'aws-cont-7', 'trace requests'),
-      createDefaultEdge('aws-cont-note', 'aws-cont-3', 'replace runtime'),
-    ],
-    {
-      audience: 'developers',
-      useCase: 'Map a container platform with both delivery and operational visibility',
-      launchPriority: 8,
-      featured: false,
-      difficulty: 'intermediate',
-      outcome: 'Helps platform teams explain the path from build to runtime plus the observability they rely on.',
-      replacementHints: ['Runtime service', 'Edge entry', 'Cache dependency', 'Observability stack'],
-      previewVariant: 'asset-rich',
-    }
-  ),
-  createTemplate(
-    'azure-ai-application-platform',
-    'Azure AI Application Platform',
-    'An Azure-based AI product stack with model access, application services, retrieval, and monitoring.',
-    'azure',
-    ['azure', 'ai', 'application', 'platform'],
-    [
-      createAssetNode('az-ai-1', 'azure', 'Azure OpenAI', 'Ai Plus Machine Learning', 'ai-plus-machine-learning-azure-openai', 0, 0),
-      createAssetNode('az-ai-2', 'azure', 'Azure AI Studio', 'Ai Plus Machine Learning', 'ai-plus-machine-learning-ai-studio', -240, 220),
-      createAssetNode('az-ai-3', 'azure', 'App Services', 'App Services', 'app-services-app-services', 240, 220),
-      createAssetNode('az-ai-4', 'azure', 'Cognitive Search', 'Ai Plus Machine Learning', 'ai-plus-machine-learning-cognitive-search', 0, 440),
-      createAssetNode('az-ai-5', 'azure', 'Application Insights', 'Management Plus Governance', 'management-plus-governance-application-insights', 240, 660),
-      createFlowNode('az-ai-note', NodeType.ANNOTATION, 'Replace the AI workflow, app surface, and retrieval stack with your product architecture.', -220, 660, 'yellow', {
-        subLabel: 'Best first edit: model endpoint, app tier, and retrieval source',
-      }),
-    ],
-    [
-      createDefaultEdge('az-ai-2', 'az-ai-1', 'prompt orchestration'),
-      createDefaultEdge('az-ai-1', 'az-ai-3', 'model responses'),
-      createDefaultEdge('az-ai-3', 'az-ai-4', 'retrieve context'),
-      createDefaultEdge('az-ai-3', 'az-ai-5', 'app telemetry'),
-      createDefaultEdge('az-ai-note', 'az-ai-3', 'replace app flow'),
-    ],
-    {
-      audience: 'developers',
-      useCase: 'Explain an Azure AI application with model, app, search, and telemetry paths',
+      audience: 'builders',
+      useCase: '产品注册登录主路径与失败回退',
       launchPriority: 8,
       featured: true,
       difficulty: 'starter',
-      outcome: 'Gives teams a realistic Azure AI architecture starter that is simple enough to customize quickly.',
-      replacementHints: ['Model endpoint', 'App tier', 'Retrieval source', 'Monitoring setup'],
-      previewVariant: 'asset-rich',
+      outcome: '可改校验规则与失败提示的注册流程图',
+      replacementHints: ['注册字段', '校验规则', '登录方式', '错误文案'],
     }
   ),
   createTemplate(
-    'cncf-gitops-delivery-platform',
-    'CNCF GitOps Delivery Platform',
-    'A GitOps platform loop with catalog, packaging, policy, network, identity, and cost signals.',
-    'cncf',
-    ['cncf', 'gitops', 'platform', 'delivery'],
+    'software-release-flow',
+    '软件发版',
+    '从开发合入到质量门禁、灰度与上线的精简发版路径。',
+    'flowchart',
+    ['发版', 'CI', '灰度', '上线'],
     [
-      createAssetNode('cncf-go-1', 'cncf', 'Backstage', 'Projects', 'projects-backstage', 0, 0),
-      createAssetNode('cncf-go-2', 'cncf', 'Helm', 'Projects', 'projects-helm', -220, 220),
-      createAssetNode('cncf-go-3', 'cncf', 'Cilium', 'Projects', 'projects-cilium', -220, 460),
-      createAssetNode('cncf-go-4', 'cncf', 'SPIRE', 'Projects', 'projects-spire', 220, 460),
-      createAssetNode('cncf-go-5', 'cncf', 'OpenCost', 'Projects', 'projects-opencost', 220, 220),
-      createAssetNode('cncf-go-6', 'cncf', 'Artifact Hub', 'Projects', 'projects-artifacthub', 0, 700),
-      createFlowNode('cncf-go-note', NodeType.ANNOTATION, 'Map the actual golden path, delivery controls, and platform telemetry used by your cluster platform.', 40, 900, 'yellow', {
-        subLabel: 'Best first edit: portal entrypoint, policy engine, and cost/identity controls',
+      createFlowNode('sr-1', NodeType.START, '开始', 0, 100, 'emerald'),
+      createFlowNode('sr-2', NodeType.PROCESS, '构建测试', 180, 90, 'blue', {
+        subLabel: 'CI 流水线',
       }),
+      createFlowNode('sr-3', NodeType.DECISION, '门禁通过?', 380, 60, 'amber'),
+      createFlowNode('sr-4', NodeType.PROCESS, '灰度发布', 560, 0, 'violet'),
+      createFlowNode('sr-5', NodeType.PROCESS, '回滚修复', 560, 180, 'orange'),
+      createFlowNode('sr-6', NodeType.END, '结束', 760, 90, 'red'),
     ],
     [
-      createDefaultEdge('cncf-go-1', 'cncf-go-2', 'package templates'),
-      createDefaultEdge('cncf-go-2', 'cncf-go-3', 'deploy network policy'),
-      createDefaultEdge('cncf-go-2', 'cncf-go-4', 'workload identity'),
-      createDefaultEdge('cncf-go-3', 'cncf-go-5', 'runtime cost signals'),
-      createDefaultEdge('cncf-go-4', 'cncf-go-6', 'signed releases'),
-      createDefaultEdge('cncf-go-note', 'cncf-go-1', 'replace platform path'),
+      createDefaultEdge('sr-1', 'sr-2'),
+      createDefaultEdge('sr-2', 'sr-3'),
+      createDefaultEdge('sr-3', 'sr-4', '是'),
+      createDefaultEdge('sr-3', 'sr-5', '否'),
+      createDefaultEdge('sr-4', 'sr-6'),
+      createDefaultEdge('sr-5', 'sr-2', '修复后'),
     ],
     {
       audience: 'developers',
-      useCase: 'Describe a GitOps platform with more substance than a cluster icon collage',
+      useCase: '研发与平台团队的标准发版路径',
       launchPriority: 7,
       featured: true,
-      difficulty: 'advanced',
-      outcome: 'Lets platform teams start from a real GitOps operating model and trim it to their stack.',
-      replacementHints: ['Platform portal', 'Packaging tool', 'Policy/identity controls', 'Runtime signals'],
-      previewVariant: 'asset-rich',
+      difficulty: 'intermediate',
+      outcome: '可直接改门禁、灰度与回滚策略的上线流程图',
+      replacementHints: ['质量门禁', '审批人', '灰度环境', '回滚方式'],
     }
   ),
+  ...STARTER_WORKFLOW_TEMPLATE_MANIFESTS,
 ];
 
 export function createStarterTemplateRegistry(): TemplateRegistry {

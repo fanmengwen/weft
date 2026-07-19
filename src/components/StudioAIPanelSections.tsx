@@ -8,6 +8,7 @@ import {
   Key,
   Loader2,
   Paperclip,
+  Sparkles,
   Square,
   X,
 } from 'lucide-react';
@@ -18,6 +19,10 @@ import type { ImportDiff } from '@/hooks/useAIGeneration';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
 import { SECTION_SURFACE_CLASS, STATUS_SURFACE_CLASS } from '@/lib/designTokens';
 import { STUDIO_AI_COPY } from './studioAICopy';
+import {
+  STUDIO_EMPTY_PROMPT_EXAMPLES,
+  type StudioEmptyPromptExample,
+} from './studioEmptyPromptExamples';
 
 export type AIGenerationMode = 'edit' | 'create';
 type TranslateFn = (...args: unknown[]) => string;
@@ -242,6 +247,7 @@ interface ComposerSectionProps {
   onSubmit: () => void;
   sendButtonLabel: string;
   t: TranslateFn;
+  hideInlineSend?: boolean;
 }
 
 const GENERATION_MODE_ACTIVE_CLASS =
@@ -326,6 +332,104 @@ function AIRecoveryBanner({
   );
 }
 
+export function EmptyCanvasHero({ t }: { t: TranslateFn }): ReactElement {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[color-mix(in_srgb,var(--wf-acc)_12%,#FFFFFF)] text-[var(--wf-acc)]">
+        <Sparkles className="h-[22px] w-[22px]" strokeWidth={2} />
+      </div>
+      <div className="mt-3 text-[16px] font-semibold text-[var(--wf-text)]">
+        {t('commandBar.aiStudio.emptyHeroTitle', 'Generate a diagram with AI')}
+      </div>
+      <div className="mt-1.5 text-[12.5px] leading-[1.55] text-[#6B7484]">
+        {t(
+          'commandBar.aiStudio.emptyHeroDescription',
+          'Describe a process or system and AI will draft the full diagram for you.'
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function EmptyCanvasPromptExamples({
+  t,
+  onPick,
+}: {
+  t: TranslateFn;
+  onPick: (example: StudioEmptyPromptExample) => void;
+}): ReactElement {
+  return (
+    <div data-testid="studio-empty-prompt-examples">
+      <div className="mb-2.5 mt-[22px] text-[11px] tracking-[0.05em] text-[#98A1AE]">
+        {t('commandBar.aiStudio.tryThese', 'Try these')}
+      </div>
+      <div className="flex flex-col gap-2">
+        {STUDIO_EMPTY_PROMPT_EXAMPLES.map((example) => (
+          <button
+            key={example.id}
+            type="button"
+            onClick={() => onPick(example)}
+            className="flex items-center gap-2.5 rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] px-3 py-2.5 text-left transition-colors hover:border-[#DDE0E6] hover:bg-[#F3F5F8]"
+            data-testid={`studio-empty-example-${example.id}`}
+          >
+            <span
+              className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[7px] text-[13px]"
+              style={{ background: example.bg, color: example.fg }}
+              aria-hidden
+            >
+              {example.emoji}
+            </span>
+            <span className="text-[12.5px] leading-[1.4] text-[#3E4753]">
+              {t(example.labelKey, example.labelDefault)}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function EmptyCanvasGenerateButton({
+  label,
+  disabled,
+  isGenerating,
+  onClick,
+  onCancel,
+}: {
+  label: string;
+  disabled: boolean;
+  isGenerating: boolean;
+  onClick: () => void;
+  onCancel: () => void;
+}): ReactElement {
+  if (isGenerating) {
+    return (
+      <button
+        type="button"
+        onClick={onCancel}
+        className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-[11px] bg-[#C4443C] text-[14px] font-semibold text-white transition-[filter] hover:brightness-[0.94]"
+        data-testid="studio-empty-cancel-generate"
+      >
+        <Square className="h-3.5 w-3.5 fill-current" />
+        <span>Cancel</span>
+      </button>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className="mt-3 flex h-11 w-full items-center justify-center gap-2 rounded-[11px] bg-[var(--wf-acc)] text-[14px] font-semibold text-white transition-[filter] hover:brightness-[0.94] disabled:cursor-not-allowed disabled:opacity-50 animate-[aiPulse_2.6s_ease-in-out_infinite] disabled:animate-none"
+      data-testid="studio-empty-generate"
+    >
+      <Sparkles className="h-4 w-4" />
+      <span>{label}</span>
+    </button>
+  );
+}
+
 export function ComposerSection({
   nodeCount,
   selectedNodeCount,
@@ -350,6 +454,7 @@ export function ComposerSection({
   onSubmit,
   sendButtonLabel,
   t,
+  hideInlineSend = false,
 }: ComposerSectionProps): ReactElement {
   return (
     <div className="mt-2.5">
@@ -467,7 +572,11 @@ export function ComposerSection({
               <Paperclip className="h-3.5 w-3.5" />
             </button>
           </div>
-          {isGenerating ? (
+          {hideInlineSend ? (
+            <div className="text-[11px] text-[#B0B6BF]">
+              {t('commandBar.aiStudio.generateShortcut', '⌘↵ to generate')}
+            </div>
+          ) : isGenerating ? (
             <button
               onClick={onCancelGeneration}
               className="flex h-[30px] w-[30px] items-center justify-center rounded-[8px] bg-[#C4443C] text-white hover:brightness-[0.94]"

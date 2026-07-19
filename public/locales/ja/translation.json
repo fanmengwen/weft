@@ -130,6 +130,7 @@
       "missingVariables": "未解決の変数:{{selectors}}",
       "promptFromUpstream": "プロンプトが空のため上流テキストを使用します",
       "searchDegraded": "Web 検索を利用できません({{reason}})。クエリをそのまま渡します",
+      "searchFailed": "Web search failed: {{reason}}",
       "searchNoResults": "検索結果なし。クエリをそのまま渡します",
       "searchHits": "Wikipedia から {{count}} 件の結果",
       "knowledgeDegraded": "Embedding エンドポイントがないためキーワード一致にフォールバック",
@@ -268,7 +269,13 @@
     "playbackMode": "再生モード",
     "privacyMessage": "図はあなたの手元に残り、当社のサーバーには届きません。",
     "templates": "テンプレート",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "files": "My files",
+    "runs": "Run center",
+    "trash": "Trash",
+    "account": "Account",
+    "accountInitial": "F",
+    "primaryNav": "Primary navigation"
   },
   "menu": {
     "file": "ファイル",
@@ -442,8 +449,8 @@
   },
   "home": {
     "appName": "オープンフローキット",
-    "title": "ダッシュボード",
-    "description": "フローと図を管理します。",
+    "title": "Home",
+    "description": "Manage your flows and diagrams.",
     "recentFiles": "最近のファイル",
     "files": "ファイル",
     "createFirstFlow": "最初のフローを作成",
@@ -460,11 +467,12 @@
       "closeDialog": "フロー名変更ダイアログを閉じる"
     },
     "deleteFlow": {
-      "title": "フローを削除",
-      "description": "このデバイスからローカルに自動保存されたフローを削除します。",
-      "confirmation": "「{{name}}」を削除しますか？",
-      "hint": "エクスポートしたバックアップまたは別のコピーがない限り、この操作は元に戻せません。",
-      "closeDialog": "フロー削除ダイアログを閉じる"
+      "title": "Move to trash",
+      "description": "The file will be moved to Trash so you can restore it later.",
+      "confirmation": "Move \"{{name}}\" to Trash?",
+      "hint": "You can restore it from Trash anytime.",
+      "confirmAction": "Move to trash",
+      "closeDialog": "Close delete flow dialog"
     },
     "homeEmptyTitle": "最初のフローを作成",
     "homeEmptySubtitle": "エンタープライズグレードのアーキテクチャを即座に設計。空白のキャンバスから始めるか、AIビルダーでインフラを描述するか、カスタマイズテンプレートを使用してください。",
@@ -482,7 +490,118 @@
     "suggestionTemplates": "テンプレート",
     "suggestionTemplatesDesc": "実証済みのパターンから始める",
     "continueTitle": "最近の操作を続ける",
-    "generateWithFlowpilot": "AIで生成"
+    "generateWithFlowpilot": "AIで生成",
+    "capability": {
+      "chartTitle": "Flowchart",
+      "chartDescription": "Map structure and decision branches for people to read",
+      "workflowTitle": "Workflow",
+      "workflowDescription": "Orchestrate runnable steps that produce results"
+    },
+    "kind": {
+      "chart": "Flowchart",
+      "workflow": "Workflow"
+    },
+    "examples": {
+      "title": "See what Weft can do",
+      "sample": "Sample",
+      "leaveApproval": "Leave approval flow",
+      "webSummaryBot": "Web summary bot",
+      "openLook": "Open",
+      "runOnce": "Run once"
+    },
+    "templatesOrStart": "Or start from a template",
+    "allTemplates": "All templates",
+    "useTemplate": "Use",
+    "showcase": {
+      "orderFulfillment": "Order fulfillment",
+      "supportAutoReply": "Support auto-reply",
+      "systemArchitecture": "System architecture",
+      "weeklyReport": "Weekly report"
+    },
+    "filterAll": "All",
+    "filterAria": "Filter recent files",
+    "importFile": "Import file",
+    "startFromTemplate": "Start from a template",
+    "noMatchingFiles": "No files match this filter.",
+    "filesPageDescription": "All diagrams and workflows saved on this device.",
+    "filesEmpty": "No files yet. Create a flowchart or workflow from Home.",
+    "runsDescription": "Workflow run history will appear here.",
+    "trashDescription": "Deleted files will appear here so you can restore them later.",
+    "accountDescription": "Account preferences will appear here.",
+    "purgeFlow": {
+      "title": "Delete permanently",
+      "description": "This permanently removes the file from this device.",
+      "confirmation": "Permanently delete \"{{name}}\"?",
+      "hint": "This cannot be undone.",
+      "closeDialog": "Close permanent delete dialog"
+    },
+    "trash": {
+      "restore": "Restore",
+      "purge": "Delete permanently",
+      "deletedAt": "Deleted {{date}}"
+    },
+    "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
+    "trashEmpty": "Trash is empty."
+  },
+  "homeRuns": {
+    "description": "Review workflow results and node-by-node logs stored on this device.",
+    "emptyTitle": "No workflow runs yet",
+    "emptyDescription": "Run a workflow and its result will appear here.",
+    "result": "Result",
+    "noResult": "No final output was produced.",
+    "nodes": "Node states",
+    "statusIdle": "Not run",
+    "statusSkipped": "Skipped",
+    "logs": "Run logs",
+    "retention": "Keep the latest {{count}}",
+    "filters": "Run status filters",
+    "filterAll": "All",
+    "filterEmpty": "No runs match this filter",
+    "inputLabel": "Input",
+    "justNow": "Just now",
+    "manualTrigger": "Manual run",
+    "openWorkflow": "Open workflow",
+    "deleteRecord": "Delete run record",
+    "runFailed": "Run failed",
+    "markdownRendered": "Markdown rendered",
+    "rawResult": "Raw result",
+    "renderedResult": "Rendered result",
+    "viewRaw": "View source",
+    "copy": "Copy",
+    "copied": "Copied",
+    "nodeExecution": "Node execution",
+    "nodeSummary": "{{count}} nodes · {{skipped}} skipped",
+    "expandHint": "Select a row to expand input / output snapshots",
+    "snapshotUnavailable": "Snapshot unavailable",
+    "inputSnapshot": "Input snapshot",
+    "outputSnapshot": "Output snapshot",
+    "errorSnapshot": "Error details",
+    "rawLogs": "Raw logs",
+    "logCount": "{{count}} entries",
+    "logHint": "Internal node events only; timing is shown above",
+    "nodeStatus": { "idle": "Not run", "running": "Running", "succeeded": "Succeeded", "failed": "Failed", "skipped": "Skipped" }
+  },
+  "homeFiles": {
+    "search": "Search files",
+    "new": "New",
+    "sortRecent": "Recently modified",
+    "layoutAria": "Layout",
+    "layoutGrid": "Grid",
+    "layoutList": "List",
+    "viewAll": "View all",
+    "sectionChart": "Flowchart · {{count}}",
+    "sectionWorkflow": "Workflow · {{count}}",
+    "convertToWorkflow": "Convert to workflow",
+    "nodeMeta": "{{count}} nodes",
+    "moreActions": "More actions",
+    "relative": {
+      "justNow": "Just now",
+      "minutesAgo": "{{count}} min ago",
+      "hoursAgo": "{{count}} hours ago",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{count}} days ago",
+      "lastWeek": "Last week"
+    }
   },
   "settings": {
     "title": "設定",
@@ -906,7 +1025,8 @@
         "create": "最初から作成したい図を説明してください...",
         "selectedEdit": "選択中の {{count}} 個のノードをどう変更したいか説明してください...",
         "edit": "変更内容を説明してください。例:「API と DB の間に Redis を追加」",
-        "empty": "最初から生成したい図を説明してください..."
+        "empty": "最初から生成したい図を説明してください...",
+        "emptyCanvas": "Describe a flowchart to generate…"
       },
       "applyEdit": "AI 編集を適用",
       "generateDiagram": "図を生成",
@@ -1001,7 +1121,11 @@
         "iterationServerPrompt": "Node.jsバックエンドサービスを追加",
         "iterationDeploy": "デプロイ",
         "iterationDeployPrompt": "デプロイとホスティングのステップを図に追加"
-      }
+      },
+      "emptyHeroDescription": "Describe the flow you want — AI will generate nodes and connections on the canvas.",
+      "emptyHeroTitle": "Generate with AI",
+      "generateShortcut": "⌘↵",
+      "tryThese": "Try these"
     },
     "figmaImport": {
       "invalidUrl": "無効な Figma URL です。figma.com/file/... または figma.com/design/... のリンクを使用してください。",
@@ -1572,7 +1696,9 @@
       "description": "キャンバスが空です。AIで図を生成するか、一から始めてください。",
       "generateWithFlowpilot": "AIで生成",
       "browseTemplates": "テンプレートを閲覧",
-      "addBlankNode": "空の図形を追加"
+      "addBlankNode": "空の図形を追加",
+      "orPrefix": "or",
+      "studioReady": "AI is ready →"
     },
     "dslExportSkippedEdges": "DSL エクスポートで {{count}} 件の無効なエッジをスキップしました。",
     "viewShortcuts": "View keyboard shortcuts"
@@ -1888,5 +2014,48 @@
     "cinematicCancelled": "書き出しをキャンセルしました",
     "nodeCount": "ノード {{count}} 件",
     "edgeCount": "エッジ {{count}} 件"
+  },
+  "homeSettings": {
+    "subtitle": "App preferences, plus default canvas and AI behavior.",
+    "analyticsHint": "Shares feature usage only — no canvas content. Turn off anytime.",
+    "canvas": {
+      "showGrid": "Show grid dots",
+      "showGridDesc": "22px dot grid on the canvas background",
+      "snap": "Snap to align",
+      "snapDesc": "Snap nodes to the grid and nearby nodes while dragging",
+      "edgeStyle": "Edge style",
+      "edgeStyleDesc": "Default soft curves, matching the element style guide",
+      "edgeCurve": "Soft curve",
+      "edgeOrtho": "Orthogonal"
+    },
+    "ai": {
+      "provider": "Model provider",
+      "model": "Default model",
+      "modelHint": "Workflow nodes set to follow global AI settings use this model",
+      "keyHint": "Stored on this device only — never uploaded",
+      "testConnection": "Test connection",
+      "testOk": "Key saved locally. Ready to use.",
+      "testEmpty": "Enter an API key first."
+    },
+    "shortcuts": {
+      "commandCenter": "Command center",
+      "select": "Select tool",
+      "hand": "Hand tool",
+      "addElement": "Add element",
+      "autoLayout": "Auto layout",
+      "undo": "Undo",
+      "redo": "Redo",
+      "runWorkflow": "Run workflow",
+      "hint": "Shortcuts match the toolbar. Customization is not available yet."
+    },
+    "about": {
+      "version": "Version",
+      "versionValue": "Weft V{{version}}",
+      "upToDate": "Weft V{{version}} · You are up to date",
+      "checkUpdates": "Check for updates",
+      "designSpecs": "Design guidelines",
+      "elementStyles": "Element styles",
+      "toolbarSpecs": "Toolbar specs"
+    }
   }
 }

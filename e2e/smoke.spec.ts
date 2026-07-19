@@ -34,7 +34,8 @@ test('creates a new flow and adds an extra tab', async ({ page }) => {
   await page.getByTestId('flow-page-add').click();
 
   await expect(tabs).toHaveCount(tabCountBefore + 1);
-  await expect(page.getByTestId('empty-generate-ai')).toBeVisible();
+  await expect(page.getByTestId('empty-browse-templates')).toBeVisible();
+  await expect(page.getByTestId('empty-add-node')).toBeVisible();
 });
 
 test('saves and restores snapshot state', async ({ page }) => {

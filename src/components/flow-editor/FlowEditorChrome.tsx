@@ -123,12 +123,10 @@ export interface FlowEditorChromeProps {
   emptyState?: {
     title: string;
     description: string;
-    generateLabel: string;
     templatesLabel: string;
-    addNodeLabel: string;
-    onGenerate: () => void;
     onTemplates: () => void;
-    onAddNode: () => void;
+    showStudioHint?: boolean;
+    studioHintLabel?: string;
     onSuggestionClick?: (prompt: string) => void;
   };
   onOpenStudio: () => void;
@@ -212,13 +210,10 @@ export function FlowEditorChrome({
     ? {
         title: emptyState.title,
         description: emptyState.description,
-        generateLabel: emptyState.generateLabel,
         templatesLabel: emptyState.templatesLabel,
-        addNodeLabel: emptyState.addNodeLabel,
-        onGenerate: emptyState.onGenerate,
         onTemplates: emptyState.onTemplates,
-        onAddNode: emptyState.onAddNode,
-        onSuggestionClick: emptyState.onSuggestionClick,
+        showStudioHint: emptyState.showStudioHint,
+        studioHintLabel: emptyState.studioHintLabel,
       }
     : null;
 
@@ -234,6 +229,11 @@ export function FlowEditorChrome({
           <Suspense fallback={null}>
             <LazyDiffModeBanner />
           </Suspense>
+          {emptyStateProps ? (
+            <Suspense fallback={null}>
+              <LazyFlowEditorEmptyState {...emptyStateProps} />
+            </Suspense>
+          ) : null}
           {toolbar.editorMode !== 'studio' ? (
             <StudioLauncher onOpen={onOpenStudio} />
           ) : null}
@@ -269,12 +269,6 @@ export function FlowEditorChrome({
           <LazyPlaybackControls {...playbackProps} />
         </Suspense>
       )}
-
-      {emptyStateProps ? (
-        <Suspense fallback={null}>
-          <LazyFlowEditorEmptyState {...emptyStateProps} />
-        </Suspense>
-      ) : null}
     </>
   );
 }

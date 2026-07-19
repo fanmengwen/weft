@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { createWorkflowNode } from '../dnd/createWorkflowNode';
 import { useWorkflowRunStore } from './workflowRunStore';
 import { useWorkflowStore } from './workflowStore';
+import { useWorkflowRunHistoryStore } from '../history/workflowRunHistoryStore';
 
 function resetStores(): void {
+  localStorage.clear();
   useWorkflowStore.setState({
     mode: 'workflow',
     workflowNodes: [],
@@ -19,6 +21,7 @@ function resetStores(): void {
     isOutputModalOpen: false,
     isLogOpen: false,
   });
+  useWorkflowRunHistoryStore.setState({ records: [] });
 }
 
 describe('useWorkflowRunStore', () => {
@@ -49,6 +52,19 @@ describe('useWorkflowRunStore', () => {
     expect(state.logEntries.some((entry) => entry.messageKey === 'workflowMode.log.runSucceeded')).toBe(
       true
     );
+    expect(useWorkflowRunHistoryStore.getState().records).toEqual([
+      expect.objectContaining({
+        status: 'succeeded',
+        inputSummary: '你好,工作流',
+        finalOutput: '你好,工作流',
+        nodeSnapshots: expect.objectContaining({
+          [input.id]: expect.objectContaining({
+            kind: 'textInput',
+            outputSnapshot: expect.stringContaining('你好,工作流'),
+          }),
+        }),
+      }),
+    ]);
   });
 
   it('fails validation for an empty canvas and logs the issue', async () => {
@@ -134,5 +150,29 @@ describe('useWorkflowRunStore', () => {
     expect(state.logEntries.every((entry) => entry.messageKey !== 'workflowMode.log.runSucceeded')).toBe(
       true
     );
+  });
+
+  it('clears transient state when switching workflow documents', () => {
+    useWorkflowRunStore.setState({
+      runStatus: 'succeeded',
+      nodeRunStates: { input: 'succeeded' },
+      logEntries: [{ id: 'log-1', ts: 1, level: 'info', raw: 'done' }],
+      lastRunOutputs: { input: { text: 'done' } },
+      finalOutput: 'done',
+      isOutputModalOpen: true,
+      isLogOpen: true,
+    });
+
+    useWorkflowRunStore.getState().clearRunState();
+
+    expect(useWorkflowRunStore.getState()).toMatchObject({
+      runStatus: 'idle',
+      nodeRunStates: {},
+      logEntries: [],
+      lastRunOutputs: {},
+      finalOutput: null,
+      isOutputModalOpen: false,
+      isLogOpen: false,
+    });
   });
 });

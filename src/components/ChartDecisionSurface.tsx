@@ -22,7 +22,7 @@ export function ChartDecisionSurface({
       aria-label={ariaLabel}
       data-chart-div-shape="diamond"
       data-transform-diagnostics="1"
-      className="relative"
+      className={`relative transition-all duration-200 ${surfaceClassName}`}
       style={{
         width: '148px',
         height: '148px',
@@ -33,7 +33,7 @@ export function ChartDecisionSurface({
     >
       <div
         data-chart-shape-rotor="1"
-        className={`absolute transition-all duration-200 ${surfaceClassName}`}
+        className="absolute"
         style={{
           ...rotorStyle,
           inset: '16px',
@@ -43,7 +43,6 @@ export function ChartDecisionSurface({
       <div
         data-chart-shape-upright="1"
         className="absolute inset-0 z-10 flex items-center justify-center"
-        style={{ transform: 'rotate(-45deg)' }}
       >
         {children}
       </div>

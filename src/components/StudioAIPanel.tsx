@@ -8,9 +8,13 @@ import { useAIViewState } from './command-bar/useAIViewState';
 import {
   type AIGenerationMode,
   ComposerSection,
+  EmptyCanvasGenerateButton,
+  EmptyCanvasHero,
+  EmptyCanvasPromptExamples,
   ImportContentSection,
   StatusSection,
 } from './StudioAIPanelSections';
+import type { StudioEmptyPromptExample } from './studioEmptyPromptExamples';
 
 interface StudioAIPanelProps {
   onAIGenerate: (prompt: string, imageBase64?: string) => Promise<boolean>;
@@ -52,6 +56,13 @@ function getPromptPlaceholder(
   nodeCount: number,
   selectedNodeCount: number
 ): string {
+  if (nodeCount === 0) {
+    return t(
+      'commandBar.aiStudio.placeholders.emptyCanvas',
+      'e.g. User registration to order flow with payment-failure retry branch'
+    );
+  }
+
   if (generationMode === 'create') {
     return t(
       'commandBar.aiStudio.placeholders.create',
@@ -154,7 +165,109 @@ export function StudioAIPanel({
     void submitPrompt();
   }
 
+  function handleExamplePick(example: StudioEmptyPromptExample): void {
+    const filledPrompt = t(example.promptKey, example.promptDefault);
+    setPrompt(filledPrompt);
+    if (lastError) {
+      onClearError();
+    }
+  }
+
   const isInputEmpty = !prompt.trim() && !selectedImage;
+  const showStatus =
+    isGenerating ||
+    Boolean(streamingText) ||
+    assistantThread.length > 0 ||
+    chatMessages.length > 0 ||
+    Boolean(pendingDiff) ||
+    !aiReadiness.canGenerate;
+
+  const composer = (
+    <ComposerSection
+      nodeCount={nodeCount}
+      selectedNodeCount={selectedNodeCount}
+      effectiveGenerationMode={effectiveGenerationMode}
+      selectedImage={selectedImage}
+      prompt={prompt}
+      placeholder={getPromptPlaceholder(
+        t,
+        effectiveGenerationMode,
+        nodeCount,
+        selectedNodeCount
+      )}
+      isGenerating={isGenerating}
+      isInputEmpty={isInputEmpty}
+      aiReadiness={aiReadiness}
+      lastError={lastError}
+      fileInputRef={fileInputRef}
+      onSetGenerationMode={setGenerationMode}
+      onRemoveImage={() => setSelectedImage(null)}
+      onPromptChange={(value) => {
+        if (lastError) {
+          onClearError();
+        }
+        setPrompt(value);
+      }}
+      onPromptKeyDown={handleKeyDown}
+      onAttachImage={() => fileInputRef.current?.click()}
+      onImageSelect={handleImageSelect}
+      onOpenAISettings={openAISettings}
+      onClearError={onClearError}
+      onCancelGeneration={onCancelGeneration}
+      onSubmit={handleSubmit}
+      sendButtonLabel={sendButtonLabel}
+      t={t}
+      hideInlineSend={isCanvasEmpty}
+    />
+  );
+
+  if (isCanvasEmpty) {
+    return (
+      <div className="flex h-full min-h-0 flex-col overflow-hidden">
+        <div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto px-4 pb-4 pt-[22px]">
+          {pendingDiff ? (
+            <div className="mb-4">
+              <ImportContentSection
+                pendingDiff={pendingDiff}
+                onConfirmDiff={onConfirmDiff}
+                onDiscardDiff={onDiscardDiff}
+                t={t}
+              />
+            </div>
+          ) : null}
+
+          {showStatus ? (
+            <div className="mb-4">
+              <StatusSection
+                isGenerating={isGenerating}
+                streamingText={streamingText}
+                retryCount={retryCount}
+                chatMessages={chatMessages}
+                assistantThread={assistantThread}
+                pendingDiff={pendingDiff}
+                nodeCount={nodeCount}
+                edgeCount={edgeCount}
+                canGenerate={aiReadiness.canGenerate}
+                onOpenAISettings={openAISettings}
+                t={t}
+              />
+            </div>
+          ) : null}
+
+          <EmptyCanvasHero t={t} />
+          {composer}
+          <EmptyCanvasGenerateButton
+            label={t('commandBar.aiStudio.generateDiagram', 'Generate diagram')}
+            disabled={isInputEmpty}
+            isGenerating={isGenerating}
+            onClick={handleSubmit}
+            onCancel={onCancelGeneration}
+          />
+          <EmptyCanvasPromptExamples t={t} onPick={handleExamplePick} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden">
@@ -190,41 +303,7 @@ export function StudioAIPanel({
         <div className="-mx-4 mt-4 h-px bg-[#F0F2F5]" />
         <div>
           <div className="text-[11px] tracking-[0.05em] text-[#98A1AE]">AI 修改</div>
-          <ComposerSection
-            nodeCount={nodeCount}
-            selectedNodeCount={selectedNodeCount}
-            effectiveGenerationMode={effectiveGenerationMode}
-            selectedImage={selectedImage}
-            prompt={prompt}
-            placeholder={getPromptPlaceholder(
-              t,
-              effectiveGenerationMode,
-              nodeCount,
-              selectedNodeCount
-            )}
-            isGenerating={isGenerating}
-            isInputEmpty={isInputEmpty}
-            aiReadiness={aiReadiness}
-            lastError={lastError}
-            fileInputRef={fileInputRef}
-            onSetGenerationMode={setGenerationMode}
-            onRemoveImage={() => setSelectedImage(null)}
-            onPromptChange={(value) => {
-              if (lastError) {
-                onClearError();
-              }
-              setPrompt(value);
-            }}
-            onPromptKeyDown={handleKeyDown}
-            onAttachImage={() => fileInputRef.current?.click()}
-            onImageSelect={handleImageSelect}
-            onOpenAISettings={openAISettings}
-            onClearError={onClearError}
-            onCancelGeneration={onCancelGeneration}
-            onSubmit={handleSubmit}
-            sendButtonLabel={sendButtonLabel}
-            t={t}
-          />
+          {composer}
         </div>
       </div>
     </div>

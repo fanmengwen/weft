@@ -59,6 +59,8 @@ export function selectWorkspaceDocumentActions(
     renameDocument: state.renameDocument,
     duplicateDocument: state.duplicateDocument,
     deleteDocumentRecord: state.deleteDocumentRecord,
+    restoreDocumentRecord: state.restoreDocumentRecord,
+    purgeDocumentRecord: state.purgeDocumentRecord,
   };
 }
 

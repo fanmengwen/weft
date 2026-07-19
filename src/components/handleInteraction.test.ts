@@ -68,6 +68,16 @@ describe('handle interaction policy', () => {
     expect(getChartHandleClassName('right')).toBe('chart-handle chart-handle--source chart-handle--right');
   });
 
+  it('keeps chart handle hover transform on the same anchor as the resting style', () => {
+    // Right ports use left:100% + translate(-50%,-50%); flipping to +50% on hover jittered.
+    expect(CHART_HANDLE_STYLESHEET).not.toContain(
+      '.react-flow__handle.chart-handle.chart-handle--right:hover'
+    );
+    expect(CHART_HANDLE_STYLESHEET).toContain(
+      '.react-flow__handle.chart-handle:hover,\n.is-connecting .react-flow__handle.chart-handle {\n  transform: translate(-50%, -50%) !important;'
+    );
+  });
+
   it('keeps source-side port classes on top, right, and bottom handles', () => {
     const sides: HandleSide[] = ['top', 'right', 'bottom'];
     for (const side of sides) {

@@ -29,9 +29,15 @@ export interface FlowDocument {
   pages: FlowPage[];
 }
 
+export interface TrashedDocument {
+  document: FlowDocument;
+  deletedAt: string;
+}
+
 export interface LoadedFlowWorkspace {
   activeDocumentId: string | null;
   documents: FlowDocument[];
+  trashedDocuments: TrashedDocument[];
   workspaceMeta: WorkspaceMeta;
 }
 
@@ -126,8 +132,31 @@ export function createFlowDocumentsFromPersistedDocuments(
   return documents.map(createFlowDocumentFromPersistedDocument);
 }
 
+export function createTrashedDocumentFromPersisted(
+  document: PersistedDocument
+): TrashedDocument | null {
+  if (document.deletedAt == null) {
+    return null;
+  }
+
+  return {
+    document: createFlowDocumentFromPersistedDocument(document),
+    deletedAt: document.deletedAt,
+  };
+}
+
+export function createTrashedDocumentsFromPersisted(
+  documents: PersistedDocument[]
+): TrashedDocument[] {
+  return documents
+    .map(createTrashedDocumentFromPersisted)
+    .filter((entry): entry is TrashedDocument => entry != null)
+    .sort((left, right) => right.deletedAt.localeCompare(left.deletedAt));
+}
+
 export function createLoadedFlowWorkspace(
-  loaded: LoadedDocument
+  loaded: LoadedDocument,
+  trashedPersistedDocuments: PersistedDocument[] = []
 ): LoadedFlowWorkspace {
   const documents = createFlowDocumentsFromPersistedDocuments(loaded.documents);
   const activeDocumentId = loaded.document?.id ?? loaded.workspaceMeta.activeDocumentId ?? documents[0]?.id ?? null;
@@ -135,6 +164,7 @@ export function createLoadedFlowWorkspace(
   return {
     activeDocumentId,
     documents,
+    trashedDocuments: createTrashedDocumentsFromPersisted(trashedPersistedDocuments),
     workspaceMeta: loaded.workspaceMeta,
   };
 }

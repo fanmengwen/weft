@@ -247,21 +247,20 @@ test('welcome modal feature cards are clickable', async ({ page }) => {
 test('new flows show the empty canvas actions', async ({ page }) => {
   await createNewFlow(page);
 
-  await expect(page.getByTestId('empty-generate-ai')).toBeVisible();
+  await expect(page.getByTestId('empty-browse-templates')).toBeVisible();
+  await expect(page.getByTestId('empty-add-node')).toBeVisible();
   await expect(page.getByText('Browse Templates')).toBeVisible();
   await expect(page.getByText('Add Blank Shape')).toBeVisible();
 });
 
-test('empty canvas hides the start overlay when AI generation is opened', async ({ page }) => {
+test('empty canvas opens Studio with AI generate and try-these prompts', async ({ page }) => {
   await createNewFlow(page);
 
-  await page.getByTestId('empty-generate-ai').click();
-
-  await expect(page.getByTestId('empty-generate-ai')).not.toBeVisible();
   await expect(page.getByText('Studio')).toBeVisible();
-  await expect(
-    page.getByPlaceholder('Describe the diagram you want to create from scratch...')
-  ).toBeVisible();
+  await expect(page.getByTestId('studio-empty-generate')).toBeVisible();
+  await expect(page.getByTestId('studio-empty-prompt-examples')).toBeVisible();
+  await expect(page.getByTestId('empty-browse-templates')).toBeVisible();
+  await expect(page.getByTestId('empty-studio-hint')).toBeVisible();
 });
 
 // ---------------------------------------------------------------------------

@@ -16,25 +16,27 @@ export function ChartIoSurface({
   });
 
   return (
-    <div
-      role="group"
-      aria-roledescription="canvas node"
-      aria-label={ariaLabel}
-      data-chart-div-shape="io"
-      data-transform-diagnostics="1"
-      className={`relative transition-all duration-200 ${surfaceClassName}`}
-      style={{
-        ...surfaceStyle,
-        transform: 'skewX(-12deg)',
-        padding: '10px 20px',
-        minHeight: 'inherit',
-        width: '100%',
-        height: '100%',
-      }}
-      {...diagnosticsAttrs}
-    >
-      <div data-chart-shape-upright="1" style={{ transform: 'skewX(12deg)' }}>
-        {children}
+    <div className={`relative h-full w-full transition-all duration-200 ${surfaceClassName}`}>
+      <div
+        role="group"
+        aria-roledescription="canvas node"
+        aria-label={ariaLabel}
+        data-chart-div-shape="io"
+        data-transform-diagnostics="1"
+        className="relative h-full w-full"
+        style={{
+          ...surfaceStyle,
+          transform: 'skewX(-12deg)',
+          padding: '10px 20px',
+          minHeight: 'inherit',
+          width: '100%',
+          height: '100%',
+        }}
+        {...diagnosticsAttrs}
+      >
+        <div data-chart-shape-upright="1" style={{ transform: 'skewX(12deg)' }}>
+          {children}
+        </div>
       </div>
     </div>
   );

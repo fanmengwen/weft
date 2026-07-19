@@ -61,7 +61,10 @@ export function WorkflowNodeShell(props: LegacyNodeProps<WorkflowNodeData>): Rea
   const cardClass = selected && runState === 'idle' ? SELECTED_CARD : STATUS_CARD[runState];
 
   return (
-    <div className={`w-[236px] bg-white p-3 transition-shadow ${cardClass}`}>
+    <div
+      className={`w-[236px] bg-white p-3 transition-shadow ${cardClass}`}
+      data-testid={`workflow-node-${id}`}
+    >
       {showTarget ? (
         // A connected target handle disappears — the edge's arrowhead marks
         // the entry point instead (per design). visibility keeps the handle's

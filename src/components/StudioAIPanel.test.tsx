@@ -34,7 +34,7 @@ vi.mock('./command-bar/useAIViewState', () => ({
 }));
 
 describe('StudioAIPanel', () => {
-  it('shows the settings CTA when ai is unavailable', () => {
+  it('shows empty-canvas generate and try-these when the canvas has no nodes', () => {
     handleGenerateMock.mockReset();
     render(
       <StudioAIPanel
@@ -56,6 +56,37 @@ describe('StudioAIPanel', () => {
         chatMessages={[]}
         assistantThread={[]}
         nodeCount={0}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.getByTestId('studio-empty-generate')).toBeInTheDocument();
+    expect(screen.getByTestId('studio-empty-prompt-examples')).toBeInTheDocument();
+    expect(screen.getByText('Generate a diagram with AI')).toBeInTheDocument();
+  });
+
+  it('shows the settings CTA when ai is unavailable on a non-empty canvas', () => {
+    handleGenerateMock.mockReset();
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: false,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[]}
+        nodeCount={3}
         selectedNodeCount={0}
       />
     );
@@ -251,6 +282,7 @@ describe('StudioAIPanel', () => {
 
     dispatchEventSpy.mockRestore();
   });
+
 
   it('renders the active generation mode with selected segmented styling', () => {
     render(
@@ -495,7 +527,7 @@ describe('StudioAIPanel', () => {
     expect(screen.queryByText(staleAnswer)).not.toBeInTheDocument();
   });
 
-  it('renders three labeled studio sections', () => {
+  it('renders empty-canvas AI hero instead of the three labeled sections', () => {
     render(
       <StudioAIPanel
         onAIGenerate={vi.fn().mockResolvedValue(false)}
@@ -516,6 +548,38 @@ describe('StudioAIPanel', () => {
         chatMessages={[]}
         assistantThread={[]}
         nodeCount={0}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(screen.getByText('Generate a diagram with AI')).toBeInTheDocument();
+    expect(screen.getByTestId('studio-empty-generate')).toBeInTheDocument();
+    expect(screen.getByText('Try these')).toBeInTheDocument();
+    expect(screen.queryByText('导入内容')).not.toBeInTheDocument();
+    expect(screen.queryByText('AI 修改')).not.toBeInTheDocument();
+  });
+
+  it('renders three labeled studio sections when the canvas has nodes', () => {
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[]}
+        nodeCount={2}
         selectedNodeCount={0}
       />
     );

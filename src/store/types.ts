@@ -18,7 +18,7 @@ import type {
 } from '@/lib/types';
 import type { MermaidImportStatus } from '@/services/mermaid/importContracts';
 import type { ExportSerializationMode } from '@/services/canonicalSerialization';
-import type { FlowDocument } from '@/services/storage/flowDocumentModel';
+import type { FlowDocument, TrashedDocument } from '@/services/storage/flowDocumentModel';
 
 export interface ViewSettings {
   showGrid: boolean;
@@ -112,6 +112,7 @@ export interface FlowState {
   // SLICE: Tabs — multi-diagram workspace
   // -------------------------------------------------------------------------
   documents: FlowDocument[];
+  trashedDocuments: TrashedDocument[];
   activeDocumentId: string;
   setDocuments: (documents: FlowDocument[]) => void;
   setActiveDocumentId: (id: string) => void;
@@ -119,6 +120,8 @@ export interface FlowState {
   renameDocument: (id: string, nextName: string) => void;
   duplicateDocument: (id: string) => string | null;
   deleteDocumentRecord: (id: string) => void;
+  restoreDocumentRecord: (id: string) => void;
+  purgeDocumentRecord: (id: string) => void;
   tabs: FlowTab[];
   activeTabId: string;
   setActiveTabId: (id: string) => void;
@@ -232,6 +235,8 @@ export type WorkspaceDocumentActionsSlice = Pick<
   | 'renameDocument'
   | 'duplicateDocument'
   | 'deleteDocumentRecord'
+  | 'restoreDocumentRecord'
+  | 'purgeDocumentRecord'
 >;
 
 export type TabStateSlice = Pick<FlowState, 'tabs' | 'activeTabId'>;

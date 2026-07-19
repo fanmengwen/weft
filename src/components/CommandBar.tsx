@@ -53,6 +53,7 @@ function OpenCommandBarContent({
   onRedo,
   onLayout,
   onSelectTemplate,
+  templateCategory,
   onOpenStudioAI,
   onOpenArchitectureRules,
   initialView = 'root',
@@ -165,6 +166,7 @@ function OpenCommandBarContent({
           <Suspense fallback={null}>
             <LazyTemplatesView
               onSelectTemplate={onSelectTemplate}
+              templateCategory={templateCategory}
               onClose={onClose}
               handleBack={handleBack}
             />

@@ -21,7 +21,13 @@ interface UseFlowEditorRuntimeParams {
     setEdges: SetFlowEdges;
     addToast: (message: string, type?: ToastType, duration?: number) => void;
     recordHistory: () => void;
-    fitView: (options?: { duration?: number; padding?: number }) => void;
+    fitView: (options?: {
+        duration?: number;
+        padding?: number;
+        minZoom?: number;
+        maxZoom?: number;
+    }) => void;
+    getZoom: () => number;
     t: TFunction;
     exportSerializationMode: ExportSerializationMode;
     queueAutoSnapshot: (nodes: FlowNode[], edges: FlowEdge[]) => void;
@@ -39,6 +45,7 @@ export function useFlowEditorRuntime({
     addToast,
     recordHistory,
     fitView,
+    getZoom,
     t,
     exportSerializationMode,
     queueAutoSnapshot,
@@ -74,6 +81,7 @@ export function useFlowEditorRuntime({
         setNodes,
         setEdges,
         fitView,
+        getZoom,
         t,
         addToast,
         exportSerializationMode,

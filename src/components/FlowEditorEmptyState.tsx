@@ -1,99 +1,149 @@
 import React from 'react';
-import { Keyboard } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from './ui/Button';
-import { useShortcutHelpActions } from '@/store/viewHooks';
 
 interface FlowEditorEmptyStateProps {
-    title: string;
-    description: string;
-    generateLabel: string;
-    templatesLabel: string;
-    addNodeLabel: string;
-    onGenerate: () => void;
-    onTemplates: () => void;
-    onAddNode: () => void;
-    onSuggestionClick?: (prompt: string) => void;
+  title: string;
+  description: string;
+  templatesLabel: string;
+  onTemplates: () => void;
+  showStudioHint?: boolean;
+  studioHintLabel?: string;
 }
 
+function FlowchartIcon(): React.ReactElement {
+  return (
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden className="block">
+      <rect
+        x="9"
+        y="3.5"
+        width="6"
+        height="5"
+        rx="1.4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <rect
+        x="3.5"
+        y="15.5"
+        width="6"
+        height="5"
+        rx="1.4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <rect
+        x="14.5"
+        y="15.5"
+        width="6"
+        height="5"
+        rx="1.4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path
+        d="M12 8.5 V12 M12 12 H6.5 V15.5 M12 12 H17.5 V15.5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function TemplatesIcon(): React.ReactElement {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden className="block">
+      <rect x="4" y="4" width="7" height="7" rx="1.6" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="13" y="4" width="7" height="7" rx="1.6" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="4" y="13" width="7" height="7" rx="1.6" stroke="currentColor" strokeWidth="1.8" />
+      <rect x="13" y="13" width="7" height="7" rx="1.6" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  );
+}
+
+function HintArrowIcon(): React.ReactElement {
+  return (
+    <svg
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden
+      className="block animate-[hintFloat_1.8s_ease-in-out_infinite]"
+    >
+      <path
+        d="M5 12 H18 M12.5 6.5 L19 12 L12.5 17.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const emptyActionButtonClass =
+  'inline-flex h-10 items-center gap-2 rounded-[9px] border border-[#E1E4EA] bg-white px-[18px] text-[13.5px] font-medium text-[#3E4753] shadow-[0_1px_2px_rgba(16,24,40,0.05)] transition-colors hover:border-[#D3D7DE] hover:bg-[#F7F8FA] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--wf-acc)]/30';
+
 export function FlowEditorEmptyState({
-    title,
-    description,
-    generateLabel,
-    templatesLabel,
-    addNodeLabel,
-    onGenerate,
-    onTemplates,
-    onAddNode,
+  title,
+  description,
+  templatesLabel,
+  onTemplates,
+  showStudioHint = false,
+  studioHintLabel,
 }: FlowEditorEmptyStateProps): React.ReactElement {
-    const { t } = useTranslation();
-    const { setShortcutsHelpOpen } = useShortcutHelpActions();
+  const { t } = useTranslation();
+  const descriptionLines = description.split('\n').filter(Boolean);
 
-    return (
-        <div className="absolute inset-0 flex items-center justify-center z-0 pointer-events-none animate-[fadeIn_200ms_ease-out]">
-            <div className="pointer-events-auto w-full max-w-[400px] px-6">
-                <div className="rounded-[var(--radius-2xl)] border border-[var(--brand-glass-border)] bg-[var(--brand-glass-bg)] p-10 text-center shadow-[var(--shadow-overlay)] backdrop-blur-2xl">
-
-                    <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-[var(--radius-lg)] bg-[image:var(--brand-primary-grad)] text-white shadow-[0_10px_26px_rgba(59,130,246,0.4)]">
-                        <svg className="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2">
-                            <path d="M12 4.5v15m7.5-7.5h-15" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                    </div>
-
-                    <h3 className="mb-2 text-xl font-semibold tracking-tight text-[var(--brand-text)]">
-                        {title}
-                    </h3>
-                    
-                    <p className="mb-8 text-[13px] leading-relaxed text-[var(--brand-secondary)]">
-                        {description}
-                    </p>
-
-                    <div className="flex flex-col gap-3">
-                        <Button
-                            onClick={onGenerate}
-                            variant="primary"
-                            size="lg"
-                            className="w-full"
-                            data-testid="empty-generate-ai"
-                        >
-                            {generateLabel}
-                        </Button>
-
-                        <Button
-                            onClick={onTemplates}
-                            variant="secondary"
-                            size="lg"
-                            className="w-full"
-                            data-testid="empty-browse-templates"
-                        >
-                            {templatesLabel}
-                        </Button>
-
-                        <Button
-                            onClick={onAddNode}
-                            variant="secondary"
-                            size="lg"
-                            className="w-full"
-                            data-testid="empty-add-node"
-                        >
-                            {addNodeLabel}
-                        </Button>
-                    </div>
-
-                    <button
-                        onClick={() => setShortcutsHelpOpen(true)}
-                        className="group mt-8 flex w-full items-center justify-center gap-2 transition-opacity duration-150 hover:opacity-100 opacity-60 focus-visible:outline-none"
-                        data-testid="empty-state-shortcuts"
-                        type="button"
-                    >
-                        <Keyboard className="h-[13px] w-[13px] text-[var(--brand-secondary)]" strokeWidth={2} />
-                        <span className="text-[12px] text-[var(--brand-secondary)]">{t('flowEditor.viewShortcuts')}</span>
-                        <kbd className="inline-flex h-[18px] items-center justify-center rounded-[4px] border border-[var(--color-brand-border)] bg-[var(--brand-background)] px-[5px] font-mono text-[10px] font-bold text-[var(--brand-secondary)]">
-                            ?
-                        </kbd>
-                    </button>
-                </div>
-            </div>
+  return (
+    <div className="pointer-events-none absolute inset-0 z-0 flex flex-col items-center justify-center p-6 animate-[fadeIn_200ms_ease-out]">
+      <div className="pointer-events-auto flex w-full max-w-[380px] flex-col items-center text-center">
+        <div className="mb-[22px] flex h-[60px] w-[60px] items-center justify-center rounded-2xl border border-[color-mix(in_srgb,var(--wf-acc)_18%,#FFFFFF)] bg-[color-mix(in_srgb,var(--wf-acc)_10%,#FFFFFF)] text-[var(--wf-acc)]">
+          <FlowchartIcon />
         </div>
-    );
+
+        <h3 className="text-[20px] font-semibold tracking-[-0.01em] text-[var(--brand-text)]">
+          {title}
+        </h3>
+
+        <p className="mt-2 text-[13.5px] leading-[1.6] text-[#6B7484]">
+          {descriptionLines.map((line, index) => (
+            <React.Fragment key={line}>
+              {index > 0 ? <br /> : null}
+              {line}
+            </React.Fragment>
+          ))}
+        </p>
+
+        <div className="mt-6 flex items-center justify-center">
+          <button
+            type="button"
+            onClick={onTemplates}
+            className={emptyActionButtonClass}
+            data-testid="empty-browse-templates"
+          >
+            <span className="text-[#8B93A0]">
+              <TemplatesIcon />
+            </span>
+            <span>{templatesLabel}</span>
+          </button>
+        </div>
+      </div>
+
+      {showStudioHint ? (
+        <div
+          className="pointer-events-none absolute right-[22px] top-1/2 flex -translate-y-1/2 items-center gap-2 text-[12.5px] font-semibold text-[var(--wf-acc)]"
+          data-testid="empty-studio-hint"
+        >
+          <span>
+            {studioHintLabel ??
+              t('flowEditor.emptyState.studioReady', { defaultValue: 'AI is ready' })}
+          </span>
+          <HintArrowIcon />
+        </div>
+      ) : null}
+    </div>
+  );
 }

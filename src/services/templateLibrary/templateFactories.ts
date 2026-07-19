@@ -5,6 +5,7 @@ import type { TemplateManifest } from './types';
 
 export type TemplateCategory =
   | 'flowchart'
+  | 'workflow'
   | 'architecture'
   | 'aws'
   | 'azure'

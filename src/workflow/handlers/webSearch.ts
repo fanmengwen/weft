@@ -1,5 +1,10 @@
 import { WorkflowHandlerError, type WorkflowNodeHandler } from '../engine/types';
+import { useFlowStore } from '@/store';
 import { firstUpstreamText, warnMissingSelectors } from './llm';
+import {
+  resolveDashScopeSearchEndpoint,
+  searchWithDashScope,
+} from './dashScopeSearch';
 
 export interface WebSearchResult {
   title: string;
@@ -50,6 +55,36 @@ export const webSearchHandler: WorkflowNodeHandler = {
     const query = queryResolution.value.trim() || firstUpstreamText(pool, incomers).trim();
     if (!query) {
       throw new WorkflowHandlerError('workflowMode.log.emptyQuery');
+    }
+
+    const aiSettings = useFlowStore.getState().aiSettings;
+    const dashScopeEndpoint = resolveDashScopeSearchEndpoint(aiSettings);
+    if (dashScopeEndpoint) {
+      try {
+        const result = await searchWithDashScope(
+          dashScopeEndpoint,
+          aiSettings,
+          query,
+          data.searchFreshnessDays ?? 30,
+          signal
+        );
+        log({
+          level: result.results.length > 0 ? 'info' : 'warn',
+          messageKey:
+            result.results.length > 0
+              ? 'workflowMode.log.searchHits'
+              : 'workflowMode.log.searchNoResults',
+          messageParams: { count: result.results.length },
+        });
+        return { outputs: result };
+      } catch (error) {
+        if (signal.aborted) {
+          throw error;
+        }
+        throw new WorkflowHandlerError('workflowMode.log.searchFailed', {
+          reason: error instanceof Error ? error.message : String(error),
+        });
+      }
     }
 
     let results: WebSearchResult[] = [];

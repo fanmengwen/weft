@@ -81,4 +81,48 @@ describe('useNodeOperationAdders', () => {
     expect(createdNode?.data.shape).toBe('parallelogram');
     expect(mockSetSelectedNodeId).toHaveBeenCalledWith(createdNode?.id);
   });
+
+  it.each([
+    [{ type: 'start', shape: 'capsule' }, 'toolbar.start'],
+    [{ type: 'end', shape: 'capsule' }, 'toolbar.end'],
+    [{ type: 'process', shape: 'rounded' }, 'toolbar.process'],
+    [{ type: 'decision', shape: 'diamond' }, 'toolbar.decision'],
+    [{ type: 'custom', shape: 'parallelogram' }, 'nodes.inputOutput'],
+    [{ type: 'custom', shape: 'cylinder' }, 'nodes.database'],
+  ] as const)('handleAddShape assigns default label %s for %o', (input, expectedLabel) => {
+    const { result } = renderHook(() =>
+      useNodeOperationAdders({
+        recordHistory,
+        nodesLength: 0,
+        setNodes: mockSetNodes,
+        setSelectedNodeId: mockSetSelectedNodeId,
+      }),
+    );
+
+    act(() => {
+      result.current.handleAddShape(input);
+    });
+
+    const createdNode = captureCreatedNode(mockSetNodes);
+    expect(createdNode?.data.label).toBe(expectedLabel);
+  });
+
+  it('handleAddShape does not queue empty rename edit that would wipe the default label', () => {
+    const { result } = renderHook(() =>
+      useNodeOperationAdders({
+        recordHistory,
+        nodesLength: 0,
+        setNodes: mockSetNodes,
+        setSelectedNodeId: mockSetSelectedNodeId,
+      }),
+    );
+
+    act(() => {
+      result.current.handleAddShape({ type: 'process', shape: 'rounded' });
+    });
+
+    expect(useFlowStore.getState().pendingNodeLabelEditRequest).toBeNull();
+    const createdNode = captureCreatedNode(mockSetNodes);
+    expect(createdNode?.data.label).toBe('toolbar.process');
+  });
 });

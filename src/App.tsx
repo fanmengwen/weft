@@ -25,6 +25,14 @@ import { useEditorPageActions } from '@/store/editorPageHooks';
 import { useWorkspaceDocumentActions, useWorkspaceRouteResolver } from '@/store/documentHooks';
 import { useShortcutHelpOpen } from '@/store/viewHooks';
 import { useWorkflowStore } from '@/workflow/store/workflowStore';
+import { useWorkflowRunStore } from '@/workflow/store/workflowRunStore';
+import {
+  getDocumentKind,
+  setDocumentKind,
+} from '@/components/home/documentKindStorage';
+import { getHomePagePath, getHomePageTab } from '@/components/home/homeTabs';
+import { isWorkflowTemplate } from '@/components/home/templates/templateCatalog';
+import { getFlowTemplates } from '@/services/templates';
 
 // Import i18n configuration
 import './i18n/config';
@@ -58,6 +66,15 @@ const LazyDiagramViewer = lazy(async () => {
 
 function navigateHome(navigate: ReturnType<typeof useNavigate>): void {
   navigate('/home', { replace: true });
+}
+
+function resetWorkflowCanvas(): void {
+  const store = useWorkflowStore.getState();
+  store.setWorkflowNodes([]);
+  store.setWorkflowEdges([]);
+  store.setSelectedNodeId(null);
+  store.setSelectedEdgeId(null);
+  useWorkflowRunStore.getState().clearRunState();
 }
 
 function normalizeLegacyViewerUrl(): void {
@@ -117,7 +134,8 @@ function FlowCanvasRoute(): React.JSX.Element {
 function HomePageRoute(): React.JSX.Element {
   const navigate = useNavigate();
   const location = useLocation();
-  const { createDocument } = useWorkspaceDocumentActions();
+  const { createDocument, renameDocument } = useWorkspaceDocumentActions();
+  const setMode = useWorkflowStore((state) => state.setMode);
 
   const activeTab = getHomePageTab(location.pathname);
 
@@ -125,13 +143,32 @@ function HomePageRoute(): React.JSX.Element {
     void loadFlowEditorModule();
   }, []);
 
-  function openNewFlow(routeState?: FlowEditorRouteState): void {
+  function openNewFlow(
+    options?: {
+      routeState?: FlowEditorRouteState;
+      kind?: 'chart' | 'workflow';
+      documentName?: string;
+    }
+  ): string {
+    const kind = options?.kind ?? 'chart';
+    setMode(kind);
     const newDocumentId = createDocument();
-    navigate(`/flow/${newDocumentId}`, routeState ? { state: routeState } : undefined);
+    setDocumentKind(newDocumentId, kind);
+    if (options?.documentName?.trim()) {
+      renameDocument(newDocumentId, options.documentName.trim());
+    }
+    navigate(
+      `/flow/${newDocumentId}`,
+      options?.routeState ? { state: options.routeState } : undefined
+    );
+    return newDocumentId;
   }
 
-  function handleLaunch(): void {
-    openNewFlow();
+  function handleLaunch(kind: 'chart' | 'workflow' = 'chart'): void {
+    if (kind === 'workflow') {
+      resetWorkflowCanvas();
+    }
+    openNewFlow({ kind });
   }
 
   function handleLaunchWithTemplates(): void {
@@ -139,15 +176,38 @@ function HomePageRoute(): React.JSX.Element {
   }
 
   function handleLaunchWithAI(): void {
-    openNewFlow(createFlowEditorAIRouteState());
+    openNewFlow({ routeState: createFlowEditorAIRouteState(), kind: 'chart' });
   }
 
   function handleLaunchWithInitialTemplate(templateId: string): void {
-    openNewFlow(createFlowEditorInitialTemplateRouteState(templateId));
+    const template = getFlowTemplates().find((entry) => entry.id === templateId);
+    if (template && isWorkflowTemplate(template)) {
+      const workflowStore = useWorkflowStore.getState();
+      useWorkflowRunStore.getState().clearRunState();
+      workflowStore.setWorkflowNodes(
+        template.nodes.map((node) => ({ ...node, selected: false }))
+      );
+      workflowStore.setWorkflowEdges(template.edges);
+      workflowStore.setSelectedNodeId(null);
+      workflowStore.setSelectedEdgeId(null);
+      openNewFlow({ kind: 'workflow', documentName: template.name });
+      return;
+    }
+
+    openNewFlow({
+      routeState: createFlowEditorInitialTemplateRouteState(templateId),
+      kind: 'chart',
+      documentName: template?.name,
+    });
   }
 
   function handleImportJSON(): void {
-    openNewFlow(createFlowEditorImportRouteState());
+    openNewFlow({ routeState: createFlowEditorImportRouteState(), kind: 'chart' });
+  }
+
+  function handleOpenFlow(flowId: string): void {
+    setMode(getDocumentKind(flowId));
+    navigate(`/flow/${flowId}`);
   }
 
   return (
@@ -158,7 +218,7 @@ function HomePageRoute(): React.JSX.Element {
         onLaunchWithTemplate={handleLaunchWithInitialTemplate}
         onLaunchWithAI={handleLaunchWithAI}
         onImportJSON={handleImportJSON}
-        onOpenFlow={(flowId) => navigate(`/flow/${flowId}`)}
+        onOpenFlow={handleOpenFlow}
         activeTab={activeTab}
         onSwitchTab={(tab) => navigate(getHomePagePath(tab))}
       />
@@ -233,7 +293,11 @@ function App(): React.JSX.Element {
             }
           />
           <Route path="/home" element={<HomePageRoute />} />
+          <Route path="/files" element={<HomePageRoute />} />
           <Route path="/templates" element={<HomePageRoute />} />
+          <Route path="/runs" element={<HomePageRoute />} />
+          <Route path="/trash" element={<HomePageRoute />} />
+          <Route path="/account" element={<HomePageRoute />} />
           <Route path="/mcp" element={<HomePageRoute />} />
           <Route path="/settings" element={<HomePageRoute />} />
           <Route
@@ -264,32 +328,6 @@ function App(): React.JSX.Element {
       </Router>
     </>
   );
-}
-
-function getHomePageTab(pathname: string): 'home' | 'templates' | 'settings' | 'mcp' {
-  switch (pathname) {
-    case '/settings':
-      return 'settings';
-    case '/templates':
-      return 'templates';
-    case '/mcp':
-      return 'mcp';
-    default:
-      return 'home';
-  }
-}
-
-function getHomePagePath(tab: 'home' | 'templates' | 'settings' | 'mcp'): string {
-  switch (tab) {
-    case 'settings':
-      return '/settings';
-    case 'templates':
-      return '/templates';
-    case 'mcp':
-      return '/mcp';
-    default:
-      return '/home';
-  }
 }
 
 export default App;

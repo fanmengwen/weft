@@ -14,6 +14,7 @@ export interface ChartDivShapeSurfaceProps {
 export interface ChartDatabaseSurfaceProps {
   designSystem: DesignSystem;
   isSelected: boolean;
+  surfaceClassName: string;
   diagnosticsAttrs: Record<string, string | number | undefined>;
   ariaLabel: string;
   children: ReactNode;
@@ -37,8 +38,7 @@ export function buildChartDivSurfaceStyle(options: {
   };
 }
 
-export const CHART_DATABASE_DROP_SHADOW =
-  'drop-shadow(0 1px 2px rgba(16,24,40,0.05)) drop-shadow(0 2px 6px rgba(16,24,40,0.04))';
+export const CHART_DATABASE_DROP_SHADOW = 'drop-shadow(0 2px 4px rgba(16,24,40,0.06))';
 
 export const CHART_DATABASE_CAP_GRADIENT = 'linear-gradient(180deg, #FFFFFF, #F4F6F8)';
 
