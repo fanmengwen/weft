@@ -124,9 +124,7 @@ export interface FlowEditorChromeProps {
     title: string;
     description: string;
     templatesLabel: string;
-    addNodeLabel: string;
     onTemplates: () => void;
-    onAddNode: () => void;
     showStudioHint?: boolean;
     studioHintLabel?: string;
     onSuggestionClick?: (prompt: string) => void;
@@ -213,9 +211,7 @@ export function FlowEditorChrome({
         title: emptyState.title,
         description: emptyState.description,
         templatesLabel: emptyState.templatesLabel,
-        addNodeLabel: emptyState.addNodeLabel,
         onTemplates: emptyState.onTemplates,
-        onAddNode: emptyState.onAddNode,
         showStudioHint: emptyState.showStudioHint,
         studioHintLabel: emptyState.studioHintLabel,
       }

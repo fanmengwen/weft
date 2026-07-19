@@ -1,14 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useShortcutHelpActions } from '@/store/viewHooks';
 
 interface FlowEditorEmptyStateProps {
   title: string;
   description: string;
   templatesLabel: string;
-  addNodeLabel: string;
   onTemplates: () => void;
-  onAddNode: () => void;
   showStudioHint?: boolean;
   studioHintLabel?: string;
 }
@@ -65,19 +62,6 @@ function TemplatesIcon(): React.ReactElement {
   );
 }
 
-function PlusIcon(): React.ReactElement {
-  return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden className="block">
-      <path
-        d="M12 5 V19 M5 12 H19"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function HintArrowIcon(): React.ReactElement {
   return (
     <svg
@@ -106,15 +90,11 @@ export function FlowEditorEmptyState({
   title,
   description,
   templatesLabel,
-  addNodeLabel,
   onTemplates,
-  onAddNode,
   showStudioHint = false,
   studioHintLabel,
 }: FlowEditorEmptyStateProps): React.ReactElement {
   const { t } = useTranslation();
-  const { setShortcutsHelpOpen } = useShortcutHelpActions();
-
   const descriptionLines = description.split('\n').filter(Boolean);
 
   return (
@@ -137,7 +117,7 @@ export function FlowEditorEmptyState({
           ))}
         </p>
 
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
+        <div className="mt-6 flex items-center justify-center">
           <button
             type="button"
             onClick={onTemplates}
@@ -148,30 +128,6 @@ export function FlowEditorEmptyState({
               <TemplatesIcon />
             </span>
             <span>{templatesLabel}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onAddNode}
-            className={emptyActionButtonClass}
-            data-testid="empty-add-node"
-          >
-            <span className="text-[#8B93A0]">
-              <PlusIcon />
-            </span>
-            <span>{addNodeLabel}</span>
-          </button>
-        </div>
-
-        <div className="mt-5 text-[12px] text-[#98A1AE]">
-          {t('flowEditor.emptyState.orPrefix', { defaultValue: 'or' })}{' '}
-          <button
-            type="button"
-            onClick={() => setShortcutsHelpOpen(true)}
-            className="font-medium text-[var(--wf-acc)] transition-colors hover:text-[color-mix(in_srgb,var(--wf-acc)_80%,#000)] focus-visible:outline-none"
-            data-testid="empty-state-shortcuts"
-          >
-            {t('flowEditor.viewShortcuts')}
           </button>
         </div>
       </div>

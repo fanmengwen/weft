@@ -55,7 +55,14 @@ describe('useWorkflowRunStore', () => {
     expect(useWorkflowRunHistoryStore.getState().records).toEqual([
       expect.objectContaining({
         status: 'succeeded',
+        inputSummary: '你好,工作流',
         finalOutput: '你好,工作流',
+        nodeSnapshots: expect.objectContaining({
+          [input.id]: expect.objectContaining({
+            kind: 'textInput',
+            outputSnapshot: expect.stringContaining('你好,工作流'),
+          }),
+        }),
       }),
     ]);
   });

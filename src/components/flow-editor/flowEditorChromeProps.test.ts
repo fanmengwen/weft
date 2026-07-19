@@ -21,7 +21,6 @@ function createParams(overrides: Partial<Parameters<typeof buildFlowEditorEmptyS
     >[0]['t'],
     openStudioPanel: vi.fn(),
     openCommandBar: vi.fn(),
-    handleAddNode: vi.fn(),
     setPendingAIPrompt: vi.fn(),
     ...overrides,
   };
@@ -34,7 +33,8 @@ describe('buildFlowEditorEmptyStateProps', () => {
     expect(result).toBeDefined();
     expect(result?.title).toBe('Your canvas is empty');
     expect(result?.onTemplates).toEqual(expect.any(Function));
-    expect(result?.onAddNode).toEqual(expect.any(Function));
+    expect(result).not.toHaveProperty('onAddNode');
+    expect(result).not.toHaveProperty('addNodeLabel');
     expect(result?.showStudioHint).toBe(false);
   });
 

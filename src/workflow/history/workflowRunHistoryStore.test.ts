@@ -59,4 +59,16 @@ describe('workflow run history store', () => {
     useWorkflowRunHistoryStore.getState().reload();
     expect(useWorkflowRunHistoryStore.getState().records).toEqual([]);
   });
+
+  it('removes one record from memory and persisted history', () => {
+    useWorkflowRunHistoryStore.getState().addRecord(makeRecord(1));
+    useWorkflowRunHistoryStore.getState().addRecord(makeRecord(2));
+
+    useWorkflowRunHistoryStore.getState().removeRecord('run-2');
+
+    expect(useWorkflowRunHistoryStore.getState().records.map((record) => record.id)).toEqual([
+      'run-1',
+    ]);
+    expect(localStorage.getItem(WORKFLOW_RUN_HISTORY_STORAGE_KEY)).not.toContain('run-2');
+  });
 });

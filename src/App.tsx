@@ -68,6 +68,15 @@ function navigateHome(navigate: ReturnType<typeof useNavigate>): void {
   navigate('/home', { replace: true });
 }
 
+function resetWorkflowCanvas(): void {
+  const store = useWorkflowStore.getState();
+  store.setWorkflowNodes([]);
+  store.setWorkflowEdges([]);
+  store.setSelectedNodeId(null);
+  store.setSelectedEdgeId(null);
+  useWorkflowRunStore.getState().clearRunState();
+}
+
 function normalizeLegacyViewerUrl(): void {
   if (typeof window === 'undefined') {
     return;
@@ -156,6 +165,9 @@ function HomePageRoute(): React.JSX.Element {
   }
 
   function handleLaunch(kind: 'chart' | 'workflow' = 'chart'): void {
+    if (kind === 'workflow') {
+      resetWorkflowCanvas();
+    }
     openNewFlow({ kind });
   }
 

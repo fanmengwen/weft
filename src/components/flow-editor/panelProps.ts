@@ -170,6 +170,7 @@ export function buildCommandBarPanelProps({
     onRedo: redo,
     onLayout,
     onSelectTemplate: handleInsertTemplate,
+    templateCategory: 'flowchart',
     onOpenStudioAI: openStudioAI,
     onOpenStudioPlayback: openStudioPlayback,
     onOpenArchitectureRules: openArchitectureRulesPanel,

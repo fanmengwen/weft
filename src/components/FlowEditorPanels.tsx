@@ -10,6 +10,7 @@ import type {
 } from '@/hooks/useFlowEditorUIState';
 import type { LayoutAlgorithm } from '@/services/elkLayout';
 import type { FlowTemplate } from '@/services/templates';
+import type { EditorTemplateCategory } from './command-bar/types';
 import type { EdgeData, NodeData } from '@/lib/types';
 import type { DomainLibraryItem } from '@/services/domainLibrary';
 import type { SupportedLanguage } from '@/hooks/ai-generation/codeToArchitecture';
@@ -131,6 +132,7 @@ export interface CommandBarPanelProps {
     spacing?: 'compact' | 'normal' | 'loose'
   ) => Promise<void>;
   onSelectTemplate: (template: FlowTemplate) => void;
+  templateCategory: EditorTemplateCategory;
   onOpenStudioAI: () => void;
   onOpenStudioPlayback: () => void;
   onOpenArchitectureRules: () => void;
@@ -282,6 +284,7 @@ export function FlowEditorPanels({
               onRedo={commandBar.onRedo}
               onLayout={commandBar.onLayout}
               onSelectTemplate={commandBar.onSelectTemplate}
+              templateCategory={commandBar.templateCategory}
               onOpenStudioAI={commandBar.onOpenStudioAI}
               onOpenStudioPlayback={commandBar.onOpenStudioPlayback}
               onOpenArchitectureRules={commandBar.onOpenArchitectureRules}

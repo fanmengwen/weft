@@ -106,9 +106,14 @@ describe('HomePage integration flows', () => {
         expect(screen.getByTestId('home-settings-nav')).toBeTruthy();
         expect(screen.getByText('AI')).toBeTruthy();
         expect(screen.getByText('About')).toBeTruthy();
+
+        expect(screen.queryByText('V1.0')).toBeNull();
+        fireEvent.click(screen.getByTestId('sidebar-brand-home'));
+        expect(screen.getByRole('heading', { name: 'Home' })).toBeTruthy();
     });
 
     it('shows persisted workflow results and logs in the run center', async () => {
+        const onOpenFlow = vi.fn();
         useWorkflowRunHistoryStore.getState().addRecord(
                 {
                     id: 'run-1',
@@ -118,8 +123,22 @@ describe('HomePage integration flows', () => {
                     startedAt: 100,
                     finishedAt: 240,
                     durationMs: 140,
+                    inputSummary: '最近一周的 AI 动态',
                     finalOutput: '# AI 热点\n来源：https://example.com/news',
                     nodeRunStates: { input: 'succeeded', output: 'succeeded' },
+                    nodeSnapshots: {
+                        input: {
+                            label: '简报主题',
+                            kind: 'textInput',
+                            inputSnapshot: '最近一周的 AI 动态',
+                            outputSnapshot: '{"text":"最近一周的 AI 动态"}',
+                        },
+                        output: {
+                            label: '简报结果',
+                            kind: 'output',
+                            outputSnapshot: '{"text":"# AI 热点"}',
+                        },
+                    },
                     logEntries: [
                         {
                             id: 'log-1',
@@ -134,7 +153,7 @@ describe('HomePage integration flows', () => {
                 }
         );
 
-        await renderHomePage({ activeTab: 'runs' });
+        await renderHomePage({ activeTab: 'runs', onOpenFlow });
 
         expect(screen.getByTestId('runs-list')).toBeTruthy();
         expect(screen.getByTestId('runs-detail')).toBeTruthy();
@@ -142,6 +161,22 @@ describe('HomePage integration flows', () => {
         expect(screen.getByText('AI 热点')).toBeTruthy();
         expect(screen.getAllByText(/example.com\/news/).length).toBeGreaterThan(0);
         expect(screen.getAllByText(/简报结果/).length).toBeGreaterThan(0);
+
+        fireEvent.click(screen.getByTestId('run-node-output'));
+        expect(screen.getByText(/\{"text":"# AI 热点"\}/)).toBeTruthy();
+
+        fireEvent.click(screen.getByTestId('runs-log-toggle'));
+        expect(screen.getByTestId('runs-logs')).toBeTruthy();
+
+        fireEvent.click(screen.getByTestId('runs-open-workflow'));
+        expect(onOpenFlow).toHaveBeenCalledWith('doc-1');
+
+        fireEvent.click(screen.getByTestId('runs-filter-failed'));
+        expect(screen.getByText('homeRuns.filterEmpty')).toBeTruthy();
+        fireEvent.click(screen.getByTestId('runs-filter-all'));
+
+        fireEvent.click(screen.getByTestId('runs-delete-record'));
+        expect(screen.getByTestId('runs-empty')).toBeTruthy();
     });
 
     it('opens the selected template flow from the homepage templates tab', async () => {

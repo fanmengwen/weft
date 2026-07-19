@@ -1,87 +1,81 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-  useWorkflowRunHistoryStore,
-  type WorkflowRunRecord,
-} from '@/workflow/history/workflowRunHistoryStore';
+import { useWorkflowRunHistoryStore } from '@/workflow/history/workflowRunHistoryStore';
 import { HomeRunDetails } from './HomeRunDetails';
+import { HomeRunList } from './HomeRunList';
+import {
+  groupRunRecords,
+  matchesRunFilter,
+  type HomeRunFilter,
+} from './homeRunPresentation';
 
-function resultPreview(record: WorkflowRunRecord): string {
-  const compact = record.finalOutput.replace(/\s+/g, ' ').trim();
-  return compact || record.logEntries.findLast((entry) => entry.level === 'error')?.raw || '';
+interface HomeRunsViewProps {
+  onOpenFlow: (flowId: string) => void;
 }
 
-export function HomeRunsView(): React.ReactElement {
+function HomeRunsEmpty(): React.ReactElement {
   const { t } = useTranslation();
+  return (
+    <div className="m-auto px-6 py-16 text-center" data-testid="runs-empty">
+      <p className="font-semibold text-[var(--brand-text)]">{t('homeRuns.emptyTitle')}</p>
+      <p className="mt-2 text-sm text-[var(--brand-secondary)]">{t('homeRuns.emptyDescription')}</p>
+    </div>
+  );
+}
+
+function HomeRunsFilterEmpty(): React.ReactElement {
+  const { t } = useTranslation();
+  return (
+    <div className="flex flex-1 items-center justify-center text-sm text-[var(--brand-secondary)]">
+      {t('homeRuns.filterEmpty')}
+    </div>
+  );
+}
+
+export function HomeRunsView({ onOpenFlow }: HomeRunsViewProps): React.ReactElement {
   const records = useWorkflowRunHistoryStore((state) => state.records);
   const reload = useWorkflowRunHistoryStore((state) => state.reload);
+  const removeRecord = useWorkflowRunHistoryStore((state) => state.removeRecord);
+  const [filter, setFilter] = useState<HomeRunFilter>('all');
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => reload(), [reload]);
 
-  const selected = useMemo(
-    () => records.find((record) => record.id === selectedId) ?? records[0] ?? null,
-    [records, selectedId]
+  const filteredRecords = useMemo(
+    () => records.filter((record) => matchesRunFilter(record, filter)),
+    [filter, records]
   );
+  const groups = useMemo(() => groupRunRecords(filteredRecords), [filteredRecords]);
+  const selected =
+    filteredRecords.find((record) => record.id === selectedId) ?? filteredRecords[0] ?? null;
+  const counts: Record<HomeRunFilter, number> = {
+    all: records.length,
+    succeeded: records.filter((record) => record.status === 'succeeded').length,
+    failed: records.filter((record) => matchesRunFilter(record, 'failed')).length,
+    running: 0,
+  };
 
   return (
-    <div className="flex-1 overflow-y-auto" data-testid="home-runs-view">
-      <div className="mx-auto max-w-[1120px] px-4 py-8 sm:px-8 md:px-10 md:pb-16">
-        <h1 className="text-[21px] font-bold tracking-tight text-[var(--brand-text)]">
-          {t('nav.runs', 'Run center')}
-        </h1>
-        <p className="mt-2 text-sm text-[var(--brand-secondary)]">
-          {t('homeRuns.description', 'Review workflow results and node-by-node logs stored on this device.')}
-        </p>
-
-        {records.length === 0 ? (
-          <div
-            className="mt-8 rounded-[var(--brand-radius)] border border-[var(--brand-border)] bg-[var(--brand-surface)] px-6 py-14 text-center"
-            data-testid="runs-empty"
-          >
-            <p className="font-semibold text-[var(--brand-text)]">
-              {t('homeRuns.emptyTitle', 'No workflow runs yet')}
-            </p>
-            <p className="mt-2 text-sm text-[var(--brand-secondary)]">
-              {t('homeRuns.emptyDescription', 'Run a workflow and its result will appear here.')}
-            </p>
-          </div>
-        ) : (
-          <div className="mt-7 grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
-            <div className="space-y-2" data-testid="runs-list">
-              {records.map((record) => (
-                <button
-                  key={record.id}
-                  type="button"
-                  onClick={() => setSelectedId(record.id)}
-                  data-testid={`run-record-${record.id}`}
-                  className={`w-full rounded-[var(--brand-radius)] border p-3.5 text-left transition-colors ${
-                    selected?.id === record.id
-                      ? 'border-[var(--brand-primary)] bg-[var(--brand-primary-50)]'
-                      : 'border-[var(--brand-border)] bg-[var(--brand-surface)] hover:border-[var(--brand-primary)]'
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="truncate text-sm font-semibold text-[var(--brand-text)]">
-                      {record.documentName}
-                    </span>
-                    <span className="text-xs text-[var(--brand-primary)]">
-                      {t(`workflowMode.status.${record.status}`)}
-                    </span>
-                  </div>
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-[var(--brand-secondary)]">
-                    {resultPreview(record) || t('homeRuns.noResult', 'No final output was produced.')}
-                  </p>
-                  <p className="mt-2 text-[11px] text-[var(--brand-secondary)]">
-                    {new Date(record.startedAt).toLocaleString()}
-                  </p>
-                </button>
-              ))}
-            </div>
-            {selected ? <HomeRunDetails record={selected} /> : null}
-          </div>
-        )}
-      </div>
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:h-screen md:flex-row" data-testid="home-runs-view">
+      {records.length === 0 ? (
+        <HomeRunsEmpty />
+      ) : (
+        <>
+          <HomeRunList
+            groups={groups}
+            counts={counts}
+            filter={filter}
+            selectedId={selected?.id ?? null}
+            onFilterChange={setFilter}
+            onSelect={setSelectedId}
+          />
+          {selected ? (
+            <HomeRunDetails record={selected} onOpenFlow={onOpenFlow} onDelete={removeRecord} />
+          ) : (
+            <HomeRunsFilterEmpty />
+          )}
+        </>
+      )}
     </div>
   );
 }

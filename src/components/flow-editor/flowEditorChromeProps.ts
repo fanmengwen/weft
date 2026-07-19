@@ -133,7 +133,6 @@ export function buildFlowEditorEmptyStateProps({
   t,
   openStudioPanel,
   openCommandBar,
-  handleAddNode,
   setPendingAIPrompt,
 }: BuildEmptyStateParams): FlowEditorChromeProps['emptyState'] | undefined {
   // Keep the empty-canvas overlay while Studio is open so the flat CTA and
@@ -151,11 +150,7 @@ export function buildFlowEditorEmptyStateProps({
     templatesLabel: t('flowEditor.emptyState.browseTemplates', {
       defaultValue: 'Browse templates',
     }),
-    addNodeLabel: t('flowEditor.emptyState.addBlankNode', {
-      defaultValue: 'Add blank shape',
-    }),
     onTemplates: () => openCommandBar('templates'),
-    onAddNode: () => handleAddNode(),
     showStudioHint: editorMode === 'studio',
     studioHintLabel: t('flowEditor.emptyState.studioReady', {
       defaultValue: 'AI is ready',
@@ -223,7 +218,6 @@ export function useFlowEditorChromeProps(
     t,
     openStudioPanel,
     openCommandBar,
-    handleAddNode,
     setPendingAIPrompt,
   } = params;
 
@@ -349,10 +343,9 @@ export function useFlowEditorChromeProps(
         t,
         openStudioPanel,
         openCommandBar,
-        handleAddNode,
         setPendingAIPrompt,
       }),
-    [nodes, editorMode, isCommandBarOpen, t, openStudioPanel, openCommandBar, handleAddNode, setPendingAIPrompt]
+    [nodes, editorMode, isCommandBarOpen, t, openStudioPanel, openCommandBar, setPendingAIPrompt]
   );
 
   return {

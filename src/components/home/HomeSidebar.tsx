@@ -88,15 +88,18 @@ export function HomeSidebar({
       className="sticky top-0 z-20 flex w-full flex-col border-b border-[#E6E8EC] bg-white dark:border-[var(--color-brand-border)] dark:bg-[var(--brand-surface)] md:fixed md:inset-y-0 md:left-0 md:w-[232px] md:border-b-0 md:border-r"
       data-testid="home-sidebar"
     >
-      <div className="flex h-[52px] shrink-0 items-center gap-2 border-b border-[#EEF0F4] px-4 dark:border-[var(--color-brand-border)]">
+      <button
+        type="button"
+        data-testid="sidebar-brand-home"
+        aria-label={t('nav.home', 'Home')}
+        onClick={() => onTabChange('home')}
+        className="flex h-[52px] shrink-0 items-center gap-2 border-b border-[#EEF0F4] px-4 text-left transition-colors hover:bg-[#F6F7F9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--brand-primary)] dark:border-[var(--color-brand-border)] dark:hover:bg-[var(--brand-background)]"
+      >
         <SidebarBrandMark />
         <span className="truncate text-[15px] font-semibold text-[#171D26] dark:text-[var(--brand-text)]">
           {appName}
         </span>
-        <span className="rounded-[5px] bg-[#F0F2F5] px-1.5 py-0.5 text-[10.5px] font-medium text-[#6B7484] dark:bg-[color-mix(in_srgb,var(--brand-secondary),transparent_85%)] dark:text-[var(--brand-secondary)]">
-          V1.0
-        </span>
-      </div>
+      </button>
 
       <nav
         className="flex min-h-0 flex-1 flex-col gap-0.5 overflow-y-auto px-2.5 py-3"

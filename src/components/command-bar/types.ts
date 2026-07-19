@@ -18,6 +18,8 @@ export type CommandView =
   | 'pages'
   | 'import';
 
+export type EditorTemplateCategory = 'flowchart' | 'workflow';
+
 export interface CommandItem {
   id: string;
   label: string;
@@ -46,6 +48,7 @@ export interface CommandBarProps {
     spacing?: 'compact' | 'normal' | 'loose'
   ) => void;
   onSelectTemplate?: (template: FlowTemplate) => void;
+  templateCategory: EditorTemplateCategory;
   onOpenStudioAI?: () => void;
   onOpenStudioPlayback?: () => void;
   onOpenArchitectureRules?: () => void;

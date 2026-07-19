@@ -180,7 +180,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <HomeTemplatesView onUseTemplate={onLaunchWithTemplate} />
         )}
 
-        {activeTab === 'runs' && <HomeRunsView />}
+        {activeTab === 'runs' && <HomeRunsView onOpenFlow={onOpenFlow} />}
 
         {activeTab === 'trash' && (
           <HomeTrashView

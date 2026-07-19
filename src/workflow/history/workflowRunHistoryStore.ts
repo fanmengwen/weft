@@ -6,6 +6,15 @@ export const WORKFLOW_RUN_HISTORY_LIMIT = 50;
 
 const nodeRunStatusSchema = z.enum(['idle', 'running', 'succeeded', 'failed', 'skipped']);
 const workflowRunStatusSchema = z.enum(['succeeded', 'failed', 'aborted']);
+const workflowNodeKindSchema = z.enum([
+  'textInput',
+  'llm',
+  'webSearch',
+  'knowledgeRetrieval',
+  'ifElse',
+  'code',
+  'output',
+]);
 const workflowLogEntrySchema = z.object({
   id: z.string(),
   ts: z.number(),
@@ -17,6 +26,12 @@ const workflowLogEntrySchema = z.object({
   messageParams: z.record(z.union([z.string(), z.number()])).optional(),
   raw: z.string().optional(),
 });
+const workflowNodeSnapshotSchema = z.object({
+  label: z.string(),
+  kind: workflowNodeKindSchema,
+  inputSnapshot: z.string().optional(),
+  outputSnapshot: z.string().optional(),
+});
 
 export const workflowRunRecordSchema = z.object({
   id: z.string(),
@@ -26,8 +41,10 @@ export const workflowRunRecordSchema = z.object({
   startedAt: z.number(),
   finishedAt: z.number(),
   durationMs: z.number().nonnegative(),
+  inputSummary: z.string().optional(),
   finalOutput: z.string(),
   nodeRunStates: z.record(nodeRunStatusSchema),
+  nodeSnapshots: z.record(workflowNodeSnapshotSchema).optional(),
   logEntries: z.array(workflowLogEntrySchema),
 });
 
@@ -71,6 +88,7 @@ function writeStoredRecords(records: WorkflowRunRecord[]): void {
 interface WorkflowRunHistoryState {
   records: WorkflowRunRecord[];
   addRecord: (record: WorkflowRunRecord) => void;
+  removeRecord: (recordId: string) => void;
   reload: () => void;
 }
 
@@ -79,6 +97,12 @@ export const useWorkflowRunHistoryStore = create<WorkflowRunHistoryState>()((set
   addRecord: (record) =>
     set((state) => {
       const records = [record, ...state.records].slice(0, WORKFLOW_RUN_HISTORY_LIMIT);
+      writeStoredRecords(records);
+      return { records };
+    }),
+  removeRecord: (recordId) =>
+    set((state) => {
+      const records = state.records.filter((record) => record.id !== recordId);
       writeStoredRecords(records);
       return { records };
     }),
