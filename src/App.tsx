@@ -25,6 +25,7 @@ import { useEditorPageActions } from '@/store/editorPageHooks';
 import { useWorkspaceDocumentActions, useWorkspaceRouteResolver } from '@/store/documentHooks';
 import { useShortcutHelpOpen } from '@/store/viewHooks';
 import { useWorkflowStore } from '@/workflow/store/workflowStore';
+import { useWorkflowRunStore } from '@/workflow/store/workflowRunStore';
 import {
   getDocumentKind,
   setDocumentKind,
@@ -170,6 +171,7 @@ function HomePageRoute(): React.JSX.Element {
     const template = getFlowTemplates().find((entry) => entry.id === templateId);
     if (template && isWorkflowTemplate(template)) {
       const workflowStore = useWorkflowStore.getState();
+      useWorkflowRunStore.getState().clearRunState();
       workflowStore.setWorkflowNodes(
         template.nodes.map((node) => ({ ...node, selected: false }))
       );

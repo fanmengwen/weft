@@ -130,6 +130,7 @@
       "missingVariables": "未解決の変数:{{selectors}}",
       "promptFromUpstream": "プロンプトが空のため上流テキストを使用します",
       "searchDegraded": "Web 検索を利用できません({{reason}})。クエリをそのまま渡します",
+      "searchFailed": "Web search failed: {{reason}}",
       "searchNoResults": "検索結果なし。クエリをそのまま渡します",
       "searchHits": "Wikipedia から {{count}} 件の結果",
       "knowledgeDegraded": "Embedding エンドポイントがないためキーワード一致にフォールバック",
@@ -541,6 +542,17 @@
     },
     "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
     "trashEmpty": "Trash is empty."
+  },
+  "homeRuns": {
+    "description": "Review workflow results and node-by-node logs stored on this device.",
+    "emptyTitle": "No workflow runs yet",
+    "emptyDescription": "Run a workflow and its result will appear here.",
+    "result": "Result",
+    "noResult": "No final output was produced.",
+    "nodes": "Node states",
+    "statusIdle": "Not run",
+    "statusSkipped": "Skipped",
+    "logs": "Run logs"
   },
   "homeFiles": {
     "search": "Search files",

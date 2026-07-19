@@ -153,8 +153,9 @@
       "missingVariables": "未解析的变量:{{selectors}}",
       "promptFromUpstream": "提示词为空,已改用上游文本",
       "searchDegraded": "网络搜索不可用({{reason}}),已降级为透传查询词",
-      "searchNoResults": "无搜索结果,已降级为透传查询词",
-      "searchHits": "Wikipedia 返回 {{count}} 条结果",
+      "searchFailed": "联网搜索失败:{{reason}}",
+      "searchNoResults": "联网搜索没有返回可靠结果",
+      "searchHits": "联网搜索返回 {{count}} 条结果",
       "knowledgeDegraded": "无 embedding 端点,已降级为关键词匹配",
       "knowledgeHits": "检索到 {{count}} 个片段",
       "codeTimeout": "代码执行超时({{seconds}} 秒)",
@@ -573,6 +574,17 @@
     },
     "trashPageDescription": "已删除的图表与工作流。可恢复或永久删除。",
     "trashEmpty": "回收站为空。"
+  },
+  "homeRuns": {
+    "description": "查看保存在本设备上的工作流结果与逐节点日志。",
+    "emptyTitle": "暂无工作流运行记录",
+    "emptyDescription": "运行一次工作流后，结果会显示在这里。",
+    "result": "运行结果",
+    "noResult": "本次运行没有产生最终输出。",
+    "nodes": "节点状态",
+    "statusIdle": "未运行",
+    "statusSkipped": "已跳过",
+    "logs": "运行日志"
   },
   "homeFiles": {
     "search": "搜索文件",

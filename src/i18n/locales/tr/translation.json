@@ -130,6 +130,7 @@
       "missingVariables": "Çözümlenmemiş değişkenler: {{selectors}}",
       "promptFromUpstream": "İstem boş — önceki metin kullanılıyor",
       "searchDegraded": "Web araması kullanılamıyor ({{reason}}) — sorgu olduğu gibi aktarılıyor",
+      "searchFailed": "Web search failed: {{reason}}",
       "searchNoResults": "Sonuç yok — sorgu olduğu gibi aktarılıyor",
       "searchHits": "Wikipedia {{count}} sonuç döndürdü",
       "knowledgeDegraded": "Embedding uç noktası yok — anahtar kelime eşleşmesine dönülüyor",
@@ -558,6 +559,17 @@
     },
     "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
     "trashEmpty": "Trash is empty."
+  },
+  "homeRuns": {
+    "description": "Review workflow results and node-by-node logs stored on this device.",
+    "emptyTitle": "No workflow runs yet",
+    "emptyDescription": "Run a workflow and its result will appear here.",
+    "result": "Result",
+    "noResult": "No final output was produced.",
+    "nodes": "Node states",
+    "statusIdle": "Not run",
+    "statusSkipped": "Skipped",
+    "logs": "Run logs"
   },
   "homeFiles": {
     "search": "Search files",

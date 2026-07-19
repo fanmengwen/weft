@@ -6,6 +6,7 @@ import { HomeFilesView } from './home/HomeFilesView';
 import { HomeFlowDeleteDialog, HomeFlowRenameDialog } from './home/HomeFlowDialogs';
 import { HomeMCPView } from './home/HomeMCPView';
 import { HomePlaceholderView } from './home/HomePlaceholderView';
+import { HomeRunsView } from './home/HomeRunsView';
 import { HomeSettingsView, type HomeSettingsTab } from './home/HomeSettingsView';
 import { HomeSidebar } from './home/HomeSidebar';
 import { HomeTemplatesView } from './home/HomeTemplatesView';
@@ -179,15 +180,7 @@ export const HomePage: React.FC<HomePageProps> = ({
           <HomeTemplatesView onUseTemplate={onLaunchWithTemplate} />
         )}
 
-        {activeTab === 'runs' && (
-          <HomePlaceholderView
-            testId="home-runs-view"
-            titleKey="nav.runs"
-            titleFallback="Run center"
-            descriptionKey="home.runsDescription"
-            descriptionFallback="Workflow run history will appear here."
-          />
-        )}
+        {activeTab === 'runs' && <HomeRunsView />}
 
         {activeTab === 'trash' && (
           <HomeTrashView

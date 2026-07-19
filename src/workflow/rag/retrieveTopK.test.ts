@@ -113,6 +113,37 @@ describe('retrieveTopK', () => {
     expect(chunkCount).toBeLessThanOrEqual(10);
   });
 
+  it('returns no chunks when every embedding score is below the relevance gate', async () => {
+    const chunkCount = chunkDocument(DOC).length;
+    let call = 0;
+    vi.stubGlobal(
+      'fetch',
+      vi.fn().mockImplementation(async () => {
+        call += 1;
+        return {
+          ok: true,
+          json: async () => ({
+            data:
+              call === 1
+                ? Array.from({ length: chunkCount }, (_, index) => ({ index, embedding: [1, 0] }))
+                : [{ index: 0, embedding: [0, 1] }],
+          }),
+        };
+      })
+    );
+
+    const result = await retrieveTopK(
+      'unrelated query',
+      { ...DOC, id: 'doc-unrelated' },
+      3,
+      settings({ provider: 'custom', apiKey: 'k', customBaseUrl: 'https://example.com/v1' }),
+      new AbortController().signal
+    );
+
+    expect(result.method).toBe('embedding');
+    expect(result.chunks).toEqual([]);
+  });
+
   it('degrades to keyword matching when the endpoint fails', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, status: 500 }));
 

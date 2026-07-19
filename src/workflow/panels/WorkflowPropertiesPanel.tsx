@@ -386,6 +386,7 @@ export function WorkflowPropertiesPanel(): React.ReactElement {
                     <textarea
                       value={data.text ?? ''}
                       onChange={(event) => patchNode({ text: event.target.value })}
+                      data-testid={`workflow-text-${selectedNode.id}`}
                       className={`${TEXTAREA_CLASS} min-h-[96px]`}
                       placeholder={t('workflowMode.properties.textPlaceholder')}
                     />

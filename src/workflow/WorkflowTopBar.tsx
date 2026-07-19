@@ -131,6 +131,7 @@ export function WorkflowTopBar({ onGoHome }: WorkflowTopBarProps): React.ReactEl
           <button
             type="button"
             onClick={handleRun}
+            data-testid="workflow-run"
             disabled={!hasNodes}
             title={hasNodes ? t('workflowMode.run') : t('workflowMode.runNeedsNodes')}
             className="inline-flex h-8 items-center gap-1.5 rounded-lg bg-[var(--wf-acc)] px-3.5 text-[13px] font-semibold text-white transition-[filter] hover:brightness-[0.94] disabled:cursor-not-allowed disabled:opacity-50"

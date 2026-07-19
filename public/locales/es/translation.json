@@ -130,6 +130,7 @@
       "missingVariables": "Variables sin resolver: {{selectors}}",
       "promptFromUpstream": "Prompt vacío: se usa el texto del nodo anterior",
       "searchDegraded": "Búsqueda web no disponible ({{reason}}): se pasa la consulta tal cual",
+      "searchFailed": "Web search failed: {{reason}}",
       "searchNoResults": "Sin resultados: se pasa la consulta tal cual",
       "searchHits": "Wikipedia devolvió {{count}} resultado(s)",
       "knowledgeDegraded": "Sin endpoint de embeddings: se usa coincidencia por palabras clave",
@@ -541,6 +542,17 @@
     },
     "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
     "trashEmpty": "Trash is empty."
+  },
+  "homeRuns": {
+    "description": "Review workflow results and node-by-node logs stored on this device.",
+    "emptyTitle": "No workflow runs yet",
+    "emptyDescription": "Run a workflow and its result will appear here.",
+    "result": "Result",
+    "noResult": "No final output was produced.",
+    "nodes": "Node states",
+    "statusIdle": "Not run",
+    "statusSkipped": "Skipped",
+    "logs": "Run logs"
   },
   "homeFiles": {
     "search": "Search files",

@@ -153,8 +153,9 @@
       "missingVariables": "Unresolved variables: {{selectors}}",
       "promptFromUpstream": "Prompt is empty — using upstream text instead",
       "searchDegraded": "Web search unavailable ({{reason}}) — passing the query through",
-      "searchNoResults": "No search results — passing the query through",
-      "searchHits": "Wikipedia returned {{count}} result(s)",
+      "searchFailed": "Web search failed: {{reason}}",
+      "searchNoResults": "Web search returned no reliable results",
+      "searchHits": "Web search returned {{count}} result(s)",
       "knowledgeDegraded": "No embedding endpoint — falling back to keyword matching",
       "knowledgeHits": "Retrieved {{count}} chunk(s)",
       "codeTimeout": "Code execution timed out after {{seconds}}s",
@@ -590,6 +591,17 @@
     },
     "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
     "trashEmpty": "Trash is empty."
+  },
+  "homeRuns": {
+    "description": "Review workflow results and node-by-node logs stored on this device.",
+    "emptyTitle": "No workflow runs yet",
+    "emptyDescription": "Run a workflow and its result will appear here.",
+    "result": "Result",
+    "noResult": "No final output was produced.",
+    "nodes": "Node states",
+    "statusIdle": "Not run",
+    "statusSkipped": "Skipped",
+    "logs": "Run logs"
   },
   "homeFiles": {
     "search": "Search files",

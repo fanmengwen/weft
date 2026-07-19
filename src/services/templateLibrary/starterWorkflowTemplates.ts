@@ -26,6 +26,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
       }),
       createWorkflowTemplateNode('hot-search', 'webSearch', '联网搜索', 340, 80, {
         query: '{{hot-input.text}}',
+        searchFreshnessDays: 7,
       }),
       createWorkflowTemplateNode('hot-llm', 'llm', '生成简报', 640, 80, {
         systemPrompt:
@@ -41,6 +42,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
           '2. 正文按子话题分组，每组给出要点（每条要点末尾附来源链接）',
           '3. 过滤掉与主题无关及纯营销性质的内容',
           '4. 结尾给出「值得关注」的 1-2 条前瞻判断',
+          '5. 来源必须使用搜索结果「可靠来源」区的完整 Markdown 链接，禁止只写 [ref_n] 引用编号',
         ].join('\n'),
       }),
       createWorkflowTemplateNode('hot-out', 'output', '简报结果', 940, 80, {
@@ -118,7 +120,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
     ['RAG', '知识库', '问答', '分支'],
     [
       createWorkflowTemplateNode('doc-input', 'textInput', '你的问题', 40, 160, {
-        text: '这份文档的核心结论是什么？',
+        text: 'Weft 是一个什么产品？',
       }),
       createWorkflowTemplateNode('doc-kb', 'knowledgeRetrieval', '检索资料', 340, 160, {
         query: '{{doc-input.text}}',
@@ -193,6 +195,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
       }),
       createWorkflowTemplateNode('mon-search', 'webSearch', '搜索最新动态', 340, 160, {
         query: '{{mon-input.text}} 最新版本 更新 发布',
+        searchFreshnessDays: 30,
       }),
       createWorkflowTemplateNode('mon-code', 'code', '清洗搜索结果', 640, 160, {
         code: [
@@ -203,6 +206,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
           '  : Array.isArray(inputs.input?.results)',
           '    ? inputs.input.results',
           '    : [];',
+          'const summary = typeof inputs.input?.text === "string" ? inputs.input.text : "";',
           'const seen = new Set();',
           'const deduped = list.filter((item) => {',
           '  const key = item.url || item.link || item.title;',
@@ -211,9 +215,15 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
           '  return true;',
           '});',
           'deduped.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));',
-          'return deduped',
+          'const updatePattern = /(发布|版本|新模型|新功能|融资|合作|价格|正式商用|上线|漏洞|release|launch|update|funding|partnership|pricing)/i;',
+          'const substantive = deduped.filter((item) =>',
+          '  updatePattern.test((item.title || "") + " " + (item.snippet || ""))',
+          ');',
+          'if (substantive.length === 0 && !updatePattern.test(summary)) return "NO_UPDATE";',
+          'const selected = substantive.length > 0 ? substantive : deduped;',
+          'return "HAS_UPDATE\\n\\n搜索摘要:\\n" + summary + "\\n\\n筛选来源:\\n" + selected',
           '  .slice(0, 10)',
-          '  .map((item, i) => (i + 1) + ". " + item.title + "\\n来源: " + (item.url || item.link || ""))',
+          '  .map((item, i) => (i + 1) + ". " + item.title + "\\n摘要: " + (item.snippet || "") + "\\n来源: " + (item.url || item.link || ""))',
           '  .join("\\n\\n");',
         ].join('\n'),
       }),
@@ -226,9 +236,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
           '清洗后的搜索结果：',
           '{{mon-code.text}}',
           '',
-          '请完成两件事：',
-          '1. 你的回答第一行必须且只能是 HAS_UPDATE 或 NO_UPDATE：存在至少一条实质性动态输出 HAS_UPDATE，否则输出 NO_UPDATE',
-          '2. 若为 HAS_UPDATE，从第二行开始按监控对象分组列出实质性动态，每条附带来源链接',
+          '清洗结果首行的 HAS_UPDATE 表示已通过确定性规则筛出实质动态。请从第二行开始按监控对象分组分析，每条保留来源链接，并补充一条简短影响判断。',
         ].join('\n'),
       }),
       createWorkflowTemplateNode('mon-cond', 'ifElse', '有无实质更新', 1240, 90, {
@@ -236,7 +244,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
         conditions: [
           {
             id: 'mon-cond-1',
-            variable: 'mon-analyze.text',
+            variable: 'mon-code.text',
             operator: 'contains',
             value: 'HAS_UPDATE',
           },
@@ -249,7 +257,7 @@ export const STARTER_WORKFLOW_TEMPLATE_MANIFESTS: TemplateManifest[] = [
           '以下是今天的竞品动态分析结论：',
           '{{mon-analyze.text}}',
           '',
-          '请忽略第一行的 HAS_UPDATE 标记，将其余内容整理成 Markdown 报告，结构：',
+          '请将以上内容整理成 Markdown 报告，结构：',
           '# 竞品动态监控报告',
           '## 一句话总览',
           '## 分对象详情',

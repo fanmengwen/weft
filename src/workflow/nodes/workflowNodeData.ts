@@ -27,6 +27,7 @@ export interface WorkflowNodeData extends Record<string, unknown> {
   // Optional override; blank follows the global AI settings model.
   model?: string;
   query?: string;
+  searchFreshnessDays?: 7 | 30 | 180 | 365;
   knowledgeDocId?: string;
   knowledgeTopK?: number;
   conditionLogic?: 'and' | 'or';

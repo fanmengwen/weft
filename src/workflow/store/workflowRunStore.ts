@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { createId } from '@/lib/id';
+import { useFlowStore } from '@/store';
 import {
   WorkflowHandlerError,
   type NodeRunStatus,
@@ -11,6 +12,7 @@ import { validateWorkflowGraph } from '../engine/graphValidator';
 import { VariablePool } from '../engine/variablePool';
 import { runWorkflow } from '../engine/workflowEngine';
 import { getWorkflowHandler } from '../handlers/registry';
+import { useWorkflowRunHistoryStore } from '../history/workflowRunHistoryStore';
 import type { WorkflowNodeData } from '../nodes/workflowNodeData';
 import { useWorkflowStore } from './workflowStore';
 
@@ -64,6 +66,26 @@ function makeEntry(log: WorkflowLogMessage, nodeId?: string): WorkflowLogEntry {
   };
 }
 
+interface RunDocumentSnapshot {
+  id: string;
+  name: string;
+}
+
+function currentDocumentSnapshot(): RunDocumentSnapshot {
+  const state = useFlowStore.getState();
+  const document = state.documents.find((entry) => entry.id === state.activeDocumentId);
+  return {
+    id: document?.id ?? state.activeDocumentId,
+    name: document?.name ?? '未命名工作流',
+  };
+}
+
+function isTerminalStatus(
+  status: WorkflowRunStatus
+): status is 'succeeded' | 'failed' | 'aborted' {
+  return status === 'succeeded' || status === 'failed' || status === 'aborted';
+}
+
 export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
   const appendLog = (log: WorkflowLogMessage, nodeId?: string) =>
     set((state) => ({ logEntries: [...state.logEntries, makeEntry(log, nodeId)] }));
@@ -92,6 +114,26 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
         ],
       };
     });
+
+  const saveRunRecord = (startedAt: number, document: RunDocumentSnapshot) => {
+    const state = get();
+    if (!isTerminalStatus(state.runStatus)) {
+      return;
+    }
+    const finishedAt = Date.now();
+    useWorkflowRunHistoryStore.getState().addRecord({
+      id: createId('wf-run'),
+      documentId: document.id,
+      documentName: document.name,
+      status: state.runStatus,
+      startedAt,
+      finishedAt,
+      durationMs: Math.max(0, finishedAt - startedAt),
+      finalOutput: state.finalOutput ?? '',
+      nodeRunStates: { ...state.nodeRunStates },
+      logEntries: state.logEntries.map((entry) => ({ ...entry })),
+    });
+  };
 
   const applyEvent = (event: WorkflowRunEvent) => {
     switch (event.type) {
@@ -195,6 +237,8 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
         return false;
       }
       const { workflowNodes, workflowEdges } = useWorkflowStore.getState();
+      const startedAt = Date.now();
+      const document = currentDocumentSnapshot();
 
       set({
         runStatus: 'running',
@@ -217,6 +261,7 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
           });
         }
         set({ runStatus: 'failed' });
+        saveRunRecord(startedAt, document);
         return false;
       }
 
@@ -237,6 +282,7 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
           activeController = null;
         }
       }
+      saveRunRecord(startedAt, document);
       return true;
     },
 
@@ -332,8 +378,11 @@ export const useWorkflowRunStore = create<WorkflowRunState>()((set, get) => {
       set({
         runStatus: 'idle',
         nodeRunStates: {},
+        logEntries: [],
+        lastRunOutputs: {},
         finalOutput: null,
         isOutputModalOpen: false,
+        isLogOpen: false,
       }),
   };
 });

@@ -7,6 +7,7 @@ import type { FlowTab } from '@/lib/types';
 import type { FlowDocument } from '@/services/storage/flowDocumentModel';
 import { WELCOME_MODAL_ENABLED_STORAGE_KEY, WELCOME_SEEN_STORAGE_KEY } from './home/welcomeModalState';
 import { recordOnboardingEvent } from '@/services/onboarding/events';
+import { useWorkflowRunHistoryStore } from '@/workflow/history/workflowRunHistoryStore';
 
 vi.mock('react-i18next', async (importOriginal) => {
     const actual = await importOriginal<typeof import('react-i18next')>();
@@ -59,6 +60,7 @@ describe('HomePage integration flows', () => {
         localStorage.setItem(WELCOME_MODAL_ENABLED_STORAGE_KEY, 'false');
         localStorage.setItem(WELCOME_SEEN_STORAGE_KEY, 'true');
         useFlowStore.setState({});
+        useWorkflowRunHistoryStore.setState({ records: [] });
     });
 
     async function renderHomePage(props?: Partial<React.ComponentProps<typeof HomePage>>): Promise<void> {
@@ -104,6 +106,42 @@ describe('HomePage integration flows', () => {
         expect(screen.getByTestId('home-settings-nav')).toBeTruthy();
         expect(screen.getByText('AI')).toBeTruthy();
         expect(screen.getByText('About')).toBeTruthy();
+    });
+
+    it('shows persisted workflow results and logs in the run center', async () => {
+        useWorkflowRunHistoryStore.getState().addRecord(
+                {
+                    id: 'run-1',
+                    documentId: 'doc-1',
+                    documentName: '联网热点简报',
+                    status: 'succeeded',
+                    startedAt: 100,
+                    finishedAt: 240,
+                    durationMs: 140,
+                    finalOutput: '# AI 热点\n来源：https://example.com/news',
+                    nodeRunStates: { input: 'succeeded', output: 'succeeded' },
+                    logEntries: [
+                        {
+                            id: 'log-1',
+                            ts: 200,
+                            level: 'info',
+                            nodeId: 'output',
+                            nodeLabel: '简报结果',
+                            messageKey: 'workflowMode.log.nodeSucceeded',
+                            messageParams: { label: '简报结果' },
+                        },
+                    ],
+                }
+        );
+
+        await renderHomePage({ activeTab: 'runs' });
+
+        expect(screen.getByTestId('runs-list')).toBeTruthy();
+        expect(screen.getByTestId('runs-detail')).toBeTruthy();
+        expect(screen.getAllByText('联网热点简报').length).toBeGreaterThan(0);
+        expect(screen.getByText('AI 热点')).toBeTruthy();
+        expect(screen.getAllByText(/example.com\/news/).length).toBeGreaterThan(0);
+        expect(screen.getAllByText(/简报结果/).length).toBeGreaterThan(0);
     });
 
     it('opens the selected template flow from the homepage templates tab', async () => {

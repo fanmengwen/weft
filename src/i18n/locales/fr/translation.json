@@ -130,6 +130,7 @@
       "missingVariables": "Variables non résolues : {{selectors}}",
       "promptFromUpstream": "Prompt vide — utilisation du texte amont",
       "searchDegraded": "Recherche web indisponible ({{reason}}) — la requête est transmise telle quelle",
+      "searchFailed": "Web search failed: {{reason}}",
       "searchNoResults": "Aucun résultat — la requête est transmise telle quelle",
       "searchHits": "Wikipédia a renvoyé {{count}} résultat(s)",
       "knowledgeDegraded": "Pas d'endpoint d'embeddings — repli sur la recherche par mots-clés",
@@ -541,6 +542,17 @@
     },
     "trashPageDescription": "Deleted diagrams and workflows. Restore them or delete permanently.",
     "trashEmpty": "Trash is empty."
+  },
+  "homeRuns": {
+    "description": "Review workflow results and node-by-node logs stored on this device.",
+    "emptyTitle": "No workflow runs yet",
+    "emptyDescription": "Run a workflow and its result will appear here.",
+    "result": "Result",
+    "noResult": "No final output was produced.",
+    "nodes": "Node states",
+    "statusIdle": "Not run",
+    "statusSkipped": "Skipped",
+    "logs": "Run logs"
   },
   "homeFiles": {
     "search": "Search files",
