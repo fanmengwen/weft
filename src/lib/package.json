@@ -31,7 +31,7 @@
     ],
     "author": "fanmengwen",
     "license": "MIT",
-    "homepage": "https://weft.app",
+    "homepage": "https://fanmengwen.com",
     "peerDependencies": {
         "react": ">=18",
         "react-dom": ">=18",
