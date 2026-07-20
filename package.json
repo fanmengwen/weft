@@ -6,7 +6,7 @@
   "workspaces": [
     "mcp-server"
   ],
-  "homepage": "https://weft.app",
+  "homepage": "https://fanmengwen.com",
   "engines": {
     "node": ">=18.0.0"
   },
