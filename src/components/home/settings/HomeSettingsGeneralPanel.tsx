@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Check } from 'lucide-react';
-import { useAnalyticsPreference } from '@/hooks/useAnalyticsPreference';
 import { useTheme } from '@/context/ThemeContext';
 import { useVisualSettingsActions } from '@/store/viewHooks';
 import {
   SettingsCard,
-  SettingsFieldHint,
   SettingsFieldTitle,
   SettingsSection,
   SettingsSegmentedControl,
   SettingsSelectTrigger,
-  SettingsToggle,
 } from './settingsPrimitives';
 
 const LANGUAGES = [
@@ -26,7 +23,6 @@ const LANGUAGES = [
 
 export function HomeSettingsGeneralPanel(): React.ReactElement {
   const { t, i18n } = useTranslation();
-  const [analyticsEnabled, setAnalyticsEnabled] = useAnalyticsPreference();
   const { theme, setTheme } = useTheme();
   const { setViewSettings } = useVisualSettingsActions();
   const [langOpen, setLangOpen] = useState(false);
@@ -93,25 +89,6 @@ export function HomeSettingsGeneralPanel(): React.ReactElement {
             </>
           ) : null}
         </div>
-      </SettingsSection>
-
-      <SettingsSection bordered className="flex items-center justify-between gap-4">
-        <div>
-          <SettingsFieldTitle>
-            {t('settingsModal.analytics.enableTitle', 'Anonymous usage analytics')}
-          </SettingsFieldTitle>
-          <SettingsFieldHint>
-            {t(
-              'homeSettings.analyticsHint',
-              'Shares feature usage only — no canvas content. Turn off anytime.'
-            )}
-          </SettingsFieldHint>
-        </div>
-        <SettingsToggle
-          checked={analyticsEnabled}
-          onChange={setAnalyticsEnabled}
-          label={t('settingsModal.analytics.enableTitle', 'Anonymous usage analytics')}
-        />
       </SettingsSection>
     </SettingsCard>
   );
