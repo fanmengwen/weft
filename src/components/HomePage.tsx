@@ -196,7 +196,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             titleKey="nav.account"
             titleFallback="Account"
             descriptionKey="home.accountDescription"
-            descriptionFallback="Account preferences will appear here."
+            descriptionFallback="This is a temporary account for feature preview only."
           />
         )}
 

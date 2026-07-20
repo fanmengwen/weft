@@ -559,7 +559,7 @@
     "filesEmpty": "还没有文件。可从首页创建流程图或工作流。",
     "runsDescription": "工作流运行记录将显示在这里。",
     "trashDescription": "删除的文件会出现在这里，便于之后恢复。",
-    "accountDescription": "账号相关设置将显示在这里。",
+    "accountDescription": "当前是临时账号，仅供功能展示。",
     "purgeFlow": {
       "title": "永久删除",
       "description": "将从本设备彻底删除该文件。",

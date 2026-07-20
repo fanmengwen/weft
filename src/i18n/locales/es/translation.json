@@ -527,7 +527,7 @@
     "filesEmpty": "No files yet. Create a flowchart or workflow from Home.",
     "runsDescription": "Workflow run history will appear here.",
     "trashDescription": "Deleted files will appear here so you can restore them later.",
-    "accountDescription": "Account preferences will appear here.",
+    "accountDescription": "This is a temporary account for feature preview only.",
     "purgeFlow": {
       "title": "Delete permanently",
       "description": "This permanently removes the file from this device.",
