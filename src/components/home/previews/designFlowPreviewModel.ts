@@ -40,7 +40,7 @@ export interface DesignPreviewGraph {
 
 const MAX_NODES = 7;
 const CHIP_H = 34;
-const DIAMOND = 78;
+const DIAMOND = 92;
 const COL_GAP = 40;
 const ROW_GAP = 36;
 const PAD = 8;
