@@ -646,7 +646,6 @@
     "viewAll": "View all",
     "sectionChart": "Flowchart · {{count}}",
     "sectionWorkflow": "Workflow · {{count}}",
-    "convertToWorkflow": "Convert to workflow",
     "nodeMeta": "{{count}} nodes",
     "moreActions": "More actions",
     "relative": {

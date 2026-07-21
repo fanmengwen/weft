@@ -18,7 +18,6 @@ interface FilesSectionProps {
   onRenameFlow: (flowId: string) => void;
   onDuplicateFlow: (flowId: string) => void;
   onDeleteFlow: (flowId: string) => void;
-  onConvertToWorkflow?: (flowId: string) => void;
 }
 
 export function FilesSection({
@@ -32,7 +31,6 @@ export function FilesSection({
   onRenameFlow,
   onDuplicateFlow,
   onDeleteFlow,
-  onConvertToWorkflow,
 }: FilesSectionProps): React.ReactElement | null {
   const { t } = useTranslation();
   if (flows.length === 0 && !showHeader) {
@@ -83,11 +81,6 @@ export function FilesSection({
               onRename={() => onRenameFlow(flow.id)}
               onDuplicate={() => onDuplicateFlow(flow.id)}
               onDelete={() => onDeleteFlow(flow.id)}
-              onConvertToWorkflow={
-                isChart && onConvertToWorkflow
-                  ? () => onConvertToWorkflow(flow.id)
-                  : undefined
-              }
             />
           ))}
         </div>
@@ -101,11 +94,6 @@ export function FilesSection({
               onRename={() => onRenameFlow(flow.id)}
               onDuplicate={() => onDuplicateFlow(flow.id)}
               onDelete={() => onDeleteFlow(flow.id)}
-              onConvertToWorkflow={
-                isChart && onConvertToWorkflow
-                  ? () => onConvertToWorkflow(flow.id)
-                  : undefined
-              }
             />
           ))}
         </div>

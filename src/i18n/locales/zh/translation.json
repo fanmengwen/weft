@@ -629,7 +629,6 @@
     "viewAll": "查看全部",
     "sectionChart": "流程图 · {{count}}",
     "sectionWorkflow": "工作流 · {{count}}",
-    "convertToWorkflow": "转为工作流",
     "nodeMeta": "{{count}} 个节点",
     "moreActions": "更多操作",
     "relative": {

@@ -47,21 +47,6 @@ export function FilesMoreIcon(): React.ReactElement {
   );
 }
 
-export function FilesConvertIcon(): React.ReactElement {
-  return (
-    <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M16 4.5 L19.5 8 L16 11.5 M19.5 8 H8 M8 19.5 L4.5 16 L8 12.5 M4.5 16 H16"
-        stroke="currentColor"
-        strokeWidth="1.9"
-        fill="none"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function FilesSearchIcon(): React.ReactElement {
   return (
     <svg width="13" height="13" viewBox="0 0 24 24" className="shrink-0 text-[#8B93A0]" aria-hidden="true">
