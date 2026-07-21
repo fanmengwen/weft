@@ -1,11 +1,14 @@
 <div align="center">
 
-# Weft
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="readme-media/banner-dark.png">
+  <img src="readme-media/banner-light.png" alt="Weft" width="100%" />
+</picture>
 
 **An AI diagramming canvas where the diagram stays data — describe a system in
 plain language, edit the result by hand, round-trip it back to Mermaid.**
 
-[**Live demo**](https://fanmengwen.com) · [Architecture](ARCHITECTURE.md) · [License](LICENSE)
+[**Live demo**](https://fanmengwen.com) · [Architecture](ARCHITECTURE.md)
 
 <br/>
 
