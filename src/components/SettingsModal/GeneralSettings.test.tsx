@@ -8,10 +8,6 @@ vi.mock('react-i18next', () => ({
   }),
 }));
 
-vi.mock('@/hooks/useAnalyticsPreference', () => ({
-  useAnalyticsPreference: () => [true, vi.fn()],
-}));
-
 vi.mock('@/context/ThemeContext', () => ({
   useTheme: () => ({
     theme: 'system',

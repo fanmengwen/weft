@@ -1,8 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Switch } from '../ui/Switch';
-import { Globe, Moon, Sun, Zap } from 'lucide-react';
-import { useAnalyticsPreference } from '@/hooks/useAnalyticsPreference';
+import { Globe, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/context/ThemeContext';
 import { LanguageSelector } from '@/components/LanguageSelector';
 
@@ -14,7 +12,6 @@ type ThemeOption = {
 
 export function GeneralSettings(): React.ReactElement {
   const { t } = useTranslation();
-  const [analyticsEnabled, setAnalyticsEnabled] = useAnalyticsPreference();
   const { theme, setTheme } = useTheme();
   const themeOptions: ThemeOption[] = [
     {
@@ -41,24 +38,6 @@ export function GeneralSettings(): React.ReactElement {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-sm font-semibold text-[var(--brand-text)] mb-3">
-          {t('settings.analytics', 'Analytics')}
-        </h3>
-        <div className="space-y-2">
-          <SettingRow
-            icon={<Zap className="w-4 h-4" />}
-            label={t('settingsModal.analytics.enableTitle', 'Anonymous Launch Analytics')}
-            description={t(
-              'settingsModal.analytics.enableDescription',
-              'Track coarse product events and reliability issues only. We do not send diagram content, prompts, file contents, or API keys.'
-            )}
-            checked={analyticsEnabled}
-            onChange={setAnalyticsEnabled}
-          />
-        </div>
-      </div>
-
       <div>
         <h3 className="text-sm font-semibold text-[var(--brand-text)] mb-3">
           {t('settings.appearance', 'Appearance')}
@@ -106,35 +85,6 @@ export function GeneralSettings(): React.ReactElement {
           <LanguageSelector variant="compact" />
         </div>
       </div>
-    </div>
-  );
-}
-
-function SettingRow({
-  icon,
-  label,
-  description,
-  checked,
-  onChange,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  description: string;
-  checked: boolean;
-  onChange: (v: boolean) => void;
-}): React.ReactElement {
-  return (
-    <div className="flex items-center justify-between rounded-[var(--radius-lg)] border border-[var(--color-brand-border)] bg-[var(--brand-surface)] p-3 transition-colors hover:border-[var(--brand-primary)]">
-      <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] border border-[var(--color-brand-border)] bg-[var(--brand-background)] text-[var(--brand-secondary)]">
-          {icon}
-        </div>
-        <div>
-          <p className="text-sm font-medium text-[var(--brand-text)]">{label}</p>
-          <p className="text-[11px] text-[var(--brand-secondary)]">{description}</p>
-        </div>
-      </div>
-      <Switch checked={checked} onCheckedChange={onChange} />
     </div>
   );
 }

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAnalyticsPreference } from '@/hooks/useAnalyticsPreference';
 import { WeftLogo } from './icons/WeftLogo';
-import { Switch } from './ui/Switch';
 import { Button } from './ui/Button';
 import { writeLocalStorageString } from '@/services/storage/uiLocalStorage';
 import { shouldShowWelcomeModal, WELCOME_SEEN_STORAGE_KEY } from './home/welcomeModalState';
@@ -24,7 +22,6 @@ export function WelcomeModal({
 }: WelcomeModalProps): React.JSX.Element | null {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(() => shouldShowWelcomeModal());
-  const [analyticsEnabled, setAnalyticsEnabled] = useAnalyticsPreference();
 
   const dismiss = () => {
     setIsOpen(false);
@@ -144,24 +141,6 @@ export function WelcomeModal({
         </div>
 
         <div className="mt-6 border-t border-[var(--color-brand-border)] bg-[var(--brand-background)]/40 px-8 py-6">
-          <div className="mb-5 flex items-center justify-between rounded-xl border border-[var(--color-brand-border)] bg-[var(--brand-surface)] px-4 py-3 shadow-sm">
-            <div className="flex flex-col text-left mr-4">
-              <span className="text-[12px] font-semibold text-[var(--brand-text)]">
-                {t('welcome.analyticsTitle', 'Anonymous Analytics')}
-              </span>
-              <span className="text-[11px] text-[var(--brand-secondary)] mt-0.5 leading-snug">
-                {t(
-                  'welcome.analyticsDesc',
-                  'We collect diagnostic data. We never read your diagrams or prompts.'
-                )}
-              </span>
-            </div>
-            <Switch
-              checked={analyticsEnabled}
-              onCheckedChange={setAnalyticsEnabled}
-              className="scale-90"
-            />
-          </div>
           <Button size="xl" className="w-full font-semibold shadow-sm" onClick={dismiss}>
             {t('welcome.getStarted', 'Get Started')}
           </Button>

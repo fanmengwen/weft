@@ -156,6 +156,7 @@ const baseProps = {
     onClose: vi.fn(),
   },
   isHistoryOpen: false,
+  editorMode: 'canvas',
 } satisfies React.ComponentProps<typeof FlowEditorPanels>;
 
 const selectedNode = {

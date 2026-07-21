@@ -544,7 +544,7 @@
     "filesEmpty": "No files yet. Create a flowchart or workflow from Home.",
     "runsDescription": "Workflow run history will appear here.",
     "trashDescription": "Deleted files will appear here so you can restore them later.",
-    "accountDescription": "Account preferences will appear here.",
+    "accountDescription": "This is a temporary account for feature preview only.",
     "purgeFlow": {
       "title": "Delete permanently",
       "description": "This permanently removes the file from this device.",
@@ -743,8 +743,6 @@
     "feature3Desc": "Metinden anında muhteşem görsel altyapı oluşturun.",
     "feature4Title": "Birçok formatta dışa aktarın",
     "feature4Desc": "Tamamen animasyonlu sunum diyagramlarına dışa aktarın.",
-    "analyticsTitle": "Anonim Analitik",
-    "analyticsDesc": "Tanı verileri topluyoruz. Diyagramlarınızı veya komutlarınızı asla okumuyoruz.",
     "shortcutCommandBar": "Komut merkezini aç",
     "shortcutHelp": "Klavye kısayollarını görüntüle",
     "shortcutCanvas": "Tuvalde düğüm ekle",
