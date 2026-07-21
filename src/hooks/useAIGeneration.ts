@@ -201,7 +201,8 @@ export function useAIGeneration(
   recordHistory: () => void,
   applyComposedGraph: (nodes: FlowNode[], edges: FlowEdge[]) => void
 ) {
-  const { nodes, edges, aiSettings, globalEdgeOptions, activeTabId } = useFlowStore();
+  const { nodes, edges, aiSettings, globalEdgeOptions, activeTabId, setNodes, setEdges } =
+    useFlowStore();
   const selectedNodeIds = nodes.filter((n) => n.selected).map((n) => n.id);
   const { addToast } = useToast();
   const [isGenerating, setIsGenerating] = useState(false);
@@ -213,6 +214,15 @@ export function useAIGeneration(
   // Accumulates streamed DSL text outside the React state updater so the live
   // graph store can be updated at the top level of onChunk (see runDiagramRequest).
   const streamingTextRef = useRef('');
+  // Node/edge ids the in-flight generation has written to the live canvas, so a
+  // retry or hard failure can roll back exactly this attempt's partial output.
+  const streamedIdsRef = useRef<{ nodes: Set<string>; edges: Set<string> }>({
+    nodes: new Set(),
+    edges: new Set(),
+  });
+  // Rough placement offset for incrementally streamed nodes, computed once per
+  // request from the pre-existing canvas so new nodes don't land on top of it.
+  const streamBaselineRef = useRef({ offsetX: 0, offsetY: 0 });
   const [lastError, setLastError] = useState<string | null>(null);
   const readiness = getAIReadinessState(aiSettings);
 
@@ -388,8 +398,30 @@ export function useAIGeneration(
       setStreamingGraph(null);
       setStreamingActive(true);
       setRetryCount(0);
+      streamedIdsRef.current = { nodes: new Set(), edges: new Set() };
+      // Editing an existing diagram re-streams the whole DSL, including nodes
+      // the model kept unchanged — those ids already exist on the live canvas
+      // before this request even starts, so they must be excluded from the
+      // "new node" check below or they'd be added a second time.
+      const preExistingNodeIds = new Set(nodes.map((n) => n.id));
+      const preExistingEdgeIds = new Set(edges.map((e) => e.id));
+      streamBaselineRef.current =
+        nodes.length > 0
+          ? {
+              offsetX: Math.min(...nodes.map((n) => n.position.x)),
+              offsetY: Math.max(...nodes.map((n) => n.position.y + (n.height ?? 80))) + 120,
+            }
+          : { offsetX: 0, offsetY: 0 };
       if (!showPreview) recordHistory();
       setIsGenerating(true);
+
+      const rollbackStreamedGraph = () => {
+        const { nodes: staleNodeIds, edges: staleEdgeIds } = streamedIdsRef.current;
+        if (staleNodeIds.size === 0 && staleEdgeIds.size === 0) return;
+        setNodes((prev) => prev.filter((n) => !staleNodeIds.has(n.id)));
+        setEdges((prev) => prev.filter((e) => !staleEdgeIds.has(e.id)));
+        streamedIdsRef.current = { nodes: new Set(), edges: new Set() };
+      };
 
       const controller = new AbortController();
       abortControllerRef.current = controller;
@@ -413,23 +445,75 @@ export function useAIGeneration(
           aiSettings,
           globalEdgeOptions,
           onChunk: (delta) => {
-            // Accumulate via a ref and update both stores at the TOP LEVEL of
-            // this async callback. Previously setStreamingGraph() was called
-            // inside the setStreamingText updater, which React runs during its
-            // render phase — that triggered "Cannot update a component
+            // Accumulate via a ref and update stores at the TOP LEVEL of this
+            // async callback. Previously setStreamingGraph() was called inside
+            // the setStreamingText updater, which React runs during its render
+            // phase — that triggered "Cannot update a component
             // (StreamingOverlay) while rendering a different component".
             const next = streamingTextRef.current + delta;
             streamingTextRef.current = next;
             setStreamingText(next);
             const parsed = parseStreamingDsl(next);
-            if (parsed.nodeCount > 0) {
+            if (parsed.nodeCount === 0) return;
+
+            if (showPreview) {
+              // Preview flows (e.g. codebase import) still gate on an explicit
+              // Apply, so only the floating overlay shows live progress.
               setStreamingGraph(parsed);
+              return;
+            }
+
+            // Everything else lands directly on the real canvas as it streams
+            // in — no preview/Apply step. New nodes get a rough offset position
+            // (refined by the ELK settle pass once generation finishes) and the
+            // existing fade-in animation. A node's own line can still be mid-way
+            // through streaming its label/attributes when it first becomes
+            // parseable (e.g. an unclosed "{ color: ..." trailing fragment), so
+            // already-seen ids get their label refreshed rather than left alone.
+            const { offsetX, offsetY } = streamBaselineRef.current;
+            const newNodes: typeof parsed.nodes = [];
+            const labelUpdates = new Map<string, string>();
+            for (const n of parsed.nodes) {
+              if (preExistingNodeIds.has(n.id) || streamedIdsRef.current.nodes.has(n.id)) {
+                labelUpdates.set(n.id, n.data.label);
+              } else {
+                newNodes.push(n);
+              }
+            }
+            const newEdges = parsed.edges.filter(
+              (e) => !preExistingEdgeIds.has(e.id) && !streamedIdsRef.current.edges.has(e.id)
+            );
+
+            if (newNodes.length > 0 || labelUpdates.size > 0) {
+              newNodes.forEach((n) => streamedIdsRef.current.nodes.add(n.id));
+              setNodes((prev) => {
+                const refreshed = prev.map((n) =>
+                  labelUpdates.has(n.id) && labelUpdates.get(n.id) !== n.data.label
+                    ? { ...n, data: { ...n.data, label: labelUpdates.get(n.id) } }
+                    : n
+                );
+                if (newNodes.length === 0) return refreshed;
+                return [
+                  ...refreshed,
+                  ...newNodes.map((n) => ({
+                    ...n,
+                    position: { x: offsetX + n.position.x, y: offsetY + n.position.y },
+                    data: { ...n.data, freshlyAdded: true, animateDelay: 0 },
+                  })),
+                ];
+              });
+            }
+            if (newEdges.length > 0) {
+              newEdges.forEach((e) => streamedIdsRef.current.edges.add(e.id));
+              setEdges((prev) => [...prev, ...newEdges]);
             }
           },
           onRetry: (attempt) => {
             setRetryCount(attempt);
             streamingTextRef.current = '';
             setStreamingText('');
+            setStreamingGraph(null);
+            rollbackStreamedGraph();
           },
           signal: controller.signal,
         });
@@ -500,6 +584,7 @@ export function useAIGeneration(
           });
           return false;
         }
+        rollbackStreamedGraph();
         const errorMessage = toErrorMessage(error);
         logger.error('AI generation failed.', { error });
         setLastError(errorMessage);
@@ -524,6 +609,7 @@ export function useAIGeneration(
         setStreamingGraph(null);
         setStreamingActive(false);
         setRetryCount(0);
+        streamedIdsRef.current = { nodes: new Set(), edges: new Set() };
       }
     },
     [
@@ -538,6 +624,8 @@ export function useAIGeneration(
       selectedNodeIds,
       recordHistory,
       applyComposedGraph,
+      setNodes,
+      setEdges,
     ]
   );
 
@@ -572,7 +660,7 @@ export function useAIGeneration(
         return runConversationRequest(prompt, plan.mode === 'plan' ? 'plan' : 'answer', assetMatches, imageBase64);
       }
 
-      return runDiagramRequest(prompt, imageBase64, undefined, true, 'prompt', undefined, undefined, assetMatches);
+      return runDiagramRequest(prompt, imageBase64, undefined, false, 'prompt', undefined, undefined, assetMatches);
     },
     [
       appendThreadItem,
@@ -602,7 +690,7 @@ export function useAIGeneration(
         prompt,
         imageBase64,
         focusedNodeIds,
-        true,
+        false,
         'focused-edit',
         undefined,
         undefined,

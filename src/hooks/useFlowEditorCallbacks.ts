@@ -146,13 +146,23 @@ export function useFlowEditorCallbacks({
         data: normalizeNodeIconData(node.data),
       }));
       const routedEdges = assignSmartHandles(enrichedNodes, newEdges);
+      // Nodes already on the live canvas (e.g. written incrementally while the
+      // AI response streamed in) keep their existing data instead of being
+      // re-tagged freshlyAdded — otherwise the fade-in animation restarts and
+      // the node flashes out and back in during this settle pass.
+      const alreadyVisibleIds = new Set(useFlowStore.getState().nodes.map((node) => node.id));
       recordHistory();
       startTransition(() => {
         setNodes(
-          enrichedNodes.map((node, index) => ({
-            ...node,
-            data: { ...node.data, freshlyAdded: true, animateDelay: Math.min(index * 20, 400) },
-          }))
+          enrichedNodes.map((node, index) => {
+            if (alreadyVisibleIds.has(node.id)) {
+              return node;
+            }
+            return {
+              ...node,
+              data: { ...node.data, freshlyAdded: true, animateDelay: Math.min(index * 20, 400) },
+            };
+          })
         );
         setEdges(routedEdges);
       });
