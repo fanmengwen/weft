@@ -16,7 +16,6 @@ import { shouldShowWelcomeModal } from './home/welcomeModalState';
 import {
   copyDocumentKind,
   removeDocumentKind,
-  setDocumentKind,
   type DocumentKind,
 } from './home/documentKindStorage';
 import { purgeTrashedDocumentFromRepository } from '@/services/storage/localFirstRuntime';
@@ -133,15 +132,6 @@ export const HomePage: React.FC<HomePageProps> = ({
     }
   }
 
-  function handleConvertToWorkflow(flowId: string): void {
-    const newFlowId = duplicateDocument(flowId);
-    if (!newFlowId) {
-      return;
-    }
-    setDocumentKind(newFlowId, 'workflow');
-    onOpenFlow(newFlowId);
-  }
-
   return (
     <div className="min-h-screen bg-[var(--brand-background)] flex flex-col text-[var(--brand-text)] md:flex-row">
       <HomeSidebar activeTab={activeTab} onTabChange={handleTabChange} />
@@ -172,7 +162,6 @@ export const HomePage: React.FC<HomePageProps> = ({
             onRenameFlow={handleRenameFlow}
             onDuplicateFlow={handleDuplicateFlow}
             onDeleteFlow={handleDeleteFlow}
-            onConvertToWorkflow={handleConvertToWorkflow}
           />
         )}
 

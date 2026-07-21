@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { getFlowDisplayName } from '@/lib/flowDisplayName';
 import { getDocumentKind } from '../documentKindStorage';
 import type { HomeFlowCard as HomeFlowCardModel } from '../homeTypes';
-import { ChartKindIcon, FilesConvertIcon, WorkflowKindIcon } from './FilesKindIcons';
+import { ChartKindIcon, WorkflowKindIcon } from './FilesKindIcons';
 import { FilesOverflowMenu } from './FilesOverflowMenu';
 import { formatRelativeUpdatedAt } from './formatRelativeUpdatedAt';
 
@@ -13,7 +13,6 @@ interface FilesListRowProps {
   onRename: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
-  onConvertToWorkflow?: () => void;
 }
 
 export function FilesListRow({
@@ -22,7 +21,6 @@ export function FilesListRow({
   onRename,
   onDuplicate,
   onDelete,
-  onConvertToWorkflow,
 }: FilesListRowProps): React.ReactElement {
   const { t } = useTranslation();
   const kind = getDocumentKind(flow.id);
@@ -69,20 +67,6 @@ export function FilesListRow({
           <span>{t('homeFiles.nodeMeta', '{{count}} nodes', { count: flow.nodeCount })}</span>
         </div>
       </div>
-      {isChart && onConvertToWorkflow ? (
-        <button
-          type="button"
-          data-testid={`files-convert-${flow.id}`}
-          onClick={(event) => {
-            event.stopPropagation();
-            onConvertToWorkflow();
-          }}
-          className="hidden shrink-0 items-center gap-1.5 text-[12.5px] font-medium text-[var(--brand-primary)] sm:inline-flex"
-        >
-          <FilesConvertIcon />
-          {t('homeFiles.convertToWorkflow', 'Convert to workflow')}
-        </button>
-      ) : null}
       <FilesOverflowMenu onRename={onRename} onDuplicate={onDuplicate} onDelete={onDelete} />
     </div>
   );

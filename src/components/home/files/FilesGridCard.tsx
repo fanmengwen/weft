@@ -4,7 +4,7 @@ import { getFlowDisplayName } from '@/lib/flowDisplayName';
 import { getDocumentKind } from '../documentKindStorage';
 import type { HomeFlowCard as HomeFlowCardModel } from '../homeTypes';
 import { FilesCompactPreview } from './FilesCompactPreview';
-import { ChartKindIcon, FilesConvertIcon, WorkflowKindIcon } from './FilesKindIcons';
+import { ChartKindIcon, WorkflowKindIcon } from './FilesKindIcons';
 import { FilesOverflowMenu } from './FilesOverflowMenu';
 import { formatRelativeUpdatedAt } from './formatRelativeUpdatedAt';
 
@@ -14,7 +14,6 @@ interface FilesGridCardProps {
   onRename: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
-  onConvertToWorkflow?: () => void;
 }
 
 export function FilesGridCard({
@@ -23,7 +22,6 @@ export function FilesGridCard({
   onRename,
   onDuplicate,
   onDelete,
-  onConvertToWorkflow,
 }: FilesGridCardProps): React.ReactElement {
   const { t } = useTranslation();
   const kind = getDocumentKind(flow.id);
@@ -67,24 +65,9 @@ export function FilesGridCard({
       </div>
       <div className="mt-1 text-[11.5px] text-[#98A1AE]">{relative}</div>
 
-      {isChart && onConvertToWorkflow ? (
-        <button
-          type="button"
-          data-testid={`files-convert-${flow.id}`}
-          onClick={(event) => {
-            event.stopPropagation();
-            onConvertToWorkflow();
-          }}
-          className="mt-2.5 inline-flex items-center gap-1.5 text-[12.5px] font-medium text-[var(--brand-primary)] transition-colors hover:brightness-110 focus-visible:outline-none focus-visible:underline"
-        >
-          <FilesConvertIcon />
-          {t('homeFiles.convertToWorkflow', 'Convert to workflow')}
-        </button>
-      ) : (
-        <div className="mt-2.5 text-[12px] text-[#98A1AE]">
-          {t('homeFiles.nodeMeta', '{{count}} nodes', { count: flow.nodeCount })}
-        </div>
-      )}
+      <div className="mt-2.5 text-[12px] text-[#98A1AE]">
+        {t('homeFiles.nodeMeta', '{{count}} nodes', { count: flow.nodeCount })}
+      </div>
     </div>
   );
 }

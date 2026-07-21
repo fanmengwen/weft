@@ -21,7 +21,6 @@ interface HomeFilesViewProps {
   onRenameFlow: (flowId: string) => void;
   onDuplicateFlow: (flowId: string) => void;
   onDeleteFlow: (flowId: string) => void;
-  onConvertToWorkflow: (flowId: string) => void;
 }
 
 export function HomeFilesView({
@@ -31,7 +30,6 @@ export function HomeFilesView({
   onRenameFlow,
   onDuplicateFlow,
   onDeleteFlow,
-  onConvertToWorkflow,
 }: HomeFilesViewProps): React.ReactElement {
   const { t } = useTranslation();
   const [tab, setTab] = useState<HomeFilesKindTab>('all');
@@ -86,7 +84,6 @@ export function HomeFilesView({
                 onRenameFlow={onRenameFlow}
                 onDuplicateFlow={onDuplicateFlow}
                 onDeleteFlow={onDeleteFlow}
-                onConvertToWorkflow={onConvertToWorkflow}
               />
             ) : null}
             {showWorkflows ? (

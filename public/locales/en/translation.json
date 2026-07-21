@@ -646,7 +646,6 @@
     "viewAll": "View all",
     "sectionChart": "Flowchart · {{count}}",
     "sectionWorkflow": "Workflow · {{count}}",
-    "convertToWorkflow": "Convert to workflow",
     "nodeMeta": "{{count}} nodes",
     "moreActions": "More actions",
     "relative": {
@@ -1826,7 +1825,7 @@
     "applyingLayout": "Applying layout…",
     "emptyState": {
       "title": "Your canvas is empty",
-      "description": "Use Studio on the right to generate a diagram with AI,\nor start manually with the options below.",
+      "description": "Use the AI Assistant on the right to generate a diagram,\nor start manually with the tools on the left.",
       "generateWithFlowpilot": "Generate with AI",
       "browseTemplates": "Browse Templates",
       "addBlankNode": "Add Blank Shape",

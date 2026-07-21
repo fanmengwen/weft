@@ -629,7 +629,6 @@
     "viewAll": "查看全部",
     "sectionChart": "流程图 · {{count}}",
     "sectionWorkflow": "工作流 · {{count}}",
-    "convertToWorkflow": "转为工作流",
     "nodeMeta": "{{count}} 个节点",
     "moreActions": "更多操作",
     "relative": {
@@ -1772,7 +1771,7 @@
     "applyingLayout": "正在应用布局…",
     "emptyState": {
       "title": "画布还是空的",
-      "description": "用右侧 Studio 让 AI 帮你生成图表，\n或选择下面的方式手动开始。",
+      "description": "用右侧的 AI 助手生成图表，\n或用左侧的操作工具手动开始。",
       "generateWithFlowpilot": "用 AI 生成",
       "browseTemplates": "浏览模板",
       "addBlankNode": "添加空白形状",

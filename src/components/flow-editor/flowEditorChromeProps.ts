@@ -145,7 +145,7 @@ export function buildFlowEditorEmptyStateProps({
     title: t('flowEditor.emptyState.title', { defaultValue: 'Your canvas is empty' }),
     description: t('flowEditor.emptyState.description', {
       defaultValue:
-        'Use Studio on the right to generate a diagram with AI,\nor start manually with the options below.',
+        'Use the AI Assistant on the right to generate a diagram,\nor start manually with the tools on the left.',
     }),
     templatesLabel: t('flowEditor.emptyState.browseTemplates', {
       defaultValue: 'Browse templates',
