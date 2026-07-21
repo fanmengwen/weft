@@ -89,15 +89,20 @@ export function SidebarSettingsIcon(): React.ReactElement {
 
 export function SidebarBrandMark(): React.ReactElement {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" className="block shrink-0">
-      <circle cx="12" cy="12" r="10" className="fill-[var(--brand-primary)]" />
+    <svg width="20" height="20" viewBox="0 0 32 32" aria-hidden="true" className="block shrink-0">
       <path
-        d="M8 12.2 L10.8 15 L16 9.5"
-        stroke="white"
-        strokeWidth="2.2"
+        d="M12 5 V18.3 M12 21.7 V27 M20 5 V10.3 M20 13.7 V27"
+        stroke="#52525b"
+        strokeWidth="3.4"
         fill="none"
         strokeLinecap="round"
-        strokeLinejoin="round"
+      />
+      <path
+        d="M5 12 H10.3 M13.7 12 H27 M5 20 H18.3 M21.7 20 H27"
+        stroke="#3b82f6"
+        strokeWidth="3.4"
+        fill="none"
+        strokeLinecap="round"
       />
     </svg>
   );

@@ -79,7 +79,7 @@ export function HomeTemplatesView({
             <h1 className="m-0 text-[21px] font-bold tracking-tight text-[var(--brand-text)]">
               {t('nav.templates', 'Templates')}
             </h1>
-            <p className="mt-[7px] max-w-[560px] text-[13px] leading-[1.6] text-[#6B7484] dark:text-[var(--brand-secondary)]">
+            <p className="mt-[7px] max-w-[640px] text-[13px] leading-[1.6] text-[#6B7484] dark:text-[var(--brand-secondary)]">
               {t(
                 'homeTemplates.description',
                 'Ready-to-use flowcharts and workflows. Load a template onto the canvas with nodes, edges, and notes already in place—then make it yours.'

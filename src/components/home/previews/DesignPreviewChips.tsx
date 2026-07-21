@@ -34,11 +34,14 @@ export function PreviewChip({
             boxShadow: '0 1px 2px rgba(16,24,40,0.05), 0 2px 6px rgba(16,24,40,0.04)',
           }}
         />
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 text-center">
-          <IconBadge tone={node.tone} size={iconSize} bg={tones.bg} fg={tones.fg} />
+        <div
+          className="absolute inset-0 flex flex-col items-center justify-center text-center"
+          style={{ gap: 3 }}
+        >
+          <IconBadge tone={node.tone} size={iconSize - 2} bg={tones.bg} fg={tones.fg} />
           <span
-            className="max-w-[70px] truncate font-semibold leading-tight text-[#171D26]"
-            style={{ fontSize: fontSize - 1 }}
+            className="truncate font-semibold text-[#171D26]"
+            style={{ fontSize: fontSize - 2.5, lineHeight: 1.1, maxWidth: size * 0.6 }}
           >
             {node.label}
           </span>

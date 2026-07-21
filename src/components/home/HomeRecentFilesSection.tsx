@@ -8,6 +8,8 @@ import type { HomeFlowCard as HomeFlowCardModel } from './homeTypes';
 
 type RecentFilter = 'all' | DocumentKind;
 
+const MAX_RECENT_FILES = 8;
+
 interface HomeRecentFilesSectionProps {
   flows: HomeFlowCardModel[];
   onOpenFlow: (flowId: string) => void;
@@ -35,10 +37,9 @@ export function HomeRecentFilesSection({
   const [filter, setFilter] = useState<RecentFilter>('all');
 
   const visibleFlows = useMemo(() => {
-    if (filter === 'all') {
-      return flows;
-    }
-    return flows.filter((flow) => getDocumentKind(flow.id) === filter);
+    const matchingFlows =
+      filter === 'all' ? flows : flows.filter((flow) => getDocumentKind(flow.id) === filter);
+    return matchingFlows.slice(0, MAX_RECENT_FILES);
   }, [filter, flows]);
 
   function handleShowcase(kind: DocumentKind, templateId?: string): void {
