@@ -313,6 +313,78 @@ describe('StudioAIPanel', () => {
     expect(screen.getByRole('button', { name: 'Create new' })).toHaveAttribute('aria-pressed', 'false');
   });
 
+  it('defaults to edit mode when the canvas gains its first nodes', () => {
+    const props = {
+      onAIGenerate: vi.fn().mockResolvedValue(false),
+      isGenerating: false,
+      streamingText: null,
+      retryCount: 0,
+      onCancelGeneration: vi.fn(),
+      pendingDiff: null,
+      onConfirmDiff: vi.fn(),
+      onDiscardDiff: vi.fn(),
+      aiReadiness: {
+        canGenerate: true,
+        blockingIssue: null,
+        advisory: null,
+      },
+      lastError: null,
+      onClearError: vi.fn(),
+      chatMessages: [],
+      assistantThread: [],
+      selectedNodeCount: 0,
+    };
+
+    const { rerender } = render(<StudioAIPanel {...props} nodeCount={0} />);
+
+    rerender(<StudioAIPanel {...props} nodeCount={3} />);
+
+    expect(screen.getByRole('button', { name: 'Edit current' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByRole('button', { name: 'Create new' })).toHaveAttribute('aria-pressed', 'false');
+  });
+
+  it('switches the prompt placeholder between edit and create modes', () => {
+    render(
+      <StudioAIPanel
+        onAIGenerate={vi.fn().mockResolvedValue(false)}
+        isGenerating={false}
+        streamingText={null}
+        retryCount={0}
+        onCancelGeneration={vi.fn()}
+        pendingDiff={null}
+        onConfirmDiff={vi.fn()}
+        onDiscardDiff={vi.fn()}
+        aiReadiness={{
+          canGenerate: true,
+          blockingIssue: null,
+          advisory: null,
+        }}
+        lastError={null}
+        onClearError={vi.fn()}
+        chatMessages={[]}
+        assistantThread={[]}
+        nodeCount={3}
+        selectedNodeCount={0}
+      />
+    );
+
+    expect(
+      screen.getByPlaceholderText("Describe a change, for example 'add Redis between API and DB'")
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Create new' }));
+
+    expect(
+      screen.getByPlaceholderText('Describe the diagram you want to create from scratch...')
+    ).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit current' }));
+
+    expect(
+      screen.getByPlaceholderText("Describe a change, for example 'add Redis between API and DB'")
+    ).toBeInTheDocument();
+  });
+
   it('renders the import-content dsl block with a confirm bar', () => {
     render(
       <StudioAIPanel

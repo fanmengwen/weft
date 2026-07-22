@@ -140,6 +140,13 @@ export function StudioAIPanel({
   }, [initialPrompt, onInitialPromptConsumed, setPrompt]);
 
   const isCanvasEmpty = nodeCount === 0;
+  const [wasCanvasEmpty, setWasCanvasEmpty] = useState(isCanvasEmpty);
+  if (wasCanvasEmpty !== isCanvasEmpty) {
+    setWasCanvasEmpty(isCanvasEmpty);
+    if (!isCanvasEmpty) {
+      setGenerationMode('edit');
+    }
+  }
   const effectiveGenerationMode: AIGenerationMode = nodeCount === 0 ? 'create' : generationMode;
   const isEditMode = effectiveGenerationMode === 'edit' && !isCanvasEmpty;
   const sendButtonLabel = isEditMode
