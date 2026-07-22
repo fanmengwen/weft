@@ -17,6 +17,7 @@ import type { ChatMessage } from '@/services/aiService';
 import type { AssistantThreadItem } from '@/services/flowpilot/types';
 import type { ImportDiff } from '@/hooks/useAIGeneration';
 import type { AIReadinessState } from '@/hooks/ai-generation/readiness';
+import { useStreamingState } from '@/hooks/ai-generation/streamingStore';
 import { SECTION_SURFACE_CLASS, STATUS_SURFACE_CLASS } from '@/lib/designTokens';
 import { STUDIO_AI_COPY } from './studioAICopy';
 import {
@@ -162,19 +163,29 @@ export function StatusSection({
   onOpenAISettings,
   t,
 }: StatusSectionProps): ReactElement | null {
+  // Preview flows (e.g. codebase import) still stream into the floating
+  // overlay rather than the live canvas, so its count is the accurate one
+  // while they're in flight; everything else writes straight to the canvas,
+  // so the nodeCount/edgeCount props are already live for those.
+  const { nodeCount: overlayNodeCount, edgeCount: overlayEdgeCount } = useStreamingState();
+
   if (pendingDiff != null) {
     return null;
   }
 
   if (isGenerating) {
+    const liveNodeCount = overlayNodeCount > 0 ? overlayNodeCount : nodeCount;
+    const liveEdgeCount = overlayNodeCount > 0 ? overlayEdgeCount : edgeCount;
     return (
       <div className="rounded-[10px] border border-[#E9EBEF] bg-[#FCFCFD] p-3 text-[12px]">
         <div className="flex items-center gap-1.5">
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
           {getStreamingStatusCopy(streamingText, retryCount, chatMessages.length, t)}
         </div>
-        {streamingText ? (
-          <div className="mt-2 whitespace-pre-wrap text-[#8B93A0]">{streamingText}</div>
+        {liveNodeCount > 0 ? (
+          <div className="mt-2 text-[11.5px] text-[#8B93A0]">
+            {liveNodeCount} 个节点 · {liveEdgeCount} 条连线
+          </div>
         ) : null}
       </div>
     );
