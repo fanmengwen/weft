@@ -638,6 +638,27 @@
       "yesterday": "昨天",
       "daysAgo": "{{count}} 天前",
       "lastWeek": "上周"
+    },
+    "workflowMenu": {
+      "enable": "启用",
+      "disable": "停用"
+    },
+    "workflowStatus": {
+      "enabled": "已启用",
+      "disabled": "未启用",
+      "manual": "手动"
+    },
+    "lastRun": {
+      "label": "上次运行",
+      "failed": "失败"
+    },
+    "disableDialog": {
+      "title": "停用工作流",
+      "description": "停用后不会自动执行，可随时重新启用。",
+      "confirmation": "停用「{{name}}」？",
+      "hint": "可随时在 ⋯ 菜单重新启用。",
+      "confirmAction": "停用",
+      "closeDialog": "关闭停用工作流对话框"
     }
   },
   "settings": {

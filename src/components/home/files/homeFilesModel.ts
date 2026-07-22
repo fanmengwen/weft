@@ -1,3 +1,4 @@
+import type { WorkflowRunRecord } from '@/workflow/history/workflowRunHistoryStore';
 import { getDocumentKind, type DocumentKind } from '../documentKindStorage';
 import type { HomeFlowCard } from '../homeTypes';
 
@@ -54,6 +55,14 @@ export function limitForAllTab(flows: HomeFlowCard[], isAllTab: boolean): HomeFl
     return flows;
   }
   return flows.slice(0, HOME_FILES_ALL_PREVIEW_LIMIT);
+}
+
+/** Records are stored newest-first, so the first match is the latest run. */
+export function getLatestRunStatus(
+  documentId: string,
+  records: WorkflowRunRecord[]
+): WorkflowRunRecord['status'] | undefined {
+  return records.find((record) => record.documentId === documentId)?.status;
 }
 
 function parseUpdatedAt(updatedAt: string | undefined): number {

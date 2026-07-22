@@ -16,7 +16,6 @@ interface FilesSectionProps {
   onViewAll?: () => void;
   onOpenFlow: (flowId: string) => void;
   onRenameFlow: (flowId: string) => void;
-  onDuplicateFlow: (flowId: string) => void;
   onDeleteFlow: (flowId: string) => void;
 }
 
@@ -29,7 +28,6 @@ export function FilesSection({
   onViewAll,
   onOpenFlow,
   onRenameFlow,
-  onDuplicateFlow,
   onDeleteFlow,
 }: FilesSectionProps): React.ReactElement | null {
   const { t } = useTranslation();
@@ -79,7 +77,6 @@ export function FilesSection({
               flow={flow}
               onOpen={() => onOpenFlow(flow.id)}
               onRename={() => onRenameFlow(flow.id)}
-              onDuplicate={() => onDuplicateFlow(flow.id)}
               onDelete={() => onDeleteFlow(flow.id)}
             />
           ))}
@@ -92,7 +89,6 @@ export function FilesSection({
               flow={flow}
               onOpen={() => onOpenFlow(flow.id)}
               onRename={() => onRenameFlow(flow.id)}
-              onDuplicate={() => onDuplicateFlow(flow.id)}
               onDelete={() => onDeleteFlow(flow.id)}
             />
           ))}
