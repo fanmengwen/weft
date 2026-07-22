@@ -77,7 +77,7 @@ export function HomeFilesView({
                 totalCount={prepared.charts.length}
                 layout={layout}
                 showHeader={isAll}
-                onViewAll={isAll ? () => setTab('chart') : undefined}
+                onHeaderClick={isAll ? () => setTab('chart') : undefined}
                 onOpenFlow={onOpenFlow}
                 onRenameFlow={onRenameFlow}
                 onDeleteFlow={onDeleteFlow}
@@ -90,7 +90,7 @@ export function HomeFilesView({
                 totalCount={prepared.workflows.length}
                 layout={layout}
                 showHeader={isAll}
-                onViewAll={isAll ? () => setTab('workflow') : undefined}
+                onHeaderClick={isAll ? () => setTab('workflow') : undefined}
                 onOpenFlow={onOpenFlow}
                 onRenameFlow={onRenameFlow}
                 onDeleteFlow={onDeleteFlow}

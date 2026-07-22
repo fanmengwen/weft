@@ -13,7 +13,7 @@ interface FilesSectionProps {
   totalCount: number;
   layout: HomeFilesLayout;
   showHeader: boolean;
-  onViewAll?: () => void;
+  onHeaderClick?: () => void;
   onOpenFlow: (flowId: string) => void;
   onRenameFlow: (flowId: string) => void;
   onDeleteFlow: (flowId: string) => void;
@@ -25,7 +25,7 @@ export function FilesSection({
   totalCount,
   layout,
   showHeader,
-  onViewAll,
+  onHeaderClick,
   onOpenFlow,
   onRenameFlow,
   onDeleteFlow,
@@ -49,23 +49,23 @@ export function FilesSection({
       className={showHeader ? (isChart ? 'mt-[22px]' : 'mt-7') : 'mt-3'}
     >
       {showHeader ? (
-        <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-[7px]">
-            <span className={isChart ? 'text-[#3663C9]' : 'text-[#6250C9]'}>
-              {isChart ? <ChartKindIcon size={13} /> : <WorkflowKindIcon size={13} />}
-            </span>
-            <span className="text-[13.5px] font-semibold text-[var(--brand-text)]">{title}</span>
-          </div>
-          {onViewAll ? (
-            <button
-              type="button"
-              data-testid={`files-view-all-${kind}`}
-              onClick={onViewAll}
-              className="text-[12.5px] font-medium text-[var(--brand-primary)] transition-colors hover:brightness-110 focus-visible:outline-none focus-visible:underline"
-            >
-              {t('homeFiles.viewAll', 'View all')}
-            </button>
-          ) : null}
+        <div
+          role="button"
+          tabIndex={0}
+          data-testid={`files-section-header-${kind}`}
+          onClick={onHeaderClick}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              onHeaderClick?.();
+            }
+          }}
+          className="mb-3 flex w-fit cursor-pointer items-center gap-[7px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-primary)]"
+        >
+          <span className={isChart ? 'text-[#3663C9]' : 'text-[#6250C9]'}>
+            {isChart ? <ChartKindIcon size={13} /> : <WorkflowKindIcon size={13} />}
+          </span>
+          <span className="text-[13.5px] font-semibold text-[var(--brand-text)]">{title}</span>
         </div>
       ) : null}
 
