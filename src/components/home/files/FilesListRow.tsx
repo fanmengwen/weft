@@ -11,7 +11,6 @@ interface FilesListRowProps {
   flow: HomeFlowCardModel;
   onOpen: () => void;
   onRename: () => void;
-  onDuplicate: () => void;
   onDelete: () => void;
 }
 
@@ -19,7 +18,6 @@ export function FilesListRow({
   flow,
   onOpen,
   onRename,
-  onDuplicate,
   onDelete,
 }: FilesListRowProps): React.ReactElement {
   const { t } = useTranslation();
@@ -67,7 +65,7 @@ export function FilesListRow({
           <span>{t('homeFiles.nodeMeta', '{{count}} nodes', { count: flow.nodeCount })}</span>
         </div>
       </div>
-      <FilesOverflowMenu onRename={onRename} onDuplicate={onDuplicate} onDelete={onDelete} />
+      <FilesOverflowMenu onOpen={onOpen} onRename={onRename} onDelete={onDelete} />
     </div>
   );
 }

@@ -596,7 +596,13 @@
     "rawLogs": "Raw logs",
     "logCount": "{{count}} entries",
     "logHint": "Internal node events only; timing is shown above",
-    "nodeStatus": { "idle": "Not run", "running": "Running", "succeeded": "Succeeded", "failed": "Failed", "skipped": "Skipped" }
+    "nodeStatus": {
+      "idle": "Not run",
+      "running": "Running",
+      "succeeded": "Succeeded",
+      "failed": "Failed",
+      "skipped": "Skipped"
+    }
   },
   "homeFiles": {
     "search": "Search files",
@@ -617,6 +623,27 @@
       "yesterday": "Yesterday",
       "daysAgo": "{{count}} days ago",
       "lastWeek": "Last week"
+    },
+    "workflowMenu": {
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "workflowStatus": {
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "manual": "Manual"
+    },
+    "lastRun": {
+      "label": "Last run",
+      "failed": "Failed"
+    },
+    "disableDialog": {
+      "title": "Disable workflow",
+      "description": "It won't run automatically until you re-enable it.",
+      "confirmation": "Disable \"{{name}}\"?",
+      "hint": "You can re-enable it anytime from the ⋯ menu.",
+      "confirmAction": "Disable",
+      "closeDialog": "Close disable workflow dialog"
     }
   },
   "settings": {

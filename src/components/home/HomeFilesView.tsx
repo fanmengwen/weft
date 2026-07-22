@@ -19,7 +19,6 @@ interface HomeFilesViewProps {
   onCreate: (kind?: DocumentKind) => void;
   onOpenFlow: (flowId: string) => void;
   onRenameFlow: (flowId: string) => void;
-  onDuplicateFlow: (flowId: string) => void;
   onDeleteFlow: (flowId: string) => void;
 }
 
@@ -28,7 +27,6 @@ export function HomeFilesView({
   onCreate,
   onOpenFlow,
   onRenameFlow,
-  onDuplicateFlow,
   onDeleteFlow,
 }: HomeFilesViewProps): React.ReactElement {
   const { t } = useTranslation();
@@ -79,10 +77,9 @@ export function HomeFilesView({
                 totalCount={prepared.charts.length}
                 layout={layout}
                 showHeader={isAll}
-                onViewAll={isAll ? () => setTab('chart') : undefined}
+                onHeaderClick={isAll ? () => setTab('chart') : undefined}
                 onOpenFlow={onOpenFlow}
                 onRenameFlow={onRenameFlow}
-                onDuplicateFlow={onDuplicateFlow}
                 onDeleteFlow={onDeleteFlow}
               />
             ) : null}
@@ -93,10 +90,9 @@ export function HomeFilesView({
                 totalCount={prepared.workflows.length}
                 layout={layout}
                 showHeader={isAll}
-                onViewAll={isAll ? () => setTab('workflow') : undefined}
+                onHeaderClick={isAll ? () => setTab('workflow') : undefined}
                 onOpenFlow={onOpenFlow}
                 onRenameFlow={onRenameFlow}
-                onDuplicateFlow={onDuplicateFlow}
                 onDeleteFlow={onDeleteFlow}
               />
             ) : null}

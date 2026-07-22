@@ -18,6 +18,7 @@ import {
   removeDocumentKind,
   type DocumentKind,
 } from './home/documentKindStorage';
+import { copyWorkflowEnabled, removeWorkflowEnabled } from './home/workflowEnabledStorage';
 import { purgeTrashedDocumentFromRepository } from '@/services/storage/localFirstRuntime';
 import {
   useTrashedDocumentsState,
@@ -121,6 +122,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   function handlePurgeFlow(documentId: string): void {
     purgeDocument(documentId);
     removeDocumentKind(documentId);
+    removeWorkflowEnabled(documentId);
     purgeTrashedDocumentFromRepository(documentId);
   }
 
@@ -128,6 +130,7 @@ export const HomePage: React.FC<HomePageProps> = ({
     const newFlowId = duplicateDocument(flowId);
     if (newFlowId) {
       copyDocumentKind(flowId, newFlowId);
+      copyWorkflowEnabled(flowId, newFlowId);
       onOpenFlow(newFlowId);
     }
   }
@@ -160,7 +163,6 @@ export const HomePage: React.FC<HomePageProps> = ({
             onCreate={onLaunch}
             onOpenFlow={onOpenFlow}
             onRenameFlow={handleRenameFlow}
-            onDuplicateFlow={handleDuplicateFlow}
             onDeleteFlow={handleDeleteFlow}
           />
         )}
