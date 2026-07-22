@@ -1,12 +1,23 @@
+import i18n from '@/i18n/config';
+import { normalizePromptLanguage, PROMPT_LANGUAGE_NAMES } from '../geminiSystemInstruction';
 import type { AssetGroundingMatch, FlowpilotPolicyContext } from './types';
 
-export function buildFlowpilotAssistantSystemInstruction(mode: 'answer' | 'plan'): string {
+function buildReplyLanguageLine(uiLanguage: string): string {
+  const languageName = PROMPT_LANGUAGE_NAMES[normalizePromptLanguage(uiLanguage)];
+  return `Respond in ${languageName} unless the user explicitly requests another language; keep technology proper nouns in their original form.`;
+}
+
+export function buildFlowpilotAssistantSystemInstruction(
+  mode: 'answer' | 'plan',
+  uiLanguage: string = i18n.language,
+): string {
   if (mode === 'plan') {
     return [
       'You are Flowpilot, a diagramming copilot inside Weft.',
       'Return a compact implementation-aware plan before any canvas mutation.',
       'Do not emit Weft DSL.',
       'Be concrete, concise, and action-oriented.',
+      buildReplyLanguageLine(uiLanguage),
     ].join('\n');
   }
 
@@ -15,6 +26,7 @@ export function buildFlowpilotAssistantSystemInstruction(mode: 'answer' | 'plan'
     'Answer the user directly and practically.',
     'Do not emit Weft DSL unless explicitly asked to generate a diagram.',
     'Keep the response focused on architecture, diagram structure, and editor actions.',
+    buildReplyLanguageLine(uiLanguage),
   ].join('\n');
 }
 
